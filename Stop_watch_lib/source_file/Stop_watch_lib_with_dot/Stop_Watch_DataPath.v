@@ -15,10 +15,10 @@ input i_reset,
 input i_run_stop,
 input i_clear,
 input i_mode,
-output reg [MSEC_BIT_WIDTH-1:0] msec, 
-output reg [SEC_BIT_WIDTH -1:0] sec,
-output reg [MIN_BIT_WIDTH -1:0] min,
-output reg [HOUR_BIT_WIDTH -1:0] hour
+output  [MSEC_BIT_WIDTH-1:0] msec, 
+output  [SEC_BIT_WIDTH -1:0] sec,
+output  [MIN_BIT_WIDTH -1:0] min,
+output  [HOUR_BIT_WIDTH -1:0] hour
 
 );
 
@@ -42,7 +42,7 @@ tick_gen_100Hz STOP_WATCH_TICK(
 
 
 
-tick_counter#(
+tick_counter# (
 	.COUNT(100),
 	.DATA_WIDTH(MSEC_BIT_WIDTH)
 ) U_MSEC_TICK_COUNTER(

@@ -31,10 +31,12 @@ always@(posedge i_clk or posedge i_reset)begin
 					o_time_tic <= 1;
 				end
 
-				else begin
-					o_time_tic <= 0;
-				end
 			end
+			else begin 
+					o_time_tic <=0;
+			end
+
+
 		end
 
 		else begin
@@ -46,15 +48,15 @@ always@(posedge i_clk or posedge i_reset)begin
 					r_counter_reg <= 0;
 					o_time_tic <= 1;
 				end
+			 end
 
-				else begin
+			 else begin
 					o_time_tic <= 0;
 			
-				end
-			end		
+		      end
+		end		
 
 			
-		end
 	end
 end
 
