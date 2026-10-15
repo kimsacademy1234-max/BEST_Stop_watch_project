@@ -1,7 +1,8 @@
 `timescale 1ns / 1ps
 
 
-module Fnd_Controller_dot#(
+
+module SW2_FND_CONTROLLER#(
 
 parameter MSEC_BIT_WIDTH = 7,
 parameter SEC_BIT_WIDTH = 6,
@@ -88,6 +89,9 @@ digit_splitter #(
 //////////////////////////////////////////////////////////////////
 
 wire w_clk_2kHz;
+wire [2:0] w_sel;
+wire [3:0] w_msec_sec;
+wire [3:0] w_min_hour;
 
 //////////////////////////////////////////////////////////////////
 clock_tick_generator#(
@@ -111,12 +115,6 @@ counter8 U_COUNTER8(
 
 
 
-//////////////////////////////////////////////////////////////////////
-wire [2:0] w_sel;
-wire [3:0] w_msec_sec;
-wire [3:0] w_min_hour;
-
-////////////////////////////////////////////////////////////////////
 
 
 
@@ -181,29 +179,29 @@ wire [3:0] w_decode_ds10_hour;
 
 
 
-anode_choice U_ANODE_CHOICE_TO_MUX1(
+SW2_ANODE_CHOICE U_ANODE_CHOICE_TO_MUX1(
 
 
-	i_sw_0(i_sw_0),
-	i_sw_2(i_sw_2),
-	i_sel(w_state_sel),
-	i_dot(w_dot_onoff), 
-	i_ds1(w_ds1_msec),
-	i_ds2(w_ds10_msec),
-	i_ds3(w_ds1_sec),
-	i_ds4(w_ds10_sec),
+	.i_sw_0(i_sw_0),
+	.i_sw_2(i_sw_2),
+	.i_sel(w_state_sel),
+	.i_dot(w_dot_onoff), 
+	.i_ds1(w_ds1_msec),
+	.i_ds2(w_ds10_msec),
+	.i_ds3(w_ds1_sec),
+	.i_ds4(w_ds10_sec),
 
-	o_ds1(w_decode_ds1_msec),
-	o_ds2(w_decode_ds10_msec),
-	o_ds3(w_decode_ds1_sec),
-	o_ds4(w_decode_ds10_sec)
+	.o_ds1(w_decode_ds1_msec),
+	.o_ds2(w_decode_ds10_msec),
+	.o_ds3(w_decode_ds1_sec),
+	.o_ds4(w_decode_ds10_sec)
 
 
 );
 
 
 
-anode_choice U_ANODE_CHOICE_TO_MUX2(
+SW2_ANODE_CHOICE U_ANODE_CHOICE_TO_MUX2(
 
 
 	.i_sw_0(i_sw_0),

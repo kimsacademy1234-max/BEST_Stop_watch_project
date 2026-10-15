@@ -214,65 +214,30 @@ module stopwatch_watch (
     assign w_hour = (sw_timer) ? w_tm_hour : ((sw_mode) ? w_sw_hour : w_wt_hour_disp);
 
 
-Fnd_Contoller_dot FND_CON(
+SW2_FND_CONTROLLER FND_CON(
 
 
 
-    i_clk(clk),
-    i_reset(rst),
-	i_sw_display_mode(),
-	i_btn_R(w_btnD),
-	i_btn_L(w_btnL),
-	i_sw_0(sw_0),
-	i_sw_2(sw_set),
+    .i_clk(clk),
+    .i_reset(rst),
+	.i_msec(w_msec),
+	.i_sec(w_sec),
+	.i_min(w_min),
+	.i_hour(w_hour),
+	.i_sw_display_mode(sw_display_mode),
+	.i_btn_R(w_btnR),
+	.i_btn_L(w_btnL),
+	.i_sw_0(sw_mode),
+	.i_sw_2(sw_set),
 
-    o_fnd_com(fnd_com),
-    o_fnd_data(fnd_font)
+    .o_fnd_com(fnd_com),
+    .o_fnd_data(fnd_font)
 
-)
-
-
-
-
-
-
-
-
+);
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*
-    fnd_controller U_FND_CNTL (
-        .clk            (clk),
-        .rst            (rst),
-        .sw_display_mode(sw_display_mode),
-        .blink_en       (w_set_mode & w_sel_wt),  // 시계 화면에서 설정 중일 때만 점멸
-        .blink_field    (w_cursor),
-        .msec           (w_msec),
-        .sec            (w_sec),
-        .min            (w_min),
-        .hour           (w_hour),
-        .fnd_com        (fnd_com),
-        .fnd_font       (fnd_font)
-    );
-*/
-    // LED indicator — 알람 중이면 어느 화면에 있든 16개 전부 점멸
     assign w_blink = (w_wt_msec >= 50);
     assign led[0]  = (w_tm_alarm) ? w_blink : w_sel_wt;                    // 시계
     assign led[1]  = (w_tm_alarm) ? w_blink : w_sel_sw;                    // 스톱워치
