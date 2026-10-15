@@ -12,6 +12,7 @@ parameter HOUR_BIT_WIDTH =5
 )
 (
     input  i_clk_remake,
+    input  [1:0]i_cursor,
     input  i_clk,
     input  i_reset,
 	input  [MSEC_BIT_WIDTH-1:0]  i_msec, 
@@ -134,20 +135,12 @@ dot U_DOT(
 
 ///////////////////////////////////////////////////////////////////////
 
-wire [1:0] w_state_sel;
+wire [1:0] w_cursor;
+assign w_cursor = i_cursor;  // watch_control_unit 의 cursor
 
 
 
-SW2_FSM_Change U_FSM(
 
-.i_clk(i_clk),
-.i_reset(i_reset),
-.i_btnR(i_btn_R),
-.i_btnL(i_btn_L),
-.o_sel(w_state_sel)
-
-
-);
 
 
 
@@ -175,10 +168,10 @@ wire [3:0] w_decode_ds10_hour;
 
 SW2_ANODE_CHOICE U_ANODE_CHOICE_TO_MUX1(
 
-
+    .i_sw_1(i_sw_display_mode),
 	.i_sw_0(i_sw_0),
 	.i_sw_2(i_sw_2),
-	.i_sel(w_state_sel),
+	.i_cursor(w_cursor),
 	.i_dot(w_dot_onoff), 
 	.i_ds1(w_ds1_msec),
 	.i_ds2(w_ds10_msec),
@@ -198,9 +191,10 @@ SW2_ANODE_CHOICE U_ANODE_CHOICE_TO_MUX1(
 SW2_ANODE_CHOICE U_ANODE_CHOICE_TO_MUX2(
 
 
+    .i_sw_1(i_sw_display_mode),
 	.i_sw_0(i_sw_0),
 	.i_sw_2(i_sw_2),
-	.i_sel(w_state_sel),
+	.i_cursor(w_cursor),
 	.i_dot(w_dot_onoff), 
 	.i_ds1(w_ds1_min),
 	.i_ds2(w_ds10_min),
@@ -258,7 +252,7 @@ mux_8x1 U_MIN_MUXER(
 
 wire [3:0] w_input_BCD;
 assign w_input_BCD = (i_sw_display_mode == 0)? w_msec_sec : w_min_hour;
-
+assign w_clk_2kHz = i_clk_remake;
 /////////////////////////////////////////////////////////////////////////
 decoder_2x4 U_DECODER(
 
@@ -273,7 +267,6 @@ fnd_decoder U_FND_DEC (
     .i_hex      (w_input_BCD),
     .o_fnd_data (o_fnd_data)
 );
-assign w_clk_2kHz = i_clk_remake;
 
 
 

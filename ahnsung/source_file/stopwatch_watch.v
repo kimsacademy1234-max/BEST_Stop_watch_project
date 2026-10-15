@@ -233,7 +233,7 @@ module stopwatch_watch (
 
 SW2_FND_CONTROLLER FND_CON(
 
-
+    .i_cursor(w_cursor),
     .i_clk_remake(w_clk_2Khz),
     .i_clk(clk),
     .i_reset(rst),

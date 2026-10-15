@@ -37,10 +37,10 @@ always@(*)begin
 
 		else begin
 			case(i_cursor)
-			2'b01 : r_ds = {i_ds1,4'hd,i_ds3,i_ds4};
-			2'b11 : r_ds = {i_ds1,i_ds2,4'hd,i_ds4};
-			2'b10 : r_ds = {i_ds1,i_ds2,i_ds3,4'hd};
-            default : r_ds = {i_ds1,i_ds2,i_ds3,i_ds4}; 			
+			2'b00 : r_ds = {4'hd,i_ds2,i_ds3,i_ds4};  // 분 일 (AN0)
+			2'b01 : r_ds = {i_ds1,4'hd,i_ds3,i_ds4};  // 분 십 (AN1)
+			2'b10 : r_ds = {i_ds1,i_ds2,4'hd,i_ds4};  // 시 일 (AN2)
+            2'b11 : r_ds = {i_ds1,i_ds2,i_ds3,i_ds4}; 			
             endcase
 		end
 	end
