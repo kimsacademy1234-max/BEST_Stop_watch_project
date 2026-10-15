@@ -140,7 +140,7 @@ wire [1:0] w_state_sel;
 
 SW2_FSM_Change U_FSM(
 
-.i_clk(w_clk_2kHz),
+.i_clk(i_clk),
 .i_reset(i_reset),
 .i_btnR(i_btn_R),
 .i_btnL(i_btn_L),

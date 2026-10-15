@@ -76,7 +76,7 @@ module stopwatch_watch (
    clock_tick_generator U_CLK_GEN_2KHz(
 
             .i_clk(clk),
-            .i_reset(reset),
+            .i_reset(rst),
             .o_clk(w_clk_2Khz)
 
            );
