@@ -58,6 +58,14 @@ module tb_stopwatch_watch ();
         $finish;
     end
 
+    // (10/16) 초 · 1/100초는 설정 대상이 아님: 시뮬 내내 버튼 입력이 들어가면 FAIL
+    always @(posedge clk) begin
+        if (dut.U_WATCH_DATAPATH.U_SEC_COUNTER.i_up | dut.U_WATCH_DATAPATH.U_SEC_COUNTER.i_down |
+            dut.U_WATCH_DATAPATH.U_MSEC_COUNTER.i_up | dut.U_WATCH_DATAPATH.U_MSEC_COUNTER.i_down) begin
+            err = err + 1; $display("FAIL sec/msec got set pulse at %0t", $time);
+        end
+    end
+
     initial begin
         clk = 0; rst = 1; err = 0;
         btnR = 0; btnL = 0; btnU = 0; btnD = 0;
@@ -74,44 +82,65 @@ module tb_stopwatch_watch ();
         btnU = 1; #PUSH; btnU = 0; #PUSH;
         if (wt_hour !== 5'd12) begin err = err + 1; $display("T2 FAIL hour %0d", wt_hour); end
 
-        // T3 설정 들어가면 시 칸부터, U +1, D -1
+        // T3 (10/16 자리 단위) 설정 들어가면 분 일의 자리(cursor 0)부터, U 분 +1, D 분 -1
         sw_set = 1; #100;
-        if (cursor !== 2'd2 || set_mode !== 1'b1) begin err = err + 1; $display("T3 FAIL cursor %0d set %b", cursor, set_mode); end
+        if (cursor !== 2'd0 || set_mode !== 1'b1) begin err = err + 1; $display("T3 FAIL cursor %0d set %b", cursor, set_mode); end
         btnU = 1; #PUSH; btnU = 0; #PUSH;
-        if (wt_hour !== 5'd13) begin err = err + 1; $display("T3 FAIL U hour %0d", wt_hour); end
+        if (wt_min !== 6'd1 || wt_hour !== 5'd12) begin err = err + 1; $display("T3 FAIL U min %0d:%0d", wt_hour, wt_min); end
         btnD = 1; #PUSH; btnD = 0; #PUSH;
         btnD = 1; #PUSH; btnD = 0; #PUSH;
-        if (wt_hour !== 5'd11) begin err = err + 1; $display("T3 FAIL D hour %0d", wt_hour); end
+        if (wt_min !== 6'd59 || wt_hour !== 5'd12) begin err = err + 1; $display("T3 FAIL D wrap min %0d:%0d (expect 12:59, 시 그대로)", wt_hour, wt_min); end
 
-        // T4 커서 이동: R 시->분->초->시(돌아감), L 시->초(돌아감)->분
-        btnR = 1; #PUSH; btnR = 0; #PUSH;
-        if (cursor !== 2'd1) begin err = err + 1; $display("T4 FAIL R1 cursor %0d", cursor); end
-        btnR = 1; #PUSH; btnR = 0; #PUSH;
-        if (cursor !== 2'd0) begin err = err + 1; $display("T4 FAIL R2 cursor %0d", cursor); end
-        btnR = 1; #PUSH; btnR = 0; #PUSH;
-        if (cursor !== 2'd2) begin err = err + 1; $display("T4 FAIL R3 wrap cursor %0d", cursor); end
+        // T4 커서 이동: L 분일->분십->시->분일(돌아감), R 분일->시(돌아감)->분십->분일
         btnL = 1; #PUSH; btnL = 0; #PUSH;
-        if (cursor !== 2'd0) begin err = err + 1; $display("T4 FAIL L1 wrap cursor %0d", cursor); end
+        if (cursor !== 2'd1) begin err = err + 1; $display("T4 FAIL L1 cursor %0d", cursor); end
         btnL = 1; #PUSH; btnL = 0; #PUSH;
-        if (cursor !== 2'd1) begin err = err + 1; $display("T4 FAIL L2 cursor %0d", cursor); end
+        if (cursor !== 2'd2) begin err = err + 1; $display("T4 FAIL L2 cursor %0d", cursor); end
+        btnL = 1; #PUSH; btnL = 0; #PUSH;
+        if (cursor !== 2'd0) begin err = err + 1; $display("T4 FAIL L3 wrap cursor %0d", cursor); end
+        btnR = 1; #PUSH; btnR = 0; #PUSH;
+        if (cursor !== 2'd2) begin err = err + 1; $display("T4 FAIL R1 wrap cursor %0d", cursor); end
+        btnR = 1; #PUSH; btnR = 0; #PUSH;
+        if (cursor !== 2'd1) begin err = err + 1; $display("T4 FAIL R2 cursor %0d", cursor); end
 
-        // T5 분 칸 0 에서 D -> 59, 시는 그대로 (내림 없음)
-        btnD = 1; #PUSH; btnD = 0; #PUSH;
-        if (wt_min !== 6'd59 || wt_hour !== 5'd11) begin err = err + 1; $display("T5 FAIL %0d:%0d", wt_hour, wt_min); end
+        // T5 분 십의 자리: 59 -> U(+10) -> 09 (60 으로 돌기, 시 그대로) -> D(-10) -> 59 -> D -> 49
         btnU = 1; #PUSH; btnU = 0; #PUSH;
-        if (wt_min !== 6'd0 || wt_hour !== 5'd11) begin err = err + 1; $display("T5 FAIL up wrap %0d:%0d", wt_hour, wt_min); end
+        if (wt_min !== 6'd9 || wt_hour !== 5'd12) begin err = err + 1; $display("T5 FAIL +10 wrap %0d:%0d", wt_hour, wt_min); end
+        btnD = 1; #PUSH; btnD = 0; #PUSH;
+        if (wt_min !== 6'd59) begin err = err + 1; $display("T5 FAIL -10 wrap %0d", wt_min); end
+        btnD = 1; #PUSH; btnD = 0; #PUSH;
+        if (wt_min !== 6'd49) begin err = err + 1; $display("T5 FAIL -10 %0d", wt_min); end
+        btnU = 1; #PUSH; btnU = 0; #PUSH;
+        btnU = 1; #PUSH; btnU = 0; #PUSH;    // 49 -> 59 -> 09
+        if (wt_min !== 6'd9) begin err = err + 1; $display("T5 FAIL +10 x2 %0d", wt_min); end
+        //    시 자리: 12 -> D 0 까지 내리고 한 번 더 -> 23 (분 그대로)
+        btnL = 1; #PUSH; btnL = 0; #PUSH;    // 분십 -> 시
+        if (cursor !== 2'd2) begin err = err + 1; $display("T5 FAIL hour cursor %0d", cursor); end
+        for (i = 0; i < 13; i = i + 1) begin
+            btnD = 1; #PUSH; btnD = 0; #PUSH;   // 12 -> 0 -> 23
+        end
+        if (wt_hour !== 5'd23 || wt_min !== 6'd9) begin err = err + 1; $display("T5 FAIL hour 0->23 %0d:%0d", wt_hour, wt_min); end
+        btnU = 1; #PUSH; btnU = 0; #PUSH;    // 23 -> 0
+        if (wt_hour !== 5'd0) begin err = err + 1; $display("T5 FAIL hour 23->0 %0d", wt_hour); end
+        //    초는 설정 안 됨: 어떤 커서에서도 sec 는 버튼으로 안 바뀜 (흐름만)
+        //    U, D 동시 -> U 우선 (+1)
+        btnU = 1; btnD = 1; #PUSH; btnU = 0; btnD = 0; #PUSH;
+        if (wt_hour !== 5'd1) begin err = err + 1; $display("T5 FAIL U+D same time -> %0d (expect 1, U 우선)", wt_hour); end
 
-        // T6 sw_set = 0 -> NORMAL, 버튼 무시, 다시 들어가면 시 칸부터
+        // T6 sw_set = 0 -> NORMAL, 버튼 무시, 다시 들어가면 분 일의 자리부터
         sw_set = 0; #100;
         if (cursor !== 2'd3 || set_mode !== 1'b0) begin err = err + 1; $display("T6 FAIL cursor %0d set %b", cursor, set_mode); end
         btnD = 1; #PUSH; btnD = 0; #PUSH;
-        if (wt_hour !== 5'd11 || wt_min !== 6'd0) begin err = err + 1; $display("T6 FAIL %0d:%0d", wt_hour, wt_min); end
+        btnR = 1; #PUSH; btnR = 0; #PUSH;
+        if (wt_hour !== 5'd1 || wt_min !== 6'd9 || cursor !== 2'd3) begin err = err + 1; $display("T6 FAIL %0d:%0d cursor %0d", wt_hour, wt_min, cursor); end
+        sw_set = 1; #100;
+        if (cursor !== 2'd0) begin err = err + 1; $display("T6 FAIL re-enter cursor %0d", cursor); end
 
         // T7 게이팅: 시계 모드에서 R 은 스톱워치를 안 돌림
-        sw_set = 1; #100;   // 시계 쪽 SET_HOUR
-        btnR = 1; #PUSH; btnR = 0; #PUSH;
+        btnR = 1; #PUSH; btnR = 0; #PUSH;    // 분일 -> 시 (돌아감)
         if (sw_run !== 1'b0) begin err = err + 1; $display("T7 FAIL stopwatch ran in watch mode"); end
-        if (cursor !== 2'd1) begin err = err + 1; $display("T7 FAIL watch R cursor %0d", cursor); end
+        if (cursor !== 2'd2) begin err = err + 1; $display("T7 FAIL watch R cursor %0d", cursor); end
+        btnR = 1; #PUSH; btnR = 0; #PUSH;    // 시 -> 분십
         //    스톱워치 모드: R 은 스톱워치 RUN, 시계 커서는 안 움직임, LED 바뀜
         sw_mode = 1; sw_display_mode = 1; #100;
         if (led !== 16'h0006) begin err = err + 1; $display("T7 FAIL led %b", led); end
@@ -119,26 +148,29 @@ module tb_stopwatch_watch ();
         if (sw_run !== 1'b1) begin err = err + 1; $display("T7 FAIL stopwatch not running"); end
         if (cursor !== 2'd1) begin err = err + 1; $display("T7 FAIL watch cursor moved %0d", cursor); end
         btnU = 1; #PUSH; btnU = 0; #PUSH;    // 스톱워치 RUN 중 U 는 무시, 시계 분도 안 바뀜
-        if (wt_min !== 6'd0) begin err = err + 1; $display("T7 FAIL watch min changed %0d", wt_min); end
+        if (wt_min !== 6'd9) begin err = err + 1; $display("T7 FAIL watch min changed %0d", wt_min); end
         //    스톱워치 화면에서는 점멸 꺼짐
         if (dut.U_FND_CNTL.blink_en !== 1'b0) begin err = err + 1; $display("T7 FAIL blink_en in stopwatch"); end
         btnR = 1; #PUSH; btnR = 0; #PUSH;    // 스톱워치 STOP
         sw_mode = 0; #100;
 
-        // T8 점멸: 분 칸 설정 중, msec >= 50 이면 분 두 자리 끔, < 50 이면 켬. 다른 칸은 안 끔
+        // T8 점멸: 분 십의 자리 설정 중, msec >= 50 이면 분 십만 끔. 분 일 · 시 · 초 · 시 십은 안 끔
         for (i = 0; i < 300; i = i + 1) begin
             #337;
-            if (dut.U_FND_CNTL.w_blank_min !== (wt_msec >= 50)) begin err = err + 1; $display("T8 FAIL blank_min msec %0d", wt_msec); end
-            if (dut.U_FND_CNTL.w_blank_hour !== 1'b0 || dut.U_FND_CNTL.w_blank_sec !== 1'b0) begin err = err + 1; $display("T8 FAIL other blank"); end
+            if (dut.U_FND_CNTL.w_blank_min10 !== (wt_msec >= 50)) begin err = err + 1; $display("T8 FAIL blank_min10 msec %0d", wt_msec); end
+            if (dut.U_FND_CNTL.w_blank_min !== 1'b0 || dut.U_FND_CNTL.w_blank_hour !== 1'b0 || dut.U_FND_CNTL.w_blank_sec !== 1'b0) begin err = err + 1; $display("T8 FAIL other blank"); end
+            if (dut.U_FND_CNTL.w_min_ds1_b === 4'hf || dut.U_FND_CNTL.w_hour_ds10_b === 4'hf) begin err = err + 1; $display("T8 FAIL wrong digit off"); end
         end
 
         // T9 23:59 로 맞추고 자정 넘어감 확인: 23:59:59.99 -> 00:00:00.00
-        btnL = 1; #PUSH; btnL = 0; #PUSH;    // 시 칸
-        for (i = 0; i < 12; i = i + 1) begin
-            btnU = 1; #PUSH; btnU = 0; #PUSH;   // 11 -> 23
+        btnL = 1; #PUSH; btnL = 0; #PUSH;    // 분십 -> 시
+        for (i = 0; i < 22; i = i + 1) begin
+            btnU = 1; #PUSH; btnU = 0; #PUSH;   // 1 -> 23
         end
-        btnR = 1; #PUSH; btnR = 0; #PUSH;    // 분 칸
-        btnD = 1; #PUSH; btnD = 0; #PUSH;    // 0 -> 59
+        btnR = 1; #PUSH; btnR = 0; #PUSH;    // 분 십
+        for (i = 0; i < 5; i = i + 1) begin
+            btnU = 1; #PUSH; btnU = 0; #PUSH;   // 09 -> 59
+        end
         if (wt_hour !== 5'd23 || wt_min !== 6'd59) begin err = err + 1; $display("T9 FAIL set %0d:%0d", wt_hour, wt_min); end
         sw_set = 0;
         wait (wt_hour == 5'd0);
@@ -153,6 +185,7 @@ module tb_stopwatch_watch ();
         if (dut.w_hour !== 5'd12 || led[4] !== 1'b0) begin err = err + 1; $display("T10 FAIL 12h 0 -> %0d pm %b", dut.w_hour, led[4]); end
         //     시 칸을 U 로 12시(정오) -> 화면 12, PM
         sw_set = 1; #100;
+        btnR = 1; #PUSH; btnR = 0; #PUSH;    // 분 일(시작) -> 시 (오른쪽 끝에서 돌아감)
         for (i = 0; i < 12; i = i + 1) begin
             btnU = 1; #PUSH; btnU = 0; #PUSH;
         end

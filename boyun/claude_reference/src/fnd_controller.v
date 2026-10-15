@@ -10,7 +10,7 @@ module fnd_controller #(
     input                       rst,
     input                       sw_display_mode,
     input                       blink_en,     // 1 = 시계 설정 중 (클로드코드 추가)
-    input  [               1:0] blink_field,  // 점멸할 칸: 0 sec, 1 min, 2 hour
+    input  [               1:0] blink_field,  // 점멸할 자리(시.분 화면 AN 번호): 0 분 일, 1 분 십, 2 시 일, 3 없음
     input  [MSEC_BIT_WIDTH-1:0] msec,
     input  [ SEC_BIT_WIDTH-1:0] sec,
     input  [ MIN_BIT_WIDTH-1:0] min,
@@ -26,7 +26,7 @@ module fnd_controller #(
     wire [3:0] w_hour_ds1, w_hour_ds10;
     wire [3:0] w_mux_out, w_msec_sec_mux_out, w_min_hour_mux_out;
     wire w_dot_onoff;
-    wire w_blank_sec, w_blank_min, w_blank_hour;
+    wire w_blank_sec, w_blank_min, w_blank_min10, w_blank_hour;
     wire [3:0] w_sec_ds1_b, w_sec_ds10_b;
     wire [3:0] w_min_ds1_b, w_min_ds10_b;
     wire [3:0] w_hour_ds1_b, w_hour_ds10_b;
@@ -90,16 +90,18 @@ module fnd_controller #(
         .dot_onoff(w_dot_onoff)
     );
     // 설정 점멸 (클로드코드 추가): dot 과 같은 타이밍(msec >= 50)에 고르는 칸 두 자리를 4'hf(다 끔)로
-    assign w_blank_sec  = blink_en & (blink_field == 2'd0) & w_dot_onoff;
-    assign w_blank_min  = blink_en & (blink_field == 2'd1) & w_dot_onoff;
-    assign w_blank_hour = blink_en & (blink_field == 2'd2) & w_dot_onoff;
+    // 10/16 자리 단위 판: 한 자리만 끔. 초 · 시 십의 자리는 설정 대상이 아니라 안 끔
+    assign w_blank_sec  = 1'b0;
+    assign w_blank_min  = blink_en & (blink_field == 2'd0) & w_dot_onoff;  // 분 일
+    assign w_blank_min10 = blink_en & (blink_field == 2'd1) & w_dot_onoff; // 분 십
+    assign w_blank_hour = blink_en & (blink_field == 2'd2) & w_dot_onoff;  // 시 일
 
-    assign w_sec_ds1_b   = (w_blank_sec) ? 4'hf : w_sec_ds1;
-    assign w_sec_ds10_b  = (w_blank_sec) ? 4'hf : w_sec_ds10;
+    assign w_sec_ds1_b   = w_sec_ds1;
+    assign w_sec_ds10_b  = w_sec_ds10;
     assign w_min_ds1_b   = (w_blank_min) ? 4'hf : w_min_ds1;
-    assign w_min_ds10_b  = (w_blank_min) ? 4'hf : w_min_ds10;
+    assign w_min_ds10_b  = (w_blank_min10) ? 4'hf : w_min_ds10;
     assign w_hour_ds1_b  = (w_blank_hour) ? 4'hf : w_hour_ds1;
-    assign w_hour_ds10_b = (w_blank_hour) ? 4'hf : w_hour_ds10;
+    assign w_hour_ds10_b = w_hour_ds10;
 
     mux_8x1 U_MSEC_SEC_MUX_8x1 (
         .sel(w_ds_sel),
