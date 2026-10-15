@@ -29,7 +29,7 @@ always@(*)begin
 
 	if((i_sw_0==1'b0)&&(i_sw_2==1'b1))begin
 
-		if(!i_dot)begin //i_dot = 1 일때 켜진다
+		if(i_dot)begin //i_dot = 1 일때 꺼짐
 			r_ds = {i_ds1,i_ds2,i_ds3,i_ds4};
 		end
 
