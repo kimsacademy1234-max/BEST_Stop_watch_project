@@ -70,26 +70,43 @@ module stopwatch_watch (
     wire [ SEC_BIT_WIDTH-1:0] w_sec;
     wire [ MIN_BIT_WIDTH-1:0] w_min;
     wire [HOUR_BIT_WIDTH-1:0] w_hour;
+    wire w_clk_2Khz;
+
+
+   clock_tick_generator U_CLK_GEN_2KHz(
+
+            .i_clk(clk),
+            .i_reset(reset),
+            .o_clk(w_clk_2Khz)
+
+           );
+
+
+
 
     btn_debounce U_BD_R (
+        .clk_remake(w_clk_2Khz),
         .clk  (clk),
         .reset(rst),
         .i_btn(btnR),
         .o_btn(w_btnR)
     );
     btn_debounce U_BD_L (
+        .clk_remake(w_clk_2Khz),
         .clk  (clk),
         .reset(rst),
         .i_btn(btnL),
         .o_btn(w_btnL)
     );
     btn_debounce U_BD_U (
+        .clk_remake(w_clk_2Khz),
         .clk  (clk),
         .reset(rst),
         .i_btn(btnU),
         .o_btn(w_btnU)
     );
     btn_debounce U_BD_D (
+        .clk_remake(w_clk_2Khz),
         .clk  (clk),
         .reset(rst),
         .i_btn(btnD),
@@ -217,7 +234,7 @@ module stopwatch_watch (
 SW2_FND_CONTROLLER FND_CON(
 
 
-
+    .i_clk_remake(w_clk_2Khz),
     .i_clk(clk),
     .i_reset(rst),
 	.i_msec(w_msec),

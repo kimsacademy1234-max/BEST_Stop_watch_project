@@ -1,11 +1,13 @@
 `timescale 1ns / 1ps
 
 
-module button_debouncer(
+module btn_debounce(
 
 
-input i_clk_remake,
-input i_clk,i_reset,i_btn,
+input clk_remake,
+input clk,
+input reset,
+input i_btn,
 output o_btn
 
 
@@ -25,9 +27,9 @@ wire debounce;
 
 // 8bit shift register SIPO
 
-always@(posedge i_clk_remake,posedge i_reset)begin
+always@(posedge clk_remake,posedge reset)begin
 
-	if(i_reset) q_reg <= 8'h00;
+	if(reset) q_reg <= 8'h00;
 
 	else begin
 
@@ -47,9 +49,9 @@ assign debounce = &q_reg;
 
 //edge detect 
 
-always@(posedge i_clk,posedge i_reset)begin
+always@(posedge clk,posedge reset)begin
 
-	if(i_reset) debounce_reg <= 0;
+	if(reset) debounce_reg <= 0;
 	
 	else begin
 

@@ -11,6 +11,7 @@ parameter HOUR_BIT_WIDTH =5
 
 )
 (
+    input  i_clk_remake,
     input  i_clk,
     input  i_reset,
 	input  [MSEC_BIT_WIDTH-1:0]  i_msec, 
@@ -27,6 +28,8 @@ parameter HOUR_BIT_WIDTH =5
     output wire [7:0] o_fnd_data
 
 );
+
+
 
 
 /////////////////////////////////////////////////////////////////////////////
@@ -94,16 +97,7 @@ wire [3:0] w_msec_sec;
 wire [3:0] w_min_hour;
 
 //////////////////////////////////////////////////////////////////
-clock_tick_generator#(
 
-.CLK_FRQ(2000)  // 2KHz
-) U_CLK_GEN (
-
-.i_clk(i_clk),
-.i_reset(i_reset),
-.o_clk(w_clk_2kHz)
-
-);
 
 counter8 U_COUNTER8(
 
@@ -228,10 +222,10 @@ SW2_ANODE_CHOICE U_ANODE_CHOICE_TO_MUX2(
 mux_8x1 U_SEC_MUXER(
 
     .i_sel (w_sel),
-    .i_d0  (w_ds1_msec),
-    .i_d1  (w_ds10_msec),
-    .i_d2  (w_ds1_sec),
-    .i_d3  (w_ds10_sec),
+    .i_d0  (w_decode_ds1_msec),
+    .i_d1  (w_decode_ds10_msec),
+    .i_d2  (w_decode_ds1_sec),
+    .i_d3  (w_decode_ds10_sec),
     .i_d4  (4'hf),
     .i_d5  (4'hf),
     .i_d6  ({3'b111,w_dot_onoff}),
@@ -244,10 +238,10 @@ mux_8x1 U_SEC_MUXER(
 mux_8x1 U_MIN_MUXER(
 
     .i_sel (w_sel),
-    .i_d0  (w_ds1_min),
-    .i_d1  (w_ds10_min),
-    .i_d2  (w_ds1_hour),
-    .i_d3  (w_ds10_hour),
+    .i_d0  (w_decode_ds1_min),
+    .i_d1  (w_decode_ds10_min),
+    .i_d2  (w_decode_ds1_hour),
+    .i_d3  (w_decode_ds10_hour),
     .i_d4  (4'hf),
     .i_d5  (4'hf),
     .i_d6  ({3'b111,w_dot_onoff}),
@@ -279,6 +273,9 @@ fnd_decoder U_FND_DEC (
     .i_hex      (w_input_BCD),
     .o_fnd_data (o_fnd_data)
 );
+assign w_clk_2kHz = i_clk_remake;
+
+
 
 endmodule
 
