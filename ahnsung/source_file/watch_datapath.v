@@ -11,7 +11,7 @@ module watch_datapath #(
 ) (
     input                       clk,
     input                       rst,
-    input  [               1:0] cursor,  // 0 sec, 1 min, 2 hour, 3 없음
+    input  [               1:0] cursor,  // 0 min_1, 1 min_10, 2 hour_1, 3 없음
     input                       i_up,
     input                       i_down,
     output [MSEC_BIT_WIDTH-1:0] msec,

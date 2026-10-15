@@ -2,9 +2,13 @@
 
 module SW2_ANODE_CHOICE(
 
-	input i_sw_0,
-	input i_sw_2,
-	input [1:0]i_sel,
+
+
+    input i_sw_0, 
+    input i_sw_1,
+    input i_sw_2, 
+
+	input [1:0]i_cursor,
 	input i_dot, 
 	input [3:0] i_ds1,
 	input [3:0] i_ds2,
@@ -20,25 +24,24 @@ module SW2_ANODE_CHOICE(
 
 
 
-
-
 reg[15:0] r_ds;
 
 always@(*)begin
 
-	if((i_sw_0==1'b0)&&(i_sw_2==1'b1))begin
+
+	if({i_sw_2,i_sw_1,i_sw_0}==3'b110)begin
 
 		if(!i_dot)begin //i_dot = 1 일때 켜진다
 			r_ds = {i_ds1,i_ds2,i_ds3,i_ds4};
 		end
 
 		else begin
-			case(i_sel)
-			2'b00 : r_ds = {4'hd,i_ds2,i_ds3,i_ds4};
+			case(i_cursor)
 			2'b01 : r_ds = {i_ds1,4'hd,i_ds3,i_ds4};
-			2'b10 : r_ds = {i_ds1,i_ds2,4'hd,i_ds4};
-			2'b11 : r_ds = {i_ds1,i_ds2,i_ds3,4'hd};
-			endcase
+			2'b11 : r_ds = {i_ds1,i_ds2,4'hd,i_ds4};
+			2'b10 : r_ds = {i_ds1,i_ds2,i_ds3,4'hd};
+            default : r_ds = {i_ds1,i_ds2,i_ds3,i_ds4}; 			
+            endcase
 		end
 	end
 
