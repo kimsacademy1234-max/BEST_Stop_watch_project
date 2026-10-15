@@ -3,7 +3,7 @@
 
 module button_debouncer(
 
-
+input i_clk_remake,
 input i_clk,i_reset,i_btn,
 output o_btn
 
@@ -24,7 +24,7 @@ wire debounce;
 
 // 8bit shift register SIPO
 
-always@(posedge i_clk,posedge i_reset)begin
+always@(posedge i_clk_remake,posedge i_reset)begin
 
 	if(i_reset) q_reg <= 8'h00;
 
