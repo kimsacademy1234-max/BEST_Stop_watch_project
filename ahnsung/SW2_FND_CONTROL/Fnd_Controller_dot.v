@@ -184,19 +184,19 @@ wire [3:0] w_decode_ds10_hour;
 anode_choice U_ANODE_CHOICE_TO_MUX1(
 
 
-	i_sw_0(i_sw_0),
-	i_sw_2(i_sw_2),
-	i_sel(w_state_sel),
-	i_dot(w_dot_onoff), 
-	i_ds1(w_ds1_msec),
-	i_ds2(w_ds10_msec),
-	i_ds3(w_ds1_sec),
-	i_ds4(w_ds10_sec),
+	.i_sw_0(i_sw_0),
+	.i_sw_2(i_sw_2),
+	.i_sel(w_state_sel),
+	.i_dot(w_dot_onoff), 
+	.i_ds1(w_ds1_msec),
+	.i_ds2(w_ds10_msec),
+	.i_ds3(w_ds1_sec),
+	.i_ds4(w_ds10_sec),
 
-	o_ds1(w_decode_ds1_msec),
-	o_ds2(w_decode_ds10_msec),
-	o_ds3(w_decode_ds1_sec),
-	o_ds4(w_decode_ds10_sec)
+	.o_ds1(w_decode_ds1_msec),
+	.o_ds2(w_decode_ds10_msec),
+	.o_ds3(w_decode_ds1_sec),
+	.o_ds4(w_decode_ds10_sec)
 
 
 );
