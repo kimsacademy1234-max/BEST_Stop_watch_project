@@ -120,7 +120,7 @@ module stopwatch_watch (
     );
 
     // 100hz tick 은 여기서 한 번만 만들어 세 datapath 에 공급 (항상 흐름)
-    tick_gen_100hz U_TICK_GEN_100HZ (
+    tick_gen_10ms U_TICK_GEN_10MS (
         .clk     (clk),
         .rst     (rst),
         .run_stop(1'b1),

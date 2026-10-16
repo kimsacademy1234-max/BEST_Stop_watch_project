@@ -1,7 +1,7 @@
 `timescale 1ns / 1ps
 
 // 100hz(10ms) tick 생성기 — top 에서 한 번만 인스턴스해서 스톱워치·시계·타이머에 공급
-module tick_gen_100hz (
+module tick_gen_10ms (
     input clk,
     input rst,
     input run_stop,
