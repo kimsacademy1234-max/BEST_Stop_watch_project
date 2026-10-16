@@ -1,4 +1,5 @@
-`timescale 1ns / 1ps
+`timescale 1ns / 1ms
+//test plus
 
 // 사용자 stopwatch.v 에서 top(stopwatch) 만 빼고 그대로 복사 (stopwatch_datapath · tick_gen_100hz · tick_counter)
 module stopwatch_datapath #(
