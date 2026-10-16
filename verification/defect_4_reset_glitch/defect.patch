@@ -1,0 +1,183 @@
+diff -ruN ../../boyun/merged_v4/src/fault_rst_glitch.v src/fault_rst_glitch.v
+--- ../../boyun/merged_v4/src/fault_rst_glitch.v	1970-01-01 09:00:00.000000000 +0900
++++ src/fault_rst_glitch.v	2026-10-16 15:37:12.535325300 +0900
+@@ -0,0 +1,25 @@
++`timescale 1ns / 1ps
++// [FAULT-INJ F4] 리셋 라인 글리치 주입기 — 현업 상황: 모터 · 정전기 · 긴 배선의 EMI 가 비동기 리셋 핀에 수 ns 펄스
++//   sw_fault 의 상승 엣지(2FF 동기화)에서 내부 리셋에 1 클럭(10 ns) 펄스를 OR 한다
++//   sw_fault 를 안 올리면 o_rst = i_rst (원본과 같음). LED 는 건드리지 않음 (사람이 btnC 를 누른 것과 구분 안 되게)
++module fault_rst_glitch (
++    input  clk,
++    input  i_rst,
++    input  sw_fault,
++    output o_rst
++);
++    reg [2:0] sync;
++    reg       pulse;
++
++    always @(posedge clk, posedge i_rst) begin
++        if (i_rst) begin
++            sync  <= 3'b000;
++            pulse <= 1'b0;
++        end else begin
++            sync  <= {sync[1:0], sw_fault};
++            pulse <= sync[1] & ~sync[2];   // 상승 엣지 1 클럭
++        end
++    end
++
++    assign o_rst = i_rst | pulse;
++endmodule
+diff -ruN ../../boyun/merged_v4/src/stopwatch_watch.v src/stopwatch_watch.v
+--- ../../boyun/merged_v4/src/stopwatch_watch.v	2026-10-16 12:03:50.466611300 +0900
++++ src/stopwatch_watch.v	2026-10-16 15:37:12.553182800 +0900
+@@ -23,6 +23,7 @@
+     input        sw_set,
+     input        sw_24h,
+     input        sw_timer,
++    input        sw_fault,        // [FAULT-INJ F4] sw15 (R2): 1 = 결함 상황 on
+     output [3:0] fnd_com,
+     output [7:0] fnd_font,
+     output [15:0] led
+@@ -75,6 +76,15 @@
+     wire w_tick_10ms;  // 100hz tick (스톱워치·시계·타이머 공용)
+ 
+ 
++    // [FAULT-INJ F4] 리셋 글리치 주입기: sw15 상승 엣지 → 내부 리셋에 1 클럭 펄스 OR (하위 모듈 무변경)
++    wire w_rst_inj;                       // [FAULT-INJ F4]
++    fault_rst_glitch U_FAULT_RST_GLITCH ( // [FAULT-INJ F4]
++        .clk     (clk),                   // [FAULT-INJ F4]
++        .i_rst   (rst),                   // [FAULT-INJ F4]
++        .sw_fault(sw_fault),              // [FAULT-INJ F4]
++        .o_rst   (w_rst_inj)              // [FAULT-INJ F4]
++    );                                    // [FAULT-INJ F4]
++
+    clock_tick_generator#(
+ 		.CLK_FRQ(4000)
+ 		
+@@ -82,7 +92,7 @@
+   
+ 
+             .i_clk(clk),
+-            .i_reset(rst),
++            .i_reset(w_rst_inj),   // [FAULT-INJ F4] 원래 rst
+             .o_clk(w_clk_4Khz)
+ 
+            );
+@@ -93,28 +103,28 @@
+     btn_debounce U_BD_R (
+         .clk_remake(w_clk_4Khz),
+         .clk  (clk),
+-        .reset(rst),
++        .reset(w_rst_inj),   // [FAULT-INJ F4] 원래 rst
+         .i_btn(btnR),
+         .o_btn(w_btnR)
+     );
+     btn_debounce U_BD_L (
+         .clk_remake(w_clk_4Khz),
+         .clk  (clk),
+-        .reset(rst),
++        .reset(w_rst_inj),   // [FAULT-INJ F4] 원래 rst
+         .i_btn(btnL),
+         .o_btn(w_btnL)
+     );
+     btn_debounce U_BD_U (
+         .clk_remake(w_clk_4Khz),
+         .clk  (clk),
+-        .reset(rst),
++        .reset(w_rst_inj),   // [FAULT-INJ F4] 원래 rst
+         .i_btn(btnU),
+         .o_btn(w_btnU)
+     );
+     btn_debounce U_BD_D (
+         .clk_remake(w_clk_4Khz),
+         .clk  (clk),
+-        .reset(rst),
++        .reset(w_rst_inj),   // [FAULT-INJ F4] 원래 rst
+         .i_btn(btnD),
+         .o_btn(w_btnD)
+     );
+@@ -122,7 +132,7 @@
+     // 100hz tick 은 여기서 한 번만 만들어 세 datapath 에 공급 (항상 흐름)
+     tick_gen_100hz U_TICK_GEN_100HZ (
+         .clk     (clk),
+-        .rst     (rst),
++        .rst     (w_rst_inj),   // [FAULT-INJ F4] 원래 rst
+         .run_stop(1'b1),
+         .clear   (1'b0),
+         .o_tick  (w_tick_10ms)
+@@ -152,7 +162,7 @@
+     // 스톱워치
+     stopwatch_control_unit U_STOPWATCH_CONTROL_UNIT (
+         .clk         (clk),
+-        .reset       (rst),
++        .reset       (w_rst_inj),   // [FAULT-INJ F4] 원래 rst
+         .btn_run_stop(w_sw_btn_run_stop),
+         .btn_clear   (w_sw_btn_clear),
+         .btn_mode    (w_sw_btn_mode),
+@@ -163,7 +173,7 @@
+ 
+     stopwatch_datapath U_STOPWATCH_DATAPATH (
+         .clk     (clk),
+-        .rst     (rst),
++        .rst     (w_rst_inj),   // [FAULT-INJ F4] 원래 rst
+         .i_tick_10ms(w_tick_10ms),
+         .run_stop(w_run_stop),
+         .clear   (w_clear),
+@@ -179,7 +189,7 @@
+     // 시계
+     watch_control_unit U_WATCH_CONTROL_UNIT (
+         .clk      (clk),
+-        .rst      (rst),
++        .rst      (w_rst_inj),   // [FAULT-INJ F4] 원래 rst
+         .btn_left (w_wt_btn_left),
+         .btn_right(w_wt_btn_right),
+         .btn_up   (w_wt_btn_up),
+@@ -193,7 +203,7 @@
+ 
+     watch_datapath U_WATCH_DATAPATH (
+         .clk   (clk),
+-        .rst   (rst),
++        .rst   (w_rst_inj),   // [FAULT-INJ F4] 원래 rst
+         .i_tick_10ms(w_tick_10ms),
+         .cursor(w_cursor),
+         .i_up  (w_up),
+@@ -215,7 +225,7 @@
+     // 타이머
+     timer_control_unit U_TIMER_CONTROL_UNIT (
+         .clk      (clk),
+-        .rst      (rst),
++        .rst      (w_rst_inj),   // [FAULT-INJ F4] 원래 rst
+         .btn_left (w_tm_btn_left),
+         .btn_right(w_tm_btn_right),
+         .btn_up   (w_tm_btn_up),
+@@ -230,7 +240,7 @@
+ 
+     timer_datapath U_TIMER_DATAPATH (
+         .clk   (clk),
+-        .rst   (rst),
++        .rst   (w_rst_inj),   // [FAULT-INJ F4] 원래 rst
+         .i_tick_10ms(w_tick_10ms),
+         .run   (w_tm_run),
+         .clear (w_tm_clear),
+@@ -257,7 +267,7 @@
+     .i_cursor(w_cursor),
+     .i_clk_remake(w_clk_4Khz),
+     .i_clk(clk),
+-    .i_reset(rst),
++    .i_reset(w_rst_inj),   // [FAULT-INJ F4] 원래 rst
+ 	.i_msec(w_msec),
+ 	.i_sec(w_sec),
+ 	.i_min(w_min),
+diff -ruN ../../boyun/merged_v4/src/stopwatch_watch.xdc src/stopwatch_watch.xdc
+--- ../../boyun/merged_v4/src/stopwatch_watch.xdc	2026-10-16 12:03:50.470618700 +0900
++++ src/stopwatch_watch.xdc	2026-10-16 15:37:12.564797100 +0900
+@@ -11,6 +11,9 @@
+ set_property -dict { PACKAGE_PIN W17   IOSTANDARD LVCMOS33 } [get_ports sw_24h]
+ set_property -dict { PACKAGE_PIN W15   IOSTANDARD LVCMOS33 } [get_ports sw_timer]
+ 
++## [FAULT-INJ F4] sw15 = 결함 주입 on/off
++set_property -dict { PACKAGE_PIN R2    IOSTANDARD LVCMOS33 } [get_ports sw_fault]   ;# [FAULT-INJ F4]
++
+ ## LEDs
+ set_property -dict { PACKAGE_PIN U16   IOSTANDARD LVCMOS33 } [get_ports {led[0]}]
+ set_property -dict { PACKAGE_PIN E19   IOSTANDARD LVCMOS33 } [get_ports {led[1]}]

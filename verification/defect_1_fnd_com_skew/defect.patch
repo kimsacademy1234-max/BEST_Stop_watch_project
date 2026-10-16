@@ -1,0 +1,95 @@
+diff -ruN ../../boyun/merged_v4/src/fault_com_skew.v src/fault_com_skew.v
+--- ../../boyun/merged_v4/src/fault_com_skew.v	1970-01-01 09:00:00.000000000 +0900
++++ src/fault_com_skew.v	2026-10-16 15:37:10.473181400 +0900
+@@ -0,0 +1,34 @@
++`timescale 1ns / 1ps
++// [FAULT-INJ F1] FND 자리선택(com) 위상 지연 주입기 — 현업 상황: 애노드 구동 트랜지스터 turn-off 지연 / 배선 스큐
++//   i_com 이 바뀌면 N 클럭 동안 이전 com 을 유지한 뒤 바꾼다 (data 는 바로 바뀜 → 이전 자리에 다음 숫자가 잠깐 켜짐 = 고스팅)
++//   sw_fault = 0 이면 i_com 을 그대로 통과 (원본과 비트 단위로 같음)
++module fault_com_skew #(
++    parameter N = 12500           // 12,500 clk = 125 us = 슬롯(250 us)의 1/2 → 보드에서 눈에 보이게 과장
++) (
++    input            clk,
++    input            rst,
++    input            sw_fault,
++    input      [3:0] i_com,
++    output     [3:0] o_com
++);
++    reg [3:0]  com_d;
++    reg [15:0] cnt;
++
++    always @(posedge clk, posedge rst) begin
++        if (rst) begin
++            com_d <= 4'b1110;
++            cnt   <= 16'd0;
++        end else if (i_com != com_d) begin
++            if (cnt >= N - 1) begin
++                com_d <= i_com;
++                cnt   <= 16'd0;
++            end else begin
++                cnt <= cnt + 16'd1;
++            end
++        end else begin
++            cnt <= 16'd0;
++        end
++    end
++
++    assign o_com = (sw_fault && N > 0) ? com_d : i_com;
++endmodule
+diff -ruN ../../boyun/merged_v4/src/stopwatch_watch.v src/stopwatch_watch.v
+--- ../../boyun/merged_v4/src/stopwatch_watch.v	2026-10-16 12:03:50.466611300 +0900
++++ src/stopwatch_watch.v	2026-10-16 15:37:23.125280800 +0900
+@@ -23,6 +23,7 @@
+     input        sw_set,
+     input        sw_24h,
+     input        sw_timer,
++    input        sw_fault,        // [FAULT-INJ F1] sw15 (R2): 1 = 결함 상황 on
+     output [3:0] fnd_com,
+     output [7:0] fnd_font,
+     output [15:0] led
+@@ -73,6 +74,7 @@
+     wire w_disp_mode;
+     wire w_clk_4Khz;
+     wire w_tick_10ms;  // 100hz tick (스톱워치·시계·타이머 공용)
++    wire [3:0] w_fnd_com_raw;  // [FAULT-INJ F1] FND_CON 이 낸 com (주입기 앞)
+ 
+ 
+    clock_tick_generator#(
+@@ -268,7 +270,7 @@
+ 	.i_sw_0(sw_mode | sw_timer),       // (10/16) 타이머 화면에서는 시계 점멸 안 함
+ 	.i_sw_2(sw_set),
+ 
+-    .o_fnd_com(fnd_com),
++    .o_fnd_com(w_fnd_com_raw),   // [FAULT-INJ F1] 원래 fnd_com
+     .o_fnd_data(fnd_font)
+ 
+ );
+@@ -276,6 +278,15 @@
+ 
+ 
+ 
++    // [FAULT-INJ F1] com 위상 지연 주입기: FND_CON 의 com → 주입기 → 핀
++    fault_com_skew #(.N(12500)) U_FAULT_COM_SKEW (  // [FAULT-INJ F1]
++        .clk     (clk),                             // [FAULT-INJ F1]
++        .rst     (rst),                             // [FAULT-INJ F1]
++        .sw_fault(sw_fault),                        // [FAULT-INJ F1]
++        .i_com   (w_fnd_com_raw),                   // [FAULT-INJ F1]
++        .o_com   (fnd_com)                          // [FAULT-INJ F1]
++    );                                              // [FAULT-INJ F1]
++
+     assign w_blink = (w_wt_msec >= 50);
+     assign led[0]  = (w_tm_alarm) ? w_blink : w_sel_wt;                    // 시계
+     assign led[1]  = (w_tm_alarm) ? w_blink : w_sel_sw;                    // 스톱워치
+diff -ruN ../../boyun/merged_v4/src/stopwatch_watch.xdc src/stopwatch_watch.xdc
+--- ../../boyun/merged_v4/src/stopwatch_watch.xdc	2026-10-16 12:03:50.470618700 +0900
++++ src/stopwatch_watch.xdc	2026-10-16 15:37:10.500910300 +0900
+@@ -11,6 +11,9 @@
+ set_property -dict { PACKAGE_PIN W17   IOSTANDARD LVCMOS33 } [get_ports sw_24h]
+ set_property -dict { PACKAGE_PIN W15   IOSTANDARD LVCMOS33 } [get_ports sw_timer]
+ 
++## [FAULT-INJ F1] sw15 = 결함 주입 on/off
++set_property -dict { PACKAGE_PIN R2    IOSTANDARD LVCMOS33 } [get_ports sw_fault]   ;# [FAULT-INJ F1]
++
+ ## LEDs
+ set_property -dict { PACKAGE_PIN U16   IOSTANDARD LVCMOS33 } [get_ports {led[0]}]
+ set_property -dict { PACKAGE_PIN E19   IOSTANDARD LVCMOS33 } [get_ports {led[1]}]

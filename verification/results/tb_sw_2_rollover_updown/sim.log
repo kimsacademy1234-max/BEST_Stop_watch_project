@@ -1,0 +1,25 @@
+[   0.000001 ms] [PHASE] [SW2.P1.-] BEGIN up: 00:00:59.95 -> 00:01:00.00 (SB1) | disp="__.__"
+[  20.001050 ms] [INFO ] [SW2.P1.PRELOAD] dut.U_STOPWATCH_DATAPATH.U_{HOUR,MIN,SEC,MSEC}_COUNTER.counter_reg = 00:00:59.95 | disp="00.01"
+[  70.001050 ms] [PASS ] [SW2.P1.-] P1 checks=2 all passed (defect=0) | disp="59.99"
+[  70.001050 ms] [PHASE] [SW2.P1.-] END   70.001 ms elapsed, checks=2 fail=0 defect=0 | disp="59.99"
+[  70.001050 ms] [PHASE] [SW2.P2.-] BEGIN up: 00:59:59.95 -> 01:00:00.00 (SB1) | disp="59.99"
+[  90.002100 ms] [INFO ] [SW2.P2.PRELOAD] dut.U_STOPWATCH_DATAPATH.U_{HOUR,MIN,SEC,MSEC}_COUNTER.counter_reg = 00:59:59.95 | disp="00.01"
+[ 140.002100 ms] [PASS ] [SW2.P2.-] P2 checks=2 all passed (defect=0) | disp="59.99"
+[ 140.002100 ms] [PHASE] [SW2.P2.-] END   70.001 ms elapsed, checks=2 fail=0 defect=0 | disp="59.99"
+[ 140.002100 ms] [PHASE] [SW2.P3.-] BEGIN up: 23:59:59.95 -> 00:00:00.00 (hour TIMES=24 wrap) (SB1) | disp="59.99"
+[ 160.003150 ms] [INFO ] [SW2.P3.PRELOAD] dut.U_STOPWATCH_DATAPATH.U_{HOUR,MIN,SEC,MSEC}_COUNTER.counter_reg = 23:59:59.95 | disp="00.00"
+[ 215.003150 ms] [PASS ] [SW2.P3.-] P3 checks=3 all passed (defect=0) | disp="00.00"
+[ 215.003150 ms] [PHASE] [SW2.P3.-] END   75.001 ms elapsed, checks=3 fail=0 defect=0 | disp="00.00"
+[ 215.003150 ms] [PHASE] [SW2.P4.-] BEGIN down: STOP U -> down, RUN, 00:00:00.05 -> 00:00:00.00 -> 23:59:59.99 (SB2) | disp="00.00"
+[ 245.004200 ms] [INFO ] [SW2.P4.PRELOAD] dut.U_STOPWATCH_DATAPATH.U_{HOUR,MIN,SEC,MSEC}_COUNTER.counter_reg = 00:00:00.05 | disp="59.99"
+[ 315.004200 ms] [PASS ] [SW2.P4.-] P4 checks=4 all passed (defect=0) | disp="59.99"
+[ 315.004200 ms] [PHASE] [SW2.P4.-] END   100.001 ms elapsed, checks=4 fail=0 defect=0 | disp="59.99"
+[ 315.004200 ms] [PHASE] [SW2.P5.-] BEGIN down RUN: U ignored; STOP -> U -> up again (SB6) | disp="59.99"
+[ 345.005250 ms] [INFO ] [SW2.P5.PRELOAD] dut.U_STOPWATCH_DATAPATH.U_{HOUR,MIN,SEC,MSEC}_COUNTER.counter_reg = 00:00:10.00 | disp="59.99"
+[ 485.005290 ms] [PASS ] [SW2.P5.-] P5 checks=4 all passed (defect=0) | disp="09.99"
+[ 485.005290 ms] [PHASE] [SW2.P5.-] END   170.001 ms elapsed, checks=4 fail=0 defect=0 | disp="09.99"
+[ 485.005290 ms] [SUMMARY] SW2 src=orig checks=15 fail=0 defect=0 limit=0 first_bad=- => PASS
+- tb/common/tb_common.svh:201: Verilog $finish
+- S i m u l a t i o n   R e p o r t: Verilator 5.032 2025-01-01
+- Verilator: $finish at 485ms; walltime 185.156 s; speed 3.365 ms/s
+- Verilator: cpu 144.140 s on 1 threads; alloced 121 MB

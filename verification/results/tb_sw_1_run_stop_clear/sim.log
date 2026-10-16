@@ -1,0 +1,28 @@
+[   0.000001 ms] [PHASE] [SW1.P1.-] BEGIN reset -> 0, STOP, LED | disp="__.__"
+[   5.003020 ms] [PASS ] [SW1.P1.-] P1 checks=3 all passed (defect=0) | disp="00.00"
+[   5.003020 ms] [PHASE] [SW1.P1.-] END   5.003 ms elapsed, checks=3 fail=0 defect=0 | disp="00.00"
+[   5.003020 ms] [PHASE] [SW1.P2.-] BEGIN RUN window exactly 1.000 s (w_run_stop) -> count 99..100 (SC3, SB3) | disp="00.00"
+[1015.129030 ms] [INFO ] [SW1.P2.SC3] RUN window (w_run_stop high) = 1000.000000 ms, count = 100 (00:00:01.00) | disp="01.00"
+[1015.129030 ms] [PASS ] [SW1.P2.-] P2 checks=4 all passed (defect=0) | disp="01.00"
+[1015.129030 ms] [PHASE] [SW1.P2.-] END   1010.126 ms elapsed, checks=4 fail=0 defect=0 | disp="01.00"
+[1015.129030 ms] [PHASE] [SW1.P3.-] BEGIN STOP holds value for 200 ms | disp="01.00"
+[1355.132070 ms] [PASS ] [SW1.P3.-] P3 checks=1 all passed (defect=0) | disp="00.13"
+[1355.132070 ms] [PHASE] [SW1.P3.-] END   340.003 ms elapsed, checks=1 fail=0 defect=0 | disp="00.13"
+[1355.132070 ms] [PHASE] [SW1.P4.-] BEGIN STOP: L -> 0 and lap released (SC4) | disp="00.13"
+[1550.135130 ms] [PASS ] [SW1.P4.-] P4 checks=4 all passed (defect=0) | disp="00.00"
+[1550.135130 ms] [PHASE] [SW1.P4.-] END   195.003 ms elapsed, checks=4 fail=0 defect=0 | disp="00.00"
+[1550.135130 ms] [PHASE] [SW1.P5.-] BEGIN RUN: L ignored (value kept, keeps counting), U ignored (direction kept) (SB5, SB6) | disp="00.00"
+[1930.138180 ms] [PASS ] [SW1.P5.-] P5 checks=3 all passed (defect=0) | disp="00.37"
+[1930.138180 ms] [PHASE] [SW1.P5.-] END   380.003 ms elapsed, checks=3 fail=0 defect=0 | disp="00.37"
+[1930.138180 ms] [PHASE] [SW1.P6.-] BEGIN STOP: R and L pressed at the same instant -> RUN and cleared to 0 (SB7, LIMIT) | disp="00.37"
+[2210.141230 ms] [LIMIT] [SW1.P6.SB7] R+L same clock in STOP: RUN starts AND measured 26 counts are cleared (board FSM spec: R wins, no clear) | disp="00.00"
+[2210.141230 ms] [PASS ] [SW1.P6.-] P6 checks=3 all passed (defect=0) | disp="00.00"
+[2210.141230 ms] [PHASE] [SW1.P6.-] END   280.003 ms elapsed, checks=3 fail=0 defect=0 | disp="00.00"
+[2210.141230 ms] [PHASE] [SW1.P7.-] BEGIN background: stopwatch keeps running on watch screen, watch buttons not routed (SC5) | disp="00.00"
+[2290.146320 ms] [PASS ] [SW1.P7.-] P7 checks=5 all passed (defect=0) | disp="00.07"
+[2290.146320 ms] [PHASE] [SW1.P7.-] END   80.005 ms elapsed, checks=5 fail=0 defect=0 | disp="00.07"
+[2290.146320 ms] [SUMMARY] SW1 src=orig checks=23 fail=0 defect=0 limit=1 first_bad=- => PASS
+- tb/common/tb_common.svh:201: Verilog $finish
+- S i m u l a t i o n   R e p o r t: Verilator 5.032 2025-01-01
+- Verilator: $finish at 2s; walltime 471.100 s; speed 5.407 ms/s
+- Verilator: cpu 423.557 s on 1 threads; alloced 121 MB

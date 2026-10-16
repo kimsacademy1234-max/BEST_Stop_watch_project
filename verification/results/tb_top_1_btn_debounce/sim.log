@@ -1,0 +1,32 @@
+[   0.000001 ms] [PHASE] [TOP1.P0.-] BEGIN reset: no X on outputs 1 us after reset, LED=8009 | disp="__.__"
+[   0.002010 ms] [PASS ] [TOP1.P0.-] P0 checks=3 all passed (defect=0) | disp="__.__"
+[   0.002010 ms] [PHASE] [TOP1.P0.-] END   0.002 ms elapsed, checks=3 fail=0 defect=0 | disp="__.__"
+[   0.002010 ms] [PHASE] [TOP1.P1.-] BEGIN press length sweep 1.0/1.5/1.7 ms (ignore) 2.0/2.5/5/100 ms (1 pulse) | disp="__.__"
+[   6.005040 ms] [INFO ] [TOP1.P1.P1.1.0ms] press 1.0 ms -> pulses=0 min 0->0 | disp="12.00"
+[  12.505050 ms] [INFO ] [TOP1.P1.P1.1.5ms] press 1.5 ms -> pulses=0 min 0->0 | disp="12.00"
+[  19.205060 ms] [INFO ] [TOP1.P1.P1.1.7ms] press 1.7 ms -> pulses=0 min 0->0 | disp="12.00"
+[  26.205070 ms] [INFO ] [TOP1.P1.P1.2.0ms] press 2.0 ms -> pulses=1 min 0->1 | disp="12.01"
+[  33.705080 ms] [INFO ] [TOP1.P1.P1.2.5ms] press 2.5 ms -> pulses=1 min 1->2 | disp="12.02"
+[  43.705090 ms] [INFO ] [TOP1.P1.P1.5ms] press 5 ms -> pulses=1 min 2->3 | disp="12.03"
+[ 148.705100 ms] [INFO ] [TOP1.P1.P1.100ms] press 100 ms -> pulses=1 min 3->4 | disp="12.04"
+[ 148.705100 ms] [PASS ] [TOP1.P1.-] P1 checks=14 all passed (defect=0) | disp="12.04"
+[ 148.705100 ms] [PHASE] [TOP1.P1.-] END   148.703 ms elapsed, checks=14 fail=0 defect=0 | disp="12.04"
+[ 148.705100 ms] [PHASE] [TOP1.P2.-] BEGIN bounce pattern -> exactly 1 pulse | disp="12.04"
+[ 174.958130 ms] [PASS ] [TOP1.P2.-] P2 checks=2 all passed (defect=0) | disp="12.01"
+[ 174.958130 ms] [PHASE] [TOP1.P2.-] END   26.253 ms elapsed, checks=2 fail=0 defect=0 | disp="12.01"
+[ 174.958130 ms] [PHASE] [TOP1.P3.-] BEGIN long press 2 s -> 1 pulse (no auto-repeat) | disp="12.01"
+[2179.961160 ms] [INFO ] [TOP1.P3.LONG] press 2 s -> pulses=1 min 0->1 | disp="12.01"
+[2179.961160 ms] [PASS ] [TOP1.P3.-] P3 checks=2 all passed (defect=0) | disp="12.01"
+[2179.961160 ms] [PHASE] [TOP1.P3.-] END   2005.003 ms elapsed, checks=2 fail=0 defect=0 | disp="12.01"
+[2179.961160 ms] [PHASE] [TOP1.P4.-] BEGIN 0-glitch 300 us while held -> 2 pulses (design limit) | disp="12.01"
+[2205.264190 ms] [LIMIT] [TOP1.P4.GLITCH] debouncer filters only press-start bounce: a 300 us dropout while held = 2nd press (release needs 1 sample) | disp="12.02"
+[2205.264190 ms] [PASS ] [TOP1.P4.-] P4 checks=2 all passed (defect=0) | disp="12.02"
+[2205.264190 ms] [PHASE] [TOP1.P4.-] END   25.303 ms elapsed, checks=2 fail=0 defect=0 | disp="12.02"
+[2205.264190 ms] [PHASE] [TOP1.P5.-] BEGIN pulse width of all w_btnX = 1 clk | disp="12.02"
+[2205.264190 ms] [PASS ] [TOP1.P5.-] P5 checks=1 all passed (defect=0) | disp="12.02"
+[2205.264190 ms] [PHASE] [TOP1.P5.-] END   0.000 ms elapsed, checks=1 fail=0 defect=0 | disp="12.02"
+[2205.264190 ms] [SUMMARY] TOP1 src=orig checks=24 fail=0 defect=0 limit=1 first_bad=- => PASS
+- tb/common/tb_common.svh:195: Verilog $finish
+- S i m u l a t i o n   R e p o r t: Verilator 5.032 2025-01-01
+- Verilator: $finish at 2s; walltime 243.402 s; speed 9.061 ms/s
+- Verilator: cpu 243.379 s on 1 threads; alloced 121 MB

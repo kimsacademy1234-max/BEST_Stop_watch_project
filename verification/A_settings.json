@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "deny": [
+      "Edit(./tb/**)",
+      "Edit(./defect_*/**)",
+      "Edit(./results/**)",
+      "Edit(./mailbox/B_to_A.md)",
+      "Edit(./verification_original.md)",
+      "Edit(../boyun/**)",
+      "Edit(../ahnsung/**)",
+      "Edit(../Stop_watch_lib/**)"
+    ]
+  }
+}
