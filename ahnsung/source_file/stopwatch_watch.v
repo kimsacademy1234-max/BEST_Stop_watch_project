@@ -73,7 +73,11 @@ module stopwatch_watch (
     wire w_clk_2Khz;
 
 
-   clock_tick_generator U_CLK_GEN_2KHz(
+   clock_tick_generator#(
+		.CLK_FRQ(2000)
+		
+   ) U_CLK_GEN_2KHz(
+  
 
             .i_clk(clk),
             .i_reset(rst),
