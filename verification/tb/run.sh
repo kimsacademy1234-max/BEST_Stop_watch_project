@@ -4,7 +4,7 @@
 #   ./tb/run.sh <tb_name|tb경로> [--sim verilator|icarus] [--src <dir>] [--phase N] [--wave] [--out <dir>] [--plus "+a=1 +b=2"] [--build-only]
 #   --build-only : 컴파일(빌드)만 하고 실행하지 않음 (verification.md R6)
 #   항상 verification/ 에서 실행. 기본: verilator, ../boyun/merged_v4/src, 모든 Phase, 파형 없음
-#   --src 의 stopwatch_watch.v 에 sw_fault 포트가 있으면 HAS_SW_FAULT 자동 정의
+#   --src 의 stopwatch_watch.v 에 sw_fault 포트가 없으면 NO_SW_FAULT 자동 정의 (결함 TB 를 원본 src 로 돌릴 때)
 # =============================================================================
 set -euo pipefail
 cd "$(dirname "$0")/.."
@@ -45,8 +45,9 @@ SRC_ABS=$(cd "$SRC" && pwd)
 ORIG_ABS=$(cd ../boyun/merged_v4/src && pwd)
 if [ "$SRC_ABS" = "$ORIG_ABS" ]; then TAG=orig; else TAG=$(basename "$(dirname "$SRC_ABS")"); fi
 
+# 결함 TB(F1/F2/F4)는 파일 안에서 HAS_SW_FAULT 를 켠다 → 원본 src(sw_fault 포트 없음)로 돌릴 때만 끔
 DEFS=""
-if grep -q "sw_fault" "$SRC/stopwatch_watch.v"; then DEFS="+define+HAS_SW_FAULT"; fi
+if ! grep -q "sw_fault" "$SRC/stopwatch_watch.v"; then DEFS="+define+NO_SW_FAULT"; fi
 
 [ -n "$OUT" ] || OUT="results/$TOP"
 [ "$TAG" = "orig" ] || [ "$OUT" != "results/$TOP" ] || OUT="results/${TOP}__${TAG}"
@@ -66,7 +67,7 @@ T0=$(date +%s)
 if [ "$SIM" = "verilator" ]; then
     [ "$WAVE" = 1 ] && echo "note: --wave 는 Icarus 전용 (verification.md §9). Verilator 는 로그만"
     verilator --binary --timing -j 0 -Wno-fatal -Wno-lint -Wno-style -Wno-MULTIDRIVEN \
-        --top-module "$TOP" -Itb/common $DEFS \
+        --top-module "$TOP" $DEFS \
         "$TBFILE" tb/common/fnd_monitor.sv $EXTRA_SRCS $SRCS \
         --Mdir "$OUT/obj" -o sim > "$OUT/build.log" 2>&1 || { tail -n 30 "$OUT/build.log"; echo "== BUILD FAIL"; exit 1; }
     if [ "$BUILD_ONLY" = 1 ]; then echo "== BUILD OK: $OUT/obj/sim (run: $OUT/obj/sim $ARGS)"; exit 0; fi
@@ -74,7 +75,7 @@ if [ "$SIM" = "verilator" ]; then
 else
     IDEFS=${DEFS//+define+/-D}
     [ "$WAVE" = 1 ] && ARGS="$ARGS +wave=$OUT/wave.vcd"
-    iverilog -g2012 -Itb/common $IDEFS -s "$TOP" -o "$OUT/sim.vvp" \
+    iverilog -g2012 $IDEFS -s "$TOP" -o "$OUT/sim.vvp" \
         "$TBFILE" tb/common/fnd_monitor.sv $EXTRA_SRCS $SRCS > "$OUT/build.log" 2>&1 || { tail -n 30 "$OUT/build.log"; echo "== BUILD FAIL"; exit 1; }
     if [ "$BUILD_ONLY" = 1 ]; then echo "== BUILD OK: $OUT/sim.vvp (run: vvp -n $OUT/sim.vvp $ARGS)"; exit 0; fi
     vvp -n "$OUT/sim.vvp" $ARGS 2>&1 | tee "$LOG"

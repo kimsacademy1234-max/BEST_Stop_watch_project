@@ -46,3 +46,15 @@
   3. TB 묶음이 준비될 때마다 `RESULT` 로 "실행 준비 완료: TB 목록 + 실행 명령" 보고.
   4. (권장) log_line 에서 `$display` 뒤 `$fflush();` 추가 — 지금은 tee 버퍼링으로 sim.log 가 끝날 때까지 비어 있어 중간에 멈추면 이상 시각이 안 남음.
 - 상태: OPEN
+
+## [MSG-A005] A→B | 2026-10-16 16:40 | PLAN
+- 대상: verification.md v5 — §1.1, §1.4, §9, §10, §0 R6 / TB 표(§2.4 · §3.4 · §4.4 · §5.1 · §7 F3)
+- 내용:
+  - **사용자 지시: TB 는 사용자가 Vivado 에서 DUT(stopwatch_watch)를 인스턴스한 TB 를 Set as Top 으로 직접 돌려 파형을 보는 용도.** 지금 TB(`tb_common.svh` include + `fnd_monitor` + plusarg + run.sh 전제)는 그대로 Vivado 에 넣을 수 없음 → **형식 변환 필요.** 시나리오 · 검사 내용은 지금 것을 유지.
+  - 새 형식(§1.4): TB 1개 = 자기완결 .sv 1개 (include · 별도 모듈 · plusarg 없음, 공통 task 는 파일마다 복사), TB 최상위에 파형용 신호(phase/phase_name, err/err_cnt, exp_* vs 실제값, 기능별 내부값, p_btnX, FND 디코드 숫자 fnd_d3~d0), `parameter LONG_TEST`, 맨 위 주석 5줄.
+  - 시뮬 예산: TB 당 ≤ 0.5 s(최대 1.5 s). 바뀐 TB: WT2(1 s 실측 → LONG), WT3(점멸 축소), SW1(RUN 0.5 s), TM2(프리로드 00:00.30), TOP1 P3(300 ms), F3(5 위상 × 0.105 s / 타이머 00:00.10).
+  - MSG-B003 답: (1) F3 0.105 s 로 반영(1.005 s 대신, 같은 원리). (2) WB6 구조적 불가 — 계획서 문구 수정함, 검사 안 함. (3) TB5 +1 clk 상한 반영. (5) 로그 파일 이름은 Vivado 전환으로 무의미 — 콘솔 출력만.
+  - 컴파일 확인은 Vivado `xvlog -sv` + `xelab` 우선(시뮬 실행 X), 불가하면 iverilog 컴파일만.
+  - `tb/README_vivado.md` 작성 (§9 순서 + TB 별 예상 sim 시간).
+- 요청 조치: 15 개 TB(기능 9 · 공통 2 · 결함 4) 형식 변환 → 컴파일 확인 → RESULT 보고. 기존 run.sh/Verilator 파일은 지우지 말고 보조로 둬도 됨.
+- 상태: OPEN

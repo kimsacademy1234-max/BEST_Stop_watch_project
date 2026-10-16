@@ -1,7 +1,7 @@
 # 검증 계획서 — merged_v4 (watch · stopwatch · timer)
 
 - 작성: A (검증 기획자) · TB/결함 폴더 작성: B (검증 수립자) · **시뮬레이션 실행: 사용자** · 원본 요청: `verification_original.md`
-- 판: **v4 (2026-10-16)** · 기준 커밋 `f39f97e` (스톱워치 RUN 중 L·U 무시) · 변경 이력은 맨 아래 §11
+- 판: **v5 (2026-10-16)** · 기준 커밋 `f39f97e` (스톱워치 RUN 중 L·U 무시) · 변경 이력은 맨 아래 §11
 - 설계 소스: `../boyun/merged_v4/src/` (**읽기 전용**, 22개 파일, top = `stopwatch_watch`)
 - 발표 담당: **ahnsung = watch**, **jonghyuk = stopwatch**, **boyun = timer**, 공통(버튼·FND)은 §5 TB를 셋이 같이 인용
 
@@ -16,23 +16,21 @@
 | R3 | 기능별 TB **3 set 이상**, 이름/Phase 로 목적 구분 | §2~§4 (기능당 3개) + §5 공통 2개 |
 | R4 | 결함은 `defect_N_<name>/` 폴더별로 소스 + TB 분리. **결함 = 현업 환경 상황(코드 실수 아님)** | §7 |
 | R5 | 오래 걸리는 구간은 **주파수 대신 상태 프리로드(backdoor)** 로 건너뛴다 | §1.3 |
-| R6 | **시뮬레이션은 사용자가 직접 실행한다.** B 는 TB · 결함 폴더 · `run.sh`/`run_all.sh` 를 만들고 **컴파일(빌드)까지만** 확인한다 (sim 바이너리/vvp 실행 금지) | §10 |
+| R6 | **시뮬레이션은 사용자가 직접 실행한다.** 사용자가 **Vivado 에서 TB 를 Set as Top 으로 직접 돌린다.** B 는 TB · 결함 폴더를 만들고 **컴파일(elaboration)까지만** 확인한다 (시뮬 실행 금지) | §10 |
 
 ---
 
 ## 1. 공통 환경
 
-### 1.1 시뮬레이터 (A가 실측함, 100 MHz 실시간 기준)
+### 1.1 시뮬레이터 — **Vivado xsim (사용자가 직접 실행)** (v5)
 
-| 도구 | 버전 | 속도 (sim 1 ms 당 wall) | 쓰는 곳 |
-|---|---|---|---|
-| Verilator `--binary --timing` | 5.032 | **≈ 24 ms** (sim 1 s ≈ 24 s) | **기본 회귀**. 로그만, 파형 없음 (Verilator 는 `$dumpoff` 를 무시해서 파형이 폭증함) |
-| Icarus `-g2012` | 12.0 | ≈ 450 ms (sim 1 s ≈ 7.5 분) | **파형 추출용**. FAIL/DEFECT 가 찍힌 Phase 하나만 `+phase=N +wave=...` 로 재실행 |
-
-- 두 도구 모두 확인됨: 계층 참조 쓰기(프리로드), `$timeformat`, `$value$plusargs`, `wait`, `@(posedge ...)`.
-- TB 는 두 도구에서 같이 돌아야 한다 → **SV 기본 문법만**(class·interface·assertion property 금지, `string`·`logic`·`task`·`function` 은 OK).
-- **2.1 s 넘는 지연은 `integer` 오버플로**(2^31 ns) → 지연값은 `time` 또는 `longint` 변수/`64'd` 상수로 쓴다.
-- Verilator 는 2-state 라 X 를 못 본다 → 리셋 직후 X 검사는 Icarus 로 한 번(§5 TOP-1 Phase 0).
+- 사용자가 Vivado 프로젝트에 `merged_v4/src` 를 design source 로, TB 파일 하나를 simulation source 로 넣고 **Run Behavioral Simulation** 으로 돌려서 **파형을 본다.** TB 의 1차 목적은 **발표용 파형**, 2차가 콘솔 자동 판정.
+- 로컬 Vivado = 2020.2 (`/mnt/c/Xilinx/Vivado/2020.2`). TB 는 xsim 2020.2 에서 되는 문법만 쓴다 (SV 기본: `logic`, `string`, `$sformatf`, `task automatic`, 계층 참조 읽기/쓰기. class · interface · assertion property · `$value$plusargs` 의존 금지).
+- **Vivado 기본 실행 시간은 1000 ns** → 사용자는 Tcl 콘솔에서 `run all` (또는 Simulation Settings 의 `xsim.simulate.runtime` = `all`). TB 는 반드시 `$finish` 로 끝나고 watchdog 을 둔다.
+- 시뮬 시간 예산 (100 MHz 실시간, 파형 기록 포함): **TB 하나 ≤ 0.5 s 목표, 최대 1.5 s**. 1 s 이상 걸리는 Phase 는 TB 맨 위 `parameter LONG_TEST = 1` 로 켜고 끌 수 있게 (0 이면 SKIP 로그만).
+  - 참고 실측(A): Icarus 0.45 s wall / sim ms, Verilator 0.024 s wall / sim ms. xsim 은 사용자 첫 실행 시간으로 확인 → A 가 예산 재조정.
+- **2.1 s 넘는 지연은 `integer` 오버플로**(2^31 ns) → 지연값은 `time` 또는 64비트 상수.
+- 기존 Verilator/Icarus 스크립트(`run.sh` 등)는 **보조 도구**로 남겨도 되지만, 사용자에게 넘기는 산출물은 아래 §1.4 형식의 TB 파일이다.
 
 ### 1.2 버튼 · 스위치 자극 기준 (실측 근거)
 
@@ -62,12 +60,37 @@ A가 실측한 경계 (Icarus, 실제 클럭):
 - 프리로드할 때마다 `[INFO][PRELOAD] <경로> = <값>` 로그 필수 (발표 때 "백도어로 시간 점프" 라고 설명 가능하게).
 - **정확도 검사(1 s = 1e8 clk, 타이머 10 s)는 프리로드 없이** 실제로 흘려서 잰다.
 
-### 1.4 TB 공통 부품 (`tb/common/`)
+### 1.4 TB 파일 형식 (v5 — Vivado 에서 모듈 인스턴스해서 바로 돌리는 형태)
 
-| 파일 | 내용 |
-|---|---|
-| `tb_common.svh` (각 TB 모듈 안에서 `` `include ``) | clk 생성, `do_reset()`(rst 1 → 1 µs 뒤 0), `press(btn, press_ms=5, gap_ms=5)`, `press_bounce(btn)`(§5 표), `set_sw(...)`, `preload_*()`, `CHECK` 매크로, `phase_begin/phase_end`, `summary()`, `+phase=` / `+wave=` plusarg 처리, 펄스 카운터(w_btnR/L/U/D 각각 1클럭 넘으면 FAIL) |
-| `fnd_monitor.sv` | FND 출력 해석기 + 참조 모델 비교기 (§5 TOP-2). 모든 기능 TB 에 인스턴스해서 화면 문자열 `disp_str`("12.34") 을 로그에 같이 찍는다 |
+1. **TB 하나 = `.sv` 파일 하나, 자기완결.** `` `include `` · 별도 모니터 모듈 · plusarg 없이, 이 파일 + `merged_v4/src` 만 넣으면 돈다. 공통 task(press · preload · check 등)는 각 파일 안에 복사해서 넣는다(중복 허용 — 발표자가 파일 하나만 읽고 설명할 수 있게). 300 줄 안팎 목표.
+2. 구조 (위에서 아래로 이 순서):
+   ```
+   `timescale 1ns / 1ps
+   module tb_wt_1_set_ui;            // 파일 이름 = 모듈 이름
+     parameter LONG_TEST = 0;
+     // (1) DUT 입출력 reg/wire
+     // (2) DUT 인스턴스: stopwatch_watch dut (.clk(clk), .rst(rst), ...);   ← 포트 이름 연결
+     // (3) 파형 보기용 신호 (아래 3번)
+     // (4) clk: always #5 clk = ~clk;   (100 MHz, 바꾸지 않음)
+     // (5) task: do_reset, press, set_sw, preload_*, check, phase_begin/end
+     // (6) initial: Phase 1 → Phase N → SUMMARY → $finish
+     // (7) watchdog initial
+   endmodule
+   ```
+3. **파형 보기용 신호를 TB 최상위에 꺼내 둔다** — Vivado 파형 창은 기본으로 TB 최상위 신호만 보여 주므로, 내부 신호를 일일이 추가하지 않아도 되게:
+   | 신호 | 내용 |
+   |---|---|
+   | `phase` (integer), `phase_name` (`reg [8*24-1:0]`, 파형에서 ASCII 로 보기) | 지금 어느 Phase 인지 |
+   | `err` (1클럭 펄스), `err_cnt` | FAIL 나는 순간 1 → 파형에서 바로 찾기 |
+   | `exp_*` / 실제값 쌍 | 예: `exp_min` 옆에 `wt_min = dut.w_wt_min` — 기대값과 실제값을 나란히 |
+   | 기능별 핵심 내부값 | watch: `wt_hour/min/sec/msec`, `wt_state = dut.U_WATCH_CONTROL_UNIT.c_state`, `cursor` · stopwatch: `sw_*`, `sw_state`, `sw_mode`, `lap_active` · timer: `tm_min/sec/msec`, `tm_state`, `tm_zero` |
+   | 버튼 펄스 | `p_btnR/L/U/D = dut.w_btnR/L/U/D` (디바운스 후 1클럭 펄스) |
+   | FND 해석값 | `fnd_d3, fnd_d2, fnd_d1, fnd_d0` (4비트 숫자, 빈칸 = 4'hF), `fnd_dp` — 세그먼트 코드 대신 **숫자로 보이게** TB 안에서 디코드해 스캔마다 갱신 |
+   | `led` | 그대로 |
+4. 상태 머신 신호는 enum 이라 xsim 파형에서 이름(STOP · RUN · SET_MIN_1 …)으로 보인다 → `*_state` 로 꺼낼 때 타입을 지우지 않게 `dut....c_state` 를 그대로 참조하거나 같은 폭 `logic` 으로.
+5. 콘솔: §8 형식 그대로 (`$time` + 내용). Phase 시작 줄에 **"파형에서 이 시각으로 이동"** 할 수 있게 시작 시각을 찍는다.
+6. 각 Phase 사이에 1 ms 쉬는 구간을 둬서 파형에서 Phase 경계가 눈에 보이게.
+7. 파일 맨 위 주석 5줄: 목적 / Vivado 에 넣을 파일 / 예상 sim 시간 / Phase 목록 / 파형에서 볼 신호.
 
 - 참조 7-seg (active-low, `{dp,g,f,e,d,c,b,a}`): 0=C0 1=F9 2=A4 3=B0 4=99 5=92 6=82 7=F8 8=80 9=90, 빈칸=FF, DP만=7F.
 - `fnd_com` = active-low, AN0(1110) = 맨 오른쪽.
@@ -97,7 +120,7 @@ A가 실측한 경계 (Icarus, 실제 클럭):
 | WB3 | 설정 wrap: 분 59 +1 → 00 · 00 -1 → 59 / 분십 55 +10 → 05 · 05 -10 → 55 / 시 23 +1 → 0 · 0 -1 → 23, **이때 윗자리 안 바뀜** | 설정은 "그 칸만 돈다"가 사양. 흐름용 carry 와 설정용 wrap 이 같은 카운터에 있어서 섞이기 쉽다 |
 | WB4 | 12/24 변환: 0시 → "12"(오전), 11 → 11(오전), **12 → "12"(오후)**, 13 → "1"(오후), 23 → "11"(오후) | 12시간제는 0과 12가 둘 다 "12"로 보이는 비선형 매핑. `>` / `>=` 하나로 틀어진다 |
 | WB5 | 설정 중 흐름 carry: 설정 모드에서 23:59 로 맞춘 뒤 초가 59→00 넘어가면 00:00 이 됨 | 설정 중에도 시계가 흐르는 설계 → "맞췄는데 바뀌었다"는 사용자 혼란 지점. 현행 동작을 기록 (INFO) |
-| WB6 | tick 과 U 펄스가 같은 클럭 → tick 우선, 버튼 1회 손실 | 설계 주석의 의도된 우선순위. 손실 1회가 허용 범위임을 근거로 남김 |
+| WB6 | tick 과 U 펄스가 같은 클럭 → tick 우선 (설계 주석) | **구조적으로 발생 불가** (B 분석, MSG-B003): 분·시 카운터의 i_tick 은 아랫자리 carry 라 tick + 2~3 클럭에 오고, 버튼 펄스는 4 kHz 격자(= tick 격자와 정렬) + 1 클럭에만 온다 → 겹치지 않음. TB 검사 없이 근거만 발표에 |
 | WB7 | 1 s = 정확히 100,000,000 clk | 100 Hz tick = 1,000,000 clk 주기. 실시간 시계의 정확도 기준 |
 
 ### 2.2 체크리스트 + 이유
@@ -127,9 +150,9 @@ A가 실측한 경계 (Icarus, 실제 클럭):
 
 | TB | Phase | 내용 | 체크 ID | 시뮬 시간 / 도구 |
 |---|---|---|---|---|
-| `tb_wt_1_set_ui` | P1 리셋 · P2 NORMAL 무시 · P3 커서 이동/wrap · P4 분 일 ±1 wrap · P5 분 십 ±10 wrap · P6 시 ±1 wrap(12→0→23→0) · P7 U+D 동시 · P8 sw2 재진입 · P9 다른 화면에서 버튼 무시 | WC1~7, WB3 | ≈ 0.5 s / Verilator |
-| `tb_wt_2_rollover` | P1 1 s 정확도: 연속 두 번 sec 증가 간격 == 1,000,000,000 ns (프리로드 없음) · P2 프리로드 00:00:59.95 → 00:01:00.00 · P3 00:59:59.95 → 01:00:00.00 · P4 23:59:59.95 → 00:00:00.00 (전 자리 0 동시 확인) · P5 설정 중 흐름 carry: 설정 모드에서 프리로드 23:59:59.95 → 00:00 (INFO) | WB1, WB2, WB5, WB7 | ≈ 1.5 s / Verilator |
-| `tb_wt_3_display_12h` | P1 hour 0~23 전수 프리로드 × sw3 0/1 → `dut.w_hour`, led15 표 비교 (24×2 = 48 점) · P2 FND 문자열: 프리로드 12:34 → 시.분 화면 "12.34", 24h 13:05 → "13.05", 12h 13:05 → "01.05" · P3 설정 점멸: cursor 0/1/2 각각 1 s 동안 해당 자리 빈칸 구간 = msec 50~99 인지 · P4 LED 표(§1.5) 시계 화면 조합 | WB4, WC8, WC9 | ≈ 3.5 s / Verilator |
+| `tb_wt_1_set_ui` | P1 리셋 · P2 NORMAL 무시 · P3 커서 이동/wrap · P4 분 일 ±1 wrap · P5 분 십 ±10 wrap · P6 시 ±1 wrap(12→0→23→0) · P7 U+D 동시 · P8 sw2 재진입 · P9 다른 화면에서 버튼 무시 | WC1~7, WB3 | ≈ 0.5 s  |
+| `tb_wt_2_rollover` | P1 1 s 정확도: 연속 두 번 sec 증가 간격 == 1,000,000,000 ns (프리로드 없음) · P2 프리로드 00:00:59.95 → 00:01:00.00 · P3 00:59:59.95 → 01:00:00.00 · P4 23:59:59.95 → 00:00:00.00 (전 자리 0 동시 확인) · P5 설정 중 흐름 carry: 설정 모드에서 프리로드 23:59:59.95 → 00:00 (INFO) | WB1, WB2, WB5, WB7 | ≈ 0.5 s (P1 1 s 실측은 LONG; 기본은 프리로드 msec=50 → 0.5 s 간격 = 50,000,000 clk) |
+| `tb_wt_3_display_12h` | P1 hour 0~23 전수 프리로드 × sw3 0/1 → `dut.w_hour`, led15 표 비교 (24×2 = 48 점) · P2 FND 문자열: 프리로드 12:34 → 시.분 화면 "12.34", 24h 13:05 → "13.05", 12h 13:05 → "01.05" · P3 설정 점멸: cursor 0/1/2 각각 1 s 동안 해당 자리 빈칸 구간 = msec 50~99 인지 · P4 LED 표(§1.5) 시계 화면 조합. **v5: P3 은 cursor 0 만 1 s(LONG_TEST), cursor 1·2 는 프리로드 msec=45 → 50 넘어갈 때 빈칸 시작만 100 ms 확인** | WB4, WC8, WC9 | ≈ 0.4 s (LONG 1.3 s) |
 
 ---
 
@@ -174,9 +197,9 @@ A가 실측한 경계 (Icarus, 실제 클럭):
 
 | TB | Phase | 내용 | 체크 | 시뮬 시간 / 도구 |
 |---|---|---|---|---|
-| `tb_sw_1_run_stop_clear` | P1 리셋 · P2 RUN 1 s 실측(SC3) · P3 STOP 유지 200 ms · P4 STOP 클리어 · P5 **RUN 중 L·U 무시**: RUN 300 ms 뒤 L → 값이 0 이 아니고 계속 증가 · U → `w_mode` 그대로(업 유지) (SB5, SB6) · P6 STOP 에서 R+L 동시 누름(같은 시각 press) → RUN + 0 (SB7, LIMIT) · P7 시계 화면으로 가서 백그라운드 증가 + 시계 버튼 게이팅 | SC1~5, SB3, SB5~7 | ≈ 2.5 s / Verilator |
-| `tb_sw_2_rollover_updown` | P1 업 프리로드 00:00:59.95 · P2 00:59:59.95 · P3 23:59:59.95 → 00:00:00.00 · P4 **STOP 에서** U(다운) + 프리로드 00:00:00.05 → R → 00:00:00.00 → 23:59:59.99 · P5 다운 RUN 중 U → 계속 다운(무시), R(STOP) → U → 업으로 복귀 | SB1, SB2, SB6 | ≈ 0.6 s / Verilator |
-| `tb_sw_3_lap` | P1 RUN 중 D → 값 고정 + 내부 계속 증가 + led7 · P2 D 다시 → 실시간 · P3 랩 중 RUN 에서 L → **무시**(랩 유지, led7 유지) → R(STOP) → L → 랩 해제 + 0 · P4 STOP 상태 랩 · P5 프리로드 00:00:59.98 에서 랩 → 저장값 59.98, 내부는 1:00 넘어감 · P6 FND 문자열 / 점멸 없음(SC7) | SB4, SC6, SC7 | ≈ 0.6 s / Verilator |
+| `tb_sw_1_run_stop_clear` | P1 리셋 · P2 RUN 1 s 실측(SC3) · P3 STOP 유지 200 ms · P4 STOP 클리어 · P5 **RUN 중 L·U 무시**: RUN 300 ms 뒤 L → 값이 0 이 아니고 계속 증가 · U → `w_mode` 그대로(업 유지) (SB5, SB6) · P6 STOP 에서 R+L 동시 누름(같은 시각 press) → RUN + 0 (SB7, LIMIT) · P7 시계 화면으로 가서 백그라운드 증가 + 시계 버튼 게이팅 | SC1~5, SB3, SB5~7 | ≈ 0.8 s (P2 를 RUN 0.5 s 로, 1 s 는 LONG) |
+| `tb_sw_2_rollover_updown` | P1 업 프리로드 00:00:59.95 · P2 00:59:59.95 · P3 23:59:59.95 → 00:00:00.00 · P4 **STOP 에서** U(다운) + 프리로드 00:00:00.05 → R → 00:00:00.00 → 23:59:59.99 · P5 다운 RUN 중 U → 계속 다운(무시), R(STOP) → U → 업으로 복귀 | SB1, SB2, SB6 | ≈ 0.6 s  |
+| `tb_sw_3_lap` | P1 RUN 중 D → 값 고정 + 내부 계속 증가 + led7 · P2 D 다시 → 실시간 · P3 랩 중 RUN 에서 L → **무시**(랩 유지, led7 유지) → R(STOP) → L → 랩 해제 + 0 · P4 STOP 상태 랩 · P5 프리로드 00:00:59.98 에서 랩 → 저장값 59.98, 내부는 1:00 넘어감 · P6 FND 문자열 / 점멸 없음(SC7) | SB4, SC6, SC7 | ≈ 0.6 s  |
 
 ---
 
@@ -192,7 +215,7 @@ A가 실측한 경계 (Icarus, 실제 클럭):
 | TB2 | 00:50 + U → 01:00 (초 → 분 올림) | 더하기 경로의 carry |
 | TB3 | 00:00 에서 L → 시작 안 함 | 0 시작 시 즉시 ALARM 이 나는 것 방지 |
 | TB4 | 카운트다운 borrow: 01:00.00 → 00:59.99, 10:00.00 → 09:59.99 | 감산 borrow 체인 |
-| TB5 | 지속시간: 설정 T 초 → ALARM 까지 **(T − 10 ms, T]** (`posedge dut.w_tm_run` → `posedge dut.w_tm_alarm` 간격, 버튼 지연 제외) | 공용 tick 위상 때문에 첫 감소가 0~10 ms 안에 옴(README 기재). 이 범위를 벗어나면 결함 |
+| TB5 | 지속시간: 설정 T 초 → ALARM 까지 **(T − 10 ms, T + 1 clk]** (+1 clk = zero→ALARM 전이) (`posedge dut.w_tm_run` → `posedge dut.w_tm_alarm` 간격, 버튼 지연 제외) | 공용 tick 위상 때문에 첫 감소가 0~10 ms 안에 옴(README 기재). 이 범위를 벗어나면 결함 |
 | TB6 | ALARM 해제 버튼은 **더하기로 안 쓰임** (D 로 끄면 10분 안 더해짐) | 같은 펄스가 상태 전이와 동작에 이중으로 쓰이는지 확인 |
 
 ### 4.2 체크리스트 + 이유
@@ -219,9 +242,9 @@ A가 실측한 경계 (Icarus, 실제 클럭):
 
 | TB | Phase | 내용 | 체크 | 시뮬 시간 / 도구 |
 |---|---|---|---|---|
-| `tb_tm_1_add_cap` | P1 화면 전환/LED · P2 0 에서 L 무시 · P3 U×6 → 01:00 (TB2) · P4 R, D · P5 상한: D×5 → 50:00, R×9 → 59:00, U×5 → 59:50, **U → 59:59** · P6 59:59 에서 U/R/D 각각 → 59:59 · P7 52:10 + D → 59:59 | TB1~3, TC1 | ≈ 0.4 s / Verilator |
-| `tb_tm_2_countdown_alarm` | P1 U 1회(00:10) → L → ALARM 까지 실측 (프리로드 없음) ∈ (9.99 s, 10.00 s] · P2 알람 LED 패턴 1.5 s(§1.5) · P3 D 로 끄기 → SET, 0 유지(TB6) · P4 프리로드 01:00.00 RUN → 00:59.99, 10:00.00 → 09:59.99 (TB4) | TB4~6, TC6 | ≈ 12 s / Verilator (≈ 5 분) |
-| `tb_tm_3_cancel_background` | P1 RUN 중 U/R/D 무시 · P2 RUN 중 L → 0, SET · P3 R(01:00) → 시작 → 시계 화면 → 프리로드 00:00.30 → 시계 화면에서 ALARM LED 확인 · P4 시계 화면 버튼으로 안 꺼짐 · P5 sw4+sw0 → 타이머 우선, 버튼으로 끄기 | TC2~5 | ≈ 0.5 s / Verilator |
+| `tb_tm_1_add_cap` | P1 화면 전환/LED · P2 0 에서 L 무시 · P3 U×6 → 01:00 (TB2) · P4 R, D · P5 상한: D×5 → 50:00, R×9 → 59:00, U×5 → 59:50, **U → 59:59** · P6 59:59 에서 U/R/D 각각 → 59:59 · P7 52:10 + D → 59:59 | TB1~3, TC1 | ≈ 0.4 s  |
+| `tb_tm_2_countdown_alarm` | P1 **v5: 프리로드 00:00.30** → L → ALARM 까지 실측 ∈ (290 ms, 300 ms + 1 clk] (10 s 실측은 LONG_TEST) · P2 알람 LED 패턴 0.6 s(§1.5) · P3 D 로 끄기 → SET, 0 유지(TB6) · P4 프리로드 01:00.00 RUN → 00:59.99, 10:00.00 → 09:59.99 (TB4) | TB4~6, TC6 | ≈ 1.2 s (LONG 11 s) |
+| `tb_tm_3_cancel_background` | P1 RUN 중 U/R/D 무시 · P2 RUN 중 L → 0, SET · P3 R(01:00) → 시작 → 시계 화면 → 프리로드 00:00.30 → 시계 화면에서 ALARM LED 확인 · P4 시계 화면 버튼으로 안 꺼짐 · P5 sw4+sw0 → 타이머 우선, 버튼으로 끄기 | TC2~5 | ≈ 0.5 s  |
 
 ---
 
@@ -234,7 +257,7 @@ A가 실측한 경계 (Icarus, 실제 클럭):
 | P0 | 리셋 직후 1 µs 에 모든 출력/LED 에 X 없음 (**Icarus 로도 1회**) | X 없음 |
 | P1 | 누름 길이 sweep: 1.0 / 1.5 / 1.7 ms(무시) · 2.0 / 2.5 / 5 / 100 ms(1 펄스) — 시계 설정 모드 U 로 분 증가량 확인 | 1.75~2.0 ms 는 검사 안 함(회색 구간, §1.2) |
 | P2 | **바운스 패턴**(아래 표) 1회 → 분 +1, w_btnU 펄스 정확히 1개 | 1 |
-| P3 | 긴 누름 2 s → 펄스 1개 (자동 반복 없음) | 1 |
+| P3 | 긴 누름 300 ms → 펄스 1개 (자동 반복 없음) | 1 |
 | P4 | 누른 상태 중간 0 글리치 300 µs → **2 펄스** | `[LIMIT]` 로그 (설계 한계, FAIL 아님): "디바운서는 시작 바운스만 거른다" |
 | P5 | 펄스 폭 모니터: 모든 w_btnX 펄스 = 1 clk | 1 clk |
 
@@ -313,11 +336,11 @@ A가 실측한 경계 (Icarus, 실제 클럭):
 - **현업 상황**: 사람이 누르는 순간은 내부 10 ms tick 과 위상이 무관하다. 100 Hz tick 이 Top 에 하나(공용, 항상 흐름)라서 RUN 시작 시점이 tick 사이 어디든 될 수 있다 → **같은 1.000 s 를 재도 99 또는 100 count**, 타이머는 **최대 10 ms 짧게** 끝남 (README 에 적힌 구조상 대가). 또 2 ms 근처의 "톡" 치는 짧은 입력은 위상에 따라 씹힌다.
 - **주입기 없음** — 폴더에는 원본 src 그대로 + TB 만. 보드에서는 재현이 아니라 시뮬 근거로 설명.
 - **TB** `tb_f3_press_timing`:
-  - P1 스톱워치: RUN 시작 위상을 tick 기준 0, 1, …, 9 ms 로 10 번, 매번 RUN 구간(`w_run_stop`) = 정확히 1.000 s → count 표 (99/100 분포). `[LIMIT][F3] phase=3ms count=99 (err -10ms)`
-  - P2 타이머: 프리로드 00:01.00, 시작 위상 0~9 ms 10 번 → `posedge w_tm_run` → `posedge w_tm_alarm` 간격 표, 전부 (0.99 s, 1.00 s] 이어야 함 (벗어나면 FAIL)
+  - P1 스톱워치: RUN 시작 위상을 tick 기준 0, 2, 4, 6, 8 ms 로 5 번, 매번 RUN 구간(`w_run_stop`) = **0.105 s** → count 표. 이상적(시작 때 tick 0 맞춤)이면 항상 10, 공용 tick 은 위상에 따라 10/11. (구간이 정확히 0.1 s 의 배수면 4 kHz 와 100 Hz 격자가 정렬돼 위상과 무관하게 같은 값이 나옴 — B 분석 MSG-B003, 사람의 누름 간격은 배수가 아니므로 0.105 s 가 현실적) `[LIMIT][F3] phase=4ms count=11 (+10ms)`
+  - P2 타이머: 프리로드 00:00.10, 시작 위상 0, 2, 4, 6, 8 ms 5 번 → `posedge w_tm_run` → `posedge w_tm_alarm` 간격 표, 전부 (90 ms, 100 ms + 1 clk] 이어야 함
   - P3 짧은 탭: 누름 1.5 · 1.8 · 1.9 · 2.0 ms × 위상 4 개 → 인식/무시 표 (§1.2 회색 구간 재현)
 - **트러블슈팅 포인트**: RUN 시작 때 tick 카운터를 0 으로 맞추면(v2 의 개별 tick 방식) 오차가 사라지지만 자원 · 공용성과 맞바꿈.
-- 시뮬: ≈ 25 s sim → Verilator ≈ 10 분 (가장 김, P0 마지막에).
+- 시뮬: ≈ 1.2 s sim.
 
 #### F4 — 리셋 라인 글리치 (EMI)
 - **현업 상황**: btnC(rst)는 **비동기 리셋**이고 필터 · 동기화가 없다. 모터 · 정전기 · 긴 배선에서 생기는 수 ns 글리치에도 전체 초기화. A 실측: 0.8 ns 짜리 클럭 비정렬 글리치 하나로 시계 09:41 → 12:00.
@@ -377,39 +400,37 @@ defect_N_<name>/
 
 ---
 
-## 9. 실행 방법 · 산출물 폴더
+## 9. 실행 방법 (Vivado) · 산출물 폴더
 
 ```
 verification/
-├── verification.md  PROTOCOL.md  mailbox/            (A)
-├── tb/                                                 (B)
-│   ├── common/  tb_common.svh  fnd_monitor.sv
-│   ├── watch/      tb_wt_1_set_ui.sv  tb_wt_2_rollover.sv  tb_wt_3_display_12h.sv
-│   ├── stopwatch/  tb_sw_1_run_stop_clear.sv  tb_sw_2_rollover_updown.sv  tb_sw_3_lap.sv
-│   ├── timer/      tb_tm_1_add_cap.sv  tb_tm_2_countdown_alarm.sv  tb_tm_3_cancel_background.sv
-│   ├── top/        tb_top_1_btn_debounce.sv  tb_top_2_fnd_scan.sv
-│   ├── run.sh        # ./tb/run.sh <tb_name|tb경로> [--sim verilator|icarus] [--src <dir>] [--phase N] [--wave]
-│   └── run_all.sh    # P0 → P1 순서로 전부, 끝에 results/summary.md 생성
-├── defect_1_fnd_com_skew/ … defect_4_reset_glitch/   (B, §7.2)
-└── results/                                            (B)
-    ├── <tb_name>/sim.log  [wave.vcd]                    # wave 는 Icarus --wave 재실행 때만
-    ├── defect_N/orig.log  fault_off.log  fault_on.log  [wave.vcd]
-    └── summary.md   # | TB | src | 결과 | fail 수 | 첫 이상 시각 | 파형 창 | 비고 |
+├── verification.md  PROTOCOL.md  mailbox/                  (A)
+├── tb/                                                       (B) — 폴더 이름은 B 의 현재 구성(01_stopwatch · 02_timer · 03_watch · top) 유지
+│   ├── 01_stopwatch/ tb_sw_1_run_stop_clear.sv  tb_sw_2_rollover_updown.sv  tb_sw_3_lap.sv
+│   ├── 02_timer/     tb_tm_1_add_cap.sv  tb_tm_2_countdown_alarm.sv  tb_tm_3_cancel_background.sv
+│   ├── 03_watch/     tb_wt_1_set_ui.sv  tb_wt_2_rollover.sv  tb_wt_3_display_12h.sv
+│   ├── top/          tb_top_1_btn_debounce.sv  tb_top_2_fnd_scan.sv
+│   └── README_vivado.md   # 아래 실행 순서 + TB 별 예상 sim 시간 표
+├── defect_N_<name>/   src/ (Vivado design source 로 이 폴더를 넣음)  tb_fN_*.sv  README.md  defect.patch
+└── results/           # 사용자가 원하면 xsim 콘솔 로그(Tcl console 복사)나 파형 캡처를 여기에
 ```
 
-- `run.sh` 기본값: `--sim verilator`, `--src ../boyun/merged_v4/src`, 모든 Phase, 파형 없음. 항상 `verification/` 에서 실행.
-  - Verilator: `verilator --binary --timing -j 0 -Wno-fatal -Wno-lint -Wno-style --top-module <tb> -Itb/common <tb.sv> tb/common/fnd_monitor.sv <src>/*.v <src>/*.sv --Mdir results/<tb>/obj -o sim`
-  - Icarus: `iverilog -g2012 -Itb/common -o results/<tb>/sim.vvp ... && vvp -n results/<tb>/sim.vvp +phase=N +wave=results/<tb>/wave.vcd`
-- 파형 규칙: `+wave=` 가 있을 때만 `$dumpfile/$dumpvars(0, <tb>)`, 그리고 긴 대기 구간은 `$dumpoff`, 검사 전후 ±2 ms 만 `$dumpon` (Icarus 만 지원 — 그래서 파형은 Icarus 전용).
-- 파형 보기: GTKWave(Windows 설치) 로 `wave.vcd`. 발표 캡처가 Vivado 여야 하면 같은 TB 를 xsim 에서 해당 Phase 만 실행 (TB 가 SV 기본 문법이라 그대로 됨).
+**Vivado 실행 순서 (README_vivado.md 에 그대로)**
+1. 새 RTL 프로젝트 (part xc7a35tcpg236-1) → Add Design Sources: `boyun/merged_v4/src/` 의 `.v` · `.sv` 전부 (결함은 `defect_N_<name>/src/` 전부).
+2. Add Simulation Sources: 보고 싶은 TB `.sv` 하나 → Simulation Sources 에서 그 TB 를 **Set as Top**.
+3. Run Simulation → Run Behavioral Simulation → Tcl 콘솔에 `run all`.
+4. 파형 창에 TB 최상위 신호(§1.4-3)가 이미 들어와 있음. 콘솔의 `[PHASE] BEGIN` / `[FAIL]` / `[DEFECT]` 시각으로 이동해서 확인.
+5. TB 를 바꿔 보려면 다른 TB 를 Set as Top → Relaunch Simulation.
 
 ---
 
+## 10.---
+
 ## 10. 역할 분담 · 보고 방식
 
-- **B**: TB/결함 폴더/스크립트 작성 → 컴파일 확인(`run.sh --build-only`: Verilator 빌드 또는 `iverilog` 컴파일만) → `B_to_A.md` 에 `RESULT`(type) 로 "실행 준비 완료: <TB 목록>, 실행 명령" 보고. **시뮬 실행은 하지 않는다.**
-- **사용자**: `./tb/run.sh <tb>` 또는 `./tb/run_all.sh` 로 실행 → `results/` 에 로그가 쌓임.
-- **A**: 사용자가 실행한 `results/**/sim.log` 를 읽고 FAIL/DEFECT 를 판정 → TB 기대값 문제면 B 에게 수정 요청, 설계 문제면 사용자에게 보고.
+- **B**: §1.4 형식 TB · 결함 폴더 작성 → 컴파일 확인: 1순위 Vivado 2020.2 `xvlog -sv` + `xelab` (WSL 에서 `cmd.exe /c` 로 `C:\Xilinx\Vivado\2020.2\bin\xvlog.bat` 호출, **xsim 실행은 하지 않음**), 안 되면 `iverilog -g2012` 컴파일만 하고 그 사실을 보고 → `B_to_A.md` 에 "실행 준비 완료: TB 목록 + 예상 sim 시간" `RESULT`. **시뮬 실행은 하지 않는다.**
+- **사용자**: Vivado 에서 §9 순서로 실행, 파형 확인. 콘솔 로그를 판정받고 싶으면 Tcl 콘솔 내용을 `results/<tb>.log` 로 저장하거나 붙여 넣기.
+- **A**: 사용자가 준 콘솔 로그(또는 `results/<tb>.log`)를 읽고 FAIL/DEFECT 를 판정 → TB 기대값 문제면 B 에게 수정 요청, 설계 문제면 사용자에게 보고.
 
 - (사용자 실행 후) 로그 판정은 A 가 한다. B 는 A 의 수정 요청을 받으면 TB 를 고치고 다시 컴파일 확인까지만.
 - 원본 설계에서 FAIL 이 나오면 **설계 버그 후보** → 직접 고치지 말고(설계는 읽기 전용) `RESULT` 에 시각 + 로그 5줄 첨부. A 가 TB 기대값 문제인지 설계 문제인지 판정한다.
@@ -425,3 +446,4 @@ verification/
 | v2 | 2026-10-16 | 설계 `f39f97e` 반영 (스톱워치 L·U 는 STOP 에서만): §3 컨셉·SB5~7·SC4·TB SW-1/2/3 기대값 변경, D5 를 "RUN 중 L·U 허용(보드에서 발견된 버그 재현)"으로 교체, 기존 D5(off-by-one)는 §7.2 예비로 |
 | v3 | 2026-10-16 | 사용자 피드백: "코드 실수는 현업 결함이 아니다" → §7 전면 교체. 결함 = 환경 상황 4종(F1 com 위상/스큐 고스팅 · F2 채터링/노이즈 · F3 입력 시점 · F4 리셋 글리치), sw15 결함 주입기 방식, 설계 모듈 무변경. 0.8 ns 리셋 글리치 초기화 실측 반영 |
 | v4 | 2026-10-16 | 사용자 지시: 시뮬레이션은 사용자가 직접 실행. R6 추가, §10 역할 분담 변경 (B = 작성 + 컴파일 확인만) |
+| v5 | 2026-10-16 | 사용자 지시: **TB 는 Vivado 에서 모듈 인스턴스해서 직접 돌려 파형을 보는 용도.** §1.1 xsim 기준, §1.4 자기완결 TB 형식 + 파형용 최상위 신호, §9 Vivado 실행 순서. 시뮬 예산 TB 당 ≤ 0.5 s(최대 1.5 s, 긴 Phase 는 LONG_TEST). MSG-B003 반영: WB6 구조적 불가, TB5 +1 clk, F3 0.105 s 구간 |
