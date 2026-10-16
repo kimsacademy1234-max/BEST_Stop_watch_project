@@ -1,5 +1,13 @@
 # merged_v4 — merged_v3 + 상태 머신 enum 변환 (2026-10-16)
 
+## 10/16 오후 변경: 스톱워치 RUN 중 L · U 무시 (클로드코드 수정, 정보윤 요청)
+- `stopwatch_control_unit.sv` 두 곳: `clear = btn_clear` 를 STOP 상태에서만, `mode_reg` 토글(`btn_mode`)을 STOP 상태에서만. 나머지(enum · 상태 · 이름)는 그대로.
+- 이유: 달리는 중 L 을 실수로 누르면 잰 시간이 지워지고(계속 달림), U 를 누르면 방향이 바뀌었다. 9일차 판서 FSM 도 RUN 에서는 R 만 받는다.
+- 남은 차이 1개: STOP 에서 R 과 L 이 **같은 클럭**에 오면 RUN 이 되면서 0 으로 지워진다(판서 FSM 은 R 우선, 지우지 않음). 사람 손으로는 거의 안 생김.
+- 검증 (xsim 2022.2, 이 폴더 src 그대로): 스톱워치 CU 단위 TB MISMATCH 0 (판서 FSM 과 다른 점 4 → 1), 시계 CU · 타이머 단위 0, Top 지시형 21 시나리오 0, 실제 시간 Top 0, SV 랜덤 2 시드(각 약 200만 클럭) 0, 이 폴더 `sim/tb_stopwatch_watch.v` 0.
+- 비트스트림: `bit/stopwatch_watch_merged_v4.bit` (이 src 로 새로 빌드. 예전 v3 bit 는 지움 — `boyun/merged_v3/bit/` 에 있음). Vivado 2022.2: LUT 346 · FF 186 · WNS +3.682 ns · CRITICAL WARNING 0. (v3 는 LUT 313. 늘어난 이유는 아직 확인 안 함)
+- 보드 확인: SW0 올림 → R(시작) → 5초 뒤 **L → 안 지워지고 계속** → **U → 방향 안 바뀜** → R(정지) → L → `00.00` · U → 다운카운트 설정됨.
+
 ## v3 → v4 변경 (기능 변화 없음)
 - 상태 머신 3개를 `.sv` 로 바꾸고 `parameter` 상태값을 `typedef enum` (`state_t`)로 바꿈 → 시뮬레이션 파형에서 `c_state`/`n_state` 가 숫자 대신 이름(STOP · RUN · NORMAL · SET_MIN_1 · ALARM …)으로 보인다. 인코딩 값은 그대로.
   - `stopwatch_control_unit.sv` : STOP, RUN

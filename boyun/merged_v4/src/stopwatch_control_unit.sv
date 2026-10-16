@@ -25,7 +25,7 @@ module stopwatch_control_unit (
         end else begin
             c_state <= n_state;
 
-            if (btn_mode) begin
+            if (btn_mode && (c_state == STOP)) begin  // (10/16) RUN 중 U 무시
                 mode_reg <= ~mode_reg;
             end
         end
@@ -53,11 +53,14 @@ module stopwatch_control_unit (
     // Output Logic
     always @(*) begin
         run_stop = 1'b0;
-        clear = btn_clear;
+        clear = 1'b0;
         mode = mode_reg;
 
         case (c_state)
-            STOP: run_stop = 1'b0;
+            STOP: begin
+                run_stop = 1'b0;
+                clear = btn_clear;  // (10/16) L 은 STOP 에서만, RUN 중 L 무시
+            end
             RUN:  run_stop = 1'b1;
             default: run_stop = 1'b0;
         endcase
