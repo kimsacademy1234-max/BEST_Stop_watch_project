@@ -1,6 +1,6 @@
 `timescale 1ns / 1ps
 // -----------------------------------------------------------------------------
-// [Vivado 에서 실행]  (자세한 것은 verification/vivado/README.md)
+// [Vivado 에서 실행]  (자세한 것은 verification/verification_plan.md §7)
 //   1) Design Sources : ../boyun/merged_v4/src/*.v, *.sv
 //   2) Simulation Sources : 이 파일 + tb/common/fnd_monitor.sv  → 이 파일을 Set as Top
 //   3) Run Simulation → Run All.  콘솔의 [FAIL]/[DEFECT] 시각으로 파형 창에서 Go To Time
@@ -8,7 +8,7 @@
 //   * 파형에서 clk 는 빼고 보는 것을 권장 (수 초 시뮬이면 파형 파일이 매우 커짐)
 // -----------------------------------------------------------------------------
 // =============================================================================
-// tb_top_1_btn_debounce — 공통: 스위치 노이즈 · 누름 시간 (verification.md §5.1)
+// tb_top_1_btn_debounce — 공통: 스위치 노이즈 · 누름 시간 (verification_plan.md)
 //   P0 리셋 직후 X 없음 · P1 누름 길이 sweep · P2 바운스 패턴 · P3 긴 누름 2 s
 //   P4 누른 중 0 글리치 300 us (LIMIT) · P5 펄스 폭 = 1 clk
 //   자극 대상: 시계 설정 모드(sw2=1, cursor 0) 의 U → 분 증가량으로 눌림 횟수 확인

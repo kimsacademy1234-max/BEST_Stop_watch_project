@@ -1,6 +1,6 @@
 `timescale 1ns / 1ps
 // -----------------------------------------------------------------------------
-// [Vivado 에서 실행]  (자세한 것은 verification/vivado/README.md)
+// [Vivado 에서 실행]  (자세한 것은 verification/verification_plan.md §7)
 //   1) Design Sources : ../boyun/merged_v4/src/*.v, *.sv
 //   2) Simulation Sources : 이 파일 + tb/common/fnd_monitor.sv  → 이 파일을 Set as Top
 //   3) Run Simulation → Run All.  콘솔의 [FAIL]/[DEFECT] 시각으로 파형 창에서 Go To Time
@@ -8,7 +8,7 @@
 //   * 파형에서 clk 는 빼고 보는 것을 권장 (수 초 시뮬이면 파형 파일이 매우 커짐)
 // -----------------------------------------------------------------------------
 // =============================================================================
-// tb_tm_1_add_cap — TIMER (boyun): 더하기 · 상한 59:59 (verification.md §4.4)
+// tb_tm_1_add_cap — TIMER (boyun): 더하기 · 상한 59:59 (verification_plan.md)
 //   P1 화면/LED · P2 0 에서 L 무시 (TB3) · P3 U×6 → 01:00 (TB2) · P4 R, D
 //   P5 상한 D×5 R×9 U×5 → 59:50, U → 59:59 (TB1) · P6 59:59 에서 U/R/D · P7 52:10 + D → 59:59
 // =============================================================================

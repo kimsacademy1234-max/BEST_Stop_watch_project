@@ -1,6 +1,6 @@
 `timescale 1ns / 1ps
 // -----------------------------------------------------------------------------
-// [Vivado 에서 실행]  (자세한 것은 verification/vivado/README.md)
+// [Vivado 에서 실행]  (자세한 것은 verification/verification_plan.md §7)
 //   1) Design Sources : ../boyun/merged_v4/src/*.v, *.sv
 //   2) Simulation Sources : 이 파일 + tb/common/fnd_monitor.sv  → 이 파일을 Set as Top
 //   3) Run Simulation → Run All.  콘솔의 [FAIL]/[DEFECT] 시각으로 파형 창에서 Go To Time
@@ -8,7 +8,7 @@
 //   * 파형에서 clk 는 빼고 보는 것을 권장 (수 초 시뮬이면 파형 파일이 매우 커짐)
 // -----------------------------------------------------------------------------
 // =============================================================================
-// tb_tm_3_cancel_background — TIMER (boyun): 취소 · 백그라운드 · 게이팅 (verification.md §4.4)
+// tb_tm_3_cancel_background — TIMER (boyun): 취소 · 백그라운드 · 게이팅 (verification_plan.md)
 //   P1 RUN 중 U/R/D 무시 (TC2) · P2 RUN 중 L → 0, SET · P3 시작 → 시계 화면 → 프리로드 00:00.30 → 시계 화면에서 ALARM LED (TC3)
 //   P4 시계 화면 버튼으로 안 꺼짐 (TC4) · P5 sw4+sw0 → 타이머 우선, 버튼으로 끄기 (TC5)
 // =============================================================================

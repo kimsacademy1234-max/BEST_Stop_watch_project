@@ -1,6 +1,6 @@
 `timescale 1ns / 1ps
 // -----------------------------------------------------------------------------
-// [Vivado 에서 실행]  (자세한 것은 verification/vivado/README.md)
+// [Vivado 에서 실행]  (자세한 것은 verification/verification_plan.md §7)
 //   1) Design Sources : ../boyun/merged_v4/src/*.v, *.sv   (결함 src 로 볼 때는 이 폴더의 src/*)
 //   2) Simulation Sources : 이 파일 + tb/common/fnd_monitor.sv  → 이 파일을 Set as Top
 //   3) Run Simulation → Run All.  콘솔의 [FAIL]/[DEFECT] 시각으로 파형 창에서 Go To Time
@@ -14,7 +14,7 @@
 `define HAS_SW_FAULT
 `endif
 // =============================================================================
-// tb_f4_reset_glitch — F4: 리셋 라인 EMI 글리치 (verification.md §7.1 F4)
+// tb_f4_reset_glitch — F4: 리셋 라인 EMI 글리치 (verification_plan.md)
 //   btnC(rst) 는 비동기 리셋, 필터 · 동기화 없음 → 수 ns 글리치에도 전체 초기화
 //   P0 sw15 = 0 기능 대표 확인
 //   P1 (TB 자극) rst 핀에 클럭과 비정렬 글리치 0.5 / 1 / 5 / 10 ns → 매번 상태(시계 09:41 · 스톱워치 RUN 0.30 · 타이머 RUN 00:50) 소실 = DEFECT

@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 # =============================================================================
-# run.sh — TB 하나 실행 (verification.md §9)
+# run.sh — TB 하나 실행 (verification_plan.md)
 #   ./tb/run.sh <tb_name|tb경로> [--sim verilator|icarus] [--src <dir>] [--phase N] [--wave] [--out <dir>] [--plus "+a=1 +b=2"] [--build-only]
-#   --build-only : 컴파일(빌드)만 하고 실행하지 않음 (verification.md R6)
+#   --build-only : 컴파일(빌드)만 하고 실행하지 않음 (verification_plan.md)
 #   항상 verification/ 에서 실행. 기본: verilator, ../boyun/merged_v4/src, 모든 Phase, 파형 없음
 #   --src 의 stopwatch_watch.v 에 sw_fault 포트가 없으면 NO_SW_FAULT 자동 정의 (결함 TB 를 원본 src 로 돌릴 때)
 # =============================================================================
@@ -65,7 +65,7 @@ EXTRA_SRCS=$(ls "$EXTRA"/*_model.v 2>/dev/null || true)
 echo "== $TOP | sim=$SIM | src=$SRC ($TAG) | out=$OUT | $(date '+%F %T')"
 T0=$(date +%s)
 if [ "$SIM" = "verilator" ]; then
-    [ "$WAVE" = 1 ] && echo "note: --wave 는 Icarus 전용 (verification.md §9). Verilator 는 로그만"
+    [ "$WAVE" = 1 ] && echo "note: --wave 는 Icarus 전용 (verification_plan.md). Verilator 는 로그만"
     verilator --binary --timing -j 0 -Wno-fatal -Wno-lint -Wno-style -Wno-MULTIDRIVEN \
         --top-module "$TOP" $DEFS \
         "$TBFILE" tb/common/fnd_monitor.sv $EXTRA_SRCS $SRCS \

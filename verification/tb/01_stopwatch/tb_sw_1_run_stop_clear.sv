@@ -1,6 +1,6 @@
 `timescale 1ns / 1ps
 // -----------------------------------------------------------------------------
-// [Vivado 에서 실행]  (자세한 것은 verification/vivado/README.md)
+// [Vivado 에서 실행]  (자세한 것은 verification/verification_plan.md §7)
 //   1) Design Sources : ../boyun/merged_v4/src/*.v, *.sv
 //   2) Simulation Sources : 이 파일 + tb/common/fnd_monitor.sv  → 이 파일을 Set as Top
 //   3) Run Simulation → Run All.  콘솔의 [FAIL]/[DEFECT] 시각으로 파형 창에서 Go To Time
@@ -8,7 +8,7 @@
 //   * 파형에서 clk 는 빼고 보는 것을 권장 (수 초 시뮬이면 파형 파일이 매우 커짐)
 // -----------------------------------------------------------------------------
 // =============================================================================
-// tb_sw_1_run_stop_clear — STOPWATCH (jonghyuk) (verification.md §3.4)
+// tb_sw_1_run_stop_clear — STOPWATCH (jonghyuk) (verification_plan.md)
 //   P1 리셋 · P2 RUN 1 s 실측(SC3, FSM 신호 기준) · P3 STOP 유지 200 ms · P4 STOP 클리어(+랩 해제)
 //   P5 RUN 중 L·U 무시 (SB5, SB6) · P6 STOP 에서 R+L 동시 → RUN + 0 (SB7, LIMIT)
 //   P7 시계 화면에서 백그라운드 증가 + 시계 버튼 게이팅 (SC5)

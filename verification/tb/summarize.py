@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""results/**/sim.log → results/summary.md (verification.md §9 표 형식).
+"""results/**/sim.log → results/summary.md (verification_plan.md 표 형식).
 | TB | src | 결과 | fail 수 | 첫 이상 시각 | 파형 창 | 비고 |
 """
 import glob

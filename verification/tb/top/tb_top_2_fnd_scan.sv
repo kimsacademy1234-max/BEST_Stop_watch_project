@@ -1,6 +1,6 @@
 `timescale 1ns / 1ps
 // -----------------------------------------------------------------------------
-// [Vivado 에서 실행]  (자세한 것은 verification/vivado/README.md)
+// [Vivado 에서 실행]  (자세한 것은 verification/verification_plan.md §7)
 //   1) Design Sources : ../boyun/merged_v4/src/*.v, *.sv
 //   2) Simulation Sources : 이 파일 + tb/common/fnd_monitor.sv  → 이 파일을 Set as Top
 //   3) Run Simulation → Run All.  콘솔의 [FAIL]/[DEFECT] 시각으로 파형 창에서 Go To Time
@@ -8,7 +8,7 @@
 //   * 파형에서 clk 는 빼고 보는 것을 권장 (수 초 시뮬이면 파형 파일이 매우 커짐)
 // -----------------------------------------------------------------------------
 // =============================================================================
-// tb_top_2_fnd_scan — 공통: FND 스캔 · 참조 모델 (verification.md §5.2)
+// tb_top_2_fnd_scan — 공통: FND 스캔 · 참조 모델 (verification_plan.md)
 //   fnd_monitor 가 전 구간에서 출력 == 참조 를 상시 비교 (불일치 구간마다 FAIL + 시각)
 //   P1 com 순서 / 슬롯 폭 250 us · P2 시계 시.분 "12.00" → 프리로드 12:34 "12.34" (+설정 점멸 1 s)
 //   P3 초.1/100 화면 DP(AN2) = msec<50 · P4 스톱워치 / 타이머 화면 참조 비교

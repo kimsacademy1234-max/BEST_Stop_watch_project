@@ -1,6 +1,6 @@
 `timescale 1ns / 1ps
 // -----------------------------------------------------------------------------
-// [Vivado 에서 실행]  (자세한 것은 verification/vivado/README.md)
+// [Vivado 에서 실행]  (자세한 것은 verification/verification_plan.md §7)
 //   1) Design Sources : ../boyun/merged_v4/src/*.v, *.sv   (결함 src 로 볼 때는 이 폴더의 src/*)
 //   2) Simulation Sources : 이 파일 + tb/common/fnd_monitor.sv  → 이 파일을 Set as Top
 //   3) Run Simulation → Run All.  콘솔의 [FAIL]/[DEFECT] 시각으로 파형 창에서 Go To Time
@@ -14,7 +14,7 @@
 `define HAS_SW_FAULT
 `endif
 // =============================================================================
-// tb_f1_com_skew — F1: FND com/data 위상 차이 → 고스팅 (verification.md §7.1 F1)
+// tb_f1_com_skew — F1: FND com/data 위상 차이 → 고스팅 (verification_plan.md)
 //   P0 sw15 = 0 기능 대표 확인 (주입기 bypass = 원본과 동일)
 //   P1 TB 모델 sweep: com 지연 N = 0 / 500 / 3,000 / 12,500 clk 를 4 개 모니터로 동시에 측정 (원본 src 에서도 실행)
 //      → 자리별 "틀린 숫자가 켜진 시간" 표. N = 0 은 PASS, N > 0 은 DEFECT

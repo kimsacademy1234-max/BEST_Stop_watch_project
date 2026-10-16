@@ -1,6 +1,6 @@
 `timescale 1ns / 1ps
 // -----------------------------------------------------------------------------
-// [Vivado 에서 실행]  (자세한 것은 verification/vivado/README.md)
+// [Vivado 에서 실행]  (자세한 것은 verification/verification_plan.md §7)
 //   1) Design Sources : ../boyun/merged_v4/src/*.v, *.sv
 //   2) Simulation Sources : 이 파일 + tb/common/fnd_monitor.sv  → 이 파일을 Set as Top
 //   3) Run Simulation → Run All.  콘솔의 [FAIL]/[DEFECT] 시각으로 파형 창에서 Go To Time
@@ -8,7 +8,7 @@
 //   * 파형에서 clk 는 빼고 보는 것을 권장 (수 초 시뮬이면 파형 파일이 매우 커짐)
 // -----------------------------------------------------------------------------
 // =============================================================================
-// tb_sw_2_rollover_updown — STOPWATCH (jonghyuk): carry / borrow 경계 (verification.md §3.4)
+// tb_sw_2_rollover_updown — STOPWATCH (jonghyuk): carry / borrow 경계 (verification_plan.md)
 //   P1 업 00:00:59.95 → 00:01:00.00 · P2 00:59:59.95 → 01:00:00.00 · P3 23:59:59.95 → 00:00:00.00 (SB1)
 //   P4 STOP 에서 U(다운) → RUN, 프리로드 00:00:00.05 → 00:00:00.00 → 23:59:59.99 (SB2)
 //   P5 다운 RUN 중 U → 계속 다운(무시), STOP → U → 업 복귀 (SB6)

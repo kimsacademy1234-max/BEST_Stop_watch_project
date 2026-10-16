@@ -1,6 +1,6 @@
 `timescale 1ns / 1ps
 // -----------------------------------------------------------------------------
-// [Vivado 에서 실행]  (자세한 것은 verification/vivado/README.md)
+// [Vivado 에서 실행]  (자세한 것은 verification/verification_plan.md §7)
 //   1) Design Sources : ../boyun/merged_v4/src/*.v, *.sv
 //   2) Simulation Sources : 이 파일 + tb/common/fnd_monitor.sv  → 이 파일을 Set as Top
 //   3) Run Simulation → Run All.  콘솔의 [FAIL]/[DEFECT] 시각으로 파형 창에서 Go To Time
@@ -8,7 +8,7 @@
 //   * 파형에서 clk 는 빼고 보는 것을 권장 (수 초 시뮬이면 파형 파일이 매우 커짐)
 // -----------------------------------------------------------------------------
 // =============================================================================
-// tb_wt_3_display_12h — WATCH (ahnsung): 12/24 표시 · FND · 점멸 · LED (verification.md §2.4)
+// tb_wt_3_display_12h — WATCH (ahnsung): 12/24 표시 · FND · 점멸 · LED (verification_plan.md)
 //   P1 hour 0~23 × sw3 0/1 → dut.w_hour, led15 (48 점) (WB4, WC9)
 //   P2 FND 문자열 12:34 / 24h 13:05 / 12h 13:05 · P3 설정 점멸 cursor 0/1/2 (WC8) · P4 LED 표(§1.5)
 // =============================================================================

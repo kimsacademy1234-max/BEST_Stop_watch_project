@@ -1,6 +1,6 @@
 `timescale 1ns / 1ps
 // -----------------------------------------------------------------------------
-// [Vivado 에서 실행]  (자세한 것은 verification/vivado/README.md)
+// [Vivado 에서 실행]  (자세한 것은 verification/verification_plan.md §7)
 //   1) Design Sources : ../boyun/merged_v4/src/*.v, *.sv
 //   2) Simulation Sources : 이 파일 + tb/common/fnd_monitor.sv  → 이 파일을 Set as Top
 //   3) Run Simulation → Run All.  콘솔의 [FAIL]/[DEFECT] 시각으로 파형 창에서 Go To Time
@@ -8,7 +8,7 @@
 //   * 파형에서 clk 는 빼고 보는 것을 권장 (수 초 시뮬이면 파형 파일이 매우 커짐)
 // -----------------------------------------------------------------------------
 // =============================================================================
-// tb_f3_press_timing — F3: 버튼 입력 시점 오차 (verification.md §7.1 F3, RTL 변경 없음 · TB 자극만)
+// tb_f3_press_timing — F3: 버튼 입력 시점 오차 (verification_plan.md, RTL 변경 없음 · TB 자극만)
 //   100 Hz tick 이 Top 에 하나(공용, 항상 흐름) → RUN 시작 시점이 tick 사이 어디든 될 수 있다
 //   또 디바운서 샘플(4 kHz) 과 tick 이 같은 카운터 기준이라 tick 엣지 = 샘플 엣지 (1e6 = 40 x 25,000)
 //   P1 스톱워치: RUN 시작 위상 φ = 0..9 ms (tick 기준), RUN 구간 1.005 s (FSM 기준) → count 표

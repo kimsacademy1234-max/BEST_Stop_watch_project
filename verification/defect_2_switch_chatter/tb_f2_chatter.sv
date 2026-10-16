@@ -1,6 +1,6 @@
 `timescale 1ns / 1ps
 // -----------------------------------------------------------------------------
-// [Vivado 에서 실행]  (자세한 것은 verification/vivado/README.md)
+// [Vivado 에서 실행]  (자세한 것은 verification/verification_plan.md §7)
 //   1) Design Sources : ../boyun/merged_v4/src/*.v, *.sv   (결함 src 로 볼 때는 이 폴더의 src/*)
 //   2) Simulation Sources : 이 파일 + tb/common/fnd_monitor.sv  → 이 파일을 Set as Top
 //   3) Run Simulation → Run All.  콘솔의 [FAIL]/[DEFECT] 시각으로 파형 창에서 Go To Time
@@ -14,7 +14,7 @@
 `define HAS_SW_FAULT
 `endif
 // =============================================================================
-// tb_f2_chatter — F2: 스위치 채터링 / 노이즈 (verification.md §7.1 F2)
+// tb_f2_chatter — F2: 스위치 채터링 / 노이즈 (verification_plan.md)
 //   디바운서 비대칭: 눌림 = 8 샘플 연속 1, 뗌 = 0 샘플 1 개 → 스파이크(a)는 견디고, 누른 중 끊김(b)에는 약하다
 //   P0 sw15 = 0 기능 대표 확인
 //   P1 (TB 자극) 안 누름 + 스파이크 열 200 ms → 펄스 0 (PASS: 견고)

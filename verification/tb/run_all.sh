@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # =============================================================================
-# run_all.sh — 전체 회귀 (verification.md §6, §9)
+# run_all.sh — 전체 회귀 (verification_plan.md)
 #   P0 → P1 순서로 전부 Verilator 실행 (병렬 JOBS 개), 끝에 results/summary.md 생성
 #   ./tb/run_all.sh [JOBS]      기본 JOBS = 8
 #   결함 TB 는 원본 src(orig) / 결함 src(fault) 두 번 실행 (F3 는 src 무변경이라 orig 만)

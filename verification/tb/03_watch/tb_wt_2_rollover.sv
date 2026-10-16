@@ -1,6 +1,6 @@
 `timescale 1ns / 1ps
 // -----------------------------------------------------------------------------
-// [Vivado 에서 실행]  (자세한 것은 verification/vivado/README.md)
+// [Vivado 에서 실행]  (자세한 것은 verification/verification_plan.md §7)
 //   1) Design Sources : ../boyun/merged_v4/src/*.v, *.sv
 //   2) Simulation Sources : 이 파일 + tb/common/fnd_monitor.sv  → 이 파일을 Set as Top
 //   3) Run Simulation → Run All.  콘솔의 [FAIL]/[DEFECT] 시각으로 파형 창에서 Go To Time
@@ -8,7 +8,7 @@
 //   * 파형에서 clk 는 빼고 보는 것을 권장 (수 초 시뮬이면 파형 파일이 매우 커짐)
 // -----------------------------------------------------------------------------
 // =============================================================================
-// tb_wt_2_rollover — WATCH (ahnsung): 1 s 정확도 + carry 경계 (verification.md §2.4)
+// tb_wt_2_rollover — WATCH (ahnsung): 1 s 정확도 + carry 경계 (verification_plan.md)
 //   P1 1 s 정확도 (프리로드 없음) WB7 · P2 00:00:59.95→00:01:00.00 · P3 00:59:59.95→01:00:00.00 (WB2)
 //   P4 23:59:59.95→00:00:00.00 전 자리 + carry 리플 기록 (WB1) · P5 설정 모드 중 흐름 carry (WB5, INFO)
 // =============================================================================
