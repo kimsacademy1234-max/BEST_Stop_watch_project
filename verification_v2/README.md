@@ -46,7 +46,7 @@
 3. assign 블록의 입력 = 실제 `assign` 우변의 신호
 4. 모든 입력 핀은 선 1 개 또는 깃발 1 개, 모든 출력 핀은 선 1 개 이상
 
-다시 만들기: `cd diagram && python3 gen_diagram.py && python3 tb_guide.py` (Windows Chrome 으로 PDF · PNG 를 그림)
+다시 만들기: `cd diagram && python3 gen_diagram.py && python3 tb_guide.py` (Windows Chrome 으로 PDF · PNG 를 그림). 뒤에 `--open` 을 붙이면 만든 PNG 를 Windows 사진 앱으로 연다 (예: `python3 tb_guide.py 01_stopwatch --open`)
 
 ## 5. 파형 보는 법 (요약)
 

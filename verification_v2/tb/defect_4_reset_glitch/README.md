@@ -17,13 +17,15 @@ Simulation Sources = `tb_f4_reset_glitch.sv` + `fnd_monitor.sv`. 공통 사용�
 
 ## 파형 단계
 
+TB 최상위 `clk` · `rst` 는 항상 같이 넣는다 (모든 "다음 클럭" 의 기준, `../top/README.md` §0 의 6).
+
 | 단계 | 블록 (Scope 경로) | 꺼낼 포트 | 시간 | 확인할 것 |
 |---|---|---|---|---|
 | **1** 리셋 핀 · 결함 스위치 | TB 최상위 | `rst`, `fault_sw15` | P1: 0.5 / 1 / 5 / 10 ns 글리치 | 글리치 순간 |
 | **2** 주입기 출력 | `dut/U_FAULT_RST_GLITCH` | `o_rst` (= `w_rst_inj`) | fault_sw15 ↑ 뒤 2 ~ 3 클럭에 10 ns | 내부 리셋 펄스 (결함 src 만) |
 | **3** 시계 | `dut/U_WATCH_DATAPATH` | `o_wt_hour`, `o_wt_min` | 리셋 순간 | 09:41 → **12:00** |
-| **4** 스톱워치 | `dut/U_STOPWATCH_CONTROL_UNIT`, `dut/U_STOPWATCH_DATAPATH` | `o_sw_run_stop`, `o_sw_msec` | 리셋 순간 | RUN → STOP, 값 0 |
-| **5** 타이머 | `dut/U_TIMER_CONTROL_UNIT`, `dut/U_TIMER_DATAPATH` | `o_tm_run`, `o_tm_sec` | 리셋 순간 | RUN → SET, 00:00 (알람 안 옴) |
+| **4** 스톱워치 | `dut/U_STOPWATCH_CONTROL_UNIT`, `dut/U_STOPWATCH_DATAPATH` | `c_state`, `o_sw_run_stop`, `o_sw_msec` | 리셋 순간 | `c_state` RUN → STOP, 값 0 |
+| **5** 타이머 · 시계 FSM | `dut/U_TIMER_CONTROL_UNIT`, `dut/U_TIMER_DATAPATH`, `dut/U_WATCH_CONTROL_UNIT` | `c_state`, `o_tm_run`, `o_tm_sec` | 리셋 순간 | 타이머 `c_state` RUN → SET, 00:00 (알람 안 옴). 시계 `c_state` 도 NORMAL 로 |
 | **6** LED | TB 최상위 | `led` | 리셋 순간 | 리셋을 알리는 표시 없음 |
 
 ## Phase 와 판정

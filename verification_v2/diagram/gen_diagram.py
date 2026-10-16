@@ -8,7 +8,8 @@
 - page_fnd()  : U_FND_CONTROLLER 내부
 - render(page, highlight={(블록, 포트): 단계번호}) 로 TB 별 색칠 그림을 만든다.
 
-실행: python3 gen_diagram.py  → ../block_diagram.pdf (+ png/ 미리보기)
+실행: python3 gen_diagram.py [--open]  → ../block_diagram.pdf (+ png/ 미리보기)
+      --open : 만든 png 를 Windows 사진 앱으로 열기
 """
 import os
 import re
@@ -361,6 +362,8 @@ def render(page, highlight=None, steps_legend=None, subtitle=None):
         step = hl.get((b, p))
         if not step and k == "sw":   # 보드 스위치 핀이 칠해졌으면 그 스위치 깃발도 같은 색
             step = hl.get(("PIN_IN", SW_SHORT.get(t, t)))
+        if not step and k == "clk" and t in ("clk", "rst"):   # clk · rst 핀이 칠해졌으면 모든 블록의 clk · rst 깃발도
+            step = hl.get(("PIN_IN", t))
         c = COL["flag_sw"] if k == "sw" else COL["flag_clk"]
         if step:
             c = STEP[(step - 1) % len(STEP)]
@@ -786,6 +789,12 @@ def win(path):
 CHROME = "/mnt/c/Program Files/Google/Chrome/Application/chrome.exe"
 
 
+def open_in_photos(path):
+    """만든 PNG 를 Windows 사진 앱으로 연다 (기본 연결 프로그램과 상관없이 ms-photos: 로 직접)"""
+    subprocess.run(["explorer.exe", "ms-photos:viewer?fileName=" + win(os.path.abspath(path))],
+                   stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+
+
 def chrome(args):
     subprocess.run([CHROME, "--headless=new", "--disable-gpu", "--hide-scrollbars"] + args,
                    stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, timeout=120)
@@ -884,7 +893,12 @@ def main():
     svgs = [(s.replace(f'width="{w}" height="{h}"', f'width="{W}" height="{H}"', 1), W, H) for s, w, h in svgs]
     to_pdf(svgs, os.path.join(HERE, "..", "block_diagram.pdf"))
     print("ok: 포트 · 연결 검사 통과, block_diagram.pdf 생성")
+    return [os.path.join(HERE, "png", f"{pg.name}.png") for pg in pages]
 
 
 if __name__ == "__main__":
-    main()
+    # python3 gen_diagram.py --open  → 만든 뒤 top.png · fnd.png 를 Windows 사진 앱으로 열기
+    pngs = main()
+    if "--open" in sys.argv:
+        for p in pngs:
+            open_in_photos(p)

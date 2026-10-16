@@ -7,9 +7,10 @@
 을 같이 만든다 → 그림 번호와 문서 번호가 어긋날 수 없다.
 포트 이름은 gen_diagram 의 블록 데이터로 검사한다 (없는 포트를 적으면 멈춤).
 
-실행: python3 tb_guide.py [폴더 ...]   (기본: 전부)
+실행: python3 tb_guide.py [폴더 ...] [--open]   (기본: 전부, --open = 만든 그림을 Windows 사진 앱으로 열기)
 """
 import os
+import re
 import sys
 
 import gen_diagram as G
@@ -72,8 +73,9 @@ def sw_steps(btns, with_lap=True, disp=("M_MSEC", "M_SEC"), extra7=""):
              "누른 뒤 1.75 ~ 2.0 ms 에 10 ns 펄스 1 개", "4 kHz 샘플 8 번이 모두 1 이 된 순간 1 클럭. 한 번 누름 = 펄스 1 개"),
         step("버튼 게이팅", [("GATE_SW", "w_sw_btn_" + b) for b in btns],
              "o_btn 과 같은 클럭", "mode_sw0 = 1, timer_sw4 = 0 일 때만 o_btn 이 그대로 지나감. 다른 화면이면 0"),
-        step("스톱워치 컨트롤", [("SCU", p) for p in ("o_sw_run_stop", "o_sw_clear", "o_sw_down")],
-             "run_stop · down: 버튼 펄스 다음 클럭(10 ns 뒤)<br>clear: 버튼 펄스와 같은 10 ns", "R → o_sw_run_stop 토글 / L(정지 중) → o_sw_clear 10 ns 펄스 / U(정지 중) → o_sw_down 토글"),
+        step("스톱워치 컨트롤 · FSM", [("SCU", p) for p in ("o_sw_run_stop", "o_sw_clear", "o_sw_down")],
+             "run_stop · down: 버튼 펄스 다음 클럭(10 ns 뒤)<br>clear: 버튼 펄스와 같은 10 ns", "R → o_sw_run_stop 토글 / L(정지 중) → o_sw_clear 10 ns 펄스 / U(정지 중) → o_sw_down 토글",
+             extra="**FSM**: 같은 블록 Objects 의 `c_state` · `n_state` (STOP / RUN). R 펄스 순간 `n_state` 가 바뀌고 다음 클럭에 `c_state` 가 따라감"),
         step("10 ms tick", [("TICKGEN", "o_tick_10ms")],
              "10 ms 마다 10 ns 펄스", "스톱워치 · 시계 · 타이머 공용. 항상 흐른다"),
         step("스톱워치 값", [("SDP", p) for p in ("o_sw_msec", "o_sw_sec", "o_sw_min", "o_sw_hour")] +
@@ -104,6 +106,14 @@ FOLDERS = {}
 
 FOLDERS["01_stopwatch"] = dict(
     title="01_stopwatch — 스톱워치 동작 확인 안내서 (발표: 이종혁)",
+    fsm=[
+        "### FSM 상태 (`U_STOPWATCH_CONTROL_UNIT` 의 `c_state` · `n_state`)", "",
+        "| 지금 상태 | 조건 | 다음 상태 | 출력 |", "|---|---|---|---|",
+        "| STOP (리셋) | R (`i_sw_btn_R`) | RUN | `o_sw_run_stop` = 0, L 이 오면 `o_sw_clear` = L (같은 10 ns) |",
+        "| RUN | R | STOP | `o_sw_run_stop` = 1, L · U 는 무시 |",
+        "",
+        "`o_sw_down` 은 상태가 아니라 따로 있는 레지스터 `down_reg` — STOP 에서 U 가 오면 다음 클럭에 뒤집힘.",
+    ],
     spec=[
         "| 버튼 (sw0 = 1, 스톱워치 화면) | 동작 |", "|---|---|",
         "| R | 시작 ↔ 정지 |",
@@ -119,18 +129,18 @@ FOLDERS["01_stopwatch"] = dict(
             goal="R 로 시작/정지, 정지 중 L 로 지우기, 동작 중 L · U 무시, 다른 화면 버튼이 안 들어오는지",
             steps=sw_steps("RLUD"),
             phases=[
-                ("P1", "리셋", "5 · 7 · 9 · 10", "`o_sw_run_stop` = 0, `o_sw_*` = 0, `led` = 000A, FND \"00.00\""),
+                ("P1", "리셋", "5 · 7 · 9 · 10", "`c_state` STOP, `o_sw_run_stop` = 0, `o_sw_*` = 0, `led` = 000A, FND \"00.00\""),
                 ("P2", "R → 정확히 1.000 s 뒤 R", "3 · 5 · 6 · 7",
-                 "`o_sw_run_stop` 1 구간 = 1000.000 ms ± 20 us, 그동안 tick 99~100 번 → 값 1.00 초"),
-                ("P3", "120 ms 동작 후 R, 200 ms 대기", "5 · 7", "정지 뒤 `o_sw_*` 변화 없음"),
+                 "`c_state` STOP → RUN → STOP, RUN 구간 (= `o_sw_run_stop` 1) = 1000.000 ms ± 20 us, 그동안 tick 99~100 번 → 값 1.00 초"),
+                ("P3", "120 ms 동작 후 R, 200 ms 대기", "5 · 7", "`c_state` STOP 동안 `o_sw_*` 변화 없음"),
                 ("P4", "정지 중 D(랩) → L", "4 · 5 · 7 · 9",
-                 "`o_sw_lap` 0→1, L 의 `o_sw_clear` 펄스에 `o_sw_*` = 0 · `o_sw_lap` = 0, FND \"00.00\""),
+                 "`c_state` STOP 유지. `o_sw_lap` 0→1, L 의 `o_sw_clear` 펄스에 `o_sw_*` = 0 · `o_sw_lap` = 0, FND \"00.00\""),
                 ("P5", "동작 중 L, 그다음 U", "4 · 5 · 7",
-                 "`o_sw_clear` 펄스 **안 나옴**, `o_sw_down` 그대로 0, `o_sw_msec` 계속 증가 (보드 버그 수정 확인)"),
+                 "`c_state` RUN 유지 (L · U 가 와도 `n_state` RUN), `o_sw_clear` 펄스 **안 나옴**, `o_sw_down` 그대로 0, `o_sw_msec` 계속 증가 (보드 버그 수정 확인)"),
                 ("P6", "정지 중 R 과 L 을 같은 순간", "3 · 5 · 7",
-                 "`U_BD_R.o_btn` · `U_BD_L.o_btn` 같은 클럭 → `o_sw_clear` 펄스 + `o_sw_run_stop` 1 → 0 부터 증가 (`[LIMIT]` 기록)"),
+                 "`U_BD_R.o_btn` · `U_BD_L.o_btn` 같은 클럭 → 그 10 ns 에 `n_state` RUN + `o_sw_clear` 펄스 → `c_state` RUN, 0 부터 증가 (`[LIMIT]` 기록)"),
                 ("P7", "동작 중 시계 화면(mode_sw0 = 0)에서 R · L · U · D", "4 · 5 · 7 · 10",
-                 "`w_sw_btn_*` 계속 0 (게이팅), `o_sw_run_stop` 1 유지, 값 증가, `led` = 8009"),
+                 "`w_sw_btn_*` 계속 0 (게이팅) → `c_state` RUN 그대로, 값 증가, `led` = 8009"),
             ],
             fnd=[("P1 리셋 · P4 지운 뒤", "00.00", "초.1/100초")],
         ),
@@ -146,9 +156,9 @@ FOLDERS["01_stopwatch"] = dict(
                 ("P3", "23:59:59.95 프리로드 (display_mode_sw1 = 1)", "6 · 7 · 8 · 9",
                  "23:59:59.99 → **00:00:00.00**, FND \"00.00\" (시.분). tick 직후 4 클럭 동안 자리가 하나씩 0 으로"),
                 ("P4", "정지 중 U → R → 00:00:00.05 프리로드", "3 · 5 · 6 · 7",
-                 "`o_sw_down` = 1, 00:00:00.00 → **23:59:59.99** → 23:59:59.98"),
+                 "`c_state` STOP 에서 U → `o_sw_down` = 1, R → RUN, 00:00:00.00 → **23:59:59.99** → 23:59:59.98"),
                 ("P5", "다운 동작 중 U → R → U → R", "3 · 5 · 7",
-                 "동작 중 U: `o_sw_down` 그대로 1 / 정지 후 U: 0 → 다시 증가"),
+                 "`c_state` RUN 중 U: `o_sw_down` 그대로 1 / R → STOP 후 U: 0 → R → RUN, 다시 증가"),
             ],
             fnd=[("P3 자정 순환 뒤 (시.분)", "00.00", "시.분")],
             preload=True,
@@ -162,8 +172,8 @@ FOLDERS["01_stopwatch"] = dict(
                  "`o_sw_lap` = 1, `led[7]` = 1, `o_sw_*` 100 ms 동안 고정, `U_LAP_CONTROLLER.i_cnt_msec` 은 9 번 이상 증가"),
                 ("P2", "D 한 번 더", "3 · 7", "`o_sw_lap` = 0, `o_sw_*` = `i_cnt_*`"),
                 ("P3", "랩 · 동작 중 L → R → L", "4 · 5 · 7",
-                 "동작 중 L: `o_sw_clear` 안 나옴, 랩 유지 / 정지 후 L: `o_sw_clear` 펄스 → `o_sw_lap` 0, 값 0"),
-                ("P4", "정지 중 D → R", "5 · 7", "정지 값 고정 표시, 다시 동작해도 `o_sw_*` 고정 · `i_cnt_*` 만 증가"),
+                 "`c_state` RUN 중 L: `o_sw_clear` 안 나옴, 랩 유지 / R → STOP 후 L: `o_sw_clear` 펄스 → `o_sw_lap` 0, 값 0"),
+                ("P4", "정지 중 D → R", "5 · 7", "`c_state` STOP 에서 랩 (랩은 FSM 이 아니라 데이터패스), R → RUN 이어도 `o_sw_*` 고정 · `i_cnt_*` 만 증가"),
                 ("P5", "동작 중 00:00:59.98 프리로드 직후 D", "3 · 7",
                  "랩 값 `o_sw_sec`.`o_sw_msec` = 59.98, 내부 `i_cnt_min` = 1 로 넘어감"),
                 ("P6", "set_sw2 = 1 로 랩 중 FND, 시.분 화면 200 ms", "8 · 9",
@@ -187,9 +197,10 @@ def tm_steps(btns):
              "누른 뒤 1.75 ~ 2.0 ms 에 10 ns 펄스 1 개", "한 번 누름 = 펄스 1 개"),
         step("화면 선택 · 버튼 게이팅", [("SEL", "w_sel_tm")] + [("GATE_TM", "w_tm_btn_" + b) for b in btns],
              "o_btn 과 같은 클럭", "w_sel_tm = timer_sw4. 타이머 화면일 때만 o_btn 이 w_tm_btn_X 로 지나감"),
-        step("타이머 컨트롤", [("TCU", p) for p in ("o_tm_add", "o_tm_amount", "o_tm_run", "o_tm_clear", "o_tm_alarm")],
+        step("타이머 컨트롤 · FSM", [("TCU", p) for p in ("o_tm_add", "o_tm_amount", "o_tm_run", "o_tm_clear", "o_tm_alarm")],
              "add · amount · clear: 버튼 펄스와 같은 10 ns<br>run · alarm: 다음 클럭",
-             "SET: U/R/D → o_tm_add 펄스 + o_tm_amount 0/1/2, L → o_tm_run 1 / RUN: L → o_tm_clear / 0 이 되면 o_tm_alarm 1"),
+             "SET: U/R/D → o_tm_add 펄스 + o_tm_amount 0/1/2, L → o_tm_run 1 / RUN: L → o_tm_clear / 0 이 되면 o_tm_alarm 1",
+             extra="**FSM**: 같은 블록 Objects 의 `c_state` · `n_state` (SET / RUN / ALARM). `o_tm_run` = (c_state == RUN), `o_tm_alarm` = (c_state == ALARM)"),
         step("10 ms tick", [("TICKGEN", "o_tick_10ms")], "10 ms 마다 10 ns 펄스", "o_tm_run = 1 일 때만 타이머가 줄어든다"),
         step("타이머 값", [("TDP", p) for p in ("o_tm_msec", "o_tm_sec", "o_tm_min", "o_tm_zero")],
              "더하기: o_tm_add 다음 클럭 / 줄이기: tick 다음 클럭에 −1",
@@ -206,6 +217,14 @@ def tm_steps(btns):
 
 FOLDERS["02_timer"] = dict(
     title="02_timer — 타이머 동작 확인 안내서 (발표: 정보윤)",
+    fsm=[
+        "### FSM 상태 (`U_TIMER_CONTROL_UNIT` 의 `c_state` · `n_state`)", "",
+        "| 지금 상태 | 조건 | 다음 상태 | 출력 |", "|---|---|---|---|",
+        "| SET (리셋) | L & `i_tm_zero` = 0 | RUN | U / R / D → `o_tm_add` 10 ns + `o_tm_amount` 0 / 1 / 2 (같은 10 ns). L 인데 0 이면 SET 그대로 |",
+        "| RUN | L | SET | `o_tm_run` = 1. L 이면 `o_tm_clear` 10 ns (값 0). U · R · D 무시 |",
+        "| RUN | `i_tm_zero` = 1 (0 이 됨) | ALARM | 다음 클럭에 `o_tm_run` 0 · `o_tm_alarm` 1 이 동시에 |",
+        "| ALARM | 아무 버튼 | SET | `o_tm_alarm` = 1. 버튼은 끄기로만 쓰임 (`o_tm_add` 안 나옴) |",
+    ],
     spec=[
         "| 상태 | 버튼 (timer_sw4 = 1) | 동작 |", "|---|---|---|",
         "| SET | U / R / D | +10 초 / +1 분 / +10 분, **최대 59:59** (넘으면 59:59) |",
@@ -224,8 +243,8 @@ FOLDERS["02_timer"] = dict(
             steps=tm_steps("RLUD"),
             phases=[
                 ("P1", "리셋 후 timer_sw4 = 1", "4 · 8 · 9 · 10", "`w_disp_mode` = 1, `led` = 0020 (led5), FND \"00.00\""),
-                ("P2", "00:00 에서 L", "5", "`o_tm_run` 0 그대로 (`i_tm_zero` = 1 이라 시작 안 함), `o_tm_alarm` 0"),
-                ("P3", "U × 5 → U", "5 · 7 · 9", "`o_tm_add` 펄스 + `o_tm_amount` 0 마다 +10 초: 00:50 → **01:00** (초 → 분 올림), FND \"01.00\""),
+                ("P2", "00:00 에서 L", "5", "`c_state` SET 그대로 (`i_tm_zero` = 1 이라 `n_state` 도 SET), `o_tm_run` 0, `o_tm_alarm` 0"),
+                ("P3", "U × 5 → U", "5 · 7 · 9", "`c_state` SET 에서 U 마다 `o_tm_add` 펄스 + `o_tm_amount` 0 → +10 초: 00:50 → **01:00** (초 → 분 올림), FND \"01.00\""),
                 ("P4", "R → D → U", "5 · 7", "`o_tm_amount` 1 / 2 / 0: 01:00 → 11:00 → 11:10"),
                 ("P5", "D × 5 → R × 9 → U × 5 → U", "7 · 9", "50:00 → 59:00 → 59:50 → **59:59** (60:00 아님), FND \"59.59\""),
                 ("P6", "59:59 에서 U, R, D", "5 · 7", "`o_tm_add` 펄스가 나와도 `o_tm_*` 59:59 유지"),
@@ -239,9 +258,9 @@ FOLDERS["02_timer"] = dict(
             steps=tm_steps("LUD"),
             phases=[
                 ("P1", "U(00:10) → L, 끝까지 (약 10 초)", "5 · 6 · 7 · 10",
-                 "`o_tm_run` 상승 → `o_tm_alarm` 상승 간격 **9.990 초 초과 ~ 10.000 초**, 그때 `o_tm_*` = 0, `o_tm_run` 0, 동작 중 `led[6]` = 1"),
-                ("P2", "알람 1.5 초 (P1 에 이어서)", "10", "`o_wt_msec` ≥ 50 이면 `led` = FFFF, 아니면 0000. 저절로 안 꺼짐"),
-                ("P3", "D 로 알람 끄기 (P2 에 이어서)", "5 · 7 · 10", "`o_tm_alarm` 0, `o_tm_add` **안 나옴** → 값 00:00 그대로, `led` = 0020"),
+                 "`c_state` SET → RUN → ALARM. RUN 진입 → ALARM 진입 간격 (= `o_tm_run` ↑ → `o_tm_alarm` ↑) **9.990 초 초과 ~ 10.000 초**, 그때 `o_tm_*` = 0, 동작 중 `led[6]` = 1"),
+                ("P2", "알람 1.5 초 (P1 에 이어서)", "10", "`c_state` ALARM 유지. `o_wt_msec` ≥ 50 이면 `led` = FFFF, 아니면 0000. 저절로 안 꺼짐"),
+                ("P3", "D 로 알람 끄기 (P2 에 이어서)", "5 · 7 · 10", "`c_state` ALARM → SET, `o_tm_add` **안 나옴** → 값 00:00 그대로, `led` = 0020"),
                 ("P4", "동작 중 01:00.00, 10:00.00 프리로드", "6 · 7 · 9", "다음 tick 에 **00:59.99**, **09:59.99** (FND \"09.59\")"),
             ],
             fnd=[("P1 알람 때", "00.00", "분.초"), ("P4 10:00.00 다음 tick", "09.59", "분.초")],
@@ -253,13 +272,13 @@ FOLDERS["02_timer"] = dict(
             goal="동작 중 더하기 무시, L 취소, 다른 화면에서도 줄어들고 알람, 다른 화면 버튼으로 알람 안 꺼짐, sw4 우선",
             steps=tm_steps("RLUD"),
             phases=[
-                ("P1", "01:00 시작 후 U, R, D", "5 · 7", "`o_tm_add` **안 나옴**, 값은 약 30 ms 만큼만 줄어듦, `o_tm_run` 1 유지"),
-                ("P2", "동작 중 L", "5 · 7", "`o_tm_clear` 펄스 → **00:00.00**, `o_tm_run` 0, `o_tm_alarm` 0"),
+                ("P1", "01:00 시작 후 U, R, D", "5 · 7", "`c_state` RUN 유지, `o_tm_add` **안 나옴**, 값은 약 30 ms 만큼만 줄어듦"),
+                ("P2", "동작 중 L", "5 · 7", "`c_state` RUN → SET, 그 10 ns 에 `o_tm_clear` 펄스 → **00:00.00**"),
                 ("P3", "01:00 시작 → 시계 화면 → 00:00.30 프리로드", "4 · 7 · 9 · 10",
-                 "시계 화면에서도 줄어들어 `o_tm_alarm` 1, `led` 알람 패턴, FND 는 시계 \"12.00\""),
-                ("P4", "알람 중 시계 화면 U/D/L/R, 스톱워치 화면 D", "4 · 5", "`w_tm_btn_*` 모두 0 → `o_tm_alarm` **계속 1**"),
+                 "시계 화면에서도 `c_state` RUN → ALARM, `led` 알람 패턴, FND 는 시계 \"12.00\""),
+                ("P4", "알람 중 시계 화면 U/D/L/R, 스톱워치 화면 D", "4 · 5", "`w_tm_btn_*` 모두 0 → `c_state` **ALARM 유지**"),
                 ("P5", "timer_sw4 = 1 & mode_sw0 = 1 → R", "4 · 5 · 7 · 10",
-                 "`w_sel_tm` = 1, R 로 알람 꺼짐 · `o_tm_add` 안 나옴 (1 분 안 더해짐), `led` = 0020"),
+                 "`w_sel_tm` = 1, R 로 `c_state` ALARM → SET · `o_tm_add` 안 나옴 (1 분 안 더해짐), `led` = 0020"),
             ],
             fnd=[("P2 취소 뒤", "00.00", "분.초"), ("P3 시계 화면 (알람 중)", "12.00", "시계 시.분")],
             preload=True,
@@ -279,9 +298,10 @@ def wt_steps(btns, disp=("M_HOUR", "M_MIN")):
              "누른 뒤 1.75 ~ 2.0 ms 에 10 ns 펄스 1 개", "한 번 누름 = 펄스 1 개"),
         step("화면 선택 · 버튼 게이팅", [("SEL", "w_sel_wt")] + [("GATE_WT", "w_wt_btn_" + b) for b in btns],
              "o_btn 과 같은 클럭", "w_sel_wt = ~timer_sw4 & ~mode_sw0. 시계 화면일 때만 o_btn 이 w_wt_btn_X 로 지나감"),
-        step("시계 컨트롤", [("WCU", p) for p in ("o_wt_cursor", "o_wt_up", "o_wt_down")],
+        step("시계 컨트롤 · FSM", [("WCU", p) for p in ("o_wt_cursor", "o_wt_up", "o_wt_down")],
              "cursor: L/R 펄스 · set_sw2 다음 클럭<br>up · down: 버튼 펄스와 같은 10 ns",
-             "o_wt_cursor 0 분 일 · 1 분 십 · 2 시 · 3 설정 아님. 설정 아닐 때 up/down 안 나옴. U 와 D 같은 클럭이면 U"),
+             "o_wt_cursor 0 분 일 · 1 분 십 · 2 시 · 3 설정 아님. 설정 아닐 때 up/down 안 나옴. U 와 D 같은 클럭이면 U",
+             extra="**FSM**: 같은 블록 Objects 의 `c_state` · `n_state` (NORMAL / SET_MIN_1 / SET_MIN_10 / SET_HOUR). 커서 = 상태 (SET_MIN_1 → 0, SET_MIN_10 → 1, SET_HOUR → 2, NORMAL → 3)"),
         step("10 ms tick", [("TICKGEN", "o_tick_10ms")], "10 ms 마다 10 ns 펄스", "시계는 항상 흐른다 (설정 중에도)"),
         step("시계 값", [("WDP", p) for p in ("o_wt_msec", "o_wt_sec", "o_wt_min", "o_wt_hour")],
              "tick 다음 클럭에 +1 / up · down 다음 클럭에 커서 자리만 ±",
@@ -301,6 +321,16 @@ def wt_steps(btns, disp=("M_HOUR", "M_MIN")):
 
 FOLDERS["03_watch"] = dict(
     title="03_watch — 시계 동작 확인 안내서 (발표: 정안성)",
+    fsm=[
+        "### FSM 상태 (`U_WATCH_CONTROL_UNIT` 의 `c_state` · `n_state`)", "",
+        "| 지금 상태 (커서) | 조건 | 다음 상태 |", "|---|---|---|",
+        "| NORMAL (3, 리셋) | set_sw2 = 1 | SET_MIN_1 |",
+        "| SET_MIN_1 (0) | L / R / set_sw2 = 0 | SET_MIN_10 / SET_HOUR / NORMAL |",
+        "| SET_MIN_10 (1) | L / R / set_sw2 = 0 | SET_HOUR / SET_MIN_1 / NORMAL |",
+        "| SET_HOUR (2) | L / R / set_sw2 = 0 | SET_MIN_1 / SET_MIN_10 / NORMAL |",
+        "",
+        "우선순위: set_sw2 = 0 → L → R. 출력: `o_wt_cursor` = 상태 (괄호 안 숫자, 무어). `o_wt_up` = U, `o_wt_down` = D & ~U — SET_x 이고 set_sw2 = 1 일 때만, 버튼 펄스와 같은 10 ns (밀리).",
+    ],
     spec=[
         "리셋 = **12:00:00.00 (오후 12 시)**, 기본 12 시간 표시. 설정 모드 = 시계 화면(mode_sw0 = 0) + set_sw2 = 1", "",
         "| 버튼 | 동작 |", "|---|---|",
@@ -316,15 +346,15 @@ FOLDERS["03_watch"] = dict(
             goal="설정 아닐 때 버튼 무시, 커서 이동 · 양 끝 회전, 자리별 ± 회전, U 우선, 재진입 커서, 다른 화면 버튼 차단",
             steps=wt_steps("RLUD"),
             phases=[
-                ("P1", "리셋", "5 · 7 · 10 · 11", "12:00:00.00, `o_wt_cursor` = 3, `led` = 8009 (led0 · led3 · led15)"),
-                ("P2", "set_sw2 = 0 에서 U, D, L, R", "4 · 5 · 7", "`o_wt_up` · `o_wt_down` 안 나옴, 12:00 그대로, `o_wt_cursor` 3"),
-                ("P3", "set_sw2 = 1 → L × 3 → R × 3", "5", "진입 시 `o_wt_cursor` 0 / L: 0 → 1 → 2 → 0 / R: 0 → 2 → 1 → 0"),
-                ("P4", "커서 0, 12:59 프리로드 → U → D → D", "5 · 7", "12:00 (**시 13 아님**) → 12:59 → 12:58"),
-                ("P5", "커서 1, 12:55 프리로드 → U → D → D", "5 · 7", "12:05 → 12:55 → 12:45 (분 십 ±10 회전)"),
-                ("P6", "커서 2 에서 U → 23:30 프리로드 → U → D", "5 · 7", "13:00 → 00:30 (**분 그대로**) → 23:30"),
+                ("P1", "리셋", "5 · 7 · 10 · 11", "`c_state` NORMAL, 12:00:00.00, `o_wt_cursor` = 3, `led` = 8009 (led0 · led3 · led15)"),
+                ("P2", "set_sw2 = 0 에서 U, D, L, R", "4 · 5 · 7", "`c_state` NORMAL 유지, `o_wt_up` · `o_wt_down` 안 나옴, 12:00 그대로"),
+                ("P3", "set_sw2 = 1 → L × 3 → R × 3", "5", "`c_state` NORMAL → SET_MIN_1 / L: SET_MIN_1 → SET_MIN_10 → SET_HOUR → SET_MIN_1 / R: 반대 (`o_wt_cursor` 0 → 1 → 2 → 0)"),
+                ("P4", "커서 0, 12:59 프리로드 → U → D → D", "5 · 7", "`c_state` SET_MIN_1: 12:00 (**시 13 아님**) → 12:59 → 12:58"),
+                ("P5", "커서 1, 12:55 프리로드 → U → D → D", "5 · 7", "`c_state` SET_MIN_10: 12:05 → 12:55 → 12:45 (분 십 ±10 회전)"),
+                ("P6", "커서 2 에서 U → 23:30 프리로드 → U → D", "5 · 7", "`c_state` SET_HOUR: 13:00 → 00:30 (**분 그대로**) → 23:30"),
                 ("P7", "U 와 D 를 같은 순간", "3 · 5 · 7", "`U_BD_U.o_btn` · `U_BD_D.o_btn` 같은 클럭 → `o_wt_up` 만 1 → 12:01"),
-                ("P8", "커서를 시로 옮긴 뒤 set_sw2 끔 → 다시 켬", "5", "끄면 `o_wt_cursor` 3, 다시 켜면 **0**"),
-                ("P9", "set_sw2 = 1 인 채 스톱워치 · 타이머 화면에서 버튼", "4 · 5 · 7", "`w_wt_btn_*` 모두 0, 시간 · 커서 안 바뀜, 시계는 계속 흐름"),
+                ("P8", "커서를 시로 옮긴 뒤 set_sw2 끔 → 다시 켬", "5", "SET_HOUR → (끔) NORMAL → (켬) **SET_MIN_1** (`o_wt_cursor` 3 → 0)"),
+                ("P9", "set_sw2 = 1 인 채 스톱워치 · 타이머 화면에서 버튼", "4 · 5 · 7", "`w_wt_btn_*` 모두 0 → `c_state` 그대로, 시간 안 바뀜, 시계는 계속 흐름"),
             ],
             fnd=[("P1 리셋 (시.분)", "12.00", "시.분, 12 시간")],
             preload=True,
@@ -340,7 +370,7 @@ FOLDERS["03_watch"] = dict(
                 ("P3", "00:59:59.95 프리로드", "5 · 6", "**01:00:00.00**"),
                 ("P4", "23:59:59.95 프리로드 (시.분, 12 시간)", "5 · 6 · 7 · 9 · 10",
                  "직후 `o_wt_pm` 1 · `led[15]` 1 → **00:00:00.00** 에서 `o_wt_pm` 0 · `led[15]` 0, `o_wt_hour_disp` 12, FND \"12.00\""),
-                ("P5", "설정 모드에서 23:59:59.95 프리로드", "4 · 6", "`o_wt_cursor` ≠ 3 (설정 중) 이어도 00:00:00.00 으로 넘어감"),
+                ("P5", "설정 모드에서 23:59:59.95 프리로드", "4 · 6", "`c_state` SET_MIN_1 (설정 중) 이어도 00:00:00.00 으로 넘어감"),
             ],
             fnd=[("P4 자정 뒤 (시.분, 12 시간)", "12.00", "시.분")],
             preload=True,
@@ -355,7 +385,7 @@ FOLDERS["03_watch"] = dict(
                  "12 시간: 0 → 12, 1~12 그대로, 13~23 → −12 / 24 시간: 그대로. `led[15]` = 12 시간 & 12 시 이상"),
                 ("P2", "12:34, 13:05 프리로드", "8 · 10 · 11", "FND \"12.34\" / 24 시간 \"13.05\" / 12 시간 \"01.05\" + `led[15]` 1"),
                 ("P3", "12:34 에서 설정, 커서 0 · 1 · 2 각 1 초", "5 · 10",
-                 "`o_wt_msec` ≥ 50 동안 커서 자리만 빈칸 (`U_DOT.o_blink_off` = 1): \"12.3_\" / \"12._4\" / \"1_.34\". set_sw2 끄면 점멸 없음"),
+                 "`c_state` SET_MIN_1 / SET_MIN_10 / SET_HOUR 에서 `o_wt_msec` ≥ 50 동안 커서 자리만 빈칸 (`U_DOT.o_blink_off` = 1): \"12.3_\" / \"12._4\" / \"1_.34\". NORMAL 이면 점멸 없음"),
                 ("P4", "display_mode_sw1 × hour24_sw3 × 오전/오후 (9 시, 21 시) 8 경우", "11",
                  "`led` = led0 + (sw1 ? led2 : led3) + (12 시간 & 오후 ? led15)"),
             ],
@@ -390,7 +420,8 @@ FOLDERS["top"] = dict(
                      "샘플 8 개가 모두 1 이 된 순간 1 클럭. 누르고 있어도 다시 안 나옴 (자동 반복 없음)",
                      extra="샘플 레지스터: `dut/U_BD_U` 내부 `q_reg[7:0]` (4 kHz 마다 오른쪽으로 밀림)"),
                 step("버튼 게이팅", [("SEL", "w_sel_wt"), ("GATE_WT", "w_wt_btn_U")], "o_btn 과 같은 클럭", "시계 화면이라 o_btn 이 그대로 지나감"),
-                step("시계 컨트롤", [("WCU", "o_wt_up")], "버튼 펄스와 같은 10 ns", "설정 모드라 U 펄스가 o_wt_up 으로 나감"),
+                step("시계 컨트롤 · FSM", [("WCU", "o_wt_up")], "버튼 펄스와 같은 10 ns", "설정 모드라 U 펄스가 o_wt_up 으로 나감",
+                     extra="**FSM**: `c_state` · `n_state` 가 TB 내내 SET_MIN_1 (커서 0) 인지"),
                 step("시계 값", [("WDP", "o_wt_min")], "o_wt_up 다음 클럭", "인식된 눌림 1 번 = 분 +1"),
                 step("FND 출력 (최종)", [("FND", "o_fnd_com"), ("FND", "o_fnd_font")], "250 us 마다 자리 바뀜", "아래 'FND 결론' 표"),
                 step("LED", [("LED", "led")], "리셋 직후", "모든 스위치 0 → `led` = 8009"),
@@ -449,19 +480,44 @@ def check_steps(pg, steps):
                 raise SystemExit(f"단계 {i} '{s['name']}': {b}.{p} 포트 없음")
 
 
+CLK_STEP_TOP = step(
+    "클럭 · 리셋 (TB)", [("PIN_IN", "clk"), ("PIN_IN", "rst")],
+    "clk: 10 ns 주기 (100 MHz)<br>rst: 각 Phase 시작에 1 us 펄스",
+    "모든 '다음 클럭' 의 기준. rst = 1 동안 모든 블록 `i_rst` = 1 → FSM 은 리셋 상태 (STOP · NORMAL · SET), 값은 리셋값, "
+    "4 kHz · 10 ms 카운터도 0 부터 다시 셈 (tick 위상의 기준)")
+CLK_STEP_FND = step(
+    "클럭 · 리셋 (TB)", [("FIN", "i_rst")],
+    "clk: 10 ns 주기 (100 MHz)<br>rst: 각 Phase 시작에 1 us 펄스",
+    "TB 최상위 `clk` · `rst` 를 같이 넣는다. FND 컨트롤러는 `i_rst` 만 받고 (`i_rst` = Top `rst`), 자리 스캔은 `i_clk_4khz` 로 움직인다. "
+    "rst = 1 동안 `o_scan_sel` = 0")
+
+
+def with_clk(t):
+    """(단계, Phase) — 1 단계에 클럭 · 리셋을 넣고 Phase 의 단계 번호를 하나씩 민다"""
+    first = CLK_STEP_FND if t.get("page") == "fnd" else CLK_STEP_TOP
+    steps = [first] + t["steps"]
+    phases = [(p[0], p[1], re.sub(r"\d+", lambda m: str(int(m.group(0)) + 1), p[2]), p[3]) for p in t["phases"]]
+    # 리셋을 보는 Phase 는 1 단계 (클럭 · 리셋) 도 본다
+    phases = [(p[0], p[1], ("1 · " + p[2]) if p[1].startswith("리셋") else p[2], p[3]) for p in phases]
+    return steps, phases
+
+
 def figure(folder, t):
     pg = G.page_fnd() if t.get("page") == "fnd" else G.page_top()
-    check_steps(pg, t["steps"])
+    steps, _ = with_clk(t)
+    check_steps(pg, steps)
     hl = {}
-    for i, s in enumerate(t["steps"], 1):
+    for i, s in enumerate(steps, 1):
         for bp in s["ports"]:
             hl.setdefault(bp, i)
-    legend = [f"{s['name']}" for s in t["steps"]]
+    legend = [f"{s['name']}" for s in steps]
     svg = G.render(pg, highlight=hl, steps_legend=legend,
                    subtitle=f"{t['tb']} — {t['title']}  (번호 = README 단계, 색칠 안 된 선은 이 TB 에서 안 봄)")
     out = os.path.join(TB, folder, "img")
     os.makedirs(out, exist_ok=True)
-    G.to_png(svg, os.path.join(out, t["tb"] + ".png"), pg.W, pg.H)
+    png = os.path.join(out, t["tb"] + ".png")
+    G.to_png(svg, png, pg.W, pg.H)
+    return png
 
 
 def port_cell(b, p):
@@ -490,8 +546,12 @@ COMMON = """
    - 이름 규칙: 모듈 출력 `o_xxx` → Top 선 `w_xxx` → 다음 모듈 입력 `i_xxx` (몸통 이름이 같다). 전체 연결은 `../../source_file/PORT_MAP.md`
 4. **Radix**: 시간 값(`o_sw_msec` 등) = Unsigned Decimal, `fnd_com` = Binary, `fnd_font` = Hexadecimal
 5. **10 ns 펄스 찾기**: `o_clk_4khz`, `o_tick_10ms`, `o_btn` 은 10 ns 짜리라 줌을 당기면 안 보인다 → 신호를 고르고 툴바의 *Go to next transition* 으로 하나씩 이동
-6. 파형은 `clk` 를 빼고 보는 것을 권장 (수 초 시뮬이면 파일이 매우 커짐). 긴 TB 는 파일 맨 위 `RUN_PHASE` 를 Phase 번호로 바꿔 그 Phase 만 실행
-7. **프리로드**: `[INFO][PRELOAD]` 가 찍힌 시각에 TB 가 카운터에 경계 바로 앞 값(예 23:59:59.95)을 직접 넣는다 (주파수는 그대로 100 MHz). 경계를 넘는 것은 그 뒤 실제 tick 으로 본다
+6. **`clk` · `rst` 는 항상 같이 넣는다** (1 단계). 모든 "다음 클럭" 타이밍의 기준이다. 수 초짜리 시뮬에서 `clk` 를 넣으면 파형이 커지므로, 긴 TB 는 파일 맨 위 `RUN_PHASE` 를 Phase 번호로 바꿔 그 Phase 만 실행
+7. **FSM 상태 보기**: 컨트롤 유닛 (`U_STOPWATCH_CONTROL_UNIT` · `U_WATCH_CONTROL_UNIT` · `U_TIMER_CONTROL_UNIT`) 을 고르면 Objects 창에 포트 말고 `c_state` · `n_state` 도 있다. enum 이라 파형에 숫자 대신 **STOP · RUN · SET_MIN_1 · ALARM 같은 이름**으로 나온다
+   - `n_state` = 다음 상태 (조합): 버튼 펄스가 들어온 **그 10 ns** 에 바뀐다
+   - `c_state` = 현재 상태 (레지스터): **다음 클럭 엣지**에 `n_state` 값으로 바뀐다 → 출력 (`o_sw_run_stop` 등) 이 이때 바뀜
+   - 각 폴더의 "FSM 상태" 표와 Phase 표의 "상태" 를 같이 보면 된다
+8. **프리로드**: `[INFO][PRELOAD]` 가 찍힌 시각에 TB 가 카운터에 경계 바로 앞 값(예 23:59:59.95)을 직접 넣는다 (주파수는 그대로 100 MHz). 경계를 넘는 것은 그 뒤 실제 tick 으로 본다
 
 ## 1. 시간 단위 (파형에서 먼저 확인할 것)
 
@@ -525,13 +585,14 @@ def readme(folder):
     L = [f"# {F['title']}", "",
          "블록 다이어그램(`../../block_diagram.pdf`)의 **입력 → 출력 순서**로, 각 단계에서 **어느 블록의 어느 포트**를 파형에 넣어 볼지 안내한다. "
          "그림의 번호 · 색 = 표의 단계 번호.", "",
-         "## 이 기능의 사양", ""] + F["spec"] + [COMMON]
+         "## 이 기능의 사양", ""] + F["spec"] + ([""] + F["fsm"] if F.get("fsm") else []) + [COMMON]
     for n, t in enumerate(F["tbs"], 3):
         L += ["", "---", "", f"## {n}. `{t['tb']}.sv` — {t['title']}", "", f"**확인하는 것**: {t['goal']}", "",
               f"![{t['tb']}](img/{t['tb']}.png)", "",
               "### 단계 (파형에 넣는 순서)", "",
               "| 단계 | 블록 (Scope 경로) | 꺼낼 포트 | 시간 | 확인할 것 |", "|---|---|---|---|---|"]
-        for i, s in enumerate(t["steps"], 1):
+        steps, phases = with_clk(t)
+        for i, s in enumerate(steps, 1):
             scopes = []
             ports = []
             for b, p in s["ports"]:
@@ -539,11 +600,12 @@ def readme(folder):
                 if sc not in scopes:
                     scopes.append(sc)
                 ports.append(port_cell(b, p))
-            chk = s["check"] + (f"<br>더 보려면: {s['extra']}" if s["extra"] else "")
+            ex = s["extra"]
+            chk = s["check"] + ((f"<br>{ex}" if ex.startswith("**FSM**") else f"<br>더 보려면: {ex}") if ex else "")
             L.append(f"| **{i}** {s['name']} | {'<br>'.join('`' + x + '`' if '/' in x or x == 'dut' else x for x in scopes)} "
                      f"| {' '.join(ports)} | {s['timing']} | {chk} |")
         L += ["", "### Phase 별로 볼 곳", "", "| Phase | TB 가 하는 것 | 볼 단계 | 정상 |", "|---|---|---|---|"]
-        for ph in t["phases"]:
+        for ph in phases:
             L.append(f"| {ph[0]} | {ph[1]} | {ph[2]} | {ph[3]} |")
         if t.get("note"):
             L += ["", t["note"]]
@@ -555,13 +617,17 @@ def readme(folder):
     print("README:", out)
 
 
-def main(folders):
+def main(folders, show=False):
     for f in folders:
         for t in FOLDERS[f]["tbs"]:
-            figure(f, t)
+            png = figure(f, t)
             print("img:", f, t["tb"])
+            if show:
+                G.open_in_photos(png)
         readme(f)
 
 
 if __name__ == "__main__":
-    main(sys.argv[1:] or list(FOLDERS))
+    # python3 tb_guide.py [폴더 ...] [--open]  → --open 이면 만든 TB 그림을 Windows 사진 앱으로 열기
+    args = [a for a in sys.argv[1:] if a != "--open"]
+    main(args or list(FOLDERS), show="--open" in sys.argv)

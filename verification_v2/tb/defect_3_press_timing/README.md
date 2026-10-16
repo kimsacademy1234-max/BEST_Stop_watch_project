@@ -12,12 +12,14 @@ Design Sources = `../../source_file/*.v, *.sv` / Simulation Sources = `tb_f3_pre
 
 ## 파형 단계
 
+TB 최상위 `clk` · `rst` 는 항상 같이 넣는다 (모든 "다음 클럭" 의 기준, `../top/README.md` §0 의 6).
+
 | 단계 | 블록 (Scope 경로) | 꺼낼 포트 | 시간 | 확인할 것 |
 |---|---|---|---|---|
 | **1** 버튼 | TB 최상위 | `btn_R` (P1) · `btn_L` (P2) · `btn_U` (P3) | tick 기준 0 ~ 9 ms 옮겨 누름 | 누른 시점 |
 | **2** 4 kHz 샘플 | `dut/U_CLK_GEN_4KHZ` | `o_clk_4khz` | 250 us | tick 엣지 = 샘플 엣지 (1,000,000 = 40 × 25,000) |
 | **3** 디바운서 | `dut/U_BD_R` / `U_BD_L` / `U_BD_U` | `o_btn` | 누른 뒤 1.75 ~ 2.0 ms | 짧은 탭은 위상에 따라 없음 |
-| **4** 컨트롤 | `dut/U_STOPWATCH_CONTROL_UNIT` / `dut/U_TIMER_CONTROL_UNIT` | `o_sw_run_stop` / `o_tm_run`, `o_tm_alarm` | 버튼 펄스 다음 클럭 | 시작 시점 |
+| **4** 컨트롤 · FSM | `dut/U_STOPWATCH_CONTROL_UNIT` / `dut/U_TIMER_CONTROL_UNIT` | `o_sw_run_stop` / `o_tm_run`, `o_tm_alarm` + Objects 의 `c_state` · `n_state` | 버튼 펄스 다음 클럭 | 시작 시점 = `c_state` 가 RUN 이 되는 클럭 (P2 는 RUN → ALARM 까지) |
 | **5** 10 ms tick | `dut/U_TICK_GEN_100HZ` | `o_tick_10ms` | 10 ms | 시작과 첫 tick 사이 간격 = 오차 |
 | **6** 값 | `dut/U_STOPWATCH_DATAPATH` | `o_sw_sec`, `o_sw_msec` | tick 다음 클럭 | 같은 구간인데 count 가 100 / 101 |
 

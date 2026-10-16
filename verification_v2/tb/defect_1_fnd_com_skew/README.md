@@ -17,6 +17,8 @@ Simulation Sources = `tb_f1_com_skew.sv` + `fnd_monitor.sv`. 공통 사용법 ·
 
 ## 파형 단계
 
+TB 최상위 `clk` · `rst` 는 항상 같이 넣는다 (모든 "다음 클럭" 의 기준, `../top/README.md` §0 의 6).
+
 | 단계 | 블록 (Scope 경로) | 꺼낼 포트 | 시간 | 확인할 것 |
 |---|---|---|---|---|
 | **1** 결함 스위치 | TB 최상위 | `fault_sw15` | P2 에서 0 → 1 → 0 (20 ms 씩) | 1 동안만 지연 |
