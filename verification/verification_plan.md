@@ -206,7 +206,7 @@ FND 는 모든 TB 에서 "지금 나와야 할 값"(참조 모델)과 계속 비
 ## 7. 시뮬레이션 방법 (Vivado)
 
 1. **Design Sources**: `boyun/merged_v4/src/*.v`, `*.sv` (결함 TB 는 해당 결함 폴더의 `src/*`)
-2. **Simulation Sources**: 보고 싶은 TB 파일 + `verification/tb/common/fnd_monitor.sv` → TB 를 **Set as Top**
+2. **Simulation Sources**: 보고 싶은 TB 파일 + **같은 폴더의 `fnd_monitor.sv`** → TB 를 **Set as Top** (폴더마다 하나씩 들어 있음. 한 시뮬에 두 폴더의 모니터를 같이 넣으면 모듈 이름이 겹친다)
 3. **Run Simulation → Run All**
 4. 콘솔 마지막 줄 `[SUMMARY] ... => PASS / FAIL / DETECTED` 확인. `[FAIL]` 이나 `[DEFECT]` 줄의 시각으로 파형 창에서 이동
 5. 한 Phase 만 보려면 TB 맨 위 `RUN_PHASE` 를 그 번호로 바꾼다 (긴 TB 는 꼭)

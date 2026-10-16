@@ -68,7 +68,7 @@ if [ "$SIM" = "verilator" ]; then
     [ "$WAVE" = 1 ] && echo "note: --wave 는 Icarus 전용 (verification_plan.md). Verilator 는 로그만"
     verilator --binary --timing -j 0 -Wno-fatal -Wno-lint -Wno-style -Wno-MULTIDRIVEN \
         --top-module "$TOP" $DEFS \
-        "$TBFILE" tb/common/fnd_monitor.sv $EXTRA_SRCS $SRCS \
+        "$TBFILE" "$(dirname "$TBFILE")/fnd_monitor.sv" $EXTRA_SRCS $SRCS \
         --Mdir "$OUT/obj" -o sim > "$OUT/build.log" 2>&1 || { tail -n 30 "$OUT/build.log"; echo "== BUILD FAIL"; exit 1; }
     if [ "$BUILD_ONLY" = 1 ]; then echo "== BUILD OK: $OUT/obj/sim (run: $OUT/obj/sim $ARGS)"; exit 0; fi
     "$OUT/obj/sim" $ARGS 2>&1 | tee "$LOG"
@@ -76,7 +76,7 @@ else
     IDEFS=${DEFS//+define+/-D}
     [ "$WAVE" = 1 ] && ARGS="$ARGS +wave=$OUT/wave.vcd"
     iverilog -g2012 $IDEFS -s "$TOP" -o "$OUT/sim.vvp" \
-        "$TBFILE" tb/common/fnd_monitor.sv $EXTRA_SRCS $SRCS > "$OUT/build.log" 2>&1 || { tail -n 30 "$OUT/build.log"; echo "== BUILD FAIL"; exit 1; }
+        "$TBFILE" "$(dirname "$TBFILE")/fnd_monitor.sv" $EXTRA_SRCS $SRCS > "$OUT/build.log" 2>&1 || { tail -n 30 "$OUT/build.log"; echo "== BUILD FAIL"; exit 1; }
     if [ "$BUILD_ONLY" = 1 ]; then echo "== BUILD OK: $OUT/sim.vvp (run: vvp -n $OUT/sim.vvp $ARGS)"; exit 0; fi
     vvp -n "$OUT/sim.vvp" $ARGS 2>&1 | tee "$LOG"
 fi
