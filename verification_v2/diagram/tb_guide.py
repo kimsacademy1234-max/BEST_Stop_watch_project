@@ -517,7 +517,7 @@ def figure(folder, t):
     os.makedirs(out, exist_ok=True)
     png = os.path.join(out, t["tb"] + ".png")
     G.to_png(svg, png, pg.W, pg.H)
-    return png
+    return png, (svg, pg.W, pg.H)
 
 
 def port_cell(b, p):
@@ -584,7 +584,7 @@ def readme(folder):
     F = FOLDERS[folder]
     L = [f"# {F['title']}", "",
          "블록 다이어그램(`../../block_diagram.pdf`)의 **입력 → 출력 순서**로, 각 단계에서 **어느 블록의 어느 포트**를 파형에 넣어 볼지 안내한다. "
-         "그림의 번호 · 색 = 표의 단계 번호.", "",
+         "그림의 번호 · 색 = 표의 단계 번호. TB 그림 모음 PDF: " + f"[`{folder}_tb_figures.pdf`]({folder}_tb_figures.pdf)", "",
          "## 이 기능의 사양", ""] + F["spec"] + ([""] + F["fsm"] if F.get("fsm") else []) + [COMMON]
     for n, t in enumerate(F["tbs"], 3):
         L += ["", "---", "", f"## {n}. `{t['tb']}.sv` — {t['title']}", "", f"**확인하는 것**: {t['goal']}", "",
@@ -619,11 +619,20 @@ def readme(folder):
 
 def main(folders, show=False):
     for f in folders:
+        pages = []
         for t in FOLDERS[f]["tbs"]:
-            png = figure(f, t)
+            png, page = figure(f, t)
+            pages.append(page)
             print("img:", f, t["tb"])
             if show:
                 G.open_in_photos(png)
+        # 폴더의 TB 그림을 PDF 하나로 (TB 1 개 = 1 쪽, 벡터)
+        W = max(w for _, w, _ in pages)
+        H = max(h for _, _, h in pages)
+        pages = [(sv.replace(f'width="{w}" height="{h}"', f'width="{W}" height="{H}"', 1), W, H) for sv, w, h in pages]
+        pdf = os.path.join(TB, f, f"{f}_tb_figures.pdf")
+        G.to_pdf(pages, pdf)
+        print("pdf:", pdf)
         readme(f)
 
 

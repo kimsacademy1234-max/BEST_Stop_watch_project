@@ -13,7 +13,7 @@
 | `source_file/` | `boyun/merged_v4/src` 복사 → 포트 이름 통일 (동작 동일, 100 MHz 그대로). 원본 `boyun/merged_v4` 는 손대지 않음 |
 | `source_file/PORT_MAP.md` | 블록마다 입력 · 출력 포트와 연결 상대 (자동 생성) |
 | `block_diagram.pdf` | 1 쪽 Top 전체, 2 쪽 `U_FND_CONTROLLER` 내부. 선 이름 = 포트 이름, 블록의 선 개수 = 포트 개수 |
-| `tb/top`, `tb/01_stopwatch`, `tb/02_timer`, `tb/03_watch` | TB 11 개 (새 포트 이름) + 폴더마다 안내서 `README.md` + TB 별 색칠 그림 `img/*.png` |
+| `tb/top`, `tb/01_stopwatch`, `tb/02_timer`, `tb/03_watch` | TB 11 개 (새 포트 이름) + 폴더마다 안내서 `README.md` + TB 별 색칠 그림 `img/*.png` + 그림 모음 PDF `<폴더>_tb_figures.pdf` (TB 1 개 = 1 쪽) |
 | `tb/defect_1~4` | 결함 주입 TB 4 개 + 결함 src (F1 · F2 · F4, 주입기 포트도 같은 규칙) |
 | `diagram/` | 다이어그램 · 안내서 그림 생성 스크립트 |
 
