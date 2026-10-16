@@ -1,0 +1,291 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2300" height="1230" viewBox="0 0 2300 1230">
+<rect width="2300" height="1230" fill="#ffffff"/>
+<defs><marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="context-stroke"/></marker></defs>
+<text x="30.0" y="42.0" font-family="'Malgun Gothic','Noto Sans KR','Apple SD Gothic Neo',sans-serif" font-size="26" fill="#111" text-anchor="start" font-weight="bold" >U_FND_CONTROLLER (SW2_FND_CONTROLLER) 내부 — FND 자리별 출력이 만들어지는 길</text>
+<polyline points="180.0,188.0 330.0,188.0" fill="none" stroke="#4a4a4a" stroke-width="3.0" stroke-linejoin="round" marker-end="url(#arr)"/>
+<polyline points="180.0,188.0 230.0,188.0 230.0,942.0 300.0,942.0 300.0,978.0 330.0,978.0" fill="none" stroke="#4a4a4a" stroke-width="3.0" stroke-linejoin="round" marker-end="url(#arr)"/>
+<polyline points="180.0,338.0 330.0,338.0" fill="none" stroke="#4a4a4a" stroke-width="3.0" stroke-linejoin="round" marker-end="url(#arr)"/>
+<polyline points="180.0,488.0 330.0,488.0" fill="none" stroke="#4a4a4a" stroke-width="3.0" stroke-linejoin="round" marker-end="url(#arr)"/>
+<polyline points="180.0,638.0 330.0,638.0" fill="none" stroke="#4a4a4a" stroke-width="3.0" stroke-linejoin="round" marker-end="url(#arr)"/>
+<polyline points="180.0,818.0 330.0,818.0" fill="none" stroke="#7b3fbf" stroke-width="1.6" stroke-linejoin="round" marker-end="url(#arr)"/>
+<polyline points="180.0,842.0 330.0,842.0" fill="none" stroke="#4a4a4a" stroke-width="1.6" stroke-linejoin="round" marker-end="url(#arr)"/>
+<polyline points="180.0,1075.0 640.0,1075.0 640.0,188.0 720.0,188.0" fill="none" stroke="#4a4a4a" stroke-width="1.6" stroke-linejoin="round" marker-end="url(#arr)"/>
+<polyline points="180.0,1075.0 640.0,1075.0 640.0,528.0 720.0,528.0" fill="none" stroke="#4a4a4a" stroke-width="1.6" stroke-linejoin="round" marker-end="url(#arr)"/>
+<polyline points="180.0,1000.0 652.0,1000.0 652.0,212.0 720.0,212.0" fill="none" stroke="#4a4a4a" stroke-width="1.6" stroke-linejoin="round" marker-end="url(#arr)"/>
+<polyline points="180.0,1000.0 652.0,1000.0 652.0,552.0 720.0,552.0" fill="none" stroke="#4a4a4a" stroke-width="1.6" stroke-linejoin="round" marker-end="url(#arr)"/>
+<polyline points="180.0,1000.0 652.0,1000.0 652.0,1110.0 1440.0,1110.0 1440.0,482.8 1440.0,452.8" fill="none" stroke="#4a4a4a" stroke-width="1.6" stroke-linejoin="round" marker-end="url(#arr)"/>
+<polyline points="180.0,1050.0 664.0,1050.0 664.0,236.0 720.0,236.0" fill="none" stroke="#4a4a4a" stroke-width="1.6" stroke-linejoin="round" marker-end="url(#arr)"/>
+<polyline points="180.0,1050.0 664.0,1050.0 664.0,576.0 720.0,576.0" fill="none" stroke="#4a4a4a" stroke-width="1.6" stroke-linejoin="round" marker-end="url(#arr)"/>
+<polyline points="180.0,1025.0 676.0,1025.0 676.0,260.0 720.0,260.0" fill="none" stroke="#4a4a4a" stroke-width="3.0" stroke-linejoin="round" marker-end="url(#arr)"/>
+<polyline points="180.0,1025.0 676.0,1025.0 676.0,600.0 720.0,600.0" fill="none" stroke="#4a4a4a" stroke-width="3.0" stroke-linejoin="round" marker-end="url(#arr)"/>
+<polyline points="580.0,978.0 688.0,978.0 688.0,284.0 720.0,284.0" fill="none" stroke="#4a4a4a" stroke-width="1.6" stroke-linejoin="round" marker-end="url(#arr)"/>
+<polyline points="580.0,978.0 688.0,978.0 688.0,624.0 720.0,624.0" fill="none" stroke="#4a4a4a" stroke-width="1.6" stroke-linejoin="round" marker-end="url(#arr)"/>
+<polyline points="580.0,978.0 688.0,978.0 688.0,1100.0 1066.0,1100.0 1066.0,334.0 1140.0,334.0" fill="none" stroke="#4a4a4a" stroke-width="1.6" stroke-linejoin="round" marker-end="url(#arr)"/>
+<polyline points="580.0,978.0 688.0,978.0 688.0,1100.0 1066.0,1100.0 1066.0,694.0 1140.0,694.0" fill="none" stroke="#4a4a4a" stroke-width="1.6" stroke-linejoin="round" marker-end="url(#arr)"/>
+<polyline points="580.0,188.0 600.0,188.0 600.0,308.0 720.0,308.0" fill="none" stroke="#4a4a4a" stroke-width="3.0" stroke-linejoin="round" marker-end="url(#arr)"/>
+<polyline points="580.0,212.0 615.0,212.0 615.0,332.0 720.0,332.0" fill="none" stroke="#4a4a4a" stroke-width="3.0" stroke-linejoin="round" marker-end="url(#arr)"/>
+<polyline points="580.0,338.0 620.0,338.0 620.0,356.0 720.0,356.0" fill="none" stroke="#4a4a4a" stroke-width="3.0" stroke-linejoin="round" marker-end="url(#arr)"/>
+<polyline points="580.0,362.0 635.0,362.0 635.0,380.0 720.0,380.0" fill="none" stroke="#4a4a4a" stroke-width="3.0" stroke-linejoin="round" marker-end="url(#arr)"/>
+<polyline points="580.0,488.0 600.0,488.0 600.0,648.0 720.0,648.0" fill="none" stroke="#4a4a4a" stroke-width="3.0" stroke-linejoin="round" marker-end="url(#arr)"/>
+<polyline points="580.0,512.0 615.0,512.0 615.0,672.0 720.0,672.0" fill="none" stroke="#4a4a4a" stroke-width="3.0" stroke-linejoin="round" marker-end="url(#arr)"/>
+<polyline points="580.0,638.0 620.0,638.0 620.0,696.0 720.0,696.0" fill="none" stroke="#4a4a4a" stroke-width="3.0" stroke-linejoin="round" marker-end="url(#arr)"/>
+<polyline points="580.0,662.0 635.0,662.0 635.0,720.0 720.0,720.0" fill="none" stroke="#4a4a4a" stroke-width="3.0" stroke-linejoin="round" marker-end="url(#arr)"/>
+<polyline points="990.0,188.0 1000.0,188.0 1000.0,190.0 1140.0,190.0" fill="none" stroke="#4a4a4a" stroke-width="3.0" stroke-linejoin="round" marker-end="url(#arr)"/>
+<polyline points="990.0,528.0 1000.0,528.0 1000.0,550.0 1140.0,550.0" fill="none" stroke="#4a4a4a" stroke-width="3.0" stroke-linejoin="round" marker-end="url(#arr)"/>
+<polyline points="990.0,212.0 1014.0,212.0 1014.0,214.0 1140.0,214.0" fill="none" stroke="#4a4a4a" stroke-width="3.0" stroke-linejoin="round" marker-end="url(#arr)"/>
+<polyline points="990.0,552.0 1014.0,552.0 1014.0,574.0 1140.0,574.0" fill="none" stroke="#4a4a4a" stroke-width="3.0" stroke-linejoin="round" marker-end="url(#arr)"/>
+<polyline points="990.0,236.0 1028.0,236.0 1028.0,238.0 1140.0,238.0" fill="none" stroke="#4a4a4a" stroke-width="3.0" stroke-linejoin="round" marker-end="url(#arr)"/>
+<polyline points="990.0,576.0 1028.0,576.0 1028.0,598.0 1140.0,598.0" fill="none" stroke="#4a4a4a" stroke-width="3.0" stroke-linejoin="round" marker-end="url(#arr)"/>
+<polyline points="990.0,260.0 1042.0,260.0 1042.0,262.0 1140.0,262.0" fill="none" stroke="#4a4a4a" stroke-width="3.0" stroke-linejoin="round" marker-end="url(#arr)"/>
+<polyline points="990.0,600.0 1042.0,600.0 1042.0,622.0 1140.0,622.0" fill="none" stroke="#4a4a4a" stroke-width="3.0" stroke-linejoin="round" marker-end="url(#arr)"/>
+<polyline points="580.0,818.0 600.0,818.0 600.0,1130.0 1290.0,1130.0 1290.0,440.0 1195.0,440.0 1195.0,372.6" fill="none" stroke="#7b3fbf" stroke-width="3.0" stroke-linejoin="round" marker-end="url(#arr)"/>
+<polyline points="580.0,818.0 600.0,818.0 600.0,1130.0 1195.0,1130.0 1195.0,762.6 1195.0,732.6" fill="none" stroke="#7b3fbf" stroke-width="3.0" stroke-linejoin="round" marker-end="url(#arr)"/>
+<polyline points="580.0,818.0 600.0,818.0 1660.0,818.0" fill="none" stroke="#7b3fbf" stroke-width="3.0" stroke-linejoin="round" marker-end="url(#arr)"/>
+<polyline points="1250.0,274.0 1330.0,274.0 1330.0,410.0 1400.0,410.0" fill="none" stroke="#4a4a4a" stroke-width="1.6" stroke-linejoin="round" marker-end="url(#arr)"/>
+<polyline points="1250.0,634.0 1345.0,634.0 1345.0,434.0 1400.0,434.0" fill="none" stroke="#4a4a4a" stroke-width="1.6" stroke-linejoin="round" marker-end="url(#arr)"/>
+<polyline points="1480.0,422.0 1660.0,422.0 1660.0,438.0" fill="none" stroke="#4a4a4a" stroke-width="1.6" stroke-linejoin="round" marker-end="url(#arr)"/>
+<polyline points="1920.0,438.0 2080.0,438.0" fill="none" stroke="#4a4a4a" stroke-width="3.0" stroke-linejoin="round" marker-end="url(#arr)"/>
+<polyline points="1920.0,818.0 2080.0,818.0" fill="none" stroke="#4a4a4a" stroke-width="3.0" stroke-linejoin="round" marker-end="url(#arr)"/>
+<circle cx="230.0" cy="188.0" r="3.2" fill="#4a4a4a"/>
+<circle cx="640.0" cy="1075.0" r="3.2" fill="#4a4a4a"/>
+<circle cx="640.0" cy="1075.0" r="3.2" fill="#4a4a4a"/>
+<circle cx="652.0" cy="1000.0" r="3.2" fill="#4a4a4a"/>
+<circle cx="652.0" cy="1000.0" r="3.2" fill="#4a4a4a"/>
+<circle cx="652.0" cy="1000.0" r="3.2" fill="#4a4a4a"/>
+<circle cx="664.0" cy="1050.0" r="3.2" fill="#4a4a4a"/>
+<circle cx="664.0" cy="1050.0" r="3.2" fill="#4a4a4a"/>
+<circle cx="676.0" cy="1025.0" r="3.2" fill="#4a4a4a"/>
+<circle cx="676.0" cy="1025.0" r="3.2" fill="#4a4a4a"/>
+<circle cx="688.0" cy="978.0" r="3.2" fill="#4a4a4a"/>
+<circle cx="688.0" cy="978.0" r="3.2" fill="#4a4a4a"/>
+<circle cx="688.0" cy="978.0" r="3.2" fill="#4a4a4a"/>
+<circle cx="688.0" cy="978.0" r="3.2" fill="#4a4a4a"/>
+<circle cx="600.0" cy="818.0" r="3.2" fill="#7b3fbf"/>
+<circle cx="600.0" cy="818.0" r="3.2" fill="#7b3fbf"/>
+<circle cx="600.0" cy="818.0" r="3.2" fill="#7b3fbf"/>
+<rect x="20" y="110" width="160" height="960" rx="8" fill="#fdf1e7" stroke="#c05621" stroke-width="2" />
+<text x="100.0" y="130.0" font-family="'Malgun Gothic','Noto Sans KR','Apple SD Gothic Neo',sans-serif" font-size="13" fill="#c05621" text-anchor="middle" font-weight="bold" >입력 포트</text>
+<rect x="177" y="185" width="6" height="6" fill="#c05621"/>
+<text x="173.0" y="192.0" font-family="Consolas,'D2Coding','Courier New',monospace" font-size="11" fill="#222" text-anchor="end" font-weight="normal" >i_disp_msec[6:0]</text>
+<rect x="177" y="335" width="6" height="6" fill="#c05621"/>
+<text x="173.0" y="342.0" font-family="Consolas,'D2Coding','Courier New',monospace" font-size="11" fill="#222" text-anchor="end" font-weight="normal" >i_disp_sec[5:0]</text>
+<rect x="177" y="485" width="6" height="6" fill="#c05621"/>
+<text x="173.0" y="492.0" font-family="Consolas,'D2Coding','Courier New',monospace" font-size="11" fill="#222" text-anchor="end" font-weight="normal" >i_disp_min[5:0]</text>
+<rect x="177" y="635" width="6" height="6" fill="#c05621"/>
+<text x="173.0" y="642.0" font-family="Consolas,'D2Coding','Courier New',monospace" font-size="11" fill="#222" text-anchor="end" font-weight="normal" >i_disp_hour[5:0]</text>
+<rect x="177" y="839" width="6" height="6" fill="#c05621"/>
+<text x="173.0" y="846.0" font-family="Consolas,'D2Coding','Courier New',monospace" font-size="11" fill="#222" text-anchor="end" font-weight="normal" >i_rst</text>
+<rect x="177" y="815" width="6" height="6" fill="#c05621"/>
+<text x="173.0" y="822.0" font-family="Consolas,'D2Coding','Courier New',monospace" font-size="11" fill="#222" text-anchor="end" font-weight="normal" >i_clk_4khz</text>
+<rect x="177" y="997" width="6" height="6" fill="#c05621"/>
+<text x="173.0" y="1004.0" font-family="Consolas,'D2Coding','Courier New',monospace" font-size="11" fill="#222" text-anchor="end" font-weight="normal" >i_disp_mode</text>
+<rect x="177" y="1022" width="6" height="6" fill="#c05621"/>
+<text x="173.0" y="1029.0" font-family="Consolas,'D2Coding','Courier New',monospace" font-size="11" fill="#222" text-anchor="end" font-weight="normal" >i_wt_cursor[1:0]</text>
+<rect x="177" y="1047" width="6" height="6" fill="#c05621"/>
+<text x="173.0" y="1054.0" font-family="Consolas,'D2Coding','Courier New',monospace" font-size="11" fill="#222" text-anchor="end" font-weight="normal" >i_sel_wt</text>
+<rect x="177" y="1072" width="6" height="6" fill="#c05621"/>
+<text x="173.0" y="1079.0" font-family="Consolas,'D2Coding','Courier New',monospace" font-size="11" fill="#222" text-anchor="end" font-weight="normal" >i_set_sw2</text>
+<rect x="330" y="130" width="250" height="104" rx="8" fill="#eef3fb" stroke="#3b5b92" stroke-width="2" />
+<text x="455.0" y="149.0" font-family="Consolas,'D2Coding','Courier New',monospace" font-size="13" fill="#1a2f55" text-anchor="middle" font-weight="bold" >U_MSEC</text>
+<text x="455.0" y="166.0" font-family="Consolas,'D2Coding','Courier New',monospace" font-size="11" fill="#5a6d8f" text-anchor="middle" font-weight="normal" >digit_splitter</text>
+<rect x="327" y="185" width="6" height="6" fill="#3b5b92"/>
+<text x="337.0" y="192.0" font-family="Consolas,'D2Coding','Courier New',monospace" font-size="11" fill="#222" text-anchor="start" font-weight="normal" >i_value[6:0]</text>
+<rect x="577" y="185" width="6" height="6" fill="#3b5b92"/>
+<text x="573.0" y="192.0" font-family="Consolas,'D2Coding','Courier New',monospace" font-size="11" fill="#222" text-anchor="end" font-weight="normal" >o_digit1[3:0]</text>
+<rect x="577" y="209" width="6" height="6" fill="#3b5b92"/>
+<text x="573.0" y="216.0" font-family="Consolas,'D2Coding','Courier New',monospace" font-size="11" fill="#222" text-anchor="end" font-weight="normal" >o_digit10[3:0]</text>
+<rect x="330" y="280" width="250" height="104" rx="8" fill="#eef3fb" stroke="#3b5b92" stroke-width="2" />
+<text x="455.0" y="299.0" font-family="Consolas,'D2Coding','Courier New',monospace" font-size="13" fill="#1a2f55" text-anchor="middle" font-weight="bold" >U_SEC</text>
+<text x="455.0" y="316.0" font-family="Consolas,'D2Coding','Courier New',monospace" font-size="11" fill="#5a6d8f" text-anchor="middle" font-weight="normal" >digit_splitter</text>
+<rect x="327" y="335" width="6" height="6" fill="#3b5b92"/>
+<text x="337.0" y="342.0" font-family="Consolas,'D2Coding','Courier New',monospace" font-size="11" fill="#222" text-anchor="start" font-weight="normal" >i_value[5:0]</text>
+<rect x="577" y="335" width="6" height="6" fill="#3b5b92"/>
+<text x="573.0" y="342.0" font-family="Consolas,'D2Coding','Courier New',monospace" font-size="11" fill="#222" text-anchor="end" font-weight="normal" >o_digit1[3:0]</text>
+<rect x="577" y="359" width="6" height="6" fill="#3b5b92"/>
+<text x="573.0" y="366.0" font-family="Consolas,'D2Coding','Courier New',monospace" font-size="11" fill="#222" text-anchor="end" font-weight="normal" >o_digit10[3:0]</text>
+<rect x="330" y="430" width="250" height="104" rx="8" fill="#eef3fb" stroke="#3b5b92" stroke-width="2" />
+<text x="455.0" y="449.0" font-family="Consolas,'D2Coding','Courier New',monospace" font-size="13" fill="#1a2f55" text-anchor="middle" font-weight="bold" >U_MIN</text>
+<text x="455.0" y="466.0" font-family="Consolas,'D2Coding','Courier New',monospace" font-size="11" fill="#5a6d8f" text-anchor="middle" font-weight="normal" >digit_splitter</text>
+<rect x="327" y="485" width="6" height="6" fill="#3b5b92"/>
+<text x="337.0" y="492.0" font-family="Consolas,'D2Coding','Courier New',monospace" font-size="11" fill="#222" text-anchor="start" font-weight="normal" >i_value[5:0]</text>
+<rect x="577" y="485" width="6" height="6" fill="#3b5b92"/>
+<text x="573.0" y="492.0" font-family="Consolas,'D2Coding','Courier New',monospace" font-size="11" fill="#222" text-anchor="end" font-weight="normal" >o_digit1[3:0]</text>
+<rect x="577" y="509" width="6" height="6" fill="#3b5b92"/>
+<text x="573.0" y="516.0" font-family="Consolas,'D2Coding','Courier New',monospace" font-size="11" fill="#222" text-anchor="end" font-weight="normal" >o_digit10[3:0]</text>
+<rect x="330" y="580" width="250" height="104" rx="8" fill="#eef3fb" stroke="#3b5b92" stroke-width="2" />
+<text x="455.0" y="599.0" font-family="Consolas,'D2Coding','Courier New',monospace" font-size="13" fill="#1a2f55" text-anchor="middle" font-weight="bold" >U_HOUR</text>
+<text x="455.0" y="616.0" font-family="Consolas,'D2Coding','Courier New',monospace" font-size="11" fill="#5a6d8f" text-anchor="middle" font-weight="normal" >digit_splitter</text>
+<rect x="327" y="635" width="6" height="6" fill="#3b5b92"/>
+<text x="337.0" y="642.0" font-family="Consolas,'D2Coding','Courier New',monospace" font-size="11" fill="#222" text-anchor="start" font-weight="normal" >i_value[5:0]</text>
+<rect x="577" y="635" width="6" height="6" fill="#3b5b92"/>
+<text x="573.0" y="642.0" font-family="Consolas,'D2Coding','Courier New',monospace" font-size="11" fill="#222" text-anchor="end" font-weight="normal" >o_digit1[3:0]</text>
+<rect x="577" y="659" width="6" height="6" fill="#3b5b92"/>
+<text x="573.0" y="666.0" font-family="Consolas,'D2Coding','Courier New',monospace" font-size="11" fill="#222" text-anchor="end" font-weight="normal" >o_digit10[3:0]</text>
+<rect x="330" y="760" width="250" height="104" rx="8" fill="#eef3fb" stroke="#3b5b92" stroke-width="2" />
+<text x="455.0" y="779.0" font-family="Consolas,'D2Coding','Courier New',monospace" font-size="13" fill="#1a2f55" text-anchor="middle" font-weight="bold" >U_COUNTER8</text>
+<text x="455.0" y="796.0" font-family="Consolas,'D2Coding','Courier New',monospace" font-size="11" fill="#5a6d8f" text-anchor="middle" font-weight="normal" >counter8</text>
+<rect x="327" y="815" width="6" height="6" fill="#3b5b92"/>
+<text x="337.0" y="822.0" font-family="Consolas,'D2Coding','Courier New',monospace" font-size="11" fill="#222" text-anchor="start" font-weight="normal" >i_clk_4khz</text>
+<rect x="327" y="839" width="6" height="6" fill="#3b5b92"/>
+<text x="337.0" y="846.0" font-family="Consolas,'D2Coding','Courier New',monospace" font-size="11" fill="#222" text-anchor="start" font-weight="normal" >i_rst</text>
+<rect x="577" y="815" width="6" height="6" fill="#3b5b92"/>
+<text x="573.0" y="822.0" font-family="Consolas,'D2Coding','Courier New',monospace" font-size="11" fill="#222" text-anchor="end" font-weight="normal" >o_scan_sel[2:0]</text>
+<text x="455.0" y="879.0" font-family="'Malgun Gothic','Noto Sans KR','Apple SD Gothic Neo',sans-serif" font-size="10" fill="#555" text-anchor="middle" font-weight="normal" >i_clk_4khz 마다 +1 → 0~7, 한 칸 250 us</text>
+<rect x="330" y="920" width="250" height="80" rx="8" fill="#eef3fb" stroke="#3b5b92" stroke-width="2" />
+<text x="455.0" y="939.0" font-family="Consolas,'D2Coding','Courier New',monospace" font-size="13" fill="#1a2f55" text-anchor="middle" font-weight="bold" >U_DOT</text>
+<text x="455.0" y="956.0" font-family="Consolas,'D2Coding','Courier New',monospace" font-size="11" fill="#5a6d8f" text-anchor="middle" font-weight="normal" >dot</text>
+<rect x="327" y="975" width="6" height="6" fill="#3b5b92"/>
+<text x="337.0" y="982.0" font-family="Consolas,'D2Coding','Courier New',monospace" font-size="11" fill="#222" text-anchor="start" font-weight="normal" >i_disp_msec[6:0]</text>
+<rect x="577" y="975" width="6" height="6" fill="#3b5b92"/>
+<text x="573.0" y="982.0" font-family="Consolas,'D2Coding','Courier New',monospace" font-size="11" fill="#222" text-anchor="end" font-weight="normal" >o_blink_off</text>
+<text x="455.0" y="1015.0" font-family="'Malgun Gothic','Noto Sans KR','Apple SD Gothic Neo',sans-serif" font-size="10" fill="#555" text-anchor="middle" font-weight="normal" >o_blink_off = (i_disp_msec ≥ 50)</text>
+<rect x="720" y="130" width="270" height="272" rx="8" fill="#eef3fb" stroke="#3b5b92" stroke-width="2" />
+<text x="855.0" y="149.0" font-family="Consolas,'D2Coding','Courier New',monospace" font-size="13" fill="#1a2f55" text-anchor="middle" font-weight="bold" >U_ANODE_CHOICE_TO_MUX1</text>
+<text x="855.0" y="166.0" font-family="Consolas,'D2Coding','Courier New',monospace" font-size="11" fill="#5a6d8f" text-anchor="middle" font-weight="normal" >SW2_ANODE_CHOICE</text>
+<rect x="717" y="185" width="6" height="6" fill="#3b5b92"/>
+<text x="727.0" y="192.0" font-family="Consolas,'D2Coding','Courier New',monospace" font-size="11" fill="#222" text-anchor="start" font-weight="normal" >i_set_sw2</text>
+<rect x="717" y="209" width="6" height="6" fill="#3b5b92"/>
+<text x="727.0" y="216.0" font-family="Consolas,'D2Coding','Courier New',monospace" font-size="11" fill="#222" text-anchor="start" font-weight="normal" >i_disp_mode</text>
+<rect x="717" y="233" width="6" height="6" fill="#3b5b92"/>
+<text x="727.0" y="240.0" font-family="Consolas,'D2Coding','Courier New',monospace" font-size="11" fill="#222" text-anchor="start" font-weight="normal" >i_sel_wt</text>
+<rect x="717" y="257" width="6" height="6" fill="#3b5b92"/>
+<text x="727.0" y="264.0" font-family="Consolas,'D2Coding','Courier New',monospace" font-size="11" fill="#222" text-anchor="start" font-weight="normal" >i_wt_cursor[1:0]</text>
+<rect x="717" y="281" width="6" height="6" fill="#3b5b92"/>
+<text x="727.0" y="288.0" font-family="Consolas,'D2Coding','Courier New',monospace" font-size="11" fill="#222" text-anchor="start" font-weight="normal" >i_blink_off</text>
+<rect x="717" y="305" width="6" height="6" fill="#3b5b92"/>
+<text x="727.0" y="312.0" font-family="Consolas,'D2Coding','Courier New',monospace" font-size="11" fill="#222" text-anchor="start" font-weight="normal" >i_an0[3:0]</text>
+<rect x="717" y="329" width="6" height="6" fill="#3b5b92"/>
+<text x="727.0" y="336.0" font-family="Consolas,'D2Coding','Courier New',monospace" font-size="11" fill="#222" text-anchor="start" font-weight="normal" >i_an1[3:0]</text>
+<rect x="717" y="353" width="6" height="6" fill="#3b5b92"/>
+<text x="727.0" y="360.0" font-family="Consolas,'D2Coding','Courier New',monospace" font-size="11" fill="#222" text-anchor="start" font-weight="normal" >i_an2[3:0]</text>
+<rect x="717" y="377" width="6" height="6" fill="#3b5b92"/>
+<text x="727.0" y="384.0" font-family="Consolas,'D2Coding','Courier New',monospace" font-size="11" fill="#222" text-anchor="start" font-weight="normal" >i_an3[3:0]</text>
+<rect x="987" y="185" width="6" height="6" fill="#3b5b92"/>
+<text x="983.0" y="192.0" font-family="Consolas,'D2Coding','Courier New',monospace" font-size="11" fill="#222" text-anchor="end" font-weight="normal" >o_an0[3:0]</text>
+<rect x="987" y="209" width="6" height="6" fill="#3b5b92"/>
+<text x="983.0" y="216.0" font-family="Consolas,'D2Coding','Courier New',monospace" font-size="11" fill="#222" text-anchor="end" font-weight="normal" >o_an1[3:0]</text>
+<rect x="987" y="233" width="6" height="6" fill="#3b5b92"/>
+<text x="983.0" y="240.0" font-family="Consolas,'D2Coding','Courier New',monospace" font-size="11" fill="#222" text-anchor="end" font-weight="normal" >o_an2[3:0]</text>
+<rect x="987" y="257" width="6" height="6" fill="#3b5b92"/>
+<text x="983.0" y="264.0" font-family="Consolas,'D2Coding','Courier New',monospace" font-size="11" fill="#222" text-anchor="end" font-weight="normal" >o_an3[3:0]</text>
+<text x="855.0" y="417.0" font-family="'Malgun Gothic','Noto Sans KR','Apple SD Gothic Neo',sans-serif" font-size="10" fill="#555" text-anchor="middle" font-weight="normal" >초.1/100초 쪽 (설정 점멸은 시.분 화면만이라 실제로는 그대로 통과)</text>
+<rect x="720" y="470" width="270" height="272" rx="8" fill="#eef3fb" stroke="#3b5b92" stroke-width="2" />
+<text x="855.0" y="489.0" font-family="Consolas,'D2Coding','Courier New',monospace" font-size="13" fill="#1a2f55" text-anchor="middle" font-weight="bold" >U_ANODE_CHOICE_TO_MUX2</text>
+<text x="855.0" y="506.0" font-family="Consolas,'D2Coding','Courier New',monospace" font-size="11" fill="#5a6d8f" text-anchor="middle" font-weight="normal" >SW2_ANODE_CHOICE</text>
+<rect x="717" y="525" width="6" height="6" fill="#3b5b92"/>
+<text x="727.0" y="532.0" font-family="Consolas,'D2Coding','Courier New',monospace" font-size="11" fill="#222" text-anchor="start" font-weight="normal" >i_set_sw2</text>
+<rect x="717" y="549" width="6" height="6" fill="#3b5b92"/>
+<text x="727.0" y="556.0" font-family="Consolas,'D2Coding','Courier New',monospace" font-size="11" fill="#222" text-anchor="start" font-weight="normal" >i_disp_mode</text>
+<rect x="717" y="573" width="6" height="6" fill="#3b5b92"/>
+<text x="727.0" y="580.0" font-family="Consolas,'D2Coding','Courier New',monospace" font-size="11" fill="#222" text-anchor="start" font-weight="normal" >i_sel_wt</text>
+<rect x="717" y="597" width="6" height="6" fill="#3b5b92"/>
+<text x="727.0" y="604.0" font-family="Consolas,'D2Coding','Courier New',monospace" font-size="11" fill="#222" text-anchor="start" font-weight="normal" >i_wt_cursor[1:0]</text>
+<rect x="717" y="621" width="6" height="6" fill="#3b5b92"/>
+<text x="727.0" y="628.0" font-family="Consolas,'D2Coding','Courier New',monospace" font-size="11" fill="#222" text-anchor="start" font-weight="normal" >i_blink_off</text>
+<rect x="717" y="645" width="6" height="6" fill="#3b5b92"/>
+<text x="727.0" y="652.0" font-family="Consolas,'D2Coding','Courier New',monospace" font-size="11" fill="#222" text-anchor="start" font-weight="normal" >i_an0[3:0]</text>
+<rect x="717" y="669" width="6" height="6" fill="#3b5b92"/>
+<text x="727.0" y="676.0" font-family="Consolas,'D2Coding','Courier New',monospace" font-size="11" fill="#222" text-anchor="start" font-weight="normal" >i_an1[3:0]</text>
+<rect x="717" y="693" width="6" height="6" fill="#3b5b92"/>
+<text x="727.0" y="700.0" font-family="Consolas,'D2Coding','Courier New',monospace" font-size="11" fill="#222" text-anchor="start" font-weight="normal" >i_an2[3:0]</text>
+<rect x="717" y="717" width="6" height="6" fill="#3b5b92"/>
+<text x="727.0" y="724.0" font-family="Consolas,'D2Coding','Courier New',monospace" font-size="11" fill="#222" text-anchor="start" font-weight="normal" >i_an3[3:0]</text>
+<rect x="987" y="525" width="6" height="6" fill="#3b5b92"/>
+<text x="983.0" y="532.0" font-family="Consolas,'D2Coding','Courier New',monospace" font-size="11" fill="#222" text-anchor="end" font-weight="normal" >o_an0[3:0]</text>
+<rect x="987" y="549" width="6" height="6" fill="#3b5b92"/>
+<text x="983.0" y="556.0" font-family="Consolas,'D2Coding','Courier New',monospace" font-size="11" fill="#222" text-anchor="end" font-weight="normal" >o_an1[3:0]</text>
+<rect x="987" y="573" width="6" height="6" fill="#3b5b92"/>
+<text x="983.0" y="580.0" font-family="Consolas,'D2Coding','Courier New',monospace" font-size="11" fill="#222" text-anchor="end" font-weight="normal" >o_an2[3:0]</text>
+<rect x="987" y="597" width="6" height="6" fill="#3b5b92"/>
+<text x="983.0" y="604.0" font-family="Consolas,'D2Coding','Courier New',monospace" font-size="11" fill="#222" text-anchor="end" font-weight="normal" >o_an3[3:0]</text>
+<text x="855.0" y="757.0" font-family="'Malgun Gothic','Noto Sans KR','Apple SD Gothic Neo',sans-serif" font-size="10" fill="#555" text-anchor="middle" font-weight="normal" >시.분 쪽: set_sw2 &amp; disp_mode &amp; sel_wt &amp; blink_off 이면 커서 자리 = 4'hd (빈칸)</text>
+<polygon points="1140,160 1250,190.8 1250,357.2 1140,388" fill="#fff7e6" stroke="#b7791f" stroke-width="2"/>
+<text x="1195.0" y="272.0" font-family="'Malgun Gothic','Noto Sans KR','Apple SD Gothic Neo',sans-serif" font-size="12" fill="#b7791f" text-anchor="middle" font-weight="bold" >MUX</text>
+<text x="1195.0" y="152.0" font-family="'Malgun Gothic','Noto Sans KR','Apple SD Gothic Neo',sans-serif" font-size="11.5" fill="#7a4d00" text-anchor="middle" font-weight="bold" >U_SEC_MUXER (mux_8x1)</text>
+<text x="1144.0" y="194.0" font-family="'Malgun Gothic','Noto Sans KR','Apple SD Gothic Neo',sans-serif" font-size="9.5" fill="#7a4d00" text-anchor="start" font-weight="normal" >0</text>
+<text x="1144.0" y="218.0" font-family="'Malgun Gothic','Noto Sans KR','Apple SD Gothic Neo',sans-serif" font-size="9.5" fill="#7a4d00" text-anchor="start" font-weight="normal" >1</text>
+<text x="1144.0" y="242.0" font-family="'Malgun Gothic','Noto Sans KR','Apple SD Gothic Neo',sans-serif" font-size="9.5" fill="#7a4d00" text-anchor="start" font-weight="normal" >2</text>
+<text x="1144.0" y="266.0" font-family="'Malgun Gothic','Noto Sans KR','Apple SD Gothic Neo',sans-serif" font-size="9.5" fill="#7a4d00" text-anchor="start" font-weight="normal" >3</text>
+<text x="1144.0" y="290.0" font-family="'Malgun Gothic','Noto Sans KR','Apple SD Gothic Neo',sans-serif" font-size="9.5" fill="#7a4d00" text-anchor="start" font-weight="normal" >4</text>
+<text x="1144.0" y="314.0" font-family="'Malgun Gothic','Noto Sans KR','Apple SD Gothic Neo',sans-serif" font-size="9.5" fill="#7a4d00" text-anchor="start" font-weight="normal" >5</text>
+<text x="1144.0" y="338.0" font-family="'Malgun Gothic','Noto Sans KR','Apple SD Gothic Neo',sans-serif" font-size="9.5" fill="#7a4d00" text-anchor="start" font-weight="normal" >6</text>
+<text x="1144.0" y="362.0" font-family="'Malgun Gothic','Noto Sans KR','Apple SD Gothic Neo',sans-serif" font-size="9.5" fill="#7a4d00" text-anchor="start" font-weight="normal" >7</text>
+<polygon points="1140,520 1250,550.8 1250,717.2 1140,748" fill="#fff7e6" stroke="#b7791f" stroke-width="2"/>
+<text x="1195.0" y="632.0" font-family="'Malgun Gothic','Noto Sans KR','Apple SD Gothic Neo',sans-serif" font-size="12" fill="#b7791f" text-anchor="middle" font-weight="bold" >MUX</text>
+<text x="1195.0" y="512.0" font-family="'Malgun Gothic','Noto Sans KR','Apple SD Gothic Neo',sans-serif" font-size="11.5" fill="#7a4d00" text-anchor="middle" font-weight="bold" >U_MIN_MUXER (mux_8x1)</text>
+<text x="1144.0" y="554.0" font-family="'Malgun Gothic','Noto Sans KR','Apple SD Gothic Neo',sans-serif" font-size="9.5" fill="#7a4d00" text-anchor="start" font-weight="normal" >0</text>
+<text x="1144.0" y="578.0" font-family="'Malgun Gothic','Noto Sans KR','Apple SD Gothic Neo',sans-serif" font-size="9.5" fill="#7a4d00" text-anchor="start" font-weight="normal" >1</text>
+<text x="1144.0" y="602.0" font-family="'Malgun Gothic','Noto Sans KR','Apple SD Gothic Neo',sans-serif" font-size="9.5" fill="#7a4d00" text-anchor="start" font-weight="normal" >2</text>
+<text x="1144.0" y="626.0" font-family="'Malgun Gothic','Noto Sans KR','Apple SD Gothic Neo',sans-serif" font-size="9.5" fill="#7a4d00" text-anchor="start" font-weight="normal" >3</text>
+<text x="1144.0" y="650.0" font-family="'Malgun Gothic','Noto Sans KR','Apple SD Gothic Neo',sans-serif" font-size="9.5" fill="#7a4d00" text-anchor="start" font-weight="normal" >4</text>
+<text x="1144.0" y="674.0" font-family="'Malgun Gothic','Noto Sans KR','Apple SD Gothic Neo',sans-serif" font-size="9.5" fill="#7a4d00" text-anchor="start" font-weight="normal" >5</text>
+<text x="1144.0" y="698.0" font-family="'Malgun Gothic','Noto Sans KR','Apple SD Gothic Neo',sans-serif" font-size="9.5" fill="#7a4d00" text-anchor="start" font-weight="normal" >6</text>
+<text x="1144.0" y="722.0" font-family="'Malgun Gothic','Noto Sans KR','Apple SD Gothic Neo',sans-serif" font-size="9.5" fill="#7a4d00" text-anchor="start" font-weight="normal" >7</text>
+<polygon points="1400,380 1480,402.4 1480,441.6 1400,464" fill="#fff7e6" stroke="#b7791f" stroke-width="2"/>
+<text x="1440.0" y="420.0" font-family="'Malgun Gothic','Noto Sans KR','Apple SD Gothic Neo',sans-serif" font-size="12" fill="#b7791f" text-anchor="middle" font-weight="bold" >MUX</text>
+<text x="1440.0" y="372.0" font-family="'Malgun Gothic','Noto Sans KR','Apple SD Gothic Neo',sans-serif" font-size="11.5" fill="#7a4d00" text-anchor="middle" font-weight="bold" >2:1 (assign)</text>
+<text x="1404.0" y="414.0" font-family="'Malgun Gothic','Noto Sans KR','Apple SD Gothic Neo',sans-serif" font-size="9.5" fill="#7a4d00" text-anchor="start" font-weight="normal" >0</text>
+<text x="1404.0" y="438.0" font-family="'Malgun Gothic','Noto Sans KR','Apple SD Gothic Neo',sans-serif" font-size="9.5" fill="#7a4d00" text-anchor="start" font-weight="normal" >1</text>
+<rect x="1660" y="760" width="260" height="80" rx="8" fill="#eef3fb" stroke="#3b5b92" stroke-width="2" />
+<text x="1790.0" y="779.0" font-family="Consolas,'D2Coding','Courier New',monospace" font-size="13" fill="#1a2f55" text-anchor="middle" font-weight="bold" >U_DECODER</text>
+<text x="1790.0" y="796.0" font-family="Consolas,'D2Coding','Courier New',monospace" font-size="11" fill="#5a6d8f" text-anchor="middle" font-weight="normal" >decoder_2x4</text>
+<rect x="1657" y="815" width="6" height="6" fill="#3b5b92"/>
+<text x="1667.0" y="822.0" font-family="Consolas,'D2Coding','Courier New',monospace" font-size="11" fill="#222" text-anchor="start" font-weight="normal" >i_sel[1:0]</text>
+<rect x="1917" y="815" width="6" height="6" fill="#3b5b92"/>
+<text x="1913.0" y="822.0" font-family="Consolas,'D2Coding','Courier New',monospace" font-size="11" fill="#222" text-anchor="end" font-weight="normal" >o_fnd_com[3:0]</text>
+<text x="1790.0" y="855.0" font-family="'Malgun Gothic','Noto Sans KR','Apple SD Gothic Neo',sans-serif" font-size="10" fill="#555" text-anchor="middle" font-weight="normal" >00→1110(AN0) 01→1101 10→1011 11→0111(AN3)</text>
+<rect x="1660" y="380" width="260" height="80" rx="8" fill="#eef3fb" stroke="#3b5b92" stroke-width="2" />
+<text x="1790.0" y="399.0" font-family="Consolas,'D2Coding','Courier New',monospace" font-size="13" fill="#1a2f55" text-anchor="middle" font-weight="bold" >U_FND_DEC</text>
+<text x="1790.0" y="416.0" font-family="Consolas,'D2Coding','Courier New',monospace" font-size="11" fill="#5a6d8f" text-anchor="middle" font-weight="normal" >fnd_decoder</text>
+<rect x="1657" y="435" width="6" height="6" fill="#3b5b92"/>
+<text x="1667.0" y="442.0" font-family="Consolas,'D2Coding','Courier New',monospace" font-size="11" fill="#222" text-anchor="start" font-weight="normal" >i_bcd[3:0]</text>
+<rect x="1917" y="435" width="6" height="6" fill="#3b5b92"/>
+<text x="1913.0" y="442.0" font-family="Consolas,'D2Coding','Courier New',monospace" font-size="11" fill="#222" text-anchor="end" font-weight="normal" >o_fnd_font[7:0]</text>
+<text x="1790.0" y="475.0" font-family="'Malgun Gothic','Noto Sans KR','Apple SD Gothic Neo',sans-serif" font-size="10" fill="#555" text-anchor="middle" font-weight="normal" >0~9 숫자 · d,f = 빈칸 FF · e = 점 7F</text>
+<rect x="2080" y="330" width="170" height="600" rx="8" fill="#e9f7ef" stroke="#2f855a" stroke-width="2" />
+<text x="2165.0" y="350.0" font-family="'Malgun Gothic','Noto Sans KR','Apple SD Gothic Neo',sans-serif" font-size="13" fill="#2f855a" text-anchor="middle" font-weight="bold" >출력 포트</text>
+<rect x="2077" y="815" width="6" height="6" fill="#2f855a"/>
+<text x="2087.0" y="822.0" font-family="Consolas,'D2Coding','Courier New',monospace" font-size="11" fill="#222" text-anchor="start" font-weight="normal" >o_fnd_com[3:0]</text>
+<rect x="2077" y="435" width="6" height="6" fill="#2f855a"/>
+<text x="2087.0" y="442.0" font-family="Consolas,'D2Coding','Courier New',monospace" font-size="11" fill="#222" text-anchor="start" font-weight="normal" >o_fnd_font[7:0]</text>
+<polygon points="1080.0,278 1122.0,278 1130.0,286 1122.0,294 1080.0,294" fill="#fff" stroke="#8a8a8a" stroke-width="1.4"/>
+<line x1="1130.0" y1="286" x2="1140" y2="286" stroke="#8a8a8a" stroke-width="1.4"/>
+<text x="1086.0" y="290.0" font-family="Consolas,'D2Coding','Courier New',monospace" font-size="10.5" fill="#8a8a8a" text-anchor="start" font-weight="bold" >4'hf</text>
+<polygon points="1080.0,302 1122.0,302 1130.0,310 1122.0,318 1080.0,318" fill="#fff" stroke="#8a8a8a" stroke-width="1.4"/>
+<line x1="1130.0" y1="310" x2="1140" y2="310" stroke="#8a8a8a" stroke-width="1.4"/>
+<text x="1086.0" y="314.0" font-family="Consolas,'D2Coding','Courier New',monospace" font-size="10.5" fill="#8a8a8a" text-anchor="start" font-weight="bold" >4'hf</text>
+<polygon points="1080.0,350 1122.0,350 1130.0,358 1122.0,366 1080.0,366" fill="#fff" stroke="#8a8a8a" stroke-width="1.4"/>
+<line x1="1130.0" y1="358" x2="1140" y2="358" stroke="#8a8a8a" stroke-width="1.4"/>
+<text x="1086.0" y="362.0" font-family="Consolas,'D2Coding','Courier New',monospace" font-size="10.5" fill="#8a8a8a" text-anchor="start" font-weight="bold" >4'hf</text>
+<polygon points="1080.0,638 1122.0,638 1130.0,646 1122.0,654 1080.0,654" fill="#fff" stroke="#8a8a8a" stroke-width="1.4"/>
+<line x1="1130.0" y1="646" x2="1140" y2="646" stroke="#8a8a8a" stroke-width="1.4"/>
+<text x="1086.0" y="650.0" font-family="Consolas,'D2Coding','Courier New',monospace" font-size="10.5" fill="#8a8a8a" text-anchor="start" font-weight="bold" >4'hf</text>
+<polygon points="1080.0,662 1122.0,662 1130.0,670 1122.0,678 1080.0,678" fill="#fff" stroke="#8a8a8a" stroke-width="1.4"/>
+<line x1="1130.0" y1="670" x2="1140" y2="670" stroke="#8a8a8a" stroke-width="1.4"/>
+<text x="1086.0" y="674.0" font-family="Consolas,'D2Coding','Courier New',monospace" font-size="10.5" fill="#8a8a8a" text-anchor="start" font-weight="bold" >4'hf</text>
+<polygon points="1080.0,710 1122.0,710 1130.0,718 1122.0,726 1080.0,726" fill="#fff" stroke="#8a8a8a" stroke-width="1.4"/>
+<line x1="1130.0" y1="718" x2="1140" y2="718" stroke="#8a8a8a" stroke-width="1.4"/>
+<text x="1086.0" y="722.0" font-family="Consolas,'D2Coding','Courier New',monospace" font-size="10.5" fill="#8a8a8a" text-anchor="start" font-weight="bold" >4'hf</text>
+<text x="590.0" y="985.0" font-family="Consolas,'D2Coding','Courier New',monospace" font-size="10.5" fill="#555" text-anchor="start" font-weight="normal" >w_blink_off</text>
+<text x="586.0" y="184.0" font-family="Consolas,'D2Coding','Courier New',monospace" font-size="10.5" fill="#555" text-anchor="start" font-weight="normal" >w_msec_digit1</text>
+<text x="586.0" y="208.0" font-family="Consolas,'D2Coding','Courier New',monospace" font-size="10.5" fill="#555" text-anchor="start" font-weight="normal" >w_msec_digit10</text>
+<text x="586.0" y="334.0" font-family="Consolas,'D2Coding','Courier New',monospace" font-size="10.5" fill="#555" text-anchor="start" font-weight="normal" >w_sec_digit1</text>
+<text x="586.0" y="358.0" font-family="Consolas,'D2Coding','Courier New',monospace" font-size="10.5" fill="#555" text-anchor="start" font-weight="normal" >w_sec_digit10</text>
+<text x="586.0" y="484.0" font-family="Consolas,'D2Coding','Courier New',monospace" font-size="10.5" fill="#555" text-anchor="start" font-weight="normal" >w_min_digit1</text>
+<text x="586.0" y="508.0" font-family="Consolas,'D2Coding','Courier New',monospace" font-size="10.5" fill="#555" text-anchor="start" font-weight="normal" >w_min_digit10</text>
+<text x="586.0" y="634.0" font-family="Consolas,'D2Coding','Courier New',monospace" font-size="10.5" fill="#555" text-anchor="start" font-weight="normal" >w_hour_digit1</text>
+<text x="586.0" y="658.0" font-family="Consolas,'D2Coding','Courier New',monospace" font-size="10.5" fill="#555" text-anchor="start" font-weight="normal" >w_hour_digit10</text>
+<text x="996.0" y="184.0" font-family="Consolas,'D2Coding','Courier New',monospace" font-size="10.5" fill="#555" text-anchor="start" font-weight="normal" >w_mux1_an0</text>
+<text x="996.0" y="524.0" font-family="Consolas,'D2Coding','Courier New',monospace" font-size="10.5" fill="#555" text-anchor="start" font-weight="normal" >w_mux2_an0</text>
+<text x="996.0" y="208.0" font-family="Consolas,'D2Coding','Courier New',monospace" font-size="10.5" fill="#555" text-anchor="start" font-weight="normal" >w_mux1_an1</text>
+<text x="996.0" y="548.0" font-family="Consolas,'D2Coding','Courier New',monospace" font-size="10.5" fill="#555" text-anchor="start" font-weight="normal" >w_mux2_an1</text>
+<text x="996.0" y="232.0" font-family="Consolas,'D2Coding','Courier New',monospace" font-size="10.5" fill="#555" text-anchor="start" font-weight="normal" >w_mux1_an2</text>
+<text x="996.0" y="572.0" font-family="Consolas,'D2Coding','Courier New',monospace" font-size="10.5" fill="#555" text-anchor="start" font-weight="normal" >w_mux2_an2</text>
+<text x="996.0" y="256.0" font-family="Consolas,'D2Coding','Courier New',monospace" font-size="10.5" fill="#555" text-anchor="start" font-weight="normal" >w_mux1_an3</text>
+<text x="996.0" y="596.0" font-family="Consolas,'D2Coding','Courier New',monospace" font-size="10.5" fill="#555" text-anchor="start" font-weight="normal" >w_mux2_an3</text>
+<text x="586.0" y="814.0" font-family="Consolas,'D2Coding','Courier New',monospace" font-size="10.5" fill="#555" text-anchor="start" font-weight="normal" >w_scan_sel</text>
+<text x="1926.0" y="434.0" font-family="Consolas,'D2Coding','Courier New',monospace" font-size="10.5" fill="#555" text-anchor="start" font-weight="normal" >o_fnd_font</text>
+<text x="1926.0" y="814.0" font-family="Consolas,'D2Coding','Courier New',monospace" font-size="10.5" fill="#555" text-anchor="start" font-weight="normal" >o_fnd_com</text>
+<text x="30.0" y="1180.0" font-family="'Malgun Gothic','Noto Sans KR','Apple SD Gothic Neo',sans-serif" font-size="13" fill="#333" text-anchor="start" font-weight="normal" >스캔 순서 (o_scan_sel 0→7, 2 ms 한 바퀴): 0 AN0 숫자 → 1 AN1 → 2 AN2 → 3 AN3 → 4 AN0 빈칸 → 5 AN1 빈칸 → 6 AN2 점(blink_off=0 일 때) → 7 AN3 빈칸.  i_d6 은 {3'b111, w_blink_off}.</text>
+<text x="30.0" y="1206.0" font-family="'Malgun Gothic','Noto Sans KR','Apple SD Gothic Neo',sans-serif" font-size="13" fill="#333" text-anchor="start" font-weight="normal" >U_SEC_MUXER · U_MIN_MUXER: i_sel 0~3 → i_d0~i_d3 (AN0~AN3 숫자), 4 · 5 · 7 → 4'hf 빈칸, 6 → {3'b111, w_blink_off} AN2 점  /  2:1 MUX: i_disp_mode 0 → w_sec_mux_bcd (초.1/100초), 1 → w_min_mux_bcd (시.분)</text>
+</svg>

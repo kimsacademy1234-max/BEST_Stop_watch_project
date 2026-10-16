@@ -1,0 +1,191 @@
+# 03_watch — 시계 동작 확인 안내서 (발표: 정안성)
+
+블록 다이어그램(`../../block_diagram.pdf`)의 **입력 → 출력 순서**로, 각 단계에서 **어느 블록의 어느 포트**를 파형에 넣어 볼지 안내한다. 그림의 번호 · 색 = 표의 단계 번호.
+
+## 이 기능의 사양
+
+리셋 = **12:00:00.00 (오후 12 시)**, 기본 12 시간 표시. 설정 모드 = 시계 화면(mode_sw0 = 0) + set_sw2 = 1
+
+| 버튼 | 동작 |
+|---|---|
+| L / R | 커서 이동. L: 분 일 → 분 십 → 시 → 분 일, R: 반대 (양 끝에서 돌아감) |
+| U / D | 커서 자리만 ±. 분 일 ±1, 분 십 ±10, 시 ±1. **윗자리로 올림/내림 없음** (분 59 + 1 → 00, 시 그대로) |
+| U + D 동시 | U 우선 |
+
+설정에 들어가면 항상 분 일의 자리부터. 초 · 1/100 초는 설정 안 함. 설정 중에도 시계는 흐른다. 설정 중 커서 자리가 0.5 초마다 빈칸 (시.분 화면).
+
+## 0. 시작 전에 (처음 한 번)
+
+1. **Vivado 소스**: Design Sources = `../../source_file/*.v, *.sv` / Simulation Sources = 이 폴더의 `tb_*.sv` 하나 + `fnd_monitor.sv` → TB 를 *Set as Top*
+2. **Run Simulation → Run All**. 콘솔 마지막 `[SUMMARY] ... => PASS` 면 이 TB 의 모든 기준 통과. `[FAIL]` 이 있으면 그 시각으로 *Go To Time*
+3. **파형에 신호 넣기** — 아래 각 TB 의 "단계" 표 순서대로
+   - Scope 창에서 `tb_xxx → dut → U_xxx` 인스턴스를 클릭 → Objects 창에 **그 모듈의 포트**가 나온다 → 표의 포트를 우클릭 *Add to Wave Window*
+   - `dut (assign …)` 이라고 적힌 것은 모듈이 아니라 Top 안 선이다 → Scope 에서 `dut` 를 클릭하면 Objects 에 같은 이름의 `w_` 선이 있다
+   - 이름 규칙: 모듈 출력 `o_xxx` → Top 선 `w_xxx` → 다음 모듈 입력 `i_xxx` (몸통 이름이 같다). 전체 연결은 `../../source_file/PORT_MAP.md`
+4. **Radix**: 시간 값(`o_sw_msec` 등) = Unsigned Decimal, `fnd_com` = Binary, `fnd_font` = Hexadecimal
+5. **10 ns 펄스 찾기**: `o_clk_4khz`, `o_tick_10ms`, `o_btn` 은 10 ns 짜리라 줌을 당기면 안 보인다 → 신호를 고르고 툴바의 *Go to next transition* 으로 하나씩 이동
+6. 파형은 `clk` 를 빼고 보는 것을 권장 (수 초 시뮬이면 파일이 매우 커짐). 긴 TB 는 파일 맨 위 `RUN_PHASE` 를 Phase 번호로 바꿔 그 Phase 만 실행
+7. **프리로드**: `[INFO][PRELOAD]` 가 찍힌 시각에 TB 가 카운터에 경계 바로 앞 값(예 23:59:59.95)을 직접 넣는다 (주파수는 그대로 100 MHz). 경계를 넘는 것은 그 뒤 실제 tick 으로 본다
+
+## 1. 시간 단위 (파형에서 먼저 확인할 것)
+
+| 신호 (블록.포트) | 주기 | 펄스 폭 | 의미 |
+|---|---|---|---|
+| `U_CLK_GEN_4KHZ.o_clk_4khz` | **250 us** (4 kHz) | 10 ns | 디바운서 샘플 박자, FND 자리 바꾸는 박자 |
+| `U_TICK_GEN_100HZ.o_tick_10ms` | **10 ms** (100 Hz) | 10 ns | 1/100 초 한 칸. 스톱워치 · 시계 · 타이머 공용, 항상 흐름 |
+| `U_BD_x.o_btn` | 누를 때 1 번 | 10 ns | 누른 뒤 **1.75 ~ 2.0 ms** (4 kHz 샘플 8 번) |
+| `U_FND_CONTROLLER/U_COUNTER8.o_scan_sel` | 한 칸 **250 us**, 한 바퀴 **2 ms** | — | 0~3 숫자 자리, 4~7 빈칸 · 점 |
+
+## 2. FND 읽는 법 (마지막 판정)
+
+기능이 끝까지 맞았는지는 **FND 출력이 자리마다 맞는 글자를 내는지**로 판정한다.
+`fnd_com` 의 0 인 비트가 켜진 자리, 그 순간 `fnd_font` 가 그 자리 글자.
+
+| `o_scan_sel` | `fnd_com` | 자리 | `fnd_font` |
+|---|---|---|---|
+| 0 | 1110 | AN0 (맨 오른쪽) | 화면 4 번째 글자 |
+| 1 | 1101 | AN1 | 화면 3 번째 글자 |
+| 2 | 1011 | AN2 | 화면 2 번째 글자 |
+| 3 | 0111 | AN3 (맨 왼쪽) | 화면 1 번째 글자 |
+| 4 · 5 · 7 | 1110 · 1101 · 0111 | AN0 · AN1 · AN3 | `FF` 빈칸 |
+| 6 | 1011 | AN2 | 가운데 점: `7F` (i_disp_msec < 50) / `FF` (≥ 50) |
+
+글자 코드 (active-low): `0`=C0 `1`=F9 `2`=A4 `3`=B0 `4`=99 `5`=92 `6`=82 `7`=F8 `8`=80 `9`=90, 빈칸=FF, 점만=7F
+
+
+---
+
+## 3. `tb_wt_1_set_ui.sv` — 설정 UI
+
+**확인하는 것**: 설정 아닐 때 버튼 무시, 커서 이동 · 양 끝 회전, 자리별 ± 회전, U 우선, 재진입 커서, 다른 화면 버튼 차단
+
+![tb_wt_1_set_ui](img/tb_wt_1_set_ui.png)
+
+### 단계 (파형에 넣는 순서)
+
+| 단계 | 블록 (Scope 경로) | 꺼낼 포트 | 시간 | 확인할 것 |
+|---|---|---|---|---|
+| **1** 버튼 · 스위치 (TB) | TB 최상위 | `btn_R` `btn_L` `btn_U` `btn_D` `set_sw2` `hour24_sw3` | 5 ms 누름 + 5 ms 뗌 | mode_sw0 = 0, timer_sw4 = 0 (시계 화면). set_sw2 = 1 설정 모드, hour24_sw3 = 0 이면 12 시간 표시 |
+| **2** 4 kHz 샘플 박자 | `dut/U_CLK_GEN_4KHZ` | `o_clk_4khz` | 250 us 마다 10 ns 펄스 | 디바운서 · FND 스캔이 이 펄스의 상승 엣지로 움직인다 |
+| **3** 디바운서 출력 | `dut/U_BD_R`<br>`dut/U_BD_L`<br>`dut/U_BD_U`<br>`dut/U_BD_D` | `o_btn` `o_btn` `o_btn` `o_btn` | 누른 뒤 1.75 ~ 2.0 ms 에 10 ns 펄스 1 개 | 한 번 누름 = 펄스 1 개 |
+| **4** 화면 선택 · 버튼 게이팅 | dut (assign 화면 선택)<br>dut (assign 버튼 게이팅) | `w_sel_wt` `w_wt_btn_R` `w_wt_btn_L` `w_wt_btn_U` `w_wt_btn_D` | o_btn 과 같은 클럭 | w_sel_wt = ~timer_sw4 & ~mode_sw0. 시계 화면일 때만 o_btn 이 w_wt_btn_X 로 지나감 |
+| **5** 시계 컨트롤 | `dut/U_WATCH_CONTROL_UNIT` | `o_wt_cursor` `o_wt_up` `o_wt_down` | cursor: L/R 펄스 · set_sw2 다음 클럭<br>up · down: 버튼 펄스와 같은 10 ns | o_wt_cursor 0 분 일 · 1 분 십 · 2 시 · 3 설정 아님. 설정 아닐 때 up/down 안 나옴. U 와 D 같은 클럭이면 U |
+| **6** 10 ms tick | `dut/U_TICK_GEN_100HZ` | `o_tick_10ms` | 10 ms 마다 10 ns 펄스 | 시계는 항상 흐른다 (설정 중에도) |
+| **7** 시계 값 | `dut/U_WATCH_DATAPATH` | `o_wt_msec` `o_wt_sec` `o_wt_min` `o_wt_hour` | tick 다음 클럭에 +1 / up · down 다음 클럭에 커서 자리만 ± | o_wt_hour 는 0~23 (24 시간 기준). 설정은 윗자리로 올림 · 내림 없음<br>더 보려면: 내부 카운터: `dut/U_WATCH_DATAPATH/U_MIN_COUNTER` 의 `i_up`, `i_down`, `i_step10`, `o_count` |
+| **8** 12/24 변환 | `dut/U_HOUR_12_24` | `o_wt_hour_disp` `o_wt_pm` | o_wt_hour 와 같은 순간 (조합) | hour24_sw3 = 0: 0 → 12, 13~23 → 1~11 / o_wt_pm = (o_wt_hour ≥ 12) |
+| **9** 화면 MUX | dut (assign 화면 MUX) | `w_disp_hour` `w_disp_min` | o_wt_* 와 같은 순간 | timer_sw4 = 0, mode_sw0 = 0 → 입력 2 (시계, 시는 o_wt_hour_disp) 가 지나감 |
+| **10** FND 출력 (최종) | `dut/U_FND_CONTROLLER` | `o_fnd_com` `o_fnd_font` | 250 us 마다 자리 바뀜, 2 ms 한 바퀴 | 아래 'FND 결론' 표와 같아야 기능 완료. 설정 점멸은 `dut/U_FND_CONTROLLER/U_ANODE_CHOICE_TO_MUX2` 의 `o_an0~3` 에서 커서 자리가 `d`(빈칸) |
+| **11** LED | dut (assign LED) | `led` | 스위치 · 버튼 다음 클럭 | led0 시계 화면 · led2 시.분 · led3 초.1/100초 · **led15 오후** (시계 화면 & 12 시간 & o_wt_pm) |
+
+### Phase 별로 볼 곳
+
+| Phase | TB 가 하는 것 | 볼 단계 | 정상 |
+|---|---|---|---|
+| P1 | 리셋 | 5 · 7 · 10 · 11 | 12:00:00.00, `o_wt_cursor` = 3, `led` = 8009 (led0 · led3 · led15) |
+| P2 | set_sw2 = 0 에서 U, D, L, R | 4 · 5 · 7 | `o_wt_up` · `o_wt_down` 안 나옴, 12:00 그대로, `o_wt_cursor` 3 |
+| P3 | set_sw2 = 1 → L × 3 → R × 3 | 5 | 진입 시 `o_wt_cursor` 0 / L: 0 → 1 → 2 → 0 / R: 0 → 2 → 1 → 0 |
+| P4 | 커서 0, 12:59 프리로드 → U → D → D | 5 · 7 | 12:00 (**시 13 아님**) → 12:59 → 12:58 |
+| P5 | 커서 1, 12:55 프리로드 → U → D → D | 5 · 7 | 12:05 → 12:55 → 12:45 (분 십 ±10 회전) |
+| P6 | 커서 2 에서 U → 23:30 프리로드 → U → D | 5 · 7 | 13:00 → 00:30 (**분 그대로**) → 23:30 |
+| P7 | U 와 D 를 같은 순간 | 3 · 5 · 7 | `U_BD_U.o_btn` · `U_BD_D.o_btn` 같은 클럭 → `o_wt_up` 만 1 → 12:01 |
+| P8 | 커서를 시로 옮긴 뒤 set_sw2 끔 → 다시 켬 | 5 | 끄면 `o_wt_cursor` 3, 다시 켜면 **0** |
+| P9 | set_sw2 = 1 인 채 스톱워치 · 타이머 화면에서 버튼 | 4 · 5 · 7 | `w_wt_btn_*` 모두 0, 시간 · 커서 안 바뀜, 시계는 계속 흐름 |
+
+TB 전체에서 상시 감시: `U_WATCH_DATAPATH/U_SEC_COUNTER` · `U_MSEC_COUNTER` 의 `i_up` · `i_down` 은 한 번도 1 이 되면 안 된다 (초 설정 없음).
+
+프리로드 Phase 는 콘솔 `[INFO][PRELOAD]` 시각부터 보면 된다.
+
+### FND 결론 (마지막 단계)
+
+| 순간 | 화면 | AN3 (`fnd_com`=0111) | AN2 (1011) | AN1 (1101) | AN0 (1110) | 가운데 점 (o_scan_sel 6, AN2) |
+|---|---|---|---|---|---|---|
+| P1 리셋 (시.분) | "12.00" (시.분, 12 시간) | `F9` (1) | `A4` (2) | `C0` (0) | `C0` (0) | i_disp_msec < 50 → `7F` 점 켬, ≥ 50 → `FF` |
+
+---
+
+## 4. `tb_wt_2_rollover.sv` — 1 초 정확도 · 올림 경계
+
+**확인하는 것**: 1 초 = 1 억 클럭 실측, 초 → 분 → 시 → 자정 올림, 설정 중에도 흐름
+
+![tb_wt_2_rollover](img/tb_wt_2_rollover.png)
+
+### 단계 (파형에 넣는 순서)
+
+| 단계 | 블록 (Scope 경로) | 꺼낼 포트 | 시간 | 확인할 것 |
+|---|---|---|---|---|
+| **1** 버튼 · 스위치 (TB) | TB 최상위 | `set_sw2` `hour24_sw3` | 5 ms 누름 + 5 ms 뗌 | mode_sw0 = 0, timer_sw4 = 0 (시계 화면). set_sw2 = 1 설정 모드, hour24_sw3 = 0 이면 12 시간 표시 |
+| **2** 4 kHz 샘플 박자 | `dut/U_CLK_GEN_4KHZ` | `o_clk_4khz` | 250 us 마다 10 ns 펄스 | 디바운서 · FND 스캔이 이 펄스의 상승 엣지로 움직인다 |
+| **3** 화면 선택 · 버튼 게이팅 | dut (assign 화면 선택) | `w_sel_wt` | o_btn 과 같은 클럭 | w_sel_wt = ~timer_sw4 & ~mode_sw0. 시계 화면일 때만 o_btn 이 w_wt_btn_X 로 지나감 |
+| **4** 시계 컨트롤 | `dut/U_WATCH_CONTROL_UNIT` | `o_wt_cursor` `o_wt_up` `o_wt_down` | cursor: L/R 펄스 · set_sw2 다음 클럭<br>up · down: 버튼 펄스와 같은 10 ns | o_wt_cursor 0 분 일 · 1 분 십 · 2 시 · 3 설정 아님. 설정 아닐 때 up/down 안 나옴. U 와 D 같은 클럭이면 U |
+| **5** 10 ms tick | `dut/U_TICK_GEN_100HZ` | `o_tick_10ms` | 10 ms 마다 10 ns 펄스 | 시계는 항상 흐른다 (설정 중에도) |
+| **6** 시계 값 | `dut/U_WATCH_DATAPATH` | `o_wt_msec` `o_wt_sec` `o_wt_min` `o_wt_hour` | tick 다음 클럭에 +1 / up · down 다음 클럭에 커서 자리만 ± | o_wt_hour 는 0~23 (24 시간 기준). 설정은 윗자리로 올림 · 내림 없음<br>더 보려면: 내부 카운터: `dut/U_WATCH_DATAPATH/U_MIN_COUNTER` 의 `i_up`, `i_down`, `i_step10`, `o_count` |
+| **7** 12/24 변환 | `dut/U_HOUR_12_24` | `o_wt_hour_disp` `o_wt_pm` | o_wt_hour 와 같은 순간 (조합) | hour24_sw3 = 0: 0 → 12, 13~23 → 1~11 / o_wt_pm = (o_wt_hour ≥ 12) |
+| **8** 화면 MUX | dut (assign 화면 MUX) | `w_disp_msec` `w_disp_sec` `w_disp_min` `w_disp_hour` | o_wt_* 와 같은 순간 | timer_sw4 = 0, mode_sw0 = 0 → 입력 2 (시계, 시는 o_wt_hour_disp) 가 지나감 |
+| **9** FND 출력 (최종) | `dut/U_FND_CONTROLLER` | `o_fnd_com` `o_fnd_font` | 250 us 마다 자리 바뀜, 2 ms 한 바퀴 | 아래 'FND 결론' 표와 같아야 기능 완료. 설정 점멸은 `dut/U_FND_CONTROLLER/U_ANODE_CHOICE_TO_MUX2` 의 `o_an0~3` 에서 커서 자리가 `d`(빈칸) |
+| **10** LED | dut (assign LED) | `led` | 스위치 · 버튼 다음 클럭 | led0 시계 화면 · led2 시.분 · led3 초.1/100초 · **led15 오후** (시계 화면 & 12 시간 & o_wt_pm) |
+
+### Phase 별로 볼 곳
+
+| Phase | TB 가 하는 것 | 볼 단계 | 정상 |
+|---|---|---|---|
+| P1 | 리셋 후 프리로드 없이 2 초 | 5 · 6 | `o_wt_sec` 바뀌는 간격 = 정확히 **1,000,000,000 ns**, 2 초 뒤 12:00:02.00 |
+| P2 | 00:00:59.95 프리로드 | 5 · 6 | tick 4 번 뒤 59.99 → 5 번째 tick 에 **00:01:00.00** |
+| P3 | 00:59:59.95 프리로드 | 5 · 6 | **01:00:00.00** |
+| P4 | 23:59:59.95 프리로드 (시.분, 12 시간) | 5 · 6 · 7 · 9 · 10 | 직후 `o_wt_pm` 1 · `led[15]` 1 → **00:00:00.00** 에서 `o_wt_pm` 0 · `led[15]` 0, `o_wt_hour_disp` 12, FND "12.00" |
+| P5 | 설정 모드에서 23:59:59.95 프리로드 | 4 · 6 | `o_wt_cursor` ≠ 3 (설정 중) 이어도 00:00:00.00 으로 넘어감 |
+
+P4 파형 포인트: tick 직후 4 클럭 동안 23:59:59.99 → 23:59:59.00 → 23:59:00.00 → 23:00:00.00 → 00:00:00.00 (올림이 1 클럭씩 늦게 전달, 30 ns).
+
+프리로드 Phase 는 콘솔 `[INFO][PRELOAD]` 시각부터 보면 된다.
+
+### FND 결론 (마지막 단계)
+
+| 순간 | 화면 | AN3 (`fnd_com`=0111) | AN2 (1011) | AN1 (1101) | AN0 (1110) | 가운데 점 (o_scan_sel 6, AN2) |
+|---|---|---|---|---|---|---|
+| P4 자정 뒤 (시.분, 12 시간) | "12.00" (시.분) | `F9` (1) | `A4` (2) | `C0` (0) | `C0` (0) | i_disp_msec < 50 → `7F` 점 켬, ≥ 50 → `FF` |
+
+---
+
+## 5. `tb_wt_3_display_12h.sv` — 12/24 표시 · FND · 점멸 · LED
+
+**확인하는 것**: 0 시와 12 시가 둘 다 '12' 로 보이는 변환, 화면 문자열, 설정 점멸, LED 조합
+
+![tb_wt_3_display_12h](img/tb_wt_3_display_12h.png)
+
+### 단계 (파형에 넣는 순서)
+
+| 단계 | 블록 (Scope 경로) | 꺼낼 포트 | 시간 | 확인할 것 |
+|---|---|---|---|---|
+| **1** 버튼 · 스위치 (TB) | TB 최상위 | `btn_L` `set_sw2` `hour24_sw3` | 5 ms 누름 + 5 ms 뗌 | mode_sw0 = 0, timer_sw4 = 0 (시계 화면). set_sw2 = 1 설정 모드, hour24_sw3 = 0 이면 12 시간 표시 |
+| **2** 4 kHz 샘플 박자 | `dut/U_CLK_GEN_4KHZ` | `o_clk_4khz` | 250 us 마다 10 ns 펄스 | 디바운서 · FND 스캔이 이 펄스의 상승 엣지로 움직인다 |
+| **3** 디바운서 출력 | `dut/U_BD_L` | `o_btn` | 누른 뒤 1.75 ~ 2.0 ms 에 10 ns 펄스 1 개 | 한 번 누름 = 펄스 1 개 |
+| **4** 화면 선택 · 버튼 게이팅 | dut (assign 화면 선택)<br>dut (assign 버튼 게이팅) | `w_sel_wt` `w_wt_btn_L` | o_btn 과 같은 클럭 | w_sel_wt = ~timer_sw4 & ~mode_sw0. 시계 화면일 때만 o_btn 이 w_wt_btn_X 로 지나감 |
+| **5** 시계 컨트롤 | `dut/U_WATCH_CONTROL_UNIT` | `o_wt_cursor` `o_wt_up` `o_wt_down` | cursor: L/R 펄스 · set_sw2 다음 클럭<br>up · down: 버튼 펄스와 같은 10 ns | o_wt_cursor 0 분 일 · 1 분 십 · 2 시 · 3 설정 아님. 설정 아닐 때 up/down 안 나옴. U 와 D 같은 클럭이면 U |
+| **6** 10 ms tick | `dut/U_TICK_GEN_100HZ` | `o_tick_10ms` | 10 ms 마다 10 ns 펄스 | 시계는 항상 흐른다 (설정 중에도) |
+| **7** 시계 값 | `dut/U_WATCH_DATAPATH` | `o_wt_msec` `o_wt_sec` `o_wt_min` `o_wt_hour` | tick 다음 클럭에 +1 / up · down 다음 클럭에 커서 자리만 ± | o_wt_hour 는 0~23 (24 시간 기준). 설정은 윗자리로 올림 · 내림 없음<br>더 보려면: 내부 카운터: `dut/U_WATCH_DATAPATH/U_MIN_COUNTER` 의 `i_up`, `i_down`, `i_step10`, `o_count` |
+| **8** 12/24 변환 | `dut/U_HOUR_12_24` | `o_wt_hour_disp` `o_wt_pm` | o_wt_hour 와 같은 순간 (조합) | hour24_sw3 = 0: 0 → 12, 13~23 → 1~11 / o_wt_pm = (o_wt_hour ≥ 12) |
+| **9** 화면 MUX | dut (assign 화면 MUX) | `w_disp_hour` `w_disp_min` | o_wt_* 와 같은 순간 | timer_sw4 = 0, mode_sw0 = 0 → 입력 2 (시계, 시는 o_wt_hour_disp) 가 지나감 |
+| **10** FND 출력 (최종) | `dut/U_FND_CONTROLLER` | `o_fnd_com` `o_fnd_font` | 250 us 마다 자리 바뀜, 2 ms 한 바퀴 | 아래 'FND 결론' 표와 같아야 기능 완료. 설정 점멸은 `dut/U_FND_CONTROLLER/U_ANODE_CHOICE_TO_MUX2` 의 `o_an0~3` 에서 커서 자리가 `d`(빈칸) |
+| **11** LED | dut (assign LED) | `led` | 스위치 · 버튼 다음 클럭 | led0 시계 화면 · led2 시.분 · led3 초.1/100초 · **led15 오후** (시계 화면 & 12 시간 & o_wt_pm) |
+
+### Phase 별로 볼 곳
+
+| Phase | TB 가 하는 것 | 볼 단계 | 정상 |
+|---|---|---|---|
+| P1 | 시 0~23 × hour24_sw3 0/1 (48 경우) | 7 · 8 · 11 | 12 시간: 0 → 12, 1~12 그대로, 13~23 → −12 / 24 시간: 그대로. `led[15]` = 12 시간 & 12 시 이상 |
+| P2 | 12:34, 13:05 프리로드 | 8 · 10 · 11 | FND "12.34" / 24 시간 "13.05" / 12 시간 "01.05" + `led[15]` 1 |
+| P3 | 12:34 에서 설정, 커서 0 · 1 · 2 각 1 초 | 5 · 10 | `o_wt_msec` ≥ 50 동안 커서 자리만 빈칸 (`U_DOT.o_blink_off` = 1): "12.3_" / "12._4" / "1_.34". set_sw2 끄면 점멸 없음 |
+| P4 | display_mode_sw1 × hour24_sw3 × 오전/오후 (9 시, 21 시) 8 경우 | 11 | `led` = led0 + (sw1 ? led2 : led3) + (12 시간 & 오후 ? led15) |
+
+프리로드 Phase 는 콘솔 `[INFO][PRELOAD]` 시각부터 보면 된다.
+
+### FND 결론 (마지막 단계)
+
+| 순간 | 화면 | AN3 (`fnd_com`=0111) | AN2 (1011) | AN1 (1101) | AN0 (1110) | 가운데 점 (o_scan_sel 6, AN2) |
+|---|---|---|---|---|---|---|
+| P2 12:34 | "12.34" (시.분) | `F9` (1) | `A4` (2) | `B0` (3) | `99` (4) | i_disp_msec < 50 → `7F` 점 켬, ≥ 50 → `FF` |
+| P2 13:05, 24 시간 | "13.05" (시.분) | `F9` (1) | `B0` (3) | `C0` (0) | `92` (5) | i_disp_msec < 50 → `7F` 점 켬, ≥ 50 → `FF` |
+| P2 13:05, 12 시간 | "01.05" (시.분) | `C0` (0) | `F9` (1) | `C0` (0) | `92` (5) | i_disp_msec < 50 → `7F` 점 켬, ≥ 50 → `FF` |
+| P3 커서 0, msec ≥ 50 | "12.3_" (시.분) | `F9` (1) | `A4` (2) | `B0` (3) | `FF` (빈칸) | i_disp_msec < 50 → `7F` 점 켬, ≥ 50 → `FF` |
+| P3 커서 1, msec ≥ 50 | "12._4" (시.분) | `F9` (1) | `A4` (2) | `FF` (빈칸) | `99` (4) | i_disp_msec < 50 → `7F` 점 켬, ≥ 50 → `FF` |
+| P3 커서 2, msec ≥ 50 | "1_.34" (시.분) | `F9` (1) | `FF` (빈칸) | `B0` (3) | `99` (4) | i_disp_msec < 50 → `7F` 점 켬, ≥ 50 → `FF` |

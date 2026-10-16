@@ -1,0 +1,7 @@
+__pycache__/
+*._tmp.html
+build/*.rpt
+build/*.bit
+build/.Xil/
+*.jou
+*.log
