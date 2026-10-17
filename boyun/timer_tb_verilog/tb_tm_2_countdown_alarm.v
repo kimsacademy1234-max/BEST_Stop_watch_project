@@ -109,10 +109,11 @@ module tb_tm_2_countdown_alarm;
         #1;
         dt = t_alarm - t_run;
         $display("[%0d ns] P1 run -> alarm = %0d ns (set 10 s)", $time, dt);
-        // 기준: 9,990 ms 초과, 10,000 ms + 1클럭 이하 (원본과 같은 범위)
+        // 기준 (10/17 ④ 타이머 전용 tick): 정확히 10,000 ms + 파이프라인 2클럭 → (10,000 ms - 1클럭, 10,000 ms + 3클럭]
+        //   (그 전 공용 tick 판은 9,990 ms 초과 ~ 10,000 ms + 1클럭)
         n_chk = n_chk + 1;
-        if (!(dt > 64'd9_990_000_000 && dt <= 64'd10_000_000_010)) begin
-            err = err + 1; $display("[%0d ns] FAIL P1 TB5 duration exp (9990 ms, 10000 ms + 1 clk] got %0d ns", $time, dt);
+        if (!(dt > 64'd9_999_999_990 && dt <= 64'd10_000_000_030)) begin
+            err = err + 1; $display("[%0d ns] FAIL P1 TB5 duration exp (10000 ms - 1 clk, 10000 ms + 3 clk] got %0d ns", $time, dt);
         end
         n_chk = n_chk + 1;
         if ({dut.w_tm_min, dut.w_tm_sec, dut.w_tm_msec, dut.w_tm_run} !== {6'd0, 6'd0, 7'd0, 1'b0}) begin
@@ -163,7 +164,7 @@ module tb_tm_2_countdown_alarm;
         @(negedge clk); btn_R = 1; #5_000_000; btn_R = 0; #5_000_000;          // 01:00
         @(negedge clk); btn_L = 1;
         @(posedge dut.w_tm_run);                                                 // RUN 시작
-        @(posedge dut.w_tick_10ms); repeat (5) @(negedge clk);                   // 첫 tick 뒤
+        @(posedge dut.w_tm_tick_10ms); repeat (5) @(negedge clk);                // 타이머 전용 tick 첫 펄스 뒤 (10/17 ④)
         n_chk = n_chk + 1;
         if ({dut.w_tm_min, dut.w_tm_sec, dut.w_tm_msec} !== {6'd0, 6'd59, 7'd99}) begin
             err = err + 1; $display("[%0d ns] FAIL P4 TB4 01:00.00 - 1 tick exp 00:59.99 got %0d:%0d.%0d", $time, dut.w_tm_min, dut.w_tm_sec, dut.w_tm_msec);
@@ -174,7 +175,7 @@ module tb_tm_2_countdown_alarm;
         @(negedge clk); btn_D = 1; #5_000_000; btn_D = 0; #5_000_000;          // 10:00
         @(negedge clk); btn_L = 1;
         @(posedge dut.w_tm_run);
-        @(posedge dut.w_tick_10ms); repeat (5) @(negedge clk);
+        @(posedge dut.w_tm_tick_10ms); repeat (5) @(negedge clk);
         n_chk = n_chk + 1;
         if ({dut.w_tm_min, dut.w_tm_sec, dut.w_tm_msec} !== {6'd9, 6'd59, 7'd99}) begin
             err = err + 1; $display("[%0d ns] FAIL P4 TB4 10:00.00 - 1 tick exp 09:59.99 got %0d:%0d.%0d", $time, dut.w_tm_min, dut.w_tm_sec, dut.w_tm_msec);

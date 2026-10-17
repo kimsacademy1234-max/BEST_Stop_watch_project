@@ -26,6 +26,7 @@ COM = {3: "0111", 2: "1011", 1: "1101", 0: "1110"}
 SCOPE = {
     "PIN_IN": "TB 최상위", "PIN_OUT": "TB 최상위",
     "CLKGEN": "dut/U_CLK_GEN_4KHZ", "TICKGEN": "dut/U_TICK_GEN_100HZ",
+    "TICKGEN_SW": "dut/U_TICK_GEN_SW", "TICKGEN_TM": "dut/U_TICK_GEN_TM",
     "BD_R": "dut/U_BD_R", "BD_L": "dut/U_BD_L", "BD_U": "dut/U_BD_U", "BD_D": "dut/U_BD_D",
     "SEL": "dut (assign 화면 선택)", "GATE_SW": "dut (assign 버튼 게이팅)", "GATE_WT": "dut (assign 버튼 게이팅)",
     "GATE_TM": "dut (assign 버튼 게이팅)",
@@ -76,8 +77,8 @@ def sw_steps(btns, with_lap=True, disp=("M_MSEC", "M_SEC"), extra7=""):
         step("스톱워치 컨트롤 · FSM", [("SCU", p) for p in ("o_sw_run_stop", "o_sw_clear", "o_sw_down")],
              "run_stop · down: 버튼 펄스 다음 클럭(10 ns 뒤)<br>clear: 버튼 펄스와 같은 10 ns", "R → o_sw_run_stop 토글 / L(정지 중) → o_sw_clear 10 ns 펄스 / U(정지 중) → o_sw_down 토글",
              extra="**FSM**: 같은 블록 Objects 의 `c_state` · `n_state` (STOP / RUN). R 펄스 순간 `n_state` 가 바뀌고 다음 클럭에 `c_state` 가 따라감"),
-        step("10 ms tick", [("TICKGEN", "o_tick_10ms")],
-             "10 ms 마다 10 ns 펄스", "스톱워치 · 시계 · 타이머 공용. 항상 흐른다"),
+        step("10 ms tick (스톱워치 전용)", [("TICKGEN_SW", "o_tick_10ms")],
+             "RUN 한 순간부터 10 ms 마다 10 ns 펄스", "o_sw_run_stop = 1 동안만 센다 (STOP 이면 멈췄다가 이어서), o_sw_clear 면 0 부터. 첫 펄스는 RUN 뒤 정확히 10 ms"),
         step("스톱워치 값", [("SDP", p) for p in ("o_sw_msec", "o_sw_sec", "o_sw_min", "o_sw_hour")] +
              ([("SDP", "o_sw_lap")] if with_lap else []),
              "o_sw_run_stop = 1 동안 tick 다음 클럭에 +1 (다운이면 −1)",
@@ -131,7 +132,7 @@ FOLDERS["01_stopwatch"] = dict(
             phases=[
                 ("P1", "리셋", "5 · 7 · 9 · 10", "`c_state` STOP, `o_sw_run_stop` = 0, `o_sw_*` = 0, `led` = 000A, FND \"00.00\""),
                 ("P2", "R → 정확히 1.000 s 뒤 R", "3 · 5 · 6 · 7",
-                 "`c_state` STOP → RUN → STOP, RUN 구간 (= `o_sw_run_stop` 1) = 1000.000 ms ± 20 us, 그동안 tick 99~100 번 → 값 1.00 초"),
+                 "`c_state` STOP → RUN → STOP, RUN 구간 (= `o_sw_run_stop` 1) = 1000.000 ms ± 20 us, 그동안 스톱워치 전용 tick 100 번 (RUN 순간부터 셈) → 값 1.00 초"),
                 ("P3", "120 ms 동작 후 R, 200 ms 대기", "5 · 7", "`c_state` STOP 동안 `o_sw_*` 변화 없음"),
                 ("P4", "정지 중 D(랩) → L", "4 · 5 · 7 · 9",
                  "`c_state` STOP 유지. `o_sw_lap` 0→1, L 의 `o_sw_clear` 펄스에 `o_sw_*` = 0 · `o_sw_lap` = 0, FND \"00.00\""),
@@ -201,7 +202,8 @@ def tm_steps(btns):
              "add · amount · clear: 버튼 펄스와 같은 10 ns<br>run · alarm: 다음 클럭",
              "SET: U/R/D → o_tm_add 펄스 + o_tm_amount 0/1/2, L → o_tm_run 1 / RUN: L → o_tm_clear / 0 이 되면 o_tm_alarm 1",
              extra="**FSM**: 같은 블록 Objects 의 `c_state` · `n_state` (SET / RUN / ALARM). `o_tm_run` = (c_state == RUN), `o_tm_alarm` = (c_state == ALARM)"),
-        step("10 ms tick", [("TICKGEN", "o_tick_10ms")], "10 ms 마다 10 ns 펄스", "o_tm_run = 1 일 때만 타이머가 줄어든다"),
+        step("10 ms tick (타이머 전용)", [("TICKGEN_TM", "o_tick_10ms")], "RUN 한 순간부터 10 ms 마다 10 ns 펄스",
+             "o_tm_run = 1 동안만 센다, o_tm_clear(취소) 면 0 부터. 첫 감소는 시작 뒤 정확히 10 ms"),
         step("타이머 값", [("TDP", p) for p in ("o_tm_msec", "o_tm_sec", "o_tm_min", "o_tm_zero")],
              "더하기: o_tm_add 다음 클럭 / 줄이기: tick 다음 클럭에 −1",
              "o_tm_zero 는 TCU 의 i_tm_zero 로 되돌아간다 (0 이면 시작 안 함, 동작 중 0 → 알람)"),
@@ -234,7 +236,7 @@ FOLDERS["02_timer"] = dict(
         "| ALARM | 아무 버튼 | 알람 끄기 → SET (더하기로 안 쓰임) |",
         "",
         "0 이 되면 알람: LED 16 개가 0.5 초마다 켜짐/꺼짐 (어느 화면에서나). 화면은 display_mode_sw1 과 상관없이 \"분.초\".",
-        "10 ms tick 은 공용이라 설정 T 초는 실제로 (T − 10 ms) ~ T 사이에 끝난다.",
+        "10 ms tick 은 타이머 전용(U_TICK_GEN_TM, RUN 순간부터 셈)이라 설정 T 초는 정확히 T 초 뒤에 끝난다 (10/17 ④. 그 전 공용 tick 판은 (T − 10 ms) ~ T).",
     ],
     tbs=[
         dict(
@@ -258,7 +260,7 @@ FOLDERS["02_timer"] = dict(
             steps=tm_steps("LUD"),
             phases=[
                 ("P1", "U(00:10) → L, 끝까지 (약 10 초)", "5 · 6 · 7 · 10",
-                 "`c_state` SET → RUN → ALARM. RUN 진입 → ALARM 진입 간격 (= `o_tm_run` ↑ → `o_tm_alarm` ↑) **9.990 초 초과 ~ 10.000 초**, 그때 `o_tm_*` = 0, 동작 중 `led[6]` = 1"),
+                 "`c_state` SET → RUN → ALARM. RUN 진입 → ALARM 진입 간격 (= `o_tm_run` ↑ → `o_tm_alarm` ↑) **10.000 초 + 2 클럭(20 ns)** (RUN 순간부터 전용 tick 이 셈. 10/17 ④ 전 공용 tick 판은 9.990 초 초과 ~ 10.000 초), 그때 `o_tm_*` = 0, 동작 중 `led[6]` = 1"),
                 ("P2", "알람 1.5 초 (P1 에 이어서)", "10", "`c_state` ALARM 유지. `o_wt_msec` ≥ 50 이면 `led` = FFFF, 아니면 0000. 저절로 안 꺼짐"),
                 ("P3", "D 로 알람 끄기 (P2 에 이어서)", "5 · 7 · 10", "`c_state` ALARM → SET, `o_tm_add` **안 나옴** → 값 00:00 그대로, `led` = 0020"),
                 ("P4", "동작 중 01:00.00, 10:00.00 프리로드", "6 · 7 · 9", "다음 tick 에 **00:59.99**, **09:59.99** (FND \"09.59\")"),
@@ -561,7 +563,8 @@ COMMON = """
 | 신호 (블록.포트) | 주기 | 펄스 폭 | 의미 |
 |---|---|---|---|
 | `U_CLK_GEN_4KHZ.o_clk_4khz` | **250 us** (4 kHz) | 10 ns | 디바운서 샘플 박자, FND 자리 바꾸는 박자 |
-| `U_TICK_GEN_100HZ.o_tick_10ms` | **10 ms** (100 Hz) | 10 ns | 1/100 초 한 칸. 스톱워치 · 시계 · 타이머 공용, 항상 흐름 |
+| `U_TICK_GEN_100HZ.o_tick_10ms` | **10 ms** (100 Hz) | 10 ns | 1/100 초 한 칸. **시계 전용**, 항상 흐름 |
+| `U_TICK_GEN_SW.o_tick_10ms` · `U_TICK_GEN_TM.o_tick_10ms` | **10 ms** | 10 ns | 스톱워치 · 타이머 전용. 시작(RUN) 순간부터 셈 → 첫 칸이 정확히 10 ms (10/17 ④) |
 | `U_BD_x.o_btn` | 누를 때 1 번 | 10 ns | 누른 뒤 **1.75 ~ 2.0 ms** (4 kHz 샘플 8 번) |
 | `U_FND_CONTROLLER/U_COUNTER8.o_scan_sel` | 한 칸 **250 us**, 한 바퀴 **2 ms** | — | 0~3 숫자 자리, 4~7 빈칸 · 점 |
 

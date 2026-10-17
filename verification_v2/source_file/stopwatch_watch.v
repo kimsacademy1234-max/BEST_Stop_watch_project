@@ -39,7 +39,9 @@ module stopwatch_watch (
 
     // 클럭 · tick
     wire w_clk_4khz;   // U_CLK_GEN_4KHZ.o_clk_4khz   (250 us 마다 1 클럭 펄스)
-    wire w_tick_10ms;  // U_TICK_GEN_100HZ.o_tick_10ms (10 ms 마다 1 클럭 펄스, 스톱워치·시계·타이머 공용)
+    wire w_tick_10ms;     // U_TICK_GEN_100HZ.o_tick_10ms (10 ms 마다 1 클럭 펄스, 시계 전용 · 항상 흐름)
+    wire w_sw_tick_10ms;  // U_TICK_GEN_SW.o_tick_10ms    (스톱워치 전용, 시작 순간부터 셈)  (10/17 ④)
+    wire w_tm_tick_10ms;  // U_TICK_GEN_TM.o_tick_10ms    (타이머 전용, 시작 순간부터 셈)    (10/17 ④)
     // 디바운서 출력
     wire w_btn_R, w_btn_L, w_btn_U, w_btn_D;
     // 화면 선택 (셋 중 하나만 1)
@@ -89,11 +91,29 @@ module stopwatch_watch (
         .o_clk_4khz(w_clk_4khz)
     );
 
-    // 100hz tick 은 여기서 한 번만 만들어 세 datapath 에 공급 (항상 흐름)
+    // 100hz tick (10/17 팀 결정 ④): 시계는 항상 흐르는 tick 하나,
+    // 스톱워치 · 타이머는 각자 tick 을 따로 두고 시작 순간부터 센다 (공유하면 첫 1/100초가 최대 10 ms 일찍 바뀜)
+    // 4 kHz (디바운서 · FND 스캔) 는 그대로 하나를 같이 쓴다
     tick_gen_100hz U_TICK_GEN_100HZ (
         .i_clk      (clk),
         .i_rst      (rst),
         .o_tick_10ms(w_tick_10ms)
+    );
+
+    tick_gen_100hz_run U_TICK_GEN_SW (
+        .i_clk      (clk),
+        .i_rst      (rst),
+        .i_run_stop (w_sw_run_stop),   // STOP 이면 멈췄다가 RUN 이면 이어서 셈
+        .i_clear    (w_sw_clear),      // 지우기 = 0 부터
+        .o_tick_10ms(w_sw_tick_10ms)
+    );
+
+    tick_gen_100hz_run U_TICK_GEN_TM (
+        .i_clk      (clk),
+        .i_rst      (rst),
+        .i_run_stop (w_tm_run),        // RUN 동안만 셈
+        .i_clear    (w_tm_clear),      // 취소 = 0 부터
+        .o_tick_10ms(w_tm_tick_10ms)
     );
 
     // ---------------------------------------------------------------- 디바운서
@@ -162,7 +182,7 @@ module stopwatch_watch (
     stopwatch_datapath U_STOPWATCH_DATAPATH (
         .i_clk        (clk),
         .i_rst        (rst),
-        .i_tick_10ms  (w_tick_10ms),
+        .i_tick_10ms  (w_sw_tick_10ms),  // (10/17) 스톱워치 전용 tick
         .i_sw_run_stop(w_sw_run_stop),
         .i_sw_clear   (w_sw_clear),
         .i_sw_down    (w_sw_down),
@@ -228,7 +248,7 @@ module stopwatch_watch (
     timer_datapath U_TIMER_DATAPATH (
         .i_clk      (clk),
         .i_rst      (rst),
-        .i_tick_10ms(w_tick_10ms),
+        .i_tick_10ms(w_tm_tick_10ms),  // (10/17) 타이머 전용 tick
         .i_tm_run   (w_tm_run),
         .i_tm_clear (w_tm_clear),
         .i_tm_add   (w_tm_add),

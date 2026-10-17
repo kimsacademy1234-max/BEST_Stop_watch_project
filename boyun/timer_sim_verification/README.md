@@ -63,3 +63,5 @@
 - TB · 안내서: 정안성 (`verification_v2`, Claude 공동 작성 커밋)
 - 시뮬레이션 실행 · 파형 캡처: 정보윤 (Vivado GUI)
 - 캡처의 빨간 상자 · 번호 · 위 설명 문장, 파형 배치 스크립트: Claude Code 로 작성, 정보윤 확인
+
+> **10/17 밤 추가**: 위 "① 10초 → 9,998 ms" 는 팀 결정 ④(100 Hz tick 을 스톱워치 · 타이머 전용 `tick_gen_100hz_run` 으로 분리)로 해결 — 같은 TB 로 10,000 ms + 20 ns. 자세한 것은 `../timer_tb_verilog/README.md` · `../../verification_v2/README.md`.

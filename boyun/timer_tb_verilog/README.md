@@ -52,7 +52,19 @@ run_xsim.bat tb_tm_1_add_cap
 
 ## 결과 (Vivado 2022.2 xsim, v2 소스 = 팀 저장소 `source_file` 마지막 변경 `bf77587` 그대로, 로컬 수정 없음)
 
-10/17 저녁, `run_xsim.bat` 로 돌림.
+### 10/17 밤 — 팀 결정 ④ (100 Hz tick 분리) 반영한 소스로 (`verification_v2/source_file`, `tick_gen_100hz_run.v` + Top 수정)
+
+| TB | 검사 | MISMATCH | 10초 타이머 | 같은 소스로 돌린 팀 SV TB |
+|---|---|---|---|---|
+| tb_tm_1_add_cap.v | 21 | **0** | — | 21 / PASS |
+| tb_tm_2_countdown_alarm.v | 41 | **0** | **10,000 ms + 20 ns** (RUN ↑ → ALARM ↑, 파이프라인 2클럭) | 41 / PASS |
+| tb_tm_3_cancel_background.v | 11 | **0** | — | 11 / PASS |
+| tb_timer_simple.v (발표용 간단판) | 35 | **0** | 10,000 ms + 20 ns | — |
+
+- ④ 로 바뀌면서 TB 도 두 곳 고침: ① 10초 판정 범위 (9,990 ~ 10,000 ms + 1클럭 → **10,000 ms − 1클럭 ~ + 3클럭**, SV `tb_tm_2` 도 같이) ② `tb_tm_2.v` P4 빌림 확인은 시계 tick(`dut.w_tick_10ms`) 대신 **타이머 전용 tick `dut.w_tm_tick_10ms`** 첫 펄스를 기다림. 고치기 전 옛 TB 로 ④ 소스를 돌리면 그 두 곳만 FAIL (10,000,000,020 ns, P4 값 그대로) — 바뀐 동작을 TB 가 잡은 것.
+- 같은 소스로 팀 SV TB 11개(01_stopwatch 3 · 02_timer 3 · 03_watch 3 · top 2)도 전부 PASS (검사 339개).
+
+### 10/17 저녁 — 그 전 소스 (100 Hz tick 공유, `bf77587`)
 
 | TB | 검사 | MISMATCH | 시뮬 시간 | 원본 SV 결과 (10/16) |
 |---|---|---|---|---|
@@ -61,7 +73,7 @@ run_xsim.bat tb_tm_1_add_cap
 | tb_tm_3_cancel_background.v | 11 | **0** | 10,235 ms | 11 / PASS (555 ms) |
 | tb_timer_simple.v (발표용 간단판) | 35 | **0** | 약 10.4 s · 10초 타이머 = 9,998 ms | — |
 
-- 원본 SV 와 검사 수 · 결과가 같다. 10초 타이머가 9,998 ms 인 것도 같다 (tick 공유 때문, 팀 결정 대기).
+- 원본 SV 와 검사 수 · 결과가 같았다. 10초 타이머가 9,998 ms 인 것도 같았다 (tick 공유 때문 → ④ 로 해결).
 - 시뮬 시간이 다른 것은 프리로드 대신 버튼 · 실제 시간을 써서다 (위 "원본과 다른 점").
 
 ### TB 가 정말 잡는지 (변이 테스트: 설계 복사본에 bug 를 일부러 넣고 돌림, 원본 설계는 그대로)

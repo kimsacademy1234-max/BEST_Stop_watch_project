@@ -91,8 +91,8 @@ module tb_timer_simple ();
         @(posedge tm_alarm); t_alarm = $time;  #1;              // 알람 순간
         $display("[3] run -> alarm = %0d ns", t_alarm - t_start);
 
-        total = total + 1;                                       // 10초 (팀 판은 tick 공유라 최대 10 ms 짧을 수 있음)
-        if (t_alarm - t_start < 64'd9_990_000_000 || t_alarm - t_start > 64'd10_000_000_010) begin
+        total = total + 1;                                       // 10초: 타이머 전용 tick (10/17 ④) 이라 정확히 10.000 s + 2클럭
+        if (t_alarm - t_start < 64'd9_999_999_990 || t_alarm - t_start > 64'd10_000_000_030) begin
             err = err + 1;
             $display("FAIL: 10 s timer took %0d ns", t_alarm - t_start);
         end

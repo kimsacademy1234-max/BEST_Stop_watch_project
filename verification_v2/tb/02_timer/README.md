@@ -13,7 +13,7 @@
 | ALARM | 아무 버튼 | 알람 끄기 → SET (더하기로 안 쓰임) |
 
 0 이 되면 알람: LED 16 개가 0.5 초마다 켜짐/꺼짐 (어느 화면에서나). 화면은 display_mode_sw1 과 상관없이 "분.초".
-10 ms tick 은 공용이라 설정 T 초는 실제로 (T − 10 ms) ~ T 사이에 끝난다.
+10 ms tick 은 타이머 전용(U_TICK_GEN_TM, RUN 순간부터 셈)이라 설정 T 초는 정확히 T 초 뒤에 끝난다 (10/17 ④. 그 전 공용 tick 판은 (T − 10 ms) ~ T).
 
 ### FSM 상태 (`U_TIMER_CONTROL_UNIT` 의 `c_state` · `n_state`)
 
@@ -49,7 +49,8 @@
 | 신호 (블록.포트) | 주기 | 펄스 폭 | 의미 |
 |---|---|---|---|
 | `U_CLK_GEN_4KHZ.o_clk_4khz` | **250 us** (4 kHz) | 10 ns | 디바운서 샘플 박자, FND 자리 바꾸는 박자 |
-| `U_TICK_GEN_100HZ.o_tick_10ms` | **10 ms** (100 Hz) | 10 ns | 1/100 초 한 칸. 스톱워치 · 시계 · 타이머 공용, 항상 흐름 |
+| `U_TICK_GEN_100HZ.o_tick_10ms` | **10 ms** (100 Hz) | 10 ns | 1/100 초 한 칸. **시계 전용**, 항상 흐름 |
+| `U_TICK_GEN_SW.o_tick_10ms` · `U_TICK_GEN_TM.o_tick_10ms` | **10 ms** | 10 ns | 스톱워치 · 타이머 전용. 시작(RUN) 순간부터 셈 → 첫 칸이 정확히 10 ms (10/17 ④) |
 | `U_BD_x.o_btn` | 누를 때 1 번 | 10 ns | 누른 뒤 **1.75 ~ 2.0 ms** (4 kHz 샘플 8 번) |
 | `U_FND_CONTROLLER/U_COUNTER8.o_scan_sel` | 한 칸 **250 us**, 한 바퀴 **2 ms** | — | 0~3 숫자 자리, 4~7 빈칸 · 점 |
 
@@ -88,7 +89,7 @@
 | **4** 디바운서 출력 | `dut/U_BD_R`<br>`dut/U_BD_L`<br>`dut/U_BD_U`<br>`dut/U_BD_D` | `o_btn` `o_btn` `o_btn` `o_btn` | 누른 뒤 1.75 ~ 2.0 ms 에 10 ns 펄스 1 개 | 한 번 누름 = 펄스 1 개 |
 | **5** 화면 선택 · 버튼 게이팅 | dut (assign 화면 선택)<br>dut (assign 버튼 게이팅) | `w_sel_tm` `w_tm_btn_R` `w_tm_btn_L` `w_tm_btn_U` `w_tm_btn_D` | o_btn 과 같은 클럭 | w_sel_tm = timer_sw4. 타이머 화면일 때만 o_btn 이 w_tm_btn_X 로 지나감 |
 | **6** 타이머 컨트롤 · FSM | `dut/U_TIMER_CONTROL_UNIT` | `o_tm_add` `o_tm_amount` `o_tm_run` `o_tm_clear` `o_tm_alarm` | add · amount · clear: 버튼 펄스와 같은 10 ns<br>run · alarm: 다음 클럭 | SET: U/R/D → o_tm_add 펄스 + o_tm_amount 0/1/2, L → o_tm_run 1 / RUN: L → o_tm_clear / 0 이 되면 o_tm_alarm 1<br>**FSM**: 같은 블록 Objects 의 `c_state` · `n_state` (SET / RUN / ALARM). `o_tm_run` = (c_state == RUN), `o_tm_alarm` = (c_state == ALARM) |
-| **7** 10 ms tick | `dut/U_TICK_GEN_100HZ` | `o_tick_10ms` | 10 ms 마다 10 ns 펄스 | o_tm_run = 1 일 때만 타이머가 줄어든다 |
+| **7** 10 ms tick (타이머 전용) | `dut/U_TICK_GEN_TM` | `o_tick_10ms` | RUN 한 순간부터 10 ms 마다 10 ns 펄스 | o_tm_run = 1 동안만 센다, o_tm_clear(취소) 면 0 부터. 첫 감소는 시작 뒤 정확히 10 ms |
 | **8** 타이머 값 | `dut/U_TIMER_DATAPATH` | `o_tm_msec` `o_tm_sec` `o_tm_min` `o_tm_zero` | 더하기: o_tm_add 다음 클럭 / 줄이기: tick 다음 클럭에 −1 | o_tm_zero 는 TCU 의 i_tm_zero 로 되돌아간다 (0 이면 시작 안 함, 동작 중 0 → 알람) |
 | **9** 화면 MUX | dut (assign 화면 MUX)<br>dut (assign) | `w_disp_hour` `w_disp_min` `w_disp_msec` `w_disp_mode` | o_tm_* 와 같은 순간 | timer_sw4 = 1 → 입력 0: w_disp_hour = 분, w_disp_min = 초, w_disp_mode = 1 (화면 "분.초") |
 | **10** FND 출력 (최종) | `dut/U_FND_CONTROLLER` | `o_fnd_com` `o_fnd_font` | 250 us 마다 자리 바뀜, 2 ms 한 바퀴 | 아래 'FND 결론' 표의 자리별 값과 같아야 기능 완료 |
@@ -132,7 +133,7 @@
 | **4** 디바운서 출력 | `dut/U_BD_L`<br>`dut/U_BD_U`<br>`dut/U_BD_D` | `o_btn` `o_btn` `o_btn` | 누른 뒤 1.75 ~ 2.0 ms 에 10 ns 펄스 1 개 | 한 번 누름 = 펄스 1 개 |
 | **5** 화면 선택 · 버튼 게이팅 | dut (assign 화면 선택)<br>dut (assign 버튼 게이팅) | `w_sel_tm` `w_tm_btn_L` `w_tm_btn_U` `w_tm_btn_D` | o_btn 과 같은 클럭 | w_sel_tm = timer_sw4. 타이머 화면일 때만 o_btn 이 w_tm_btn_X 로 지나감 |
 | **6** 타이머 컨트롤 · FSM | `dut/U_TIMER_CONTROL_UNIT` | `o_tm_add` `o_tm_amount` `o_tm_run` `o_tm_clear` `o_tm_alarm` | add · amount · clear: 버튼 펄스와 같은 10 ns<br>run · alarm: 다음 클럭 | SET: U/R/D → o_tm_add 펄스 + o_tm_amount 0/1/2, L → o_tm_run 1 / RUN: L → o_tm_clear / 0 이 되면 o_tm_alarm 1<br>**FSM**: 같은 블록 Objects 의 `c_state` · `n_state` (SET / RUN / ALARM). `o_tm_run` = (c_state == RUN), `o_tm_alarm` = (c_state == ALARM) |
-| **7** 10 ms tick | `dut/U_TICK_GEN_100HZ` | `o_tick_10ms` | 10 ms 마다 10 ns 펄스 | o_tm_run = 1 일 때만 타이머가 줄어든다 |
+| **7** 10 ms tick (타이머 전용) | `dut/U_TICK_GEN_TM` | `o_tick_10ms` | RUN 한 순간부터 10 ms 마다 10 ns 펄스 | o_tm_run = 1 동안만 센다, o_tm_clear(취소) 면 0 부터. 첫 감소는 시작 뒤 정확히 10 ms |
 | **8** 타이머 값 | `dut/U_TIMER_DATAPATH` | `o_tm_msec` `o_tm_sec` `o_tm_min` `o_tm_zero` | 더하기: o_tm_add 다음 클럭 / 줄이기: tick 다음 클럭에 −1 | o_tm_zero 는 TCU 의 i_tm_zero 로 되돌아간다 (0 이면 시작 안 함, 동작 중 0 → 알람) |
 | **9** 화면 MUX | dut (assign 화면 MUX)<br>dut (assign) | `w_disp_hour` `w_disp_min` `w_disp_msec` `w_disp_mode` | o_tm_* 와 같은 순간 | timer_sw4 = 1 → 입력 0: w_disp_hour = 분, w_disp_min = 초, w_disp_mode = 1 (화면 "분.초") |
 | **10** FND 출력 (최종) | `dut/U_FND_CONTROLLER` | `o_fnd_com` `o_fnd_font` | 250 us 마다 자리 바뀜, 2 ms 한 바퀴 | 아래 'FND 결론' 표의 자리별 값과 같아야 기능 완료 |
@@ -142,7 +143,7 @@
 
 | Phase | TB 가 하는 것 | 볼 단계 | 정상 |
 |---|---|---|---|
-| P1 | U(00:10) → L, 끝까지 (약 10 초) | 6 · 7 · 8 · 11 | `c_state` SET → RUN → ALARM. RUN 진입 → ALARM 진입 간격 (= `o_tm_run` ↑ → `o_tm_alarm` ↑) **9.990 초 초과 ~ 10.000 초**, 그때 `o_tm_*` = 0, 동작 중 `led[6]` = 1 |
+| P1 | U(00:10) → L, 끝까지 (약 10 초) | 6 · 7 · 8 · 11 | `c_state` SET → RUN → ALARM. RUN 진입 → ALARM 진입 간격 (= `o_tm_run` ↑ → `o_tm_alarm` ↑) **10.000 초 + 2 클럭(20 ns)** (RUN 순간부터 전용 tick 이 셈. 10/17 ④ 전 공용 tick 판은 9.990 초 초과 ~ 10.000 초), 그때 `o_tm_*` = 0, 동작 중 `led[6]` = 1 |
 | P2 | 알람 1.5 초 (P1 에 이어서) | 11 | `c_state` ALARM 유지. `o_wt_msec` ≥ 50 이면 `led` = FFFF, 아니면 0000. 저절로 안 꺼짐 |
 | P3 | D 로 알람 끄기 (P2 에 이어서) | 6 · 8 · 11 | `c_state` ALARM → SET, `o_tm_add` **안 나옴** → 값 00:00 그대로, `led` = 0020 |
 | P4 | 동작 중 01:00.00, 10:00.00 프리로드 | 7 · 8 · 10 | 다음 tick 에 **00:59.99**, **09:59.99** (FND "09.59") |
@@ -176,7 +177,7 @@ P2 · P3 은 P1 의 알람을 이어서 쓴다. `RUN_PHASE = 1` 로 실행하면
 | **4** 디바운서 출력 | `dut/U_BD_R`<br>`dut/U_BD_L`<br>`dut/U_BD_U`<br>`dut/U_BD_D` | `o_btn` `o_btn` `o_btn` `o_btn` | 누른 뒤 1.75 ~ 2.0 ms 에 10 ns 펄스 1 개 | 한 번 누름 = 펄스 1 개 |
 | **5** 화면 선택 · 버튼 게이팅 | dut (assign 화면 선택)<br>dut (assign 버튼 게이팅) | `w_sel_tm` `w_tm_btn_R` `w_tm_btn_L` `w_tm_btn_U` `w_tm_btn_D` | o_btn 과 같은 클럭 | w_sel_tm = timer_sw4. 타이머 화면일 때만 o_btn 이 w_tm_btn_X 로 지나감 |
 | **6** 타이머 컨트롤 · FSM | `dut/U_TIMER_CONTROL_UNIT` | `o_tm_add` `o_tm_amount` `o_tm_run` `o_tm_clear` `o_tm_alarm` | add · amount · clear: 버튼 펄스와 같은 10 ns<br>run · alarm: 다음 클럭 | SET: U/R/D → o_tm_add 펄스 + o_tm_amount 0/1/2, L → o_tm_run 1 / RUN: L → o_tm_clear / 0 이 되면 o_tm_alarm 1<br>**FSM**: 같은 블록 Objects 의 `c_state` · `n_state` (SET / RUN / ALARM). `o_tm_run` = (c_state == RUN), `o_tm_alarm` = (c_state == ALARM) |
-| **7** 10 ms tick | `dut/U_TICK_GEN_100HZ` | `o_tick_10ms` | 10 ms 마다 10 ns 펄스 | o_tm_run = 1 일 때만 타이머가 줄어든다 |
+| **7** 10 ms tick (타이머 전용) | `dut/U_TICK_GEN_TM` | `o_tick_10ms` | RUN 한 순간부터 10 ms 마다 10 ns 펄스 | o_tm_run = 1 동안만 센다, o_tm_clear(취소) 면 0 부터. 첫 감소는 시작 뒤 정확히 10 ms |
 | **8** 타이머 값 | `dut/U_TIMER_DATAPATH` | `o_tm_msec` `o_tm_sec` `o_tm_min` `o_tm_zero` | 더하기: o_tm_add 다음 클럭 / 줄이기: tick 다음 클럭에 −1 | o_tm_zero 는 TCU 의 i_tm_zero 로 되돌아간다 (0 이면 시작 안 함, 동작 중 0 → 알람) |
 | **9** 화면 MUX | dut (assign 화면 MUX)<br>dut (assign) | `w_disp_hour` `w_disp_min` `w_disp_msec` `w_disp_mode` | o_tm_* 와 같은 순간 | timer_sw4 = 1 → 입력 0: w_disp_hour = 분, w_disp_min = 초, w_disp_mode = 1 (화면 "분.초") |
 | **10** FND 출력 (최종) | `dut/U_FND_CONTROLLER` | `o_fnd_com` `o_fnd_font` | 250 us 마다 자리 바뀜, 2 ms 한 바퀴 | 아래 'FND 결론' 표의 자리별 값과 같아야 기능 완료 |

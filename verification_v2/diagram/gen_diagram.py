@@ -495,7 +495,7 @@ def draw_block(b, hl):
 
 # --------------------------------------------------------------------------- 페이지 1: Top
 def page_top():
-    pg = Page("top", "stopwatch_watch (Top) — 블록 다이어그램 · 포트 이름 = 선 이름", 2830, 1440)
+    pg = Page("top", "stopwatch_watch (Top) — 블록 다이어그램 · 포트 이름 = 선 이름", 2830, 1480)
     B = pg.add
 
     # 열 x (블록 왼쪽 변)
@@ -508,7 +508,7 @@ def page_top():
             note="o_clk_4khz: 250 us 마다 10 ns 펄스"))
     B(Block("TICKGEN", XA, 280, WA, ["i_clk", "i_rst"], ["o_tick_10ms"],
             inst="U_TICK_GEN_100HZ", module="tick_gen_100hz",
-            note="o_tick_10ms: 10 ms 마다 10 ns 펄스"))
+            note="o_tick_10ms: 10 ms 마다 10 ns 펄스 (시계 전용)"))
     bds = {}
     for i, k in enumerate("RLUD"):
         bds[k] = B(Block("BD_" + k, XB, 420 + i * 170, WB, ["i_clk", "i_rst", "i_clk_4khz", "i_btn"], ["o_btn"],
@@ -535,6 +535,11 @@ def page_top():
     B(Block("SCU", XD, 400, WD, ["i_clk", "i_rst", "i_sw_btn_R", "i_sw_btn_L", "i_sw_btn_U"],
             ["o_sw_run_stop", "o_sw_clear", "o_sw_down"],
             inst="U_STOPWATCH_CONTROL_UNIT", module="stopwatch_control_unit"))
+    # (10/17 ④) 스톱워치 · 타이머 전용 100 Hz tick (시작 순간부터 셈)
+    B(Block("TICKGEN_SW", XD, 150, WD, ["i_clk", "i_rst", "i_run_stop", "i_clear"], ["o_tick_10ms"],
+            inst="U_TICK_GEN_SW", module="tick_gen_100hz_run"))
+    B(Block("TICKGEN_TM", XD, 1150, WD, ["i_run_stop", "i_clear", "i_clk", "i_rst"], ["o_tick_10ms"],
+            inst="U_TICK_GEN_TM", module="tick_gen_100hz_run"))
     B(Block("WCU", XD, 640, WD, ["i_clk", "i_rst", "i_wt_btn_R", "i_wt_btn_L", "i_wt_btn_U", "i_wt_btn_D", "i_set_sw2"],
             [("o_wt_cursor", "[1:0]"), "o_wt_up", "o_wt_down"],
             inst="U_WATCH_CONTROL_UNIT", module="watch_control_unit"))
@@ -609,17 +614,19 @@ def page_top():
            [("BD_" + k, "i_clk_4khz", [gAB + 40]) for k in "RLUD"] +
            [("FND", "i_clk_4khz", [gAB + 40, 96, XG - 40])], kind="clk4k")
     pg.net("w_tick_10ms", ("TICKGEN", "o_tick_10ms"),
-           [(d, "i_tick_10ms", [gAB + 56, 110, XE - 22]) for d in ("SDP", "WDP", "TDP")], kind="tick")
+           [("WDP", "i_tick_10ms", [gAB + 56, 110, XE - 22])], kind="tick")
+    pg.net("w_sw_tick_10ms", ("TICKGEN_SW", "o_tick_10ms"), [("SDP", "i_tick_10ms", [XE - 34])], kind="tick")
+    pg.net("w_tm_tick_10ms", ("TICKGEN_TM", "o_tick_10ms"), [("TDP", "i_tick_10ms", [XE - 34])], kind="tick")
     for i, k in enumerate("RLUD"):
         pg.net("w_btn_" + k, ("BD_" + k, "o_btn"),
                [(g, "w_btn_" + k, [gBC + 22 + i * 14]) for g in ["GATE_SW", "GATE_WT", "GATE_TM"]])
     pg.net("w_sel_sw", ("SEL", "w_sel_sw"),
-           [("GATE_SW", "w_sel_sw", [gBC + 12]), ("LED", "w_sel_sw", [gBC + 12, 1386, XG - 16])])
+           [("GATE_SW", "w_sel_sw", [gBC + 12]), ("LED", "w_sel_sw", [gBC + 12, 1426, XG - 16])])
     pg.net("w_sel_wt", ("SEL", "w_sel_wt"),
-           [("GATE_WT", "w_sel_wt", [gBC + 84]), ("FND", "i_sel_wt", [gBC + 84, 1398, XG - 64]),
-            ("LED", "w_sel_wt", [gBC + 84, 1398, XG - 64])])
+           [("GATE_WT", "w_sel_wt", [gBC + 84]), ("FND", "i_sel_wt", [gBC + 84, 1438, XG - 64]),
+            ("LED", "w_sel_wt", [gBC + 84, 1438, XG - 64])])
     pg.net("w_sel_tm", ("SEL", "w_sel_tm"),
-           [("GATE_TM", "w_sel_tm", [gBC + 98]), ("LED", "w_sel_tm", [gBC + 98, 1410, XG - 10])])
+           [("GATE_TM", "w_sel_tm", [gBC + 98]), ("LED", "w_sel_tm", [gBC + 98, 1450, XG - 10])])
     for i, k in enumerate("RLU"):
         pg.net(f"w_sw_btn_{k}", ("GATE_SW", f"w_sw_btn_{k}"), [("SCU", f"i_sw_btn_{k}", [gCD + 22 + i * 16])])
     pg.net("w_sw_btn_D", ("GATE_SW", "w_sw_btn_D"), [("SDP", "i_sw_btn_D", [gCD + 70, 370, gDE + 22])])
@@ -628,8 +635,10 @@ def page_top():
             pg.net(f"w_{dom}_btn_{k}", (f"GATE_{dom.upper()}", f"w_{dom}_btn_{k}"),
                    [(cu, f"i_{dom}_btn_{k}", [gCD + 22 + i * 16])])
     c1, c2, c3, c4 = gDE + 40, gDE + 56, gDE + 72, gDE + 88
-    pg.net("w_sw_run_stop", ("SCU", "o_sw_run_stop"), [("SDP", "i_sw_run_stop", [c2])])
-    pg.net("w_sw_clear", ("SCU", "o_sw_clear"), [("SDP", "i_sw_clear", [c3])])
+    pg.net("w_sw_run_stop", ("SCU", "o_sw_run_stop"),
+           [("SDP", "i_sw_run_stop", [c2]), ("TICKGEN_SW", "i_run_stop", [c2, 352, XD - 30])])
+    pg.net("w_sw_clear", ("SCU", "o_sw_clear"),
+           [("SDP", "i_sw_clear", [c3]), ("TICKGEN_SW", "i_clear", [c3, 340, XD - 18])])
     pg.net("w_sw_down", ("SCU", "o_sw_down"), [("SDP", "i_sw_down", [c4])])
     pg.net("w_wt_cursor", ("WCU", "o_wt_cursor"),
            [("WDP", "i_wt_cursor", [c2]), ("FND", "i_wt_cursor", [c2, 643, XG - 52])])
@@ -637,12 +646,14 @@ def page_top():
     pg.net("w_wt_down", ("WCU", "o_wt_down"), [("WDP", "i_wt_down", [c4])])
     pg.net("w_wt_hour", ("WDP", "o_wt_hour"), [("H1224", "i_wt_hour", [gEF + 14, 885, XE - 10])])
     pg.net("w_tm_run", ("TCU", "o_tm_run"),
-           [("TDP", "i_tm_run", [c1]), ("LED", "w_tm_run", [c1, 1350, XG - 28])])
-    pg.net("w_tm_alarm", ("TCU", "o_tm_alarm"), [("LED", "w_tm_alarm", [gDE + 24, 1338, XG - 40])])
-    pg.net("w_tm_clear", ("TCU", "o_tm_clear"), [("TDP", "i_tm_clear", [c2])])
+           [("TDP", "i_tm_run", [c1]), ("LED", "w_tm_run", [c1, 1390, XG - 28]),
+            ("TICKGEN_TM", "i_run_stop", [c1, 1136, XD - 30])])
+    pg.net("w_tm_alarm", ("TCU", "o_tm_alarm"), [("LED", "w_tm_alarm", [gDE + 24, 1378, XG - 40])])
+    pg.net("w_tm_clear", ("TCU", "o_tm_clear"),
+           [("TDP", "i_tm_clear", [c2]), ("TICKGEN_TM", "i_clear", [c2, 1142, XD - 18])])
     pg.net("w_tm_add", ("TCU", "o_tm_add"), [("TDP", "i_tm_add", [c3])])
     pg.net("w_tm_amount", ("TCU", "o_tm_amount"), [("TDP", "i_tm_amount", [c4])])
-    pg.net("w_tm_zero", ("TDP", "o_tm_zero"), [("TCU", "i_tm_zero", [gEF + 20, 1300, XD - 22])])
+    pg.net("w_tm_zero", ("TDP", "o_tm_zero"), [("TCU", "i_tm_zero", [gEF + 20, 1340, XD - 64])])
     # 데이터패스 → 화면 MUX
     ch = iter(range(gEF + 60, gEF + 400, 11))
     def to_mux(name, src, mux, port, extra=None):
@@ -655,13 +666,13 @@ def page_top():
     to_mux("w_sw_sec", ("SDP", "o_sw_sec"), "M_SEC", "w_sw_sec")
     to_mux("w_sw_min", ("SDP", "o_sw_min"), "M_MIN", "w_sw_min")
     to_mux("w_sw_hour", ("SDP", "o_sw_hour"), "M_HOUR", "w_sw_hour")
-    pg.net("w_sw_lap", ("SDP", "o_sw_lap"), [("LED", "w_sw_lap", [gEF + 30, 1362, XG - 34])])
+    pg.net("w_sw_lap", ("SDP", "o_sw_lap"), [("LED", "w_sw_lap", [gEF + 30, 1402, XG - 34])])
     to_mux("w_wt_msec", ("WDP", "o_wt_msec"), "M_MSEC", "w_wt_msec",
-           extra=lambda x: [("LED", "w_wt_msec", [x, 1374, XG - 46])])
+           extra=lambda x: [("LED", "w_wt_msec", [x, 1414, XG - 46])])
     to_mux("w_wt_sec", ("WDP", "o_wt_sec"), "M_SEC", "w_wt_sec")
     to_mux("w_wt_min", ("WDP", "o_wt_min"), "M_MIN", "w_wt_min")
     to_mux("w_wt_hour_disp", ("H1224", "o_wt_hour_disp"), "M_HOUR", "w_wt_hour_disp")
-    pg.net("w_wt_pm", ("H1224", "o_wt_pm"), [("LED", "w_wt_pm", [gEF + 40, 1326, XG - 22])])
+    pg.net("w_wt_pm", ("H1224", "o_wt_pm"), [("LED", "w_wt_pm", [gEF + 40, 1366, XG - 22])])
     to_mux("w_tm_msec", ("TDP", "o_tm_msec"), "M_MSEC", "w_tm_msec")
     xs = next(ch)
     pg.net("w_tm_sec", ("TDP", "o_tm_sec"), [("M_SEC", "w_tm_sec", [xs]), ("M_MIN", "w_tm_sec", [xs])])
@@ -676,9 +687,9 @@ def page_top():
     pg.net("fnd_font", ("FND", "o_fnd_font"), [("PIN_OUT", "fnd_font", [])])
     pg.net("led", ("LED", "led"), [("PIN_OUT", "led", [])])
 
-    pg.notes.append((30, 1432, "회색 깃발 clk · rst = Top 핀 clk · rst 직결 / 주황 깃발 swN = 보드 스위치 핀 직결 "
+    pg.notes.append((30, 1472, "회색 깃발 clk · rst = Top 핀 clk · rst 직결 / 주황 깃발 swN = 보드 스위치 핀 직결 "
                      "(sw0 mode_sw0 · sw1 display_mode_sw1 · sw2 set_sw2 · sw3 hour24_sw3 · sw4 timer_sw4) / "
-                     "보라 선 = 4 kHz (250 us) / 분홍 선 = 10 ms tick / 굵은 선 = 버스 / 점선 블록 · MUX · OR = Top 안 assign", 13, "#333"))
+                     "보라 선 = 4 kHz (250 us) / 분홍 선 = 10 ms tick (시계 · 스톱워치 · 타이머 각자) / 굵은 선 = 버스 / 점선 블록 · MUX · OR = Top 안 assign", 13, "#333"))
     pg.boundary = ("stopwatch_watch", "PIN_IN", "PIN_OUT")
     pg.legend_xyw = (600, 128, 330)
     pg.notes.append((XF - 80, 160, "화면 MUX 입력 번호", 12.5, "#7a4d00"))

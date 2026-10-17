@@ -38,6 +38,13 @@
 - `hour_12_24` 는 스위치 `i_hour24_sw3` 를 그대로 받음 (원본은 Top 에서 `~sw_24h` 를 넣었음)
 - Top 안 assign 로직 (화면 선택 · 버튼 게이팅 · 화면 MUX · LED) 은 그대로 assign. 다이어그램에서 점선 블록 · MUX 사다리꼴 · OR 로 그림
 
+### 10/17 ④ — 100 Hz tick 분리 (팀 결정, 정보윤 · 클로드코드 반영)
+
+- 문제: 100 Hz tick 하나(`U_TICK_GEN_100HZ`, 항상 흐름)를 시계 · 스톱워치 · 타이머가 같이 쓰면 스톱워치 · 타이머를 **시작한 순간이 tick 사이 어디냐에 따라 첫 1/100초가 최대 10 ms 일찍** 바뀐다 (10초 타이머 = 9,998 ms, `tb_tm_2` P1).
+- 바꾼 것: `source_file/tick_gen_100hz_run.v` 추가 (10/14 수업 tick_gen 과 같은 run_stop · clear 판). Top 에 `U_TICK_GEN_SW`(run = `w_sw_run_stop`, clear = `w_sw_clear`) · `U_TICK_GEN_TM`(run = `w_tm_run`, clear = `w_tm_clear`) 을 두고 각 데이터패스 `i_tick_10ms` 에 연결. 시계는 `U_TICK_GEN_100HZ` 그대로. **4 kHz(디바운서 4 + FND 스캔)는 그대로 하나를 공유** (시작 시점을 맞출 필요가 없어서 — 자원 이득은 여기서 나옴).
+- 결과: 스톱워치 · 타이머 첫 tick = 시작 뒤 정확히 10.000 ms. 자원은 아래 "구현 결과" 표.
+- 같이 바꾼 것: `tb_tm_2` P1 의 10초 판정 범위 (9990 ms ~ 10000 ms + 1 clk → 10000 ms ± 파이프라인 클럭), 블록도 · PORT_MAP · TB 안내서(tick 단계) 재생성. `tb/defect_*/src` 의 설계 사본은 10/16 판(공용 tick) 그대로 — 결함 TB 는 FND · 스위치 · 리셋 결함이라 tick 과 무관.
+
 ## 4. 다이어그램 = 코드 보증
 
 `diagram/gen_diagram.py` 가 Verilog 를 직접 읽어 아래가 하나라도 다르면 멈춘다 (PDF 를 만들지 않음).
@@ -60,7 +67,7 @@ verification_v2/
 ├── README.md               (이 문서)
 ├── block_diagram.pdf
 ├── control_unit_fsm.pdf     (컨트롤 유닛 상태도 · ASM 차트)
-├── source_file/            (포트 통일한 설계 + PORT_MAP.md + stopwatch_watch.xdc)
+├── source_file/            (포트 통일한 설계 + PORT_MAP.md + stopwatch_watch.xdc, 10/17 tick_gen_100hz_run.v 추가)
 ├── diagram/                (gen_diagram.py, tb_guide.py, gen_fsm.py, png/ 미리보기)
 └── tb/
     ├── top/                tb_top_1_btn_debounce, tb_top_2_fnd_scan

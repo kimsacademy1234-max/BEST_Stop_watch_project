@@ -47,7 +47,8 @@
 | 신호 (블록.포트) | 주기 | 펄스 폭 | 의미 |
 |---|---|---|---|
 | `U_CLK_GEN_4KHZ.o_clk_4khz` | **250 us** (4 kHz) | 10 ns | 디바운서 샘플 박자, FND 자리 바꾸는 박자 |
-| `U_TICK_GEN_100HZ.o_tick_10ms` | **10 ms** (100 Hz) | 10 ns | 1/100 초 한 칸. 스톱워치 · 시계 · 타이머 공용, 항상 흐름 |
+| `U_TICK_GEN_100HZ.o_tick_10ms` | **10 ms** (100 Hz) | 10 ns | 1/100 초 한 칸. **시계 전용**, 항상 흐름 |
+| `U_TICK_GEN_SW.o_tick_10ms` · `U_TICK_GEN_TM.o_tick_10ms` | **10 ms** | 10 ns | 스톱워치 · 타이머 전용. 시작(RUN) 순간부터 셈 → 첫 칸이 정확히 10 ms (10/17 ④) |
 | `U_BD_x.o_btn` | 누를 때 1 번 | 10 ns | 누른 뒤 **1.75 ~ 2.0 ms** (4 kHz 샘플 8 번) |
 | `U_FND_CONTROLLER/U_COUNTER8.o_scan_sel` | 한 칸 **250 us**, 한 바퀴 **2 ms** | — | 0~3 숫자 자리, 4~7 빈칸 · 점 |
 
@@ -86,7 +87,7 @@
 | **4** 디바운서 출력 | `dut/U_BD_R`<br>`dut/U_BD_L`<br>`dut/U_BD_U`<br>`dut/U_BD_D` | `o_btn` `o_btn` `o_btn` `o_btn` | 누른 뒤 1.75 ~ 2.0 ms 에 10 ns 펄스 1 개 | 4 kHz 샘플 8 번이 모두 1 이 된 순간 1 클럭. 한 번 누름 = 펄스 1 개 |
 | **5** 버튼 게이팅 | dut (assign 버튼 게이팅) | `w_sw_btn_R` `w_sw_btn_L` `w_sw_btn_U` `w_sw_btn_D` | o_btn 과 같은 클럭 | mode_sw0 = 1, timer_sw4 = 0 일 때만 o_btn 이 그대로 지나감. 다른 화면이면 0 |
 | **6** 스톱워치 컨트롤 · FSM | `dut/U_STOPWATCH_CONTROL_UNIT` | `o_sw_run_stop` `o_sw_clear` `o_sw_down` | run_stop · down: 버튼 펄스 다음 클럭(10 ns 뒤)<br>clear: 버튼 펄스와 같은 10 ns | R → o_sw_run_stop 토글 / L(정지 중) → o_sw_clear 10 ns 펄스 / U(정지 중) → o_sw_down 토글<br>**FSM**: 같은 블록 Objects 의 `c_state` · `n_state` (STOP / RUN). R 펄스 순간 `n_state` 가 바뀌고 다음 클럭에 `c_state` 가 따라감 |
-| **7** 10 ms tick | `dut/U_TICK_GEN_100HZ` | `o_tick_10ms` | 10 ms 마다 10 ns 펄스 | 스톱워치 · 시계 · 타이머 공용. 항상 흐른다 |
+| **7** 10 ms tick (스톱워치 전용) | `dut/U_TICK_GEN_SW` | `o_tick_10ms` | RUN 한 순간부터 10 ms 마다 10 ns 펄스 | o_sw_run_stop = 1 동안만 센다 (STOP 이면 멈췄다가 이어서), o_sw_clear 면 0 부터. 첫 펄스는 RUN 뒤 정확히 10 ms |
 | **8** 스톱워치 값 | `dut/U_STOPWATCH_DATAPATH` | `o_sw_msec` `o_sw_sec` `o_sw_min` `o_sw_hour` `o_sw_lap` | o_sw_run_stop = 1 동안 tick 다음 클럭에 +1 (다운이면 −1) | 올림은 1 클럭씩 늦게 전달: msec → sec → min → hour (최대 4 클럭)<br>더 보려면: 내부 카운터: `dut/U_STOPWATCH_DATAPATH/U_MSEC_COUNTER` 의 `o_count`, `o_tick` (SEC · MIN · HOUR 도 같음) |
 | **9** 화면 MUX | dut (assign 화면 MUX) | `w_disp_msec` `w_disp_sec` | o_sw_* 와 같은 순간 | timer_sw4 = 0, mode_sw0 = 1 → 입력 1 (스톱워치) 이 지나감 |
 | **10** FND 출력 (최종) | `dut/U_FND_CONTROLLER` | `o_fnd_com` `o_fnd_font` | 250 us 마다 자리 바뀜, 2 ms 한 바퀴 | 아래 'FND 결론' 표의 자리별 값과 같아야 기능 완료 |
@@ -97,7 +98,7 @@
 | Phase | TB 가 하는 것 | 볼 단계 | 정상 |
 |---|---|---|---|
 | P1 | 리셋 | 1 · 6 · 8 · 10 · 11 | `c_state` STOP, `o_sw_run_stop` = 0, `o_sw_*` = 0, `led` = 000A, FND "00.00" |
-| P2 | R → 정확히 1.000 s 뒤 R | 4 · 6 · 7 · 8 | `c_state` STOP → RUN → STOP, RUN 구간 (= `o_sw_run_stop` 1) = 1000.000 ms ± 20 us, 그동안 tick 99~100 번 → 값 1.00 초 |
+| P2 | R → 정확히 1.000 s 뒤 R | 4 · 6 · 7 · 8 | `c_state` STOP → RUN → STOP, RUN 구간 (= `o_sw_run_stop` 1) = 1000.000 ms ± 20 us, 그동안 스톱워치 전용 tick 100 번 (RUN 순간부터 셈) → 값 1.00 초 |
 | P3 | 120 ms 동작 후 R, 200 ms 대기 | 6 · 8 | `c_state` STOP 동안 `o_sw_*` 변화 없음 |
 | P4 | 정지 중 D(랩) → L | 5 · 6 · 8 · 10 | `c_state` STOP 유지. `o_sw_lap` 0→1, L 의 `o_sw_clear` 펄스에 `o_sw_*` = 0 · `o_sw_lap` = 0, FND "00.00" |
 | P5 | 동작 중 L, 그다음 U | 5 · 6 · 8 | `c_state` RUN 유지 (L · U 가 와도 `n_state` RUN), `o_sw_clear` 펄스 **안 나옴**, `o_sw_down` 그대로 0, `o_sw_msec` 계속 증가 (보드 버그 수정 확인) |
@@ -128,7 +129,7 @@
 | **4** 디바운서 출력 | `dut/U_BD_R`<br>`dut/U_BD_U` | `o_btn` `o_btn` | 누른 뒤 1.75 ~ 2.0 ms 에 10 ns 펄스 1 개 | 4 kHz 샘플 8 번이 모두 1 이 된 순간 1 클럭. 한 번 누름 = 펄스 1 개 |
 | **5** 버튼 게이팅 | dut (assign 버튼 게이팅) | `w_sw_btn_R` `w_sw_btn_U` | o_btn 과 같은 클럭 | mode_sw0 = 1, timer_sw4 = 0 일 때만 o_btn 이 그대로 지나감. 다른 화면이면 0 |
 | **6** 스톱워치 컨트롤 · FSM | `dut/U_STOPWATCH_CONTROL_UNIT` | `o_sw_run_stop` `o_sw_clear` `o_sw_down` | run_stop · down: 버튼 펄스 다음 클럭(10 ns 뒤)<br>clear: 버튼 펄스와 같은 10 ns | R → o_sw_run_stop 토글 / L(정지 중) → o_sw_clear 10 ns 펄스 / U(정지 중) → o_sw_down 토글<br>**FSM**: 같은 블록 Objects 의 `c_state` · `n_state` (STOP / RUN). R 펄스 순간 `n_state` 가 바뀌고 다음 클럭에 `c_state` 가 따라감 |
-| **7** 10 ms tick | `dut/U_TICK_GEN_100HZ` | `o_tick_10ms` | 10 ms 마다 10 ns 펄스 | 스톱워치 · 시계 · 타이머 공용. 항상 흐른다 |
+| **7** 10 ms tick (스톱워치 전용) | `dut/U_TICK_GEN_SW` | `o_tick_10ms` | RUN 한 순간부터 10 ms 마다 10 ns 펄스 | o_sw_run_stop = 1 동안만 센다 (STOP 이면 멈췄다가 이어서), o_sw_clear 면 0 부터. 첫 펄스는 RUN 뒤 정확히 10 ms |
 | **8** 스톱워치 값 | `dut/U_STOPWATCH_DATAPATH` | `o_sw_msec` `o_sw_sec` `o_sw_min` `o_sw_hour` | o_sw_run_stop = 1 동안 tick 다음 클럭에 +1 (다운이면 −1) | 올림은 1 클럭씩 늦게 전달: msec → sec → min → hour (최대 4 클럭)<br>더 보려면: 올림 사슬: `dut/U_STOPWATCH_DATAPATH/U_MSEC_COUNTER.o_tick` → `U_SEC_COUNTER.i_tick` → … `U_HOUR_COUNTER` (각 `o_count`) |
 | **9** 화면 MUX | dut (assign 화면 MUX) | `w_disp_msec` `w_disp_sec` `w_disp_min` `w_disp_hour` | o_sw_* 와 같은 순간 | timer_sw4 = 0, mode_sw0 = 1 → 입력 1 (스톱워치) 이 지나감 |
 | **10** FND 출력 (최종) | `dut/U_FND_CONTROLLER` | `o_fnd_com` `o_fnd_font` | 250 us 마다 자리 바뀜, 2 ms 한 바퀴 | 아래 'FND 결론' 표의 자리별 값과 같아야 기능 완료 |
@@ -170,7 +171,7 @@
 | **4** 디바운서 출력 | `dut/U_BD_R`<br>`dut/U_BD_L`<br>`dut/U_BD_D` | `o_btn` `o_btn` `o_btn` | 누른 뒤 1.75 ~ 2.0 ms 에 10 ns 펄스 1 개 | 4 kHz 샘플 8 번이 모두 1 이 된 순간 1 클럭. 한 번 누름 = 펄스 1 개 |
 | **5** 버튼 게이팅 | dut (assign 버튼 게이팅) | `w_sw_btn_R` `w_sw_btn_L` `w_sw_btn_D` | o_btn 과 같은 클럭 | mode_sw0 = 1, timer_sw4 = 0 일 때만 o_btn 이 그대로 지나감. 다른 화면이면 0 |
 | **6** 스톱워치 컨트롤 · FSM | `dut/U_STOPWATCH_CONTROL_UNIT` | `o_sw_run_stop` `o_sw_clear` `o_sw_down` | run_stop · down: 버튼 펄스 다음 클럭(10 ns 뒤)<br>clear: 버튼 펄스와 같은 10 ns | R → o_sw_run_stop 토글 / L(정지 중) → o_sw_clear 10 ns 펄스 / U(정지 중) → o_sw_down 토글<br>**FSM**: 같은 블록 Objects 의 `c_state` · `n_state` (STOP / RUN). R 펄스 순간 `n_state` 가 바뀌고 다음 클럭에 `c_state` 가 따라감 |
-| **7** 10 ms tick | `dut/U_TICK_GEN_100HZ` | `o_tick_10ms` | 10 ms 마다 10 ns 펄스 | 스톱워치 · 시계 · 타이머 공용. 항상 흐른다 |
+| **7** 10 ms tick (스톱워치 전용) | `dut/U_TICK_GEN_SW` | `o_tick_10ms` | RUN 한 순간부터 10 ms 마다 10 ns 펄스 | o_sw_run_stop = 1 동안만 센다 (STOP 이면 멈췄다가 이어서), o_sw_clear 면 0 부터. 첫 펄스는 RUN 뒤 정확히 10 ms |
 | **8** 스톱워치 값 | `dut/U_STOPWATCH_DATAPATH` | `o_sw_msec` `o_sw_sec` `o_sw_min` `o_sw_hour` `o_sw_lap` | o_sw_run_stop = 1 동안 tick 다음 클럭에 +1 (다운이면 −1) | 올림은 1 클럭씩 늦게 전달: msec → sec → min → hour (최대 4 클럭)<br>더 보려면: 랩 전 값: `dut/U_STOPWATCH_DATAPATH/U_LAP_CONTROLLER` 의 `i_cnt_msec` … (내부 카운터), 화면 값은 같은 블록 `o_sw_*` |
 | **9** 화면 MUX | dut (assign 화면 MUX) | `w_disp_msec` `w_disp_sec` | o_sw_* 와 같은 순간 | timer_sw4 = 0, mode_sw0 = 1 → 입력 1 (스톱워치) 이 지나감 |
 | **10** FND 출력 (최종) | `dut/U_FND_CONTROLLER` | `o_fnd_com` `o_fnd_font` | 250 us 마다 자리 바뀜, 2 ms 한 바퀴 | 아래 'FND 결론' 표의 자리별 값과 같아야 기능 완료 |

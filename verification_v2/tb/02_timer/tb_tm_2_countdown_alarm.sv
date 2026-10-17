@@ -593,7 +593,8 @@ module tb_tm_2_countdown_alarm;
             @(posedge dut.w_tm_alarm);
             dt = t_alarm - t_run;
             info("TB5", $sformatf("run->alarm = %0.6f ms (set 10.000 s)", dt / 1.0e6));
-            check("TB5", dt > 9.99e9 && dt <= 10.0e9 + 10.001, "10 s timer duration", "(9990 ms, 10000 ms + 1 clk]",
+            // (10/17 ④) 타이머 전용 tick: RUN 순간부터 세므로 정확히 10.000 s + 파이프라인 2 클럭 (tick → 감소 → ALARM). 공용 tick 판은 (9990 ms, 10000 ms + 1 clk]
+            check("TB5", dt > 10.0e9 - 10.001 && dt <= 10.0e9 + 30.001, "10 s timer duration", "(10000 ms - 1 clk, 10000 ms + 3 clk]",
                   $sformatf("%0.6f ms", dt / 1.0e6));
             check("TB5", tm_now() == "00:00.00" && dut.w_tm_run == 0, "at alarm: 00:00, not running", "00:00.00",
                   $sformatf("%s run=%b", tm_now(), dut.w_tm_run));
