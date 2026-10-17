@@ -15,7 +15,7 @@
 // =============================================================================
 // tb_wt_1_set_ui — WATCH (ahnsung): 설정 UI
 //   P1 리셋 · P2 NORMAL 무시 · P3 커서 이동/wrap · P4 분 일 ±1 wrap · P5 분 십 ±10 wrap
-//   P6 시 ±1 wrap · P7 U+D 동시 · P8 sw2 재진입 · P9 다른 화면에서 버튼 무시
+//   P6 시 ±1 wrap · P7 U+D 동시 · P8 sw2 재진입 · P9 다른 화면에서 버튼 무시 + 시계는 뒤에서 계속 흐름
 //   WC6 : 초 · 1/100 초 카운터의 i_up/i_down 은 시뮬 내내 0 (상시 감시)
 // =============================================================================
 module tb_wt_1_set_ui;
@@ -582,6 +582,11 @@ module tb_wt_1_set_ui;
         hm = $sformatf("%02d:%02d", dut.w_wt_hour, dut.w_wt_min);
     endfunction
 
+    // 시계 전체 시각을 1/100 초 단위 하나로 (P9: 다른 화면 뒤에서 흐른 tick 수 비교)
+    function automatic longint wt_cs();
+        wt_cs = ((dut.w_wt_hour * 60 + dut.w_wt_min) * 60 + dut.w_wt_sec) * 100 + dut.w_wt_msec;
+    endfunction
+
     task automatic expect_hm(input string cid, input string exp_s, input string what);
         check(cid, hm() == exp_s, what, exp_s, hm());
     endtask
@@ -688,13 +693,32 @@ module tb_wt_1_set_ui;
             phase_end();
         end
         // ------------------------------------------------------------------ P9
-        if (phase_begin(9, "other screen (sw0=1 / sw4=1): watch buttons ignored, watch keeps running (WC7)")) begin
-            phase_plan("sw2=1, press buttons on STOPWATCH then TIMER screen", "w_wt_btn_* all 0 -> time and cursor unchanged, watch keeps running");
+        if (phase_begin(9, "other screen (sw0=1 / sw4=1): watch buttons ignored, watch keeps running in background (WC7)")) begin
+            realtime t0;
+            longint  c0, n_tick;
+            string   w0;
+            phase_plan("sw2=1, STOPWATCH screen: R (RUN) -> U, D, L -> wait 0.5 s -> R (STOP) -> TIMER screen: U, L, R",
+                       "stopwatch runs on screen, watch HH:MM and cursor unchanged, watch sec keeps counting in background");
             do_reset();
             set_sw(0, 0, 1, 1, 1);  // 스톱워치 화면 + sw2
-            press(BU); press(BD); press(BL);
-            expect_hm("WC7", "12:00", "stopwatch screen: watch time unchanged");
+            tick_sync();
+            t0 = $realtime;
+            c0 = wt_cs();
+            w0 = wt_now();
+            info("WC7", {"screen = STOPWATCH. watch is hidden but runs in background, now ", w0});
+            press(BR);                        // 스톱워치 STOP -> RUN (시계 버튼으로는 안 감)
+            check("WC7", dut.w_sw_run_stop == 1, "R on stopwatch screen starts the stopwatch", "RUN",
+                  dut.w_sw_run_stop ? "RUN" : "STOP");
+            press(BU); press(BD); press(BL);  // RUN 중이라 스톱워치도 무시, 시계도 무시
+            wait_ticks(50);
+            n_tick = $rtoi(($realtime - t0) / (10 * MS) + 0.5);
+            info("WC7", $sformatf("on screen  : stopwatch %s (RUN)", sw_now()));
+            info("WC7", $sformatf("background : watch %s -> %s (%0d ms)", w0, wt_now(), n_tick * 10));
+            check("WC7", wt_cs() - c0 == n_tick, "watch counted every 10 ms tick behind the stopwatch screen",
+                  $sformatf("+%0d ticks", n_tick), $sformatf("+%0d ticks", wt_cs() - c0));
+            expect_hm("WC7", "12:00", "stopwatch screen: watch HH:MM unchanged by R/U/D/L");
             expect_cur("WC7", 0, "stopwatch screen: cursor unchanged");
+            press(BR);                        // 스톱워치 RUN -> STOP
             set_sw(1, 0, 1, 1, 0);  // 타이머 화면 + sw2
             press(BU); press(BL); press(BR);
             expect_hm("WC7", "12:00", "timer screen: watch time unchanged");

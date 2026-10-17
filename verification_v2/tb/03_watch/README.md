@@ -109,7 +109,7 @@
 | P6 | 커서 2 에서 U → 23:30 프리로드 → U → D | 6 · 8 | `c_state` SET_HOUR: 13:00 → 00:30 (**분 그대로**) → 23:30 |
 | P7 | U 와 D 를 같은 순간 | 4 · 6 · 8 | `U_BD_U.o_btn` · `U_BD_D.o_btn` 같은 클럭 → `o_wt_up` 만 1 → 12:01 |
 | P8 | 커서를 시로 옮긴 뒤 set_sw2 끔 → 다시 켬 | 6 | SET_HOUR → (끔) NORMAL → (켬) **SET_MIN_1** (`o_wt_cursor` 3 → 0) |
-| P9 | set_sw2 = 1 인 채 스톱워치 · 타이머 화면에서 버튼 | 5 · 6 · 8 | `w_wt_btn_*` 모두 0 → `c_state` 그대로, 시간 안 바뀜, 시계는 계속 흐름 |
+| P9 | set_sw2 = 1 인 채 스톱워치 화면에서 R (스톱워치 RUN) → U · D · L → 0.5 초 대기 → R (STOP) → 타이머 화면에서 U · L · R | 5 · 6 · 8 | `w_wt_btn_*` 모두 0 → `c_state` · 시:분 그대로. 스톱워치가 화면에서 도는 동안 뒤에서 시계 초도 tick 마다 흐름 (콘솔 `[INFO] on screen : stopwatch ...` / `[INFO] background : watch 12:00:00.xx -> 12:00:00.yy`) |
 
 TB 전체에서 상시 감시: `U_WATCH_DATAPATH/U_SEC_COUNTER` · `U_MSEC_COUNTER` 의 `i_up` · `i_down` 은 한 번도 1 이 되면 안 된다 (초 설정 없음).
 
