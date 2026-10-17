@@ -13,6 +13,7 @@
 | `source_file/` | `boyun/merged_v4/src` 복사 → 포트 이름 통일 (동작 동일, 100 MHz 그대로). 원본 `boyun/merged_v4` 는 손대지 않음 |
 | `source_file/PORT_MAP.md` | 블록마다 입력 · 출력 포트와 연결 상대 (자동 생성) |
 | `block_diagram.pdf` | 1 쪽 Top 전체, 2 쪽 `U_FND_CONTROLLER` 내부. 선 이름 = 포트 이름, 블록의 선 개수 = 포트 개수 |
+| `control_unit_fsm.pdf` | 컨트롤 유닛 3 개 (스톱워치 · 타이머 · 시계) 의 상태도 + 전이표 · Mealy 표, ASM 차트 (7 쪽). 만들 때마다 Verilator 로 RTL 과 매 클럭 대조 |
 | `tb/top`, `tb/01_stopwatch`, `tb/02_timer`, `tb/03_watch` | TB 11 개 (새 포트 이름) + 폴더마다 안내서 `README.md` + TB 별 색칠 그림 `img/*.png` + 그림 모음 PDF `<폴더>_tb_figures.pdf` (TB 1 개 = 1 쪽) |
 | `tb/defect_1~4` | 결함 주입 TB 4 개 + 결함 src (F1 · F2 · F4, 주입기 포트도 같은 규칙) |
 | `diagram/` | 다이어그램 · 안내서 그림 생성 스크립트 |
@@ -46,7 +47,7 @@
 3. assign 블록의 입력 = 실제 `assign` 우변의 신호
 4. 모든 입력 핀은 선 1 개 또는 깃발 1 개, 모든 출력 핀은 선 1 개 이상
 
-다시 만들기: `cd diagram && python3 gen_diagram.py && python3 tb_guide.py` (Windows Chrome 으로 PDF · PNG 를 그림). 뒤에 `--open` 을 붙이면 만든 PNG 를 Windows 사진 앱으로 연다 (예: `python3 tb_guide.py 01_stopwatch --open`)
+다시 만들기: `cd diagram && python3 gen_diagram.py && python3 tb_guide.py && python3 gen_fsm.py` (Windows Chrome 으로 PDF · PNG 를 그림). 뒤에 `--open` 을 붙이면 만든 PNG 를 Windows 사진 앱으로 연다 (예: `python3 tb_guide.py 01_stopwatch --open`)
 
 ## 5. 파형 보는 법 (요약)
 
@@ -58,8 +59,9 @@ Vivado Scope 창에서 `dut → U_xxx` 인스턴스를 고르면 Objects 창에 
 verification_v2/
 ├── README.md               (이 문서)
 ├── block_diagram.pdf
+├── control_unit_fsm.pdf     (컨트롤 유닛 상태도 · ASM 차트)
 ├── source_file/            (포트 통일한 설계 + PORT_MAP.md + stopwatch_watch.xdc)
-├── diagram/                (gen_diagram.py, tb_guide.py, png/ 미리보기)
+├── diagram/                (gen_diagram.py, tb_guide.py, gen_fsm.py, png/ 미리보기)
 └── tb/
     ├── top/                tb_top_1_btn_debounce, tb_top_2_fnd_scan
     ├── 01_stopwatch/       tb_sw_1 ~ 3

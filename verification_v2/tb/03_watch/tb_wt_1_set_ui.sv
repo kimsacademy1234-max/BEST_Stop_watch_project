@@ -6,6 +6,11 @@
 //   3) Run Simulation → Run All.  콘솔의 [FAIL]/[DEFECT] 시각으로 파형 창에서 Go To Time
 //   * Phase 하나만 보려면 아래 RUN_PHASE 를 그 번호로 (긴 TB 는 이게 빠름)
 //   * 파형에서 clk 는 빼고 보는 것을 권장 (수 초 시뮬이면 파형 파일이 매우 커짐)
+//   * 콘솔 읽는 법 (줄 맨 앞 [시각] = 파형 Go To Time 에 넣을 시각)
+//       [BEGIN  ] Phase 시작 + plan (TB 가 할 일) / expect (정상 결과)
+//       [RESET  ] [SW     ] [BTN    ] [WAIT   ]  TB 가 한 일, 오른쪽은 그 전 -> 후 (지금 화면 값 · FSM 상태)
+//       [PRELOAD] TB 가 카운터에 값을 직접 넣음 (버튼 아님, DUT 동작 아님) — 경계값 바로 앞으로 건너뛰기
+//       [OK     ] / [FAIL   ] 검사 1 건 (exp = 기대, got = 실제)
 // -----------------------------------------------------------------------------
 // =============================================================================
 // tb_wt_1_set_ui — WATCH (ahnsung): 설정 UI
@@ -117,13 +122,25 @@ module tb_wt_1_set_ui;
         hmsc = $sformatf("%02d:%02d:%02d.%02d", h, m, s, c);
     endfunction
 
-    function automatic void log_line(input string lvl, input string cid, input string desc, input string exp_s, input string got_s);
-        string s;
-        s = $sformatf("[%t] [%-5s] [%s.P%0d.%s] %s", $realtime, lvl, TB_ID, phase_no, cid, desc);
+    // [시각] [종류] P번호.검사ID  내용 | exp= got=   (FAIL · DEFECT 만 FND 화면 문자열 덧붙임)
+    function automatic void log_line_t(input realtime t, input string lvl, input string cid, input string desc,
+                                       input string exp_s, input string got_s);
+        string s, tag;
+        tag = (cid == "-") ? $sformatf("P%0d", phase_no) : $sformatf("P%0d.%s", phase_no, cid);
+        s = $sformatf("[%t] [%-7s] %-9s %s", t, lvl, tag, desc);
         if (exp_s != "" || got_s != "") s = $sformatf("%s | exp=%s got=%s", s, exp_s, got_s);
-        s = $sformatf("%s | disp=\"%s\"", s, mon.disp_str);
+        if (lvl == "FAIL" || lvl == "DEFECT") s = $sformatf("%s | disp=\"%s\"", s, mon.disp_str);
         $display("%s", s);
         $fflush();   // 중간에 멈춰도 이상 시각이 로그에 남도록
+    endfunction
+
+    function automatic void log_line(input string lvl, input string cid, input string desc, input string exp_s, input string got_s);
+        log_line_t($realtime, lvl, cid, desc, exp_s, got_s);
+    endfunction
+
+    // TB 입력 1 건 : 시각 t 에 한 일 + 그 전 -> 후 상태 (ui_state)
+    function automatic void step(input realtime t, input string lvl, input string what, input string s0, input string s1);
+        log_line_t(t, lvl, "-", $sformatf("%-44s %s", what, state_diff(s0, s1)), "", "");
     endfunction
 
     function automatic integer note_id(input string cid);
@@ -141,9 +158,10 @@ module tb_wt_1_set_ui;
         return 1;
     endfunction
 
-    // 검사 1건. 같은 ID 는 처음 5번만 출력
+    // 검사 1건. 통과는 [OK], 실패는 같은 ID 처음 5번만 출력
     function automatic void check(input string cid, input bit ok, input string desc, input string exp_s, input string got_s);
         n_checks = n_checks + 1;
+        if (ok) log_line("OK", cid, desc, exp_s, got_s);
         if (!ok) begin
             n_fail = n_fail + 1;
             if (first_bad_t < 0) first_bad_t = $realtime;
@@ -185,7 +203,9 @@ module tb_wt_1_set_ui;
         phase_fail0 = n_fail;
         phase_chk0  = n_checks;
         phase_def0  = n_defect;
-        log_line("PHASE", "-", {"BEGIN ", name}, "", "");
+        $display("");
+        $display("==========================================================================================");
+        log_line("BEGIN", "-", name, "", "");
     `ifndef VERILATOR
         if (wave_en && phase_sel >= 0) $dumpon;
     `endif
@@ -199,14 +219,20 @@ module tb_wt_1_set_ui;
         nd = n_defect - phase_def0;
         if (mon.mm && ($realtime - mon.mm_t0) > 1000.0)
             check("FND", 0, "FND output stuck different from reference at phase end", "match", mon.mm_desc);
-        if (nf == 0)
-            log_line("PASS", "-", $sformatf("P%0d checks=%0d all passed (defect=%0d)", phase_no, nc, nd), "", "");
-        log_line("PHASE", "-", $sformatf("END   %0.3f ms elapsed, checks=%0d fail=%0d defect=%0d",
-                                          ($realtime - phase_t0) / 1.0e6, nc, nf, nd), "", "");
+        log_line(nf == 0 ? "PASS" : "FAIL", "-",
+                 $sformatf("END  checks=%0d fail=%0d defect=%0d (%0.3f ms)", nc, nf, nd, ($realtime - phase_t0) / 1.0e6),
+                 "", "");
     `ifndef VERILATOR
         if (wave_en && phase_sel >= 0) $dumpoff;
     `endif
     endtask
+
+    // Phase 시작 직후 한 번 : TB 가 할 일 / 정상 결과 (README 'Phase 별로 볼 곳' 표와 같음)
+    function automatic void phase_plan(input string plan, input string expect_s);
+        $display("              plan   : %s", plan);
+        $display("              expect : %s", expect_s);
+        $display("------------------------------------------------------------------------------------------");
+    endfunction
 
     task automatic phase_skip(input integer n, input string name, input string why);
         phase_no = n;
@@ -228,7 +254,7 @@ module tb_wt_1_set_ui;
 
     // ---------------------------------------------------------------- 초기화 · watchdog
     initial begin
-        $timeformat(-3, 6, " ms", 14);
+        $timeformat(-3, 3, " ms", 11);
         if ($value$plusargs("phase=%d", phase_sel)) ;
         if ($value$plusargs("src=%s", src_tag)) ;
     `ifndef VERILATOR
@@ -296,7 +322,11 @@ module tb_wt_1_set_ui;
     endtask
 
     task automatic do_reset();
+        realtime t;
+        string   s0;
         @(negedge clk);
+        t  = $realtime;
+        s0 = started ? ui_state() : "";   // 첫 리셋 전 값은 의미 없음 (X)
         in_reset_seq = 1;
         rst = 1'b1;
         #(US);
@@ -304,15 +334,23 @@ module tb_wt_1_set_ui;
         in_reset_seq = 0;
         started = 1;
         #(US);
+        step(t, "RESET", "rst 1 us pulse", s0 == "" ? ui_state() : s0, ui_state());
     endtask
 
     // 누름 hi ns, 뗌 lo ns. 항상 negedge 에 맞춰 시작 (샘플 엣지와 경쟁 없음)
     task automatic press_ns(input integer b, input longint hi, input longint lo);
+        realtime t;
+        string   s0;
+        integer  n0;
         @(negedge clk);
+        t  = $realtime;
+        s0 = ui_state();
+        n0 = pc[b];
         set_btn(b, 1'b1);
         #(hi);
         set_btn(b, 1'b0);
         #(lo);
+        step(t, "BTN", {bname(b), " ", pulse_at(pc[b] != n0)}, s0, ui_state());
     endtask
 
     task automatic press(input integer b);  // 표준: 누름 5 ms + 뗌 5 ms
@@ -326,18 +364,31 @@ module tb_wt_1_set_ui;
 
     // 두 버튼을 같은 시각에 누름 (SB7)
     task automatic press2(input integer b1, input integer b2);
+        realtime t;
+        string   s0;
+        integer  n0;
         @(negedge clk);
+        t  = $realtime;
+        s0 = ui_state();
+        n0 = pc[b1];
         set_btn(b1, 1'b1);
         set_btn(b2, 1'b1);
         #(5 * MS);
         set_btn(b1, 1'b0);
         set_btn(b2, 1'b0);
         #(5 * MS);
+        step(t, "BTN", {bname(b1), "+", bname(b2), " same time ", pulse_at(pc[b1] != n0)}, s0, ui_state());
     endtask
 
     // 바운스 패턴 (결정적)
     task automatic press_bounce(input integer b);
+        realtime t;
+        string   s0;
+        integer  n0;
         @(negedge clk);
+        t  = $realtime;
+        s0 = ui_state();
+        n0 = pc[b];
         set_btn(b, 1); #(40 * US);  set_btn(b, 0); #(60 * US);
         set_btn(b, 1); #(120 * US); set_btn(b, 0); #(30 * US);
         set_btn(b, 1); #(300 * US); set_btn(b, 0); #(80 * US);
@@ -345,17 +396,23 @@ module tb_wt_1_set_ui;
         set_btn(b, 0); #(50 * US);  set_btn(b, 1); #(100 * US);
         set_btn(b, 0); #(70 * US);  set_btn(b, 1); #(400 * US);
         set_btn(b, 0); #(5 * MS);
+        step(t, "BTN", {bname(b), " with bounce ", pulse_at(pc[b] != n0)}, s0, ui_state());
     endtask
 
     // 스위치: {sw4 timer, sw3 24h, sw2 set, sw1 disp, sw0 mode}
     task automatic set_sw(input bit timer, input bit h24, input bit set, input bit disp, input bit mode);
+        realtime t;
+        string   s0;
         @(negedge clk);
+        t  = $realtime;
+        s0 = ui_state();
         timer_sw4 = timer;
         hour24_sw3 = h24;
         set_sw2 = set;
         display_mode_sw1 = disp;
         mode_sw0 = mode;
         #(US);
+        step(t, "SW", $sformatf("sw4..0=%b%b%b%b%b %s", timer, h24, set, disp, mode, sw_name()), s0, ui_state());
     endtask
 
     // 100 Hz tick 동기: tick 직후 carry 체인(최대 4클럭)이 다 끝난 negedge
@@ -365,37 +422,48 @@ module tb_wt_1_set_ui;
     endtask
 
     task automatic wait_ticks(input integer n);
+        realtime t;
+        string   s0;
+        t  = $realtime;
+        s0 = ui_state();
         repeat (n) @(posedge dut.w_tick_10ms);
         repeat (5) @(negedge clk);
+        step(t, "WAIT", $sformatf("%0d tick(s) of 10 ms", n), s0, ui_state());
     endtask
 
     // ---------------------------------------------------------------- 프리로드
     task automatic preload_watch(input integer h, input integer m, input integer s, input integer c);
         tick_sync();
+        log_line("PRELOAD", "-", "*** TB writes the watch counters directly (NOT a button, NOT a DUT bug) ***", "", "");
+        $display("              o_wt_hour/min/sec/msec  %s -> %s   (wave: values jump here with no U/D tick)",
+                 wt_now(), hmsc(h, m, s, c));
         dut.U_WATCH_DATAPATH.U_HOUR_COUNTER.counter_reg = h;
         dut.U_WATCH_DATAPATH.U_MIN_COUNTER.counter_reg  = m;
         dut.U_WATCH_DATAPATH.U_SEC_COUNTER.counter_reg  = s;
         dut.U_WATCH_DATAPATH.U_MSEC_COUNTER.counter_reg = c;
-        info("PRELOAD", $sformatf("dut.U_WATCH_DATAPATH.U_{HOUR,MIN,SEC,MSEC}_COUNTER.counter_reg = %s", hmsc(h, m, s, c)));
         #1;
     endtask
 
     task automatic preload_sw(input integer h, input integer m, input integer s, input integer c);
         tick_sync();
+        log_line("PRELOAD", "-", "*** TB writes the stopwatch counters directly (NOT a button, NOT a DUT bug) ***", "", "");
+        $display("              U_STOPWATCH_DATAPATH count  %s -> %s   (wave: values jump here with no tick/button)",
+                 sw_raw(), hmsc(h, m, s, c));
         dut.U_STOPWATCH_DATAPATH.U_HOUR_COUNTER.counter_reg = h;
         dut.U_STOPWATCH_DATAPATH.U_MIN_COUNTER.counter_reg  = m;
         dut.U_STOPWATCH_DATAPATH.U_SEC_COUNTER.counter_reg  = s;
         dut.U_STOPWATCH_DATAPATH.U_MSEC_COUNTER.counter_reg = c;
-        info("PRELOAD", $sformatf("dut.U_STOPWATCH_DATAPATH.U_{HOUR,MIN,SEC,MSEC}_COUNTER.counter_reg = %s", hmsc(h, m, s, c)));
         #1;
     endtask
 
     task automatic preload_tm(input integer m, input integer s, input integer c);
         tick_sync();
+        log_line("PRELOAD", "-", "*** TB writes the timer registers directly (NOT a button, NOT a DUT bug) ***", "", "");
+        $display("              o_tm_min/sec/msec  %s -> %02d:%02d.%02d   (wave: values jump here with no tick/button)",
+                 tm_now(), m, s, c);
         dut.U_TIMER_DATAPATH.min_reg  = m;
         dut.U_TIMER_DATAPATH.sec_reg  = s;
         dut.U_TIMER_DATAPATH.msec_reg = c;
-        info("PRELOAD", $sformatf("dut.U_TIMER_DATAPATH.{min,sec,msec}_reg = %02d:%02d.%02d", m, s, c));
         #1;
     endtask
 
@@ -417,6 +485,57 @@ module tb_wt_1_set_ui;
     function automatic longint sw_count();
         sw_count = ((dut.U_STOPWATCH_DATAPATH.w_cnt_hour * 60 + dut.U_STOPWATCH_DATAPATH.w_cnt_min) * 60
                     + dut.U_STOPWATCH_DATAPATH.w_cnt_sec) * 100 + dut.U_STOPWATCH_DATAPATH.w_cnt_msec;
+    endfunction
+
+    // ---------------------------------------------------------------- 콘솔 상태 문자열
+    // ui_state = "지금 화면 값|FSM 상태" — step() 이 입력 전/후를 칸마다 비교해 바뀐 칸만 "a -> b"
+    //   시계 : HH:MM (초는 늘 흐르므로 뺌) + 커서 / 스톱워치 : 표시값 + RUN·STOP(·LAP) / 타이머 : 표시값 + SET·RUN·ALARM
+    function automatic string cur_name(input integer c);
+        case (c) 0: cur_name = "SET_MIN_1(0)"; 1: cur_name = "SET_MIN_10(1)"; 2: cur_name = "SET_HOUR(2)"; default: cur_name = "NORMAL(3)"; endcase
+    endfunction
+
+    function automatic string ui_state();
+        if (timer_sw4)
+            ui_state = {"timer ", tm_now(), "|", dut.w_tm_alarm ? "ALARM" : (dut.w_tm_run ? "RUN" : "SET")};
+        else if (mode_sw0)
+            ui_state = {"stopwatch ", sw_now(), "|", dut.w_sw_run_stop ? "RUN" : "STOP", dut.w_sw_lap ? " LAP" : ""};
+        else
+            ui_state = {"watch ", $sformatf("%02d:%02d", dut.w_wt_hour, dut.w_wt_min), "|cursor ", cur_name(dut.w_wt_cursor)};
+    endfunction
+
+    function automatic string state_diff(input string a, input string b);
+        string fa[2], fb[2], r;
+        integer i, k, n;
+        // "x|y" 를 두 칸으로
+        fa[0] = a; fa[1] = ""; fb[0] = b; fb[1] = "";
+        for (i = 0; i < a.len(); i = i + 1) if (a[i] == "|") begin fa[0] = a.substr(0, i - 1); fa[1] = a.substr(i + 1, a.len() - 1); end
+        for (i = 0; i < b.len(); i = i + 1) if (b[i] == "|") begin fb[0] = b.substr(0, i - 1); fb[1] = b.substr(i + 1, b.len() - 1); end
+        r = "";
+        for (k = 0; k < 2; k = k + 1) begin
+            if (k > 0) r = {r, ",  "};
+            if (fa[k] == fb[k]) r = {r, fb[k]};
+            else begin
+                // 앞의 같은 단어 ("watch " / "cursor ") 는 한 번만
+                n = 0;
+                for (i = 0; i < fa[k].len() && i < fb[k].len(); i = i + 1) begin
+                    if (fa[k][i] != fb[k][i]) break;
+                    if (fa[k][i] == " ") n = i + 1;
+                end
+                r = {r, fb[k].substr(0, n - 1), fa[k].substr(n, fa[k].len() - 1), " -> ", fb[k].substr(n, fb[k].len() - 1)};
+            end
+        end
+        state_diff = r;
+    endfunction
+
+    function automatic string pulse_at(input bit got);
+        if (got) pulse_at = $sformatf("(o_btn @%t)", last_pt);
+        else     pulse_at = "(no o_btn)";
+    endfunction
+
+    function automatic string sw_name();
+        sw_name = timer_sw4 ? "TIMER" : (mode_sw0 ? "STOPWATCH" : "WATCH");
+        if (set_sw2) sw_name = {sw_name, " SET"};
+        sw_name = {sw_name, display_mode_sw1 ? " HH.MM" : " SS.cc", hour24_sw3 ? " 24h" : " 12h"};
     endfunction
 
     // FND 화면이 최신 프레임으로 갱신되도록 2 프레임(4 ms) 대기 후 문자열 비교
@@ -475,6 +594,7 @@ module tb_wt_1_set_ui;
         #1;
         // ------------------------------------------------------------------ P1
         if (phase_begin(1, "reset: 12:00:00.00, cursor=3, set_mode=0, LED 8009 (WC1)")) begin
+            phase_plan("reset", "NORMAL, 12:00:00.00, cursor 3, led 8009");
             do_reset();
             check("WC1", wt_now() == "12:00:00.00", "reset time", "12:00:00.00", wt_now());
             expect_cur("WC1", 3, "cursor none after reset");
@@ -484,6 +604,7 @@ module tb_wt_1_set_ui;
         end
         // ------------------------------------------------------------------ P2
         if (phase_begin(2, "NORMAL (sw2=0): U/D/L/R ignored (WC2)")) begin
+            phase_plan("sw2=0 -> U, D, L, R", "stays NORMAL, no o_wt_up/down, 12:00 unchanged");
             do_reset();
             set_sw(0, 0, 0, 1, 0);
             press(BU); press(BD); press(BL); press(BR);
@@ -493,6 +614,7 @@ module tb_wt_1_set_ui;
         end
         // ------------------------------------------------------------------ P3
         if (phase_begin(3, "cursor: enter -> 0, L 0->1->2->0, R 0->2->1->0 (WC3, WC4)")) begin
+            phase_plan("sw2=1 -> L x3 -> R x3", "cursor 0 -> L 1 -> 2 -> 0 (wrap) -> R 2 (wrap) -> 1 -> 0");
             do_reset();
             set_sw(0, 0, 1, 1, 0);
             expect_cur("WC3", 0, "sw2 on -> cursor 0 (min ones)");
@@ -507,6 +629,7 @@ module tb_wt_1_set_ui;
         end
         // ------------------------------------------------------------------ P4
         if (phase_begin(4, "min ones +-1 wrap, hour unchanged (WB3)")) begin
+            phase_plan("cursor 0 (min ones), PRELOAD 12:59 -> U -> D -> D", "12:00 (hour stays 12, NOT 13) -> 12:59 -> 12:58");
             do_reset();
             set_sw(0, 0, 1, 1, 0);
             preload_watch(12, 59, 0, 0);
@@ -517,6 +640,7 @@ module tb_wt_1_set_ui;
         end
         // ------------------------------------------------------------------ P5
         if (phase_begin(5, "min tens +-10 wrap: 55+10->05, 05-10->55 (WB3)")) begin
+            phase_plan("cursor 1 (min tens), PRELOAD 12:55 -> U -> D -> D", "12:05 -> 12:55 -> 12:45 (min tens +-10 wrap, hour unchanged)");
             do_reset();
             set_sw(0, 0, 1, 1, 0);
             press(BL);
@@ -529,6 +653,7 @@ module tb_wt_1_set_ui;
         end
         // ------------------------------------------------------------------ P6
         if (phase_begin(6, "hour +-1 wrap: 12->13, 23->0, 0->23, min unchanged (WB3)")) begin
+            phase_plan("cursor 2 (hour), U -> PRELOAD 23:30 (skip U x10) -> U -> D", "13:00 -> 00:30 (min stays 30) -> 23:30");
             do_reset();
             set_sw(0, 0, 1, 1, 0);
             press(BL); press(BL);
@@ -541,6 +666,7 @@ module tb_wt_1_set_ui;
         end
         // ------------------------------------------------------------------ P7
         if (phase_begin(7, "U+D same instant -> U wins (WC5)")) begin
+            phase_plan("U and D at the same instant", "U_BD_U/U_BD_D o_btn in the same clock -> only o_wt_up -> 12:01");
             do_reset();
             set_sw(0, 0, 1, 1, 0);
             press2(BU, BD);
@@ -550,6 +676,7 @@ module tb_wt_1_set_ui;
         end
         // ------------------------------------------------------------------ P8
         if (phase_begin(8, "sw2 re-entry always starts at cursor 0 (WC3)")) begin
+            phase_plan("cursor -> hour, sw2 off -> sw2 on", "SET_HOUR -> NORMAL -> SET_MIN_1 (cursor 3 -> 0)");
             do_reset();
             set_sw(0, 0, 1, 1, 0);
             press(BL); press(BL);
@@ -562,6 +689,7 @@ module tb_wt_1_set_ui;
         end
         // ------------------------------------------------------------------ P9
         if (phase_begin(9, "other screen (sw0=1 / sw4=1): watch buttons ignored, watch keeps running (WC7)")) begin
+            phase_plan("sw2=1, press buttons on STOPWATCH then TIMER screen", "w_wt_btn_* all 0 -> time and cursor unchanged, watch keeps running");
             do_reset();
             set_sw(0, 0, 1, 1, 1);  // 스톱워치 화면 + sw2
             press(BU); press(BD); press(BL);

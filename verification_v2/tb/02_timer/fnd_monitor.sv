@@ -154,6 +154,34 @@ module fnd_monitor (
         end
     end
 
+    // ------------------------------------------------------------ 숫자 · 자리 이름으로 보기 (파형용)
+    //   an_name  : fnd_com → "AN0"~"AN3" (모두 꺼짐 1111 = "---", 두 자리 이상 켜짐 = "ERR")
+    //   fnd_an   : 지금 켜진 자리 이름. 파형 Radix = ASCII 로 두면 글자로 보임
+    //   font2num : 7-seg 코드(active-low) → 숫자 0~9. 빈칸 FF = F, 점만 7F = E, 그 밖 = A
+    //   fnd_num  : 지금 켜진 자리(fnd_com 의 0)의 숫자. Radix = Hexadecimal (0~9, 빈칸 F)
+    //   disp_bcd : 화면 4 자리 {AN3, AN2, AN1, AN0} 를 BCD 로 (disp_str 과 같은 순간에 갱신)
+    //              Radix = Hexadecimal 이면 화면 그대로 "1234" 로 읽힘 (빈칸 자리는 F, 예 "123F")
+    function automatic [3:0] font2num(input [7:0] f);
+        case (f)
+            8'hC0: font2num = 4'h0; 8'hF9: font2num = 4'h1; 8'hA4: font2num = 4'h2; 8'hB0: font2num = 4'h3;
+            8'h99: font2num = 4'h4; 8'h92: font2num = 4'h5; 8'h82: font2num = 4'h6; 8'hF8: font2num = 4'h7;
+            8'h80: font2num = 4'h8; 8'h90: font2num = 4'h9; 8'hFF: font2num = 4'hF; 8'h7F: font2num = 4'hE;
+            default: font2num = 4'hA;
+        endcase
+    endfunction
+
+    function automatic [23:0] an_name(input [3:0] c);
+        case (c)
+            4'b1110: an_name = "AN0"; 4'b1101: an_name = "AN1"; 4'b1011: an_name = "AN2"; 4'b0111: an_name = "AN3";
+            4'b1111: an_name = "---";
+            default: an_name = "ERR";
+        endcase
+    endfunction
+
+    wire [23:0] fnd_an   = an_name(com);
+    wire [3:0]  fnd_num  = font2num(font);
+    wire [15:0] disp_bcd = {font2num(seen[3]), font2num(seen[2]), font2num(seen[1]), font2num(seen[0])};
+
     task automatic clear_stats();
         integer i;
         for (i = 0; i < 4; i = i + 1) begin

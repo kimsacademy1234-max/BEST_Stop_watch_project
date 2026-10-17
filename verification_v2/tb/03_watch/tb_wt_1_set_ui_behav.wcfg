@@ -11,18 +11,23 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="9673333334fs"></ZoomStartTime>
-      <ZoomEndTime time="250073333335fs"></ZoomEndTime>
-      <Cursor1Time time="111873333334fs"></Cursor1Time>
+      <ZoomStartTime time="0fs"></ZoomStartTime>
+      <ZoomEndTime time="260000000001fs"></ZoomEndTime>
+      <Cursor1Time time="230200000000fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
       <NameColumnWidth column_width="204"></NameColumnWidth>
-      <ValueColumnWidth column_width="98"></ValueColumnWidth>
+      <ValueColumnWidth column_width="90"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="29" />
+   <WVObjectSize size="13" />
    <wave_markers>
-      <marker time="92006015000" label="" />
-      <marker time="82006015000" label="" />
+      <marker time="100008010000" label="" />
+      <marker time="190010110000" label="" />
+      <marker time="250011160000" label="" />
+      <marker time="260014160000" label="" />
+      <marker time="280019160000" label="" />
+      <marker time="40005010000" label="" />
+      <marker time="140009060000" label="" />
    </wave_markers>
    <wvobject fp_name="/tb_wt_1_set_ui/clk" type="logic">
       <obj_property name="ElementShortName">clk</obj_property>
@@ -32,87 +37,269 @@
       <obj_property name="ElementShortName">rst</obj_property>
       <obj_property name="ObjectShortName">rst</obj_property>
    </wvobject>
-   <wvobject fp_name="/tb_wt_1_set_ui/mode_sw0" type="logic">
-      <obj_property name="ElementShortName">mode_sw0</obj_property>
-      <obj_property name="ObjectShortName">mode_sw0</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_wt_1_set_ui/display_mode_sw1" type="logic">
-      <obj_property name="ElementShortName">display_mode_sw1</obj_property>
-      <obj_property name="ObjectShortName">display_mode_sw1</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_wt_1_set_ui/set_sw2" type="logic">
-      <obj_property name="ElementShortName">set_sw2</obj_property>
-      <obj_property name="ObjectShortName">set_sw2</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_wt_1_set_ui/hour24_sw3" type="logic">
-      <obj_property name="ElementShortName">hour24_sw3</obj_property>
-      <obj_property name="ObjectShortName">hour24_sw3</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_wt_1_set_ui/dut/btn_R" type="logic">
-      <obj_property name="ElementShortName">btn_R</obj_property>
-      <obj_property name="ObjectShortName">btn_R</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_wt_1_set_ui/dut/btn_L" type="logic">
-      <obj_property name="ElementShortName">btn_L</obj_property>
-      <obj_property name="ObjectShortName">btn_L</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_wt_1_set_ui/dut/btn_U" type="logic">
-      <obj_property name="ElementShortName">btn_U</obj_property>
-      <obj_property name="ObjectShortName">btn_U</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_wt_1_set_ui/dut/btn_D" type="logic">
-      <obj_property name="ElementShortName">btn_D</obj_property>
-      <obj_property name="ObjectShortName">btn_D</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_wt_1_set_ui/dut/U_CLK_GEN_4KHZ/o_clk_4khz" type="logic">
-      <obj_property name="ElementShortName">o_clk_4khz</obj_property>
-      <obj_property name="ObjectShortName">o_clk_4khz</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_wt_1_set_ui/dut/U_BD_R/o_btn" type="logic">
+   <wvobject fp_name="group1" type="group">
+      <obj_property name="label">INPUT_SWITCH</obj_property>
       <obj_property name="DisplayName">label</obj_property>
-      <obj_property name="ElementShortName">o_btn</obj_property>
-      <obj_property name="ObjectShortName">o_btn</obj_property>
-      <obj_property name="label">R_tick</obj_property>
-      <obj_property name="CustomSignalColor">#00FF00</obj_property>
-      <obj_property name="UseCustomSignalColor">true</obj_property>
+      <obj_property name="isExpanded"></obj_property>
+      <wvobject fp_name="/tb_wt_1_set_ui/mode_sw0" type="logic">
+         <obj_property name="ElementShortName">mode_sw0</obj_property>
+         <obj_property name="ObjectShortName">mode_sw0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_wt_1_set_ui/display_mode_sw1" type="logic">
+         <obj_property name="ElementShortName">display_mode_sw1</obj_property>
+         <obj_property name="ObjectShortName">display_mode_sw1</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_wt_1_set_ui/set_sw2" type="logic">
+         <obj_property name="ElementShortName">set_sw2</obj_property>
+         <obj_property name="ObjectShortName">set_sw2</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_wt_1_set_ui/hour24_sw3" type="logic">
+         <obj_property name="ElementShortName">hour24_sw3</obj_property>
+         <obj_property name="ObjectShortName">hour24_sw3</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_wt_1_set_ui/timer_sw4" type="logic">
+         <obj_property name="ElementShortName">timer_sw4</obj_property>
+         <obj_property name="ObjectShortName">timer_sw4</obj_property>
+      </wvobject>
    </wvobject>
-   <wvobject fp_name="/tb_wt_1_set_ui/dut/U_BD_L/o_btn" type="logic">
+   <wvobject fp_name="group2" type="group">
+      <obj_property name="label">Button</obj_property>
       <obj_property name="DisplayName">label</obj_property>
-      <obj_property name="ElementShortName">o_btn</obj_property>
-      <obj_property name="ObjectShortName">o_btn</obj_property>
-      <obj_property name="label">L_tick</obj_property>
-      <obj_property name="CustomSignalColor">#00FF00</obj_property>
-      <obj_property name="UseCustomSignalColor">true</obj_property>
+      <obj_property name="isExpanded"></obj_property>
+      <wvobject fp_name="/tb_wt_1_set_ui/dut/btn_R" type="logic">
+         <obj_property name="ElementShortName">btn_R</obj_property>
+         <obj_property name="ObjectShortName">btn_R</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_wt_1_set_ui/dut/U_BD_R/o_btn" type="logic">
+         <obj_property name="DisplayName">label</obj_property>
+         <obj_property name="ElementShortName">o_btn</obj_property>
+         <obj_property name="ObjectShortName">o_btn</obj_property>
+         <obj_property name="label">R_tick</obj_property>
+         <obj_property name="CustomSignalColor">#FFD700</obj_property>
+         <obj_property name="UseCustomSignalColor">true</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_wt_1_set_ui/dut/btn_L" type="logic">
+         <obj_property name="ElementShortName">btn_L</obj_property>
+         <obj_property name="ObjectShortName">btn_L</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_wt_1_set_ui/dut/U_BD_L/o_btn" type="logic">
+         <obj_property name="DisplayName">label</obj_property>
+         <obj_property name="ElementShortName">o_btn</obj_property>
+         <obj_property name="ObjectShortName">o_btn</obj_property>
+         <obj_property name="label">L_tick</obj_property>
+         <obj_property name="CustomSignalColor">#FFD700</obj_property>
+         <obj_property name="UseCustomSignalColor">true</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_wt_1_set_ui/dut/btn_U" type="logic">
+         <obj_property name="ElementShortName">btn_U</obj_property>
+         <obj_property name="ObjectShortName">btn_U</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_wt_1_set_ui/dut/U_BD_U/o_btn" type="logic">
+         <obj_property name="DisplayName">label</obj_property>
+         <obj_property name="ElementShortName">o_btn</obj_property>
+         <obj_property name="ObjectShortName">o_btn</obj_property>
+         <obj_property name="label">U_tick</obj_property>
+         <obj_property name="CustomSignalColor">#FFD700</obj_property>
+         <obj_property name="UseCustomSignalColor">true</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_wt_1_set_ui/dut/btn_D" type="logic">
+         <obj_property name="ElementShortName">btn_D</obj_property>
+         <obj_property name="ObjectShortName">btn_D</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_wt_1_set_ui/dut/U_BD_D/o_btn" type="logic">
+         <obj_property name="DisplayName">label</obj_property>
+         <obj_property name="ElementShortName">o_btn</obj_property>
+         <obj_property name="ObjectShortName">o_btn</obj_property>
+         <obj_property name="label">D_tick</obj_property>
+         <obj_property name="CustomSignalColor">#FFD700</obj_property>
+         <obj_property name="UseCustomSignalColor">true</obj_property>
+      </wvobject>
    </wvobject>
-   <wvobject fp_name="/tb_wt_1_set_ui/dut/U_BD_U/o_btn" type="logic">
+   <wvobject fp_name="group3" type="group">
+      <obj_property name="label">STOPWATCH_STATE</obj_property>
       <obj_property name="DisplayName">label</obj_property>
-      <obj_property name="ElementShortName">o_btn</obj_property>
-      <obj_property name="ObjectShortName">o_btn</obj_property>
-      <obj_property name="label">U_tick</obj_property>
-      <obj_property name="CustomSignalColor">#00FF00</obj_property>
-      <obj_property name="UseCustomSignalColor">true</obj_property>
+      <obj_property name="isExpanded"></obj_property>
+      <wvobject fp_name="/tb_wt_1_set_ui/dut/U_STOPWATCH_CONTROL_UNIT/n_state" type="logic">
+         <obj_property name="ElementShortName">n_state</obj_property>
+         <obj_property name="ObjectShortName">n_state</obj_property>
+         <obj_property name="CustomSignalColor">#FF00FF</obj_property>
+         <obj_property name="UseCustomSignalColor">true</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_wt_1_set_ui/dut/U_STOPWATCH_CONTROL_UNIT/c_state" type="logic">
+         <obj_property name="ElementShortName">c_state</obj_property>
+         <obj_property name="ObjectShortName">c_state</obj_property>
+         <obj_property name="CustomSignalColor">#FF00FF</obj_property>
+         <obj_property name="UseCustomSignalColor">true</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_wt_1_set_ui/dut/U_STOPWATCH_CONTROL_UNIT/o_sw_clear" type="logic">
+         <obj_property name="ElementShortName">o_sw_clear</obj_property>
+         <obj_property name="ObjectShortName">o_sw_clear</obj_property>
+         <obj_property name="CustomSignalColor">#FF00FF</obj_property>
+         <obj_property name="UseCustomSignalColor">true</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_wt_1_set_ui/dut/U_STOPWATCH_CONTROL_UNIT/o_sw_down" type="logic">
+         <obj_property name="ElementShortName">o_sw_down</obj_property>
+         <obj_property name="ObjectShortName">o_sw_down</obj_property>
+         <obj_property name="CustomSignalColor">#FF00FF</obj_property>
+         <obj_property name="UseCustomSignalColor">true</obj_property>
+      </wvobject>
    </wvobject>
-   <wvobject fp_name="/tb_wt_1_set_ui/dut/U_BD_D/o_btn" type="logic">
+   <wvobject fp_name="group4" type="group">
+      <obj_property name="label">WATCH_STATE</obj_property>
       <obj_property name="DisplayName">label</obj_property>
-      <obj_property name="ElementShortName">o_btn</obj_property>
-      <obj_property name="ObjectShortName">o_btn</obj_property>
-      <obj_property name="label">D_tick</obj_property>
-      <obj_property name="CustomSignalColor">#00FF00</obj_property>
-      <obj_property name="UseCustomSignalColor">true</obj_property>
+      <obj_property name="isExpanded"></obj_property>
+      <wvobject fp_name="/tb_wt_1_set_ui/dut/U_WATCH_CONTROL_UNIT/n_state" type="array">
+         <obj_property name="ElementShortName">n_state[1:0]</obj_property>
+         <obj_property name="ObjectShortName">n_state[1:0]</obj_property>
+         <obj_property name="CustomSignalColor">#FF00FF</obj_property>
+         <obj_property name="UseCustomSignalColor">true</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_wt_1_set_ui/dut/U_WATCH_CONTROL_UNIT/c_state" type="array">
+         <obj_property name="ElementShortName">c_state[1:0]</obj_property>
+         <obj_property name="ObjectShortName">c_state[1:0]</obj_property>
+         <obj_property name="CustomSignalColor">#FF00FF</obj_property>
+         <obj_property name="UseCustomSignalColor">true</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_wt_1_set_ui/dut/U_WATCH_DATAPATH/i_wt_cursor" type="array">
+         <obj_property name="ElementShortName">i_wt_cursor[1:0]</obj_property>
+         <obj_property name="ObjectShortName">i_wt_cursor[1:0]</obj_property>
+         <obj_property name="CustomSignalColor">#FF00FF</obj_property>
+         <obj_property name="UseCustomSignalColor">true</obj_property>
+      </wvobject>
    </wvobject>
-   <wvobject fp_name="/tb_wt_1_set_ui/dut/U_WATCH_CONTROL_UNIT/n_state" type="array">
+   <wvobject fp_name="group5" type="group">
+      <obj_property name="label">TIMER_STATE</obj_property>
       <obj_property name="DisplayName">label</obj_property>
-      <obj_property name="ElementShortName">n_state[1:0]</obj_property>
-      <obj_property name="ObjectShortName">n_state[1:0]</obj_property>
-      <obj_property name="label">n_state[1:0]</obj_property>
+      <obj_property name="isExpanded"></obj_property>
+      <wvobject fp_name="/tb_wt_1_set_ui/dut/U_TIMER_CONTROL_UNIT/n_state" type="array">
+         <obj_property name="ElementShortName">n_state[1:0]</obj_property>
+         <obj_property name="ObjectShortName">n_state[1:0]</obj_property>
+         <obj_property name="CustomSignalColor">#FF00FF</obj_property>
+         <obj_property name="UseCustomSignalColor">true</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_wt_1_set_ui/dut/U_TIMER_CONTROL_UNIT/c_state" type="array">
+         <obj_property name="ElementShortName">c_state[1:0]</obj_property>
+         <obj_property name="ObjectShortName">c_state[1:0]</obj_property>
+         <obj_property name="CustomSignalColor">#FF00FF</obj_property>
+         <obj_property name="UseCustomSignalColor">true</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_wt_1_set_ui/dut/U_TIMER_CONTROL_UNIT/o_tm_add" type="logic">
+         <obj_property name="ElementShortName">o_tm_add</obj_property>
+         <obj_property name="ObjectShortName">o_tm_add</obj_property>
+         <obj_property name="CustomSignalColor">#FF00FF</obj_property>
+         <obj_property name="UseCustomSignalColor">true</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_wt_1_set_ui/dut/U_TIMER_CONTROL_UNIT/o_tm_amount" type="array">
+         <obj_property name="ElementShortName">o_tm_amount[1:0]</obj_property>
+         <obj_property name="ObjectShortName">o_tm_amount[1:0]</obj_property>
+         <obj_property name="CustomSignalColor">#FF00FF</obj_property>
+         <obj_property name="UseCustomSignalColor">true</obj_property>
+      </wvobject>
    </wvobject>
-   <wvobject fp_name="/tb_wt_1_set_ui/dut/U_WATCH_CONTROL_UNIT/c_state" type="array">
-      <obj_property name="ElementShortName">c_state[1:0]</obj_property>
-      <obj_property name="ObjectShortName">c_state[1:0]</obj_property>
+   <wvobject fp_name="group6" type="group">
+      <obj_property name="label">STOPWATCH_TIME_OUT</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <wvobject fp_name="/tb_wt_1_set_ui/dut/U_STOPWATCH_DATAPATH/o_sw_hour" type="array">
+         <obj_property name="ElementShortName">o_sw_hour[4:0]</obj_property>
+         <obj_property name="ObjectShortName">o_sw_hour[4:0]</obj_property>
+         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+         <obj_property name="CustomSignalColor">#00FFFF</obj_property>
+         <obj_property name="UseCustomSignalColor">true</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_wt_1_set_ui/dut/U_STOPWATCH_DATAPATH/o_sw_min" type="array">
+         <obj_property name="ElementShortName">o_sw_min[5:0]</obj_property>
+         <obj_property name="ObjectShortName">o_sw_min[5:0]</obj_property>
+         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+         <obj_property name="CustomSignalColor">#00FFFF</obj_property>
+         <obj_property name="UseCustomSignalColor">true</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_wt_1_set_ui/dut/U_STOPWATCH_DATAPATH/o_sw_sec" type="array">
+         <obj_property name="ElementShortName">o_sw_sec[5:0]</obj_property>
+         <obj_property name="ObjectShortName">o_sw_sec[5:0]</obj_property>
+         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+         <obj_property name="CustomSignalColor">#00FFFF</obj_property>
+         <obj_property name="UseCustomSignalColor">true</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_wt_1_set_ui/dut/U_STOPWATCH_DATAPATH/o_sw_msec" type="array">
+         <obj_property name="ElementShortName">o_sw_msec[6:0]</obj_property>
+         <obj_property name="ObjectShortName">o_sw_msec[6:0]</obj_property>
+         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+         <obj_property name="CustomSignalColor">#00FFFF</obj_property>
+         <obj_property name="UseCustomSignalColor">true</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_wt_1_set_ui/dut/U_STOPWATCH_DATAPATH/o_sw_lap" type="logic">
+         <obj_property name="ElementShortName">o_sw_lap</obj_property>
+         <obj_property name="ObjectShortName">o_sw_lap</obj_property>
+      </wvobject>
    </wvobject>
-   <wvobject fp_name="/tb_wt_1_set_ui/dut/U_WATCH_DATAPATH/i_wt_cursor" type="array">
-      <obj_property name="ElementShortName">i_wt_cursor[1:0]</obj_property>
-      <obj_property name="ObjectShortName">i_wt_cursor[1:0]</obj_property>
+   <wvobject fp_name="group7" type="group">
+      <obj_property name="label">WATCH_TIME_OUT</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="isExpanded"></obj_property>
+      <wvobject fp_name="/tb_wt_1_set_ui/dut/U_WATCH_DATAPATH/o_wt_hour" type="array">
+         <obj_property name="ElementShortName">o_wt_hour[4:0]</obj_property>
+         <obj_property name="ObjectShortName">o_wt_hour[4:0]</obj_property>
+         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+         <obj_property name="CustomSignalColor">#00FFFF</obj_property>
+         <obj_property name="UseCustomSignalColor">true</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_wt_1_set_ui/dut/U_HOUR_12_24/o_wt_hour_disp" type="array">
+         <obj_property name="ElementShortName">o_wt_hour_disp[4:0]</obj_property>
+         <obj_property name="ObjectShortName">o_wt_hour_disp[4:0]</obj_property>
+         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+         <obj_property name="CustomSignalColor">#00FFFF</obj_property>
+         <obj_property name="UseCustomSignalColor">true</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_wt_1_set_ui/dut/U_WATCH_DATAPATH/o_wt_min" type="array">
+         <obj_property name="ElementShortName">o_wt_min[5:0]</obj_property>
+         <obj_property name="ObjectShortName">o_wt_min[5:0]</obj_property>
+         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+         <obj_property name="CustomSignalColor">#00FFFF</obj_property>
+         <obj_property name="UseCustomSignalColor">true</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_wt_1_set_ui/dut/U_WATCH_DATAPATH/o_wt_sec" type="array">
+         <obj_property name="ElementShortName">o_wt_sec[5:0]</obj_property>
+         <obj_property name="ObjectShortName">o_wt_sec[5:0]</obj_property>
+         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+         <obj_property name="CustomSignalColor">#00FFFF</obj_property>
+         <obj_property name="UseCustomSignalColor">true</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_wt_1_set_ui/dut/U_WATCH_DATAPATH/o_wt_msec" type="array">
+         <obj_property name="ElementShortName">o_wt_msec[6:0]</obj_property>
+         <obj_property name="ObjectShortName">o_wt_msec[6:0]</obj_property>
+         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+         <obj_property name="CustomSignalColor">#00FFFF</obj_property>
+         <obj_property name="UseCustomSignalColor">true</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_wt_1_set_ui/dut/U_HOUR_12_24/o_wt_pm" type="logic">
+         <obj_property name="ElementShortName">o_wt_pm</obj_property>
+         <obj_property name="ObjectShortName">o_wt_pm</obj_property>
+      </wvobject>
+   </wvobject>
+   <wvobject fp_name="group8" type="group">
+      <obj_property name="label">TIMER_TIME_OUT</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <wvobject fp_name="/tb_wt_1_set_ui/dut/U_TIMER_DATAPATH/o_tm_min" type="array">
+         <obj_property name="ElementShortName">o_tm_min[5:0]</obj_property>
+         <obj_property name="ObjectShortName">o_tm_min[5:0]</obj_property>
+         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+         <obj_property name="CustomSignalColor">#00FFFF</obj_property>
+         <obj_property name="UseCustomSignalColor">true</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_wt_1_set_ui/dut/U_TIMER_DATAPATH/o_tm_sec" type="array">
+         <obj_property name="ElementShortName">o_tm_sec[5:0]</obj_property>
+         <obj_property name="ObjectShortName">o_tm_sec[5:0]</obj_property>
+         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+         <obj_property name="CustomSignalColor">#00FFFF</obj_property>
+         <obj_property name="UseCustomSignalColor">true</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_wt_1_set_ui/dut/U_TIMER_DATAPATH/o_tm_msec" type="array">
+         <obj_property name="ElementShortName">o_tm_msec[6:0]</obj_property>
+         <obj_property name="ObjectShortName">o_tm_msec[6:0]</obj_property>
+         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+         <obj_property name="CustomSignalColor">#00FFFF</obj_property>
+         <obj_property name="UseCustomSignalColor">true</obj_property>
+      </wvobject>
    </wvobject>
    <wvobject fp_name="/tb_wt_1_set_ui/dut/U_WATCH_DATAPATH/i_tick_10ms" type="logic">
       <obj_property name="ElementShortName">i_tick_10ms</obj_property>
@@ -120,61 +307,26 @@
       <obj_property name="CustomSignalColor">#00FFFF</obj_property>
       <obj_property name="UseCustomSignalColor">true</obj_property>
    </wvobject>
-   <wvobject fp_name="/tb_wt_1_set_ui/dut/U_HOUR_12_24/o_wt_hour_disp" type="array">
-      <obj_property name="ElementShortName">o_wt_hour_disp[4:0]</obj_property>
-      <obj_property name="ObjectShortName">o_wt_hour_disp[4:0]</obj_property>
-      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
-      <obj_property name="CustomSignalColor">#00FFFF</obj_property>
-      <obj_property name="UseCustomSignalColor">true</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_wt_1_set_ui/dut/U_WATCH_DATAPATH/o_wt_hour" type="array">
-      <obj_property name="ElementShortName">o_wt_hour[4:0]</obj_property>
-      <obj_property name="ObjectShortName">o_wt_hour[4:0]</obj_property>
-      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
-      <obj_property name="CustomSignalColor">#00FFFF</obj_property>
-      <obj_property name="UseCustomSignalColor">true</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_wt_1_set_ui/dut/U_WATCH_DATAPATH/o_wt_msec" type="array">
-      <obj_property name="ElementShortName">o_wt_msec[6:0]</obj_property>
-      <obj_property name="ObjectShortName">o_wt_msec[6:0]</obj_property>
-      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
-      <obj_property name="CustomSignalColor">#00FFFF</obj_property>
-      <obj_property name="UseCustomSignalColor">true</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_wt_1_set_ui/dut/U_WATCH_DATAPATH/o_wt_sec" type="array">
-      <obj_property name="ElementShortName">o_wt_sec[5:0]</obj_property>
-      <obj_property name="ObjectShortName">o_wt_sec[5:0]</obj_property>
-      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
-      <obj_property name="CustomSignalColor">#00FFFF</obj_property>
-      <obj_property name="UseCustomSignalColor">true</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_wt_1_set_ui/dut/U_WATCH_DATAPATH/o_wt_min" type="array">
-      <obj_property name="ElementShortName">o_wt_min[5:0]</obj_property>
-      <obj_property name="ObjectShortName">o_wt_min[5:0]</obj_property>
-      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
-      <obj_property name="CustomSignalColor">#00FFFF</obj_property>
-      <obj_property name="UseCustomSignalColor">true</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_wt_1_set_ui/dut/U_HOUR_12_24/o_wt_pm" type="logic">
-      <obj_property name="ElementShortName">o_wt_pm</obj_property>
-      <obj_property name="ObjectShortName">o_wt_pm</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_wt_1_set_ui/dut/U_FND_CONTROLLER/i_wt_cursor" type="array">
-      <obj_property name="ElementShortName">i_wt_cursor[1:0]</obj_property>
-      <obj_property name="ObjectShortName">i_wt_cursor[1:0]</obj_property>
-   </wvobject>
    <wvobject fp_name="/tb_wt_1_set_ui/led" type="array">
       <obj_property name="ElementShortName">led[15:0]</obj_property>
       <obj_property name="ObjectShortName">led[15:0]</obj_property>
       <obj_property name="Radix">BINARYRADIX</obj_property>
    </wvobject>
-   <wvobject fp_name="/tb_wt_1_set_ui/dut/fnd_com" type="array">
-      <obj_property name="ElementShortName">fnd_com[3:0]</obj_property>
-      <obj_property name="ObjectShortName">fnd_com[3:0]</obj_property>
-      <obj_property name="Radix">BINARYRADIX</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_wt_1_set_ui/dut/fnd_font" type="array">
-      <obj_property name="ElementShortName">fnd_font[7:0]</obj_property>
-      <obj_property name="ObjectShortName">fnd_font[7:0]</obj_property>
+   <wvobject fp_name="group9" type="group">
+      <obj_property name="label">FND_OUT</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <wvobject fp_name="/tb_wt_1_set_ui/dut/U_CLK_GEN_4KHZ/o_clk_4khz" type="logic">
+         <obj_property name="ElementShortName">o_clk_4khz</obj_property>
+         <obj_property name="ObjectShortName">o_clk_4khz</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_wt_1_set_ui/mon/fnd_an" type="array">
+         <obj_property name="ElementShortName">fnd_an[23:0]</obj_property>
+         <obj_property name="ObjectShortName">fnd_an[23:0]</obj_property>
+         <obj_property name="Radix">ASCIIRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_wt_1_set_ui/mon/fnd_num" type="array">
+         <obj_property name="ElementShortName">fnd_num[3:0]</obj_property>
+         <obj_property name="ObjectShortName">fnd_num[3:0]</obj_property>
+      </wvobject>
    </wvobject>
 </wave_config>

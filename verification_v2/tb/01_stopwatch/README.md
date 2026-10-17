@@ -26,6 +26,8 @@
 
 1. **Vivado 소스**: Design Sources = `../../source_file/*.v, *.sv` / Simulation Sources = 이 폴더의 `tb_*.sv` 하나 + `fnd_monitor.sv` → TB 를 *Set as Top*
 2. **Run Simulation → Run All**. 콘솔 마지막 `[SUMMARY] ... => PASS` 면 이 TB 의 모든 기준 통과. `[FAIL]` 이 있으면 그 시각으로 *Go To Time*
+   - 콘솔 읽는 법: Phase 마다 `[BEGIN]` 아래 `plan` (TB 가 할 일) · `expect` (정상 결과). 그다음 TB 가 한 일이 한 줄씩 `[RESET]` `[SW]` `[BTN]` `[WAIT]` `[PRELOAD]` 로 찍히고, 오른쪽에 그 전 → 후 값 (지금 화면 값 · FSM 상태). 검사는 `[OK]` / `[FAIL]` (exp = 기대, got = 실제)
+   - 줄 맨 앞 `[시각]` 이 파형 *Go To Time* 에 넣을 시각. `[BTN]` 의 `o_btn @` 시각 = 디바운서 펄스 (파형의 X_tick) 위치
 3. **파형에 신호 넣기** — 아래 각 TB 의 "단계" 표 순서대로
    - Scope 창에서 `tb_xxx → dut → U_xxx` 인스턴스를 클릭 → Objects 창에 **그 모듈의 포트**가 나온다 → 표의 포트를 우클릭 *Add to Wave Window*
    - `dut (assign …)` 이라고 적힌 것은 모듈이 아니라 Top 안 선이다 → Scope 에서 `dut` 를 클릭하면 Objects 에 같은 이름의 `w_` 선이 있다
@@ -37,7 +39,8 @@
    - `n_state` = 다음 상태 (조합): 버튼 펄스가 들어온 **그 10 ns** 에 바뀐다
    - `c_state` = 현재 상태 (레지스터): **다음 클럭 엣지**에 `n_state` 값으로 바뀐다 → 출력 (`o_sw_run_stop` 등) 이 이때 바뀜
    - 각 폴더의 "FSM 상태" 표와 Phase 표의 "상태" 를 같이 보면 된다
-8. **프리로드**: `[INFO][PRELOAD]` 가 찍힌 시각에 TB 가 카운터에 경계 바로 앞 값(예 23:59:59.95)을 직접 넣는다 (주파수는 그대로 100 MHz). 경계를 넘는 것은 그 뒤 실제 tick 으로 본다
+8. **프리로드**: `[PRELOAD]` 가 찍힌 시각에 TB 가 카운터에 경계 바로 앞 값(예 23:59:59.95)을 직접 넣는다 (주파수는 그대로 100 MHz). 경계를 넘는 것은 그 뒤 실제 tick 으로 본다
+   - 파형에서 **tick · 버튼 없이 값이 갑자기 바뀌는 곳 = 프리로드** (버튼 · DUT 동작 아님). 콘솔 다음 줄에 바뀌기 전 → 후 값이 찍힌다
 
 ## 1. 시간 단위 (파형에서 먼저 확인할 것)
 
@@ -141,7 +144,7 @@
 | P4 | 정지 중 U → R → 00:00:00.05 프리로드 | 4 · 6 · 7 · 8 | `c_state` STOP 에서 U → `o_sw_down` = 1, R → RUN, 00:00:00.00 → **23:59:59.99** → 23:59:59.98 |
 | P5 | 다운 동작 중 U → R → U → R | 4 · 6 · 8 | `c_state` RUN 중 U: `o_sw_down` 그대로 1 / R → STOP 후 U: 0 → R → RUN, 다시 증가 |
 
-프리로드 Phase 는 콘솔 `[INFO][PRELOAD]` 시각부터 보면 된다.
+프리로드 Phase 는 콘솔 `[PRELOAD]` 시각부터 보면 된다.
 
 ### FND 결론 (마지막 단계)
 
@@ -184,7 +187,7 @@
 | P5 | 동작 중 00:00:59.98 프리로드 직후 D | 4 · 8 | 랩 값 `o_sw_sec`.`o_sw_msec` = 59.98, 내부 `i_cnt_min` = 1 로 넘어감 |
 | P6 | set_sw2 = 1 로 랩 중 FND, 시.분 화면 200 ms | 9 · 10 | FND = 랩 값 (예 "12.34"), set_sw2 = 1 이어도 스톱워치 화면은 **점멸 없음** ("00.00") |
 
-프리로드 Phase 는 콘솔 `[INFO][PRELOAD]` 시각부터 보면 된다.
+프리로드 Phase 는 콘솔 `[PRELOAD]` 시각부터 보면 된다.
 
 ### FND 결론 (마지막 단계)
 
