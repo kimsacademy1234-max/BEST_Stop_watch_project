@@ -115,8 +115,8 @@
 | **3** 스캔 카운터 | `dut/U_FND_CONTROLLER/U_COUNTER8` | `o_scan_sel` | 250 us 마다 +1, 2 ms 한 바퀴 | 0 → 1 → … → 7 → 0 |
 | **4** 10 진 분리 | `dut/U_FND_CONTROLLER/U_MSEC`<br>`dut/U_FND_CONTROLLER/U_SEC`<br>`dut/U_FND_CONTROLLER/U_MIN`<br>`dut/U_FND_CONTROLLER/U_HOUR` | `o_digit1` `o_digit10` `o_digit1` `o_digit10` `o_digit1` `o_digit10` `o_digit1` `o_digit10` | i_disp_* 와 같은 순간 (조합) | 예: i_disp_min = 34 → o_digit10 = 3, o_digit1 = 4 |
 | **5** 점멸 박자 | `dut/U_FND_CONTROLLER/U_DOT` | `o_blink_off` | i_disp_msec ≥ 50 동안 1 (0.5 초 주기) | 1 이면 커서 자리 빈칸, 가운데 점 꺼짐 |
-| **6** 설정 점멸 | `dut/U_FND_CONTROLLER/U_ANODE_CHOICE_TO_MUX1`<br>`dut/U_FND_CONTROLLER/U_ANODE_CHOICE_TO_MUX2` | `o_an0` `o_an0` `o_an1` `o_an2` | o_blink_off 와 같은 순간 | 시계 화면 & set_sw2 & 시.분 & o_blink_off 일 때만 커서 자리를 `d` (빈칸) 로 |
-| **7** 자리 고르기 | `dut/U_FND_CONTROLLER/U_SEC_MUXER`<br>`dut/U_FND_CONTROLLER/U_MIN_MUXER` | `o_data` `o_data` | o_scan_sel 과 같은 순간 | o_scan_sel 0~3 → o_an0~3, 4 · 5 · 7 → f (빈칸), 6 → {111, o_blink_off} (점) |
+| **6** 설정 점멸 | `dut/U_FND_CONTROLLER/U_ANODE_CHOICE_TO_MUX2` | `o_an0` `o_an1` `o_an2` | o_blink_off 와 같은 순간 | 시계 화면 & set_sw2 & 시.분 & o_blink_off 일 때만 커서 자리를 `d` (빈칸) 로 |
+| **7** 자리 고르기 | `dut/U_FND_CONTROLLER/U_SEC_MUXER`<br>`dut/U_FND_CONTROLLER/U_MIN_MUXER` | `o_data` `o_data` | o_scan_sel 과 같은 순간 | o_scan_sel 0~3 → i_d0~3 (초 쪽 = o_digit 바로, 시.분 쪽 = o_an0~3), 4 · 5 · 7 → f (빈칸), 6 → {111, o_blink_off} (점) |
 | **8** 초 / 시.분 선택 | `dut/U_FND_CONTROLLER (assign)` | `w_bcd` | o_data 와 같은 순간 | i_disp_mode 0 → 초.1/100초 쪽, 1 → 시.분 쪽 |
 | **9** 자리 켜기 (최종) | `dut/U_FND_CONTROLLER/U_DECODER` | `o_fnd_com` | o_scan_sel[1:0] 과 같은 순간 | 00 → 1110 (AN0) … 11 → 0111 (AN3) |
 | **10** 글자 (최종) | `dut/U_FND_CONTROLLER/U_FND_DEC` | `o_fnd_font` | w_bcd 와 같은 순간 | 아래 'FND 결론' 표 |

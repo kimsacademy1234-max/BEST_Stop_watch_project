@@ -725,8 +725,6 @@ def page_fnd():
     ac_in = ["i_set_sw2", "i_disp_mode", "i_sel_wt", ("i_wt_cursor", "[1:0]"), "i_blink_off",
              ("i_an0", "[3:0]"), ("i_an1", "[3:0]"), ("i_an2", "[3:0]"), ("i_an3", "[3:0]")]
     ac_out = [("o_an0", "[3:0]"), ("o_an1", "[3:0]"), ("o_an2", "[3:0]"), ("o_an3", "[3:0]")]
-    ac1 = B(Block("AC1", XA, 130, 270, ac_in, ac_out, inst="U_ANODE_CHOICE_TO_MUX1", module="SW2_ANODE_CHOICE",
-                  note="초.1/100초 쪽 (설정 점멸은 시.분 화면만이라 실제로는 그대로 통과)"))
     ac2 = B(Block("AC2", XA, 470, 270, ac_in, ac_out, inst="U_ANODE_CHOICE_TO_MUX2", module="SW2_ANODE_CHOICE",
                   note="시.분 쪽: set_sw2 & disp_mode & sel_wt & blink_off 이면 커서 자리 = 4'hd (빈칸)"))
     m8_in = [("i_d0", ""), ("i_d1", ""), ("i_d2", ""), ("i_d3", ""), ("i_d4", ""), ("i_d5", ""), ("i_d6", ""), ("i_d7", "")]
@@ -759,22 +757,23 @@ def page_fnd():
                [("U_" + k, "i_value", [])] + ([("DOT", "i_disp_msec", [230, 1012 - 70, 300])] if k == "MSEC" else []))
     pg.net("i_clk_4khz", ("FIN", "i_clk_4khz"), [("CNT", "i_clk_4khz", [])], kind="clk4k")
     pg.net("i_rst", ("FIN", "i_rst"), [("CNT", "i_rst", [])])
-    # 공통 제어 → AC1/AC2
+    # 공통 제어 → AC2
     for j, (p, x) in enumerate([("i_set_sw2", 640), ("i_disp_mode", 652), ("i_sel_wt", 664), ("i_wt_cursor", 676)]):
-        pg.net(p, ("FIN", p), [("AC1", p, [x]), ("AC2", p, [x])] +
+        pg.net(p, ("FIN", p), [("AC2", p, [x])] +
                ([("M2", "i_disp_mode", [x, 1110, 1440])] if p == "i_disp_mode" else []))
     pg.net("w_blink_off", ("DOT", "o_blink_off"),
-           [("AC1", "i_blink_off", [688]), ("AC2", "i_blink_off", [688]),
+           [("AC2", "i_blink_off", [688]),
             ("SECMUX", "i_d6", [688, 1100, 1066]), ("MINMUX", "i_d6", [688, 1100, 1066])],
            label_at=(590, 985))
-    # 자리 분리 → AC
-    for k, ac, base in [("MSEC", "AC1", 0), ("SEC", "AC1", 2), ("MIN", "AC2", 0), ("HOUR", "AC2", 2)]:
-        b = sp[k]
-        pg.net(f"w_{k.lower()}_digit1", ("U_" + k, "o_digit1"), [(ac, f"i_an{base}", [600 + base * 10])])
-        pg.net(f"w_{k.lower()}_digit10", ("U_" + k, "o_digit10"), [(ac, f"i_an{base + 1}", [615 + base * 10])])
-    # AC → 8:1 MUX
+    # 자리 분리 → 초.1/100초 쪽은 U_SEC_MUXER 바로, 시.분 쪽은 AC2
+    for k, base in [("MSEC", 0), ("SEC", 2)]:
+        pg.net(f"w_{k.lower()}_digit1", ("U_" + k, "o_digit1"), [("SECMUX", f"i_d{base}", [1000 + base * 14])])
+        pg.net(f"w_{k.lower()}_digit10", ("U_" + k, "o_digit10"), [("SECMUX", f"i_d{base + 1}", [1014 + base * 14])])
+    for k, base in [("MIN", 0), ("HOUR", 2)]:
+        pg.net(f"w_{k.lower()}_digit1", ("U_" + k, "o_digit1"), [("AC2", f"i_an{base}", [600 + base * 10])])
+        pg.net(f"w_{k.lower()}_digit10", ("U_" + k, "o_digit10"), [("AC2", f"i_an{base + 1}", [615 + base * 10])])
+    # AC2 → 8:1 MUX
     for i in range(4):
-        pg.net(f"w_mux1_an{i}", ("AC1", f"o_an{i}"), [("SECMUX", f"i_d{i}", [1000 + i * 14])])
         pg.net(f"w_mux2_an{i}", ("AC2", f"o_an{i}"), [("MINMUX", f"i_d{i}", [1000 + i * 14])])
     # 상수 입력 (4'hf) 깃발
     for m in ["SECMUX", "MINMUX"]:
@@ -790,6 +789,8 @@ def page_fnd():
     pg.net("o_fnd_com", ("DEC", "o_fnd_com"), [("FOUT", "o_fnd_com", [])])
     pg.boundary = ("SW2_FND_CONTROLLER", "FIN", "FOUT")
     pg.legend_xyw = (1470, 880, 580)
+    pg.notes.append((XA, 262, "초.1/100초 쪽: 설정 점멸 없음 (시.분 화면만)", 12.5, "#7a4d00"))
+    pg.notes.append((XA, 280, "digit 을 U_SEC_MUXER 에 바로 연결", 12.5, "#7a4d00"))
     pg.notes.append((30, 1180, "스캔 순서 (o_scan_sel 0→7, 2 ms 한 바퀴): 0 AN0 숫자 → 1 AN1 → 2 AN2 → 3 AN3 → 4 AN0 빈칸 → "
                      "5 AN1 빈칸 → 6 AN2 점(blink_off=0 일 때) → 7 AN3 빈칸.  i_d6 은 {3'b111, w_blink_off}.", 13, "#333"))
     pg.notes.append((30, 1206, "U_SEC_MUXER · U_MIN_MUXER: i_sel 0~3 → i_d0~i_d3 (AN0~AN3 숫자), 4 · 5 · 7 → 4'hf 빈칸, 6 → {3'b111, w_blink_off} AN2 점  /  "

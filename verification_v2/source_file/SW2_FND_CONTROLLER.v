@@ -1,13 +1,14 @@
 `timescale 1ns / 1ps
 
 // FND 컨트롤러 (v2 포트 통일)
-// 흐름: i_disp_* → digit_splitter(10진 2자리) → SW2_ANODE_CHOICE(설정 점멸)
+// 흐름: i_disp_* → digit_splitter(10진 2자리) → SW2_ANODE_CHOICE(설정 점멸, 시.분 쪽만)
 //       → mux_8x1(o_scan_sel 로 자리 고르기) → 2:1 MUX(i_disp_mode) → fnd_decoder → o_fnd_font
 //       counter8(o_scan_sel[1:0]) → decoder_2x4 → o_fnd_com
 // 스캔: i_clk_4khz 마다 o_scan_sel +1 (0~7), 한 칸 250 us, 한 바퀴 2 ms
 //   scan_sel 0~3 : AN0~AN3 숫자,  4~7 : AN0~AN3 빈칸 (단 6 = AN2 가운데 점)
 // (v2) 안 쓰던 i_clk(100 MHz), i_btn_R, i_btn_L 삭제
 //      i_sw_0(= sw_mode | sw_timer) → i_sel_wt (= 그 반대, 시계 화면일 때 1)
+//      초.1/100초 쪽 SW2_ANODE_CHOICE(U_ANODE_CHOICE_TO_MUX1) 삭제: 늘 그대로 통과라 동작 같음
 module SW2_FND_CONTROLLER #(
     parameter MSEC_BIT_WIDTH = 7,
     parameter SEC_BIT_WIDTH  = 6,
@@ -84,25 +85,9 @@ module SW2_FND_CONTROLLER #(
         .o_blink_off(w_blink_off)
     );
 
-    // 설정 점멸 (초.1/100초 쪽 / 시.분 쪽)
-    wire [3:0] w_mux1_an0, w_mux1_an1, w_mux1_an2, w_mux1_an3;
+    // 설정 점멸 (시.분 쪽만). 점멸은 시.분 화면(i_disp_mode = 1)에서만 일어나므로
+    // 초.1/100초 쪽 digit 은 SW2_ANODE_CHOICE 없이 U_SEC_MUXER 에 바로 연결
     wire [3:0] w_mux2_an0, w_mux2_an1, w_mux2_an2, w_mux2_an3;
-
-    SW2_ANODE_CHOICE U_ANODE_CHOICE_TO_MUX1 (
-        .i_set_sw2  (i_set_sw2),
-        .i_disp_mode(i_disp_mode),
-        .i_sel_wt   (i_sel_wt),
-        .i_wt_cursor(i_wt_cursor),
-        .i_blink_off(w_blink_off),
-        .i_an0      (w_msec_digit1),
-        .i_an1      (w_msec_digit10),
-        .i_an2      (w_sec_digit1),
-        .i_an3      (w_sec_digit10),
-        .o_an0      (w_mux1_an0),
-        .o_an1      (w_mux1_an1),
-        .o_an2      (w_mux1_an2),
-        .o_an3      (w_mux1_an3)
-    );
 
     SW2_ANODE_CHOICE U_ANODE_CHOICE_TO_MUX2 (
         .i_set_sw2  (i_set_sw2),
@@ -126,10 +111,10 @@ module SW2_FND_CONTROLLER #(
 
     mux_8x1 U_SEC_MUXER (
         .i_sel (w_scan_sel),
-        .i_d0  (w_mux1_an0),
-        .i_d1  (w_mux1_an1),
-        .i_d2  (w_mux1_an2),
-        .i_d3  (w_mux1_an3),
+        .i_d0  (w_msec_digit1),
+        .i_d1  (w_msec_digit10),
+        .i_d2  (w_sec_digit1),
+        .i_d3  (w_sec_digit10),
         .i_d4  (4'hf),
         .i_d5  (4'hf),
         .i_d6  ({3'b111, w_blink_off}),

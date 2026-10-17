@@ -396,8 +396,8 @@
 | 방향 | 포트 | 폭 | 연결 (선 이름 · 상대 블록.포트) |
 |---|---|---|---|
 | in | `i_value` | [6:0] | `i_disp_msec` ← 입력 포트.`i_disp_msec` |
-| out | `o_digit1` | [3:0] | `w_msec_digit1` → `U_ANODE_CHOICE_TO_MUX1`.`i_an0` |
-| out | `o_digit10` | [3:0] | `w_msec_digit10` → `U_ANODE_CHOICE_TO_MUX1`.`i_an1` |
+| out | `o_digit1` | [3:0] | `w_msec_digit1` → `U_SEC_MUXER`.`i_d0` |
+| out | `o_digit10` | [3:0] | `w_msec_digit10` → `U_SEC_MUXER`.`i_d1` |
 
 ### U_SEC (digit_splitter)
 
@@ -406,8 +406,8 @@
 | 방향 | 포트 | 폭 | 연결 (선 이름 · 상대 블록.포트) |
 |---|---|---|---|
 | in | `i_value` | [5:0] | `i_disp_sec` ← 입력 포트.`i_disp_sec` |
-| out | `o_digit1` | [3:0] | `w_sec_digit1` → `U_ANODE_CHOICE_TO_MUX1`.`i_an2` |
-| out | `o_digit10` | [3:0] | `w_sec_digit10` → `U_ANODE_CHOICE_TO_MUX1`.`i_an3` |
+| out | `o_digit1` | [3:0] | `w_sec_digit1` → `U_SEC_MUXER`.`i_d2` |
+| out | `o_digit10` | [3:0] | `w_sec_digit10` → `U_SEC_MUXER`.`i_d3` |
 
 ### U_MIN (digit_splitter)
 
@@ -446,27 +446,7 @@
 | 방향 | 포트 | 폭 | 연결 (선 이름 · 상대 블록.포트) |
 |---|---|---|---|
 | in | `i_disp_msec` | [6:0] | `i_disp_msec` ← 입력 포트.`i_disp_msec` |
-| out | `o_blink_off` | 1 | `w_blink_off` → `U_ANODE_CHOICE_TO_MUX1`.`i_blink_off`<br>`w_blink_off` → `U_ANODE_CHOICE_TO_MUX2`.`i_blink_off`<br>`w_blink_off` → `U_SEC_MUXER`.`i_d6`<br>`w_blink_off` → `U_MIN_MUXER`.`i_d6` |
-
-### U_ANODE_CHOICE_TO_MUX1 (SW2_ANODE_CHOICE)
-
-입력 9 개 · 출력 4 개
-
-| 방향 | 포트 | 폭 | 연결 (선 이름 · 상대 블록.포트) |
-|---|---|---|---|
-| in | `i_set_sw2` | 1 | `i_set_sw2` ← 입력 포트.`i_set_sw2` |
-| in | `i_disp_mode` | 1 | `i_disp_mode` ← 입력 포트.`i_disp_mode` |
-| in | `i_sel_wt` | 1 | `i_sel_wt` ← 입력 포트.`i_sel_wt` |
-| in | `i_wt_cursor` | [1:0] | `i_wt_cursor` ← 입력 포트.`i_wt_cursor` |
-| in | `i_blink_off` | 1 | `w_blink_off` ← `U_DOT`.`o_blink_off` |
-| in | `i_an0` | [3:0] | `w_msec_digit1` ← `U_MSEC`.`o_digit1` |
-| in | `i_an1` | [3:0] | `w_msec_digit10` ← `U_MSEC`.`o_digit10` |
-| in | `i_an2` | [3:0] | `w_sec_digit1` ← `U_SEC`.`o_digit1` |
-| in | `i_an3` | [3:0] | `w_sec_digit10` ← `U_SEC`.`o_digit10` |
-| out | `o_an0` | [3:0] | `w_mux1_an0` → `U_SEC_MUXER`.`i_d0` |
-| out | `o_an1` | [3:0] | `w_mux1_an1` → `U_SEC_MUXER`.`i_d1` |
-| out | `o_an2` | [3:0] | `w_mux1_an2` → `U_SEC_MUXER`.`i_d2` |
-| out | `o_an3` | [3:0] | `w_mux1_an3` → `U_SEC_MUXER`.`i_d3` |
+| out | `o_blink_off` | 1 | `w_blink_off` → `U_ANODE_CHOICE_TO_MUX2`.`i_blink_off`<br>`w_blink_off` → `U_SEC_MUXER`.`i_d6`<br>`w_blink_off` → `U_MIN_MUXER`.`i_d6` |
 
 ### U_ANODE_CHOICE_TO_MUX2 (SW2_ANODE_CHOICE)
 
@@ -494,10 +474,10 @@
 
 | 방향 | 포트 | 폭 | 연결 (선 이름 · 상대 블록.포트) |
 |---|---|---|---|
-| in | `i_d0` | 1 | `w_mux1_an0` ← `U_ANODE_CHOICE_TO_MUX1`.`o_an0` |
-| in | `i_d1` | 1 | `w_mux1_an1` ← `U_ANODE_CHOICE_TO_MUX1`.`o_an1` |
-| in | `i_d2` | 1 | `w_mux1_an2` ← `U_ANODE_CHOICE_TO_MUX1`.`o_an2` |
-| in | `i_d3` | 1 | `w_mux1_an3` ← `U_ANODE_CHOICE_TO_MUX1`.`o_an3` |
+| in | `i_d0` | 1 | `w_msec_digit1` ← `U_MSEC`.`o_digit1` |
+| in | `i_d1` | 1 | `w_msec_digit10` ← `U_MSEC`.`o_digit10` |
+| in | `i_d2` | 1 | `w_sec_digit1` ← `U_SEC`.`o_digit1` |
+| in | `i_d3` | 1 | `w_sec_digit10` ← `U_SEC`.`o_digit10` |
 | in | `i_d4` | 1 | `4'hf` (깃발: Top 핀 직결) |
 | in | `i_d5` | 1 | `4'hf` (깃발: Top 핀 직결) |
 | in | `i_d6` | 1 | `w_blink_off` ← `U_DOT`.`o_blink_off` |
