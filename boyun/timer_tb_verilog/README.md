@@ -13,6 +13,8 @@
 | `tb_tm_2_countdown_alarm.v` | `tb_tm_2_countdown_alarm.sv` (실제 10초 · 알람 LED · 빌림) | 41 |
 | `tb_tm_3_cancel_background.v` | `tb_tm_3_cancel_background.sv` (RUN 중 버튼 · 취소 · 백그라운드 알람) | 11 |
 | `tb_timer_simple.v` | (새로 만든 발표용 간단판) for 루프 더하기 30번 · 0 에서 L · 10초 카운트다운 · 알람 끄기 · 취소 | 35 |
+| `tb_tick_restart.v` | (10/17 밤 추가) 타이머 리셋 뒤 · 알람 뒤 · 취소 뒤 시작 → 첫 tick 까지 정확히 10,000,000 ns 인지 | 3 |
+| `tb_sw_stop_edge.v` | (10/17 밤 추가) 모듈 단위(tick_gen_100hz_run F_COUNT=10 + stopwatch_datapath): tick 이 나오는 클럭에 STOP 해도 그 칸까지 세는지 | 3 |
 | `run_xsim.bat` | — | GUI 없이 xsim 으로 돌리는 스크립트 |
 
 ## 문법 (수업 HW2 `tb_adder_fnd.v` 와 같은 틀)
@@ -90,3 +92,13 @@ bug 넣은 설계는 저장소에 안 올림(설계 전체 복사본이라). 직
   `end else if (i_tm_btn_U == 1'b1) begin o_tm_add = 1'b1; o_tm_amount = 2'd0;` 를 끼워 넣음
 
 → 틀린 설계에서는 FAIL 이 나오므로, 원본의 MISMATCH 0 은 "검사가 엉성해서 0" 이 아니다.
+
+### 10/17 밤 추가 수정 2개 확인 (같은 TB 를 고치기 전 / 후 소스로)
+
+| TB | 고치기 전 (79dcdbb) | 고친 뒤 |
+|---|---|---|
+| tb_tick_restart.v | 알람 뒤 재시작 첫 tick **9,999,980 ns** → MISMATCH 1 | 리셋 뒤 · 알람 뒤 · 취소 뒤 모두 **10,000,000 ns**, MISMATCH 0 |
+| tb_sw_stop_edge.v | tick 클럭에 STOP → msec **4** (10 ms 잃음) → MISMATCH 2 | msec **5**, MISMATCH 0 |
+
+- 고친 소스로 팀 SV TB 11개 PASS (검사 339), Verilog TB 4개 + 위 2개 PASS. 10초 타이머 10,000 ms + 20 ns.
+- 구현 후 LUT 356 · FF 228 · WNS +3.626 ns (④ 1차 355 · 228 · +3.837, OR 게이트로 LUT +1).

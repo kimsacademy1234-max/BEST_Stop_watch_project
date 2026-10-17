@@ -1,7 +1,9 @@
 `timescale 1ns / 1ps
 
 // 스톱워치 데이터패스 (v2 포트 통일)
-// i_tick_10ms 는 i_sw_run_stop = 1 일 때만 카운터로 들어감
+// i_tick_10ms 는 Top 의 스톱워치 전용 tick (U_TICK_GEN_SW) — 이미 run_stop 일 때만 나오므로 그대로 받는다
+// (10/17) 전에는 여기서 i_tick_10ms & i_sw_run_stop 으로 한 번 더 막았는데, STOP 이 tick 이 나온 바로 그 클럭에
+//         들어오면 RUN 동안 다 센 마지막 10 ms 가 막혀 1/100초가 하나 덜 셈 → AND 와 i_sw_run_stop 포트를 지움
 // 카운터 값(w_cnt_*) → lap_controller → o_sw_* (랩 중이면 고정값)
 module stopwatch_datapath #(
     parameter MSEC_BIT_WIDTH = 7,
@@ -12,7 +14,6 @@ module stopwatch_datapath #(
     input                       i_clk,
     input                       i_rst,
     input                       i_tick_10ms,    // top 의 100hz tick
-    input                       i_sw_run_stop,
     input                       i_sw_clear,
     input                       i_sw_down,
     input                       i_sw_btn_D,     // 랩
@@ -86,8 +87,8 @@ module stopwatch_datapath #(
     );
 
 
-    // 스톱워치는 run_stop 일 때만 tick 통과
-    assign w_tick_10ms = i_tick_10ms & i_sw_run_stop;
+    // tick 은 U_TICK_GEN_SW 가 RUN 동안만 만든다 (10/17: run_stop AND 삭제)
+    assign w_tick_10ms = i_tick_10ms;
 
     // 랩타임: 랩 활성화 시 저장된 시간, 아니면 현재 시간 출력
     lap_controller U_LAP_CONTROLLER (

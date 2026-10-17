@@ -36,7 +36,7 @@
 <polyline points="1070.0,478.0 1092.0,478.0 1092.0,506.0 1180.0,506.0" fill="none" stroke="#4a4a4a" stroke-width="1.6" stroke-linejoin="round" marker-end="url(#arr)"/>
 <polyline points="1070.0,502.0 1108.0,502.0 1108.0,530.0 1180.0,530.0" fill="none" stroke="#4a4a4a" stroke-width="1.6" stroke-linejoin="round" marker-end="url(#arr)"/>
 <polyline points="1070.0,526.0 1124.0,526.0 1124.0,554.0 1180.0,554.0" fill="none" stroke="#4a4a4a" stroke-width="1.6" stroke-linejoin="round" marker-end="url(#arr)"/>
-<polyline points="1070.0,550.0 1140.0,550.0 1140.0,370.0 1452.0,370.0 1452.0,582.0 1570.0,582.0" fill="none" stroke="#4a4a4a" stroke-width="1.6" stroke-linejoin="round" marker-end="url(#arr)"/>
+<polyline points="1070.0,550.0 1140.0,550.0 1140.0,370.0 1452.0,370.0 1452.0,558.0 1570.0,558.0" fill="none" stroke="#4a4a4a" stroke-width="1.6" stroke-linejoin="round" marker-end="url(#arr)"/>
 <polyline points="1070.0,708.0 1092.0,708.0 1092.0,746.0 1180.0,746.0" fill="none" stroke="#4a4a4a" stroke-width="1.6" stroke-linejoin="round" marker-end="url(#arr)"/>
 <polyline points="1070.0,732.0 1108.0,732.0 1108.0,770.0 1180.0,770.0" fill="none" stroke="#4a4a4a" stroke-width="1.6" stroke-linejoin="round" marker-end="url(#arr)"/>
 <polyline points="1070.0,756.0 1124.0,756.0 1124.0,794.0 1180.0,794.0" fill="none" stroke="#4a4a4a" stroke-width="1.6" stroke-linejoin="round" marker-end="url(#arr)"/>
@@ -45,11 +45,10 @@
 <polyline points="1070.0,962.0 1108.0,962.0 1108.0,1030.0 1180.0,1030.0" fill="none" stroke="#4a4a4a" stroke-width="1.6" stroke-linejoin="round" marker-end="url(#arr)"/>
 <polyline points="1070.0,986.0 1124.0,986.0 1124.0,1054.0 1180.0,1054.0" fill="none" stroke="#4a4a4a" stroke-width="1.6" stroke-linejoin="round" marker-end="url(#arr)"/>
 <polyline points="1070.0,1010.0 1140.0,1010.0 1140.0,1078.0 1180.0,1078.0" fill="none" stroke="#4a4a4a" stroke-width="1.6" stroke-linejoin="round" marker-end="url(#arr)"/>
-<polyline points="1430.0,458.0 1486.0,458.0 1486.0,510.0 1570.0,510.0" fill="none" stroke="#4a4a4a" stroke-width="1.6" stroke-linejoin="round" marker-end="url(#arr)"/>
 <polyline points="1430.0,458.0 1486.0,458.0 1486.0,352.0 1150.0,352.0 1150.0,256.0 1180.0,256.0" fill="none" stroke="#4a4a4a" stroke-width="1.6" stroke-linejoin="round" marker-end="url(#arr)"/>
-<polyline points="1430.0,482.0 1502.0,482.0 1502.0,534.0 1570.0,534.0" fill="none" stroke="#4a4a4a" stroke-width="1.6" stroke-linejoin="round" marker-end="url(#arr)"/>
+<polyline points="1430.0,482.0 1502.0,482.0 1502.0,510.0 1570.0,510.0" fill="none" stroke="#4a4a4a" stroke-width="1.6" stroke-linejoin="round" marker-end="url(#arr)"/>
 <polyline points="1430.0,482.0 1502.0,482.0 1502.0,340.0 1162.0,340.0 1162.0,280.0 1180.0,280.0" fill="none" stroke="#4a4a4a" stroke-width="1.6" stroke-linejoin="round" marker-end="url(#arr)"/>
-<polyline points="1430.0,506.0 1518.0,506.0 1518.0,558.0 1570.0,558.0" fill="none" stroke="#4a4a4a" stroke-width="1.6" stroke-linejoin="round" marker-end="url(#arr)"/>
+<polyline points="1430.0,506.0 1518.0,506.0 1518.0,534.0 1570.0,534.0" fill="none" stroke="#4a4a4a" stroke-width="1.6" stroke-linejoin="round" marker-end="url(#arr)"/>
 <polyline points="1430.0,698.0 1486.0,698.0 1486.0,800.0 1570.0,800.0" fill="none" stroke="#4a4a4a" stroke-width="3.0" stroke-linejoin="round" marker-end="url(#arr)"/>
 <polyline points="1430.0,698.0 1486.0,698.0 1486.0,643.0 2208.0,643.0 2208.0,556.0 2260.0,556.0" fill="none" stroke="#4a4a4a" stroke-width="3.0" stroke-linejoin="round" marker-end="url(#arr)"/>
 <polyline points="1430.0,722.0 1502.0,722.0 1502.0,824.0 1570.0,824.0" fill="none" stroke="#4a4a4a" stroke-width="1.6" stroke-linejoin="round" marker-end="url(#arr)"/>
@@ -59,8 +58,10 @@
 <polyline points="1430.0,958.0 1470.0,958.0 1470.0,1390.0 2232.0,1390.0 2232.0,882.0 2260.0,882.0" fill="none" stroke="#4a4a4a" stroke-width="1.6" stroke-linejoin="round" marker-end="url(#arr)"/>
 <polyline points="1430.0,958.0 1470.0,958.0 1470.0,1136.0 1150.0,1136.0 1150.0,1208.0 1180.0,1208.0" fill="none" stroke="#4a4a4a" stroke-width="1.6" stroke-linejoin="round" marker-end="url(#arr)"/>
 <polyline points="1430.0,982.0 1454.0,982.0 1454.0,1378.0 2220.0,1378.0 2220.0,858.0 2260.0,858.0" fill="none" stroke="#4a4a4a" stroke-width="1.6" stroke-linejoin="round" marker-end="url(#arr)"/>
+<polyline points="1430.0,982.0 1454.0,982.0 1454.0,1130.0 973.0,1130.0 973.0,1243.0 1000.0,1243.0" fill="none" stroke="#4a4a4a" stroke-width="1.6" stroke-linejoin="round" marker-end="url(#arr)"/>
 <polyline points="1430.0,1006.0 1486.0,1006.0 1486.0,1204.0 1570.0,1204.0" fill="none" stroke="#4a4a4a" stroke-width="1.6" stroke-linejoin="round" marker-end="url(#arr)"/>
-<polyline points="1430.0,1006.0 1486.0,1006.0 1486.0,1142.0 1162.0,1142.0 1162.0,1232.0 1180.0,1232.0" fill="none" stroke="#4a4a4a" stroke-width="1.6" stroke-linejoin="round" marker-end="url(#arr)"/>
+<polyline points="1430.0,1006.0 1486.0,1006.0 1486.0,1142.0 985.0,1142.0 985.0,1217.0 1000.0,1217.0" fill="none" stroke="#4a4a4a" stroke-width="1.6" stroke-linejoin="round" marker-end="url(#arr)"/>
+<polyline points="1080.0,1230.0 1162.0,1230.0 1162.0,1232.0 1180.0,1232.0" fill="none" stroke="#4a4a4a" stroke-width="1.6" stroke-linejoin="round" marker-end="url(#arr)"/>
 <polyline points="1430.0,1030.0 1502.0,1030.0 1502.0,1228.0 1570.0,1228.0" fill="none" stroke="#4a4a4a" stroke-width="1.6" stroke-linejoin="round" marker-end="url(#arr)"/>
 <polyline points="1430.0,1054.0 1518.0,1054.0 1518.0,1252.0 1570.0,1252.0" fill="none" stroke="#4a4a4a" stroke-width="3.0" stroke-linejoin="round" marker-end="url(#arr)"/>
 <polyline points="1830.0,1180.0 1850.0,1180.0 1850.0,1340.0 1116.0,1340.0 1116.0,1102.0 1180.0,1102.0" fill="none" stroke="#4a4a4a" stroke-width="1.6" stroke-linejoin="round" marker-end="url(#arr)"/>
@@ -111,8 +112,6 @@
 <circle cx="854.0" cy="1212.0" r="3.2" fill="#4a4a4a"/>
 <circle cx="868.0" cy="1236.0" r="3.2" fill="#4a4a4a"/>
 <circle cx="868.0" cy="1236.0" r="3.2" fill="#4a4a4a"/>
-<circle cx="1486.0" cy="458.0" r="3.2" fill="#4a4a4a"/>
-<circle cx="1486.0" cy="458.0" r="3.2" fill="#4a4a4a"/>
 <circle cx="1502.0" cy="482.0" r="3.2" fill="#4a4a4a"/>
 <circle cx="1502.0" cy="482.0" r="3.2" fill="#4a4a4a"/>
 <circle cx="1486.0" cy="698.0" r="3.2" fill="#4a4a4a"/>
@@ -120,6 +119,8 @@
 <circle cx="1470.0" cy="958.0" r="3.2" fill="#4a4a4a"/>
 <circle cx="1470.0" cy="958.0" r="3.2" fill="#4a4a4a"/>
 <circle cx="1470.0" cy="958.0" r="3.2" fill="#4a4a4a"/>
+<circle cx="1454.0" cy="982.0" r="3.2" fill="#4a4a4a"/>
+<circle cx="1454.0" cy="982.0" r="3.2" fill="#4a4a4a"/>
 <circle cx="1486.0" cy="1006.0" r="3.2" fill="#4a4a4a"/>
 <circle cx="1486.0" cy="1006.0" r="3.2" fill="#4a4a4a"/>
 <circle cx="1934.0" cy="728.0" r="3.2" fill="#4a4a4a"/>
@@ -349,6 +350,9 @@
 <text x="1187.0" y="1284.0" font-family="Consolas,'D2Coding','Courier New',monospace" font-size="11" fill="#222" text-anchor="start" font-weight="normal" >i_rst</text>
 <rect x="1427" y="1205" width="6" height="6" fill="#3b5b92"/>
 <text x="1423.0" y="1212.0" font-family="Consolas,'D2Coding','Courier New',monospace" font-size="11" fill="#222" text-anchor="end" font-weight="normal" >o_tick_10ms</text>
+<path d="M1000,1195 Q1028.0,1230.0 1000,1265 Q1056.0,1265 1080,1230.0 Q1056.0,1195 1000,1195 z" fill="#fff7e6" stroke="#b7791f" stroke-width="2"/>
+<text x="1036.0" y="1234.0" font-family="'Malgun Gothic','Noto Sans KR','Apple SD Gothic Neo',sans-serif" font-size="11" fill="#b7791f" text-anchor="middle" font-weight="bold" >OR</text>
+<text x="1040.0" y="1187.0" font-family="'Malgun Gothic','Noto Sans KR','Apple SD Gothic Neo',sans-serif" font-size="11.5" fill="#7a4d00" text-anchor="middle" font-weight="bold" >w_tm_tick_clear</text>
 <rect x="1180" y="640" width="250" height="224" rx="8" fill="#eef3fb" stroke="#3b5b92" stroke-width="2" />
 <text x="1305.0" y="659.0" font-family="Consolas,'D2Coding','Courier New',monospace" font-size="13" fill="#1a2f55" text-anchor="middle" font-weight="bold" >U_WATCH_CONTROL_UNIT</text>
 <text x="1305.0" y="676.0" font-family="Consolas,'D2Coding','Courier New',monospace" font-size="11" fill="#5a6d8f" text-anchor="middle" font-weight="normal" >watch_control_unit</text>
@@ -399,7 +403,7 @@
 <text x="1423.0" y="1034.0" font-family="Consolas,'D2Coding','Courier New',monospace" font-size="11" fill="#222" text-anchor="end" font-weight="normal" >o_tm_add</text>
 <rect x="1427" y="1051" width="6" height="6" fill="#3b5b92"/>
 <text x="1423.0" y="1058.0" font-family="Consolas,'D2Coding','Courier New',monospace" font-size="11" fill="#222" text-anchor="end" font-weight="normal" >o_tm_amount[1:0]</text>
-<rect x="1570" y="380" width="260" height="224" rx="8" fill="#eef3fb" stroke="#3b5b92" stroke-width="2" />
+<rect x="1570" y="380" width="260" height="200" rx="8" fill="#eef3fb" stroke="#3b5b92" stroke-width="2" />
 <text x="1700.0" y="399.0" font-family="Consolas,'D2Coding','Courier New',monospace" font-size="13" fill="#1a2f55" text-anchor="middle" font-weight="bold" >U_STOPWATCH_DATAPATH</text>
 <text x="1700.0" y="416.0" font-family="Consolas,'D2Coding','Courier New',monospace" font-size="11" fill="#5a6d8f" text-anchor="middle" font-weight="normal" >stopwatch_datapath</text>
 <rect x="1567" y="435" width="6" height="6" fill="#3b5b92"/>
@@ -409,13 +413,11 @@
 <rect x="1567" y="483" width="6" height="6" fill="#3b5b92"/>
 <text x="1577.0" y="490.0" font-family="Consolas,'D2Coding','Courier New',monospace" font-size="11" fill="#222" text-anchor="start" font-weight="normal" >i_tick_10ms</text>
 <rect x="1567" y="507" width="6" height="6" fill="#3b5b92"/>
-<text x="1577.0" y="514.0" font-family="Consolas,'D2Coding','Courier New',monospace" font-size="11" fill="#222" text-anchor="start" font-weight="normal" >i_sw_run_stop</text>
+<text x="1577.0" y="514.0" font-family="Consolas,'D2Coding','Courier New',monospace" font-size="11" fill="#222" text-anchor="start" font-weight="normal" >i_sw_clear</text>
 <rect x="1567" y="531" width="6" height="6" fill="#3b5b92"/>
-<text x="1577.0" y="538.0" font-family="Consolas,'D2Coding','Courier New',monospace" font-size="11" fill="#222" text-anchor="start" font-weight="normal" >i_sw_clear</text>
+<text x="1577.0" y="538.0" font-family="Consolas,'D2Coding','Courier New',monospace" font-size="11" fill="#222" text-anchor="start" font-weight="normal" >i_sw_down</text>
 <rect x="1567" y="555" width="6" height="6" fill="#3b5b92"/>
-<text x="1577.0" y="562.0" font-family="Consolas,'D2Coding','Courier New',monospace" font-size="11" fill="#222" text-anchor="start" font-weight="normal" >i_sw_down</text>
-<rect x="1567" y="579" width="6" height="6" fill="#3b5b92"/>
-<text x="1577.0" y="586.0" font-family="Consolas,'D2Coding','Courier New',monospace" font-size="11" fill="#222" text-anchor="start" font-weight="normal" >i_sw_btn_D</text>
+<text x="1577.0" y="562.0" font-family="Consolas,'D2Coding','Courier New',monospace" font-size="11" fill="#222" text-anchor="start" font-weight="normal" >i_sw_btn_D</text>
 <rect x="1827" y="435" width="6" height="6" fill="#3b5b92"/>
 <text x="1823.0" y="442.0" font-family="Consolas,'D2Coding','Courier New',monospace" font-size="11" fill="#222" text-anchor="end" font-weight="normal" >o_sw_msec[6:0]</text>
 <rect x="1827" y="459" width="6" height="6" fill="#3b5b92"/>

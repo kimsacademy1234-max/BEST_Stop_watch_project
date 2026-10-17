@@ -148,7 +148,7 @@
 | in | `i_sw_btn_R` | 1 | `w_sw_btn_R` ← 버튼 게이팅 (스톱워치).`w_sw_btn_R` |
 | in | `i_sw_btn_L` | 1 | `w_sw_btn_L` ← 버튼 게이팅 (스톱워치).`w_sw_btn_L` |
 | in | `i_sw_btn_U` | 1 | `w_sw_btn_U` ← 버튼 게이팅 (스톱워치).`w_sw_btn_U` |
-| out | `o_sw_run_stop` | 1 | `w_sw_run_stop` → `U_STOPWATCH_DATAPATH`.`i_sw_run_stop`<br>`w_sw_run_stop` → `U_TICK_GEN_SW`.`i_run_stop` |
+| out | `o_sw_run_stop` | 1 | `w_sw_run_stop` → `U_TICK_GEN_SW`.`i_run_stop` |
 | out | `o_sw_clear` | 1 | `w_sw_clear` → `U_STOPWATCH_DATAPATH`.`i_sw_clear`<br>`w_sw_clear` → `U_TICK_GEN_SW`.`i_clear` |
 | out | `o_sw_down` | 1 | `w_sw_down` → `U_STOPWATCH_DATAPATH`.`i_sw_down` |
 
@@ -171,10 +171,20 @@
 | 방향 | 포트 | 폭 | 연결 (선 이름 · 상대 블록.포트) |
 |---|---|---|---|
 | in | `i_run_stop` | 1 | `w_tm_run` ← `U_TIMER_CONTROL_UNIT`.`o_tm_run` |
-| in | `i_clear` | 1 | `w_tm_clear` ← `U_TIMER_CONTROL_UNIT`.`o_tm_clear` |
+| in | `i_clear` | 1 | `w_tm_tick_clear` ← w_tm_tick_clear.`w_tm_tick_clear` |
 | in | `i_clk` | 1 | `clk` (깃발: Top 핀 직결) |
 | in | `i_rst` | 1 | `rst` (깃발: Top 핀 직결) |
 | out | `o_tick_10ms` | 1 | `w_tm_tick_10ms` → `U_TIMER_DATAPATH`.`i_tick_10ms` |
+
+### w_tm_tick_clear (Top 안 assign)
+
+입력 2 개 · 출력 1 개
+
+| 방향 | 포트 | 폭 | 연결 (선 이름 · 상대 블록.포트) |
+|---|---|---|---|
+| in | `w_tm_clear` | 1 | `w_tm_clear` ← `U_TIMER_CONTROL_UNIT`.`o_tm_clear` |
+| in | `w_tm_alarm` | 1 | `w_tm_alarm` ← `U_TIMER_CONTROL_UNIT`.`o_tm_alarm` |
+| out | `w_tm_tick_clear` | 1 | `w_tm_tick_clear` → `U_TICK_GEN_TM`.`i_clear` |
 
 ### U_WATCH_CONTROL_UNIT (watch_control_unit)
 
@@ -207,21 +217,20 @@
 | in | `i_tm_btn_D` | 1 | `w_tm_btn_D` ← 버튼 게이팅 (타이머).`w_tm_btn_D` |
 | in | `i_tm_zero` | 1 | `w_tm_zero` ← `U_TIMER_DATAPATH`.`o_tm_zero` |
 | out | `o_tm_run` | 1 | `w_tm_run` → `U_TIMER_DATAPATH`.`i_tm_run`<br>`w_tm_run` → LED 출력.`w_tm_run`<br>`w_tm_run` → `U_TICK_GEN_TM`.`i_run_stop` |
-| out | `o_tm_alarm` | 1 | `w_tm_alarm` → LED 출력.`w_tm_alarm` |
-| out | `o_tm_clear` | 1 | `w_tm_clear` → `U_TIMER_DATAPATH`.`i_tm_clear`<br>`w_tm_clear` → `U_TICK_GEN_TM`.`i_clear` |
+| out | `o_tm_alarm` | 1 | `w_tm_alarm` → LED 출력.`w_tm_alarm`<br>`w_tm_alarm` → w_tm_tick_clear.`w_tm_alarm` |
+| out | `o_tm_clear` | 1 | `w_tm_clear` → `U_TIMER_DATAPATH`.`i_tm_clear`<br>`w_tm_clear` → w_tm_tick_clear.`w_tm_clear` |
 | out | `o_tm_add` | 1 | `w_tm_add` → `U_TIMER_DATAPATH`.`i_tm_add` |
 | out | `o_tm_amount` | [1:0] | `w_tm_amount` → `U_TIMER_DATAPATH`.`i_tm_amount` |
 
 ### U_STOPWATCH_DATAPATH (stopwatch_datapath)
 
-입력 7 개 · 출력 5 개
+입력 6 개 · 출력 5 개
 
 | 방향 | 포트 | 폭 | 연결 (선 이름 · 상대 블록.포트) |
 |---|---|---|---|
 | in | `i_clk` | 1 | `clk` (깃발: Top 핀 직결) |
 | in | `i_rst` | 1 | `rst` (깃발: Top 핀 직결) |
 | in | `i_tick_10ms` | 1 | `w_sw_tick_10ms` ← `U_TICK_GEN_SW`.`o_tick_10ms` |
-| in | `i_sw_run_stop` | 1 | `w_sw_run_stop` ← `U_STOPWATCH_CONTROL_UNIT`.`o_sw_run_stop` |
 | in | `i_sw_clear` | 1 | `w_sw_clear` ← `U_STOPWATCH_CONTROL_UNIT`.`o_sw_clear` |
 | in | `i_sw_down` | 1 | `w_sw_down` ← `U_STOPWATCH_CONTROL_UNIT`.`o_sw_down` |
 | in | `i_sw_btn_D` | 1 | `w_sw_btn_D` ← 버튼 게이팅 (스톱워치).`w_sw_btn_D` |

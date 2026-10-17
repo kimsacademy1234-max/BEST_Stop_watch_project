@@ -540,6 +540,9 @@ def page_top():
             inst="U_TICK_GEN_SW", module="tick_gen_100hz_run"))
     B(Block("TICKGEN_TM", XD, 1150, WD, ["i_run_stop", "i_clear", "i_clk", "i_rst"], ["o_tick_10ms"],
             inst="U_TICK_GEN_TM", module="tick_gen_100hz_run"))
+    # (10/17) 타이머 tick clear = 취소 또는 알람 (Top 안 assign)
+    B(Block("OR_TMCLR", 1000, 1195, 80, ["w_tm_clear", "w_tm_alarm"], ["w_tm_tick_clear"],
+            kind="or", title="w_tm_tick_clear"))
     B(Block("WCU", XD, 640, WD, ["i_clk", "i_rst", "i_wt_btn_R", "i_wt_btn_L", "i_wt_btn_U", "i_wt_btn_D", "i_set_sw2"],
             [("o_wt_cursor", "[1:0]"), "o_wt_up", "o_wt_down"],
             inst="U_WATCH_CONTROL_UNIT", module="watch_control_unit"))
@@ -547,7 +550,7 @@ def page_top():
             ["o_tm_run", "o_tm_alarm", "o_tm_clear", "o_tm_add", ("o_tm_amount", "[1:0]")],
             inst="U_TIMER_CONTROL_UNIT", module="timer_control_unit"))
 
-    B(Block("SDP", XE, 380, WE, ["i_clk", "i_rst", "i_tick_10ms", "i_sw_run_stop", "i_sw_clear", "i_sw_down", "i_sw_btn_D"],
+    B(Block("SDP", XE, 380, WE, ["i_clk", "i_rst", "i_tick_10ms", "i_sw_clear", "i_sw_down", "i_sw_btn_D"],
             [("o_sw_msec", "[6:0]"), ("o_sw_sec", "[5:0]"), ("o_sw_min", "[5:0]"), ("o_sw_hour", "[4:0]"), "o_sw_lap"],
             inst="U_STOPWATCH_DATAPATH", module="stopwatch_datapath"))
     B(Block("WDP", XE, 670, WE, ["i_clk", "i_rst", "i_tick_10ms", ("i_wt_cursor", "[1:0]"), "i_wt_up", "i_wt_down"],
@@ -636,7 +639,7 @@ def page_top():
                    [(cu, f"i_{dom}_btn_{k}", [gCD + 22 + i * 16])])
     c1, c2, c3, c4 = gDE + 40, gDE + 56, gDE + 72, gDE + 88
     pg.net("w_sw_run_stop", ("SCU", "o_sw_run_stop"),
-           [("SDP", "i_sw_run_stop", [c2]), ("TICKGEN_SW", "i_run_stop", [c2, 352, XD - 30])])
+           [("TICKGEN_SW", "i_run_stop", [c2, 352, XD - 30])])
     pg.net("w_sw_clear", ("SCU", "o_sw_clear"),
            [("SDP", "i_sw_clear", [c3]), ("TICKGEN_SW", "i_clear", [c3, 340, XD - 18])])
     pg.net("w_sw_down", ("SCU", "o_sw_down"), [("SDP", "i_sw_down", [c4])])
@@ -648,9 +651,11 @@ def page_top():
     pg.net("w_tm_run", ("TCU", "o_tm_run"),
            [("TDP", "i_tm_run", [c1]), ("LED", "w_tm_run", [c1, 1390, XG - 28]),
             ("TICKGEN_TM", "i_run_stop", [c1, 1136, XD - 30])])
-    pg.net("w_tm_alarm", ("TCU", "o_tm_alarm"), [("LED", "w_tm_alarm", [gDE + 24, 1378, XG - 40])])
+    pg.net("w_tm_alarm", ("TCU", "o_tm_alarm"), [("LED", "w_tm_alarm", [gDE + 24, 1378, XG - 40]),
+                                               ("OR_TMCLR", "w_tm_alarm", [gDE + 24, 1130, 973])])
     pg.net("w_tm_clear", ("TCU", "o_tm_clear"),
-           [("TDP", "i_tm_clear", [c2]), ("TICKGEN_TM", "i_clear", [c2, 1142, XD - 18])])
+           [("TDP", "i_tm_clear", [c2]), ("OR_TMCLR", "w_tm_clear", [c2, 1142, 985])])
+    pg.net("w_tm_tick_clear", ("OR_TMCLR", "w_tm_tick_clear"), [("TICKGEN_TM", "i_clear", [XD - 18])])
     pg.net("w_tm_add", ("TCU", "o_tm_add"), [("TDP", "i_tm_add", [c3])])
     pg.net("w_tm_amount", ("TCU", "o_tm_amount"), [("TDP", "i_tm_amount", [c4])])
     pg.net("w_tm_zero", ("TDP", "o_tm_zero"), [("TCU", "i_tm_zero", [gEF + 20, 1340, XD - 64])])

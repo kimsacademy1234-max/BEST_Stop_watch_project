@@ -42,6 +42,7 @@ module stopwatch_watch (
     wire w_tick_10ms;     // U_TICK_GEN_100HZ.o_tick_10ms (10 ms 마다 1 클럭 펄스, 시계 전용 · 항상 흐름)
     wire w_sw_tick_10ms;  // U_TICK_GEN_SW.o_tick_10ms    (스톱워치 전용, 시작 순간부터 셈)  (10/17 ④)
     wire w_tm_tick_10ms;  // U_TICK_GEN_TM.o_tick_10ms    (타이머 전용, 시작 순간부터 셈)    (10/17 ④)
+    wire w_tm_tick_clear; // U_TICK_GEN_TM.i_clear = 취소 또는 알람 (10/17)
     // 디바운서 출력
     wire w_btn_R, w_btn_L, w_btn_U, w_btn_D;
     // 화면 선택 (셋 중 하나만 1)
@@ -108,11 +109,14 @@ module stopwatch_watch (
         .o_tick_10ms(w_sw_tick_10ms)
     );
 
+    // (10/17) 알람으로 끝났을 때도 tick 카운터를 0 으로: 0 이 된 뒤 ALARM 까지 2클럭 더 세어 다음 시작이 20 ns 일찍 되던 것을 막음
+    assign w_tm_tick_clear = w_tm_clear | w_tm_alarm;
+
     tick_gen_100hz_run U_TICK_GEN_TM (
         .i_clk      (clk),
         .i_rst      (rst),
         .i_run_stop (w_tm_run),        // RUN 동안만 셈
-        .i_clear    (w_tm_clear),      // 취소 = 0 부터
+        .i_clear    (w_tm_tick_clear), // 취소 · 알람 = 0 부터
         .o_tick_10ms(w_tm_tick_10ms)
     );
 
@@ -183,7 +187,6 @@ module stopwatch_watch (
         .i_clk        (clk),
         .i_rst        (rst),
         .i_tick_10ms  (w_sw_tick_10ms),  // (10/17) 스톱워치 전용 tick
-        .i_sw_run_stop(w_sw_run_stop),
         .i_sw_clear   (w_sw_clear),
         .i_sw_down    (w_sw_down),
         .i_sw_btn_D   (w_sw_btn_D),
