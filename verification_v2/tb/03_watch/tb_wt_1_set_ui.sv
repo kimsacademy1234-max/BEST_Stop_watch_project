@@ -670,13 +670,13 @@ module tb_wt_1_set_ui;
             phase_end();
         end
         // ------------------------------------------------------------------ P7
-        if (phase_begin(7, "U+D same instant -> U wins (WC5)")) begin
-            phase_plan("U and D at the same instant", "U_BD_U/U_BD_D o_btn in the same clock -> only o_wt_up -> 12:01");
+        if (phase_begin(7, "U+D same instant -> ignored (WC5)")) begin
+            phase_plan("U and D at the same instant", "U_BD_U/U_BD_D o_btn in the same clock -> no o_wt_up / o_wt_down -> 12:00 unchanged");
             do_reset();
             set_sw(0, 0, 1, 1, 0);
             press2(BU, BD);
             check("WC5", last_pv == 4'b1100, "U and D pulses in the same clock", "{D,U,L,R}=1100", $sformatf("%b", last_pv));
-            expect_hm("WC5", "12:01", "U+D -> +1 (U priority)");
+            expect_hm("WC5", "12:00", "U+D -> ignored (no +1, no -1)");
             phase_end();
         end
         // ------------------------------------------------------------------ P8

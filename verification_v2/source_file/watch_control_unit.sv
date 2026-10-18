@@ -6,7 +6,7 @@
 // i_set_sw2 = 1 : SET_MIN_1 에서 시작 (FND 맨 오른쪽 자리)
 //              R: 오른쪽 자리로 (SET_HOUR -> SET_MIN_10 -> SET_MIN_1 -> SET_HOUR 돌아감)
 //              L: 왼쪽 자리로   (SET_MIN_1 -> SET_MIN_10 -> SET_HOUR -> SET_MIN_1 돌아감)
-//              U: 지금 자리 +1 (SET_MIN_10 은 분 +10), D: -1 (-10)
+//              U: 지금 자리 +1 (SET_MIN_10 은 분 +10), D: -1 (-10), U + D 동시: 무효
 // o_wt_cursor = FND 자리 번호(AN0 = 맨 오른쪽)와 같게: 0 분 일, 1 분 십, 2 시 일, 3 없음(NORMAL)
 // (v2) 아무 데도 연결되지 않던 set_mode 출력 삭제
 module watch_control_unit (
@@ -85,9 +85,9 @@ module watch_control_unit (
         endcase
 
         // mealy output: 설정 상태이고 i_set_sw2 가 아직 1 일 때만 +/- 펄스
-        // U, D 가 같은 클럭에 오면 U 우선
+        // U, D 가 같은 클럭에 오면 무효 (둘 다 0)
         if ((c_state != NORMAL) && (i_set_sw2 == 1'b1)) begin
-            o_wt_up   = i_wt_btn_U;
+            o_wt_up   = i_wt_btn_U & ~i_wt_btn_D;
             o_wt_down = i_wt_btn_D & ~i_wt_btn_U;
         end
     end
