@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="tb_wt_s2_btn_simul_behav.wdb" id="1">
+         <top_modules>
+            <top_module name="glbl" />
+            <top_module name="tb_wt_s2_btn_simul" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <zoom_setting>
+      <ZoomStartTime time="0fs"></ZoomStartTime>
+      <ZoomEndTime time="50000000000000fs"></ZoomEndTime>
+      <Cursor1Time time="0fs"></Cursor1Time>
+   </zoom_setting>
+   <column_width_setting>
+      <NameColumnWidth column_width="204"></NameColumnWidth>
+      <ValueColumnWidth column_width="90"></ValueColumnWidth>
+   </column_width_setting>
+   <WVObjectSize size="6" />
+   <wave_markers>
+      <marker time="1000000" label="1" />
+      <marker time="10000000000" label="2" />
+      <marker time="20000000000" label="3" />
+      <marker time="30000000000" label="4" />
+      <marker time="40000000000" label="5" />
+   </wave_markers>
+   <wvobject fp_name="/tb_wt_s2_btn_simul/clk" type="logic">
+      <obj_property name="ElementShortName">clk</obj_property>
+      <obj_property name="ObjectShortName">clk</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_wt_s2_btn_simul/rst" type="logic">
+      <obj_property name="ElementShortName">rst</obj_property>
+      <obj_property name="ObjectShortName">rst</obj_property>
+   </wvobject>
+   <wvobject fp_name="group1" type="group">
+      <obj_property name="label">INPUT_SWITCH</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="isExpanded"></obj_property>
+      <wvobject fp_name="/tb_wt_s2_btn_simul/set_sw2" type="logic">
+         <obj_property name="ElementShortName">set_sw2</obj_property>
+         <obj_property name="ObjectShortName">set_sw2</obj_property>
+      </wvobject>
+   </wvobject>
+   <wvobject fp_name="group2" type="group">
+      <obj_property name="label">Button</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="isExpanded"></obj_property>
+      <wvobject fp_name="/tb_wt_s2_btn_simul/dut/btn_R" type="logic">
+         <obj_property name="ElementShortName">btn_R</obj_property>
+         <obj_property name="ObjectShortName">btn_R</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_wt_s2_btn_simul/dut/U_BD_R/o_btn" type="logic">
+         <obj_property name="DisplayName">label</obj_property>
+         <obj_property name="ElementShortName">o_btn</obj_property>
+         <obj_property name="ObjectShortName">o_btn</obj_property>
+         <obj_property name="label">R_tick</obj_property>
+         <obj_property name="CustomSignalColor">#FFD700</obj_property>
+         <obj_property name="UseCustomSignalColor">true</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_wt_s2_btn_simul/dut/btn_L" type="logic">
+         <obj_property name="ElementShortName">btn_L</obj_property>
+         <obj_property name="ObjectShortName">btn_L</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_wt_s2_btn_simul/dut/U_BD_L/o_btn" type="logic">
+         <obj_property name="DisplayName">label</obj_property>
+         <obj_property name="ElementShortName">o_btn</obj_property>
+         <obj_property name="ObjectShortName">o_btn</obj_property>
+         <obj_property name="label">L_tick</obj_property>
+         <obj_property name="CustomSignalColor">#FFD700</obj_property>
+         <obj_property name="UseCustomSignalColor">true</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_wt_s2_btn_simul/dut/btn_U" type="logic">
+         <obj_property name="ElementShortName">btn_U</obj_property>
+         <obj_property name="ObjectShortName">btn_U</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_wt_s2_btn_simul/dut/U_BD_U/o_btn" type="logic">
+         <obj_property name="DisplayName">label</obj_property>
+         <obj_property name="ElementShortName">o_btn</obj_property>
+         <obj_property name="ObjectShortName">o_btn</obj_property>
+         <obj_property name="label">U_tick</obj_property>
+         <obj_property name="CustomSignalColor">#FFD700</obj_property>
+         <obj_property name="UseCustomSignalColor">true</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_wt_s2_btn_simul/dut/btn_D" type="logic">
+         <obj_property name="ElementShortName">btn_D</obj_property>
+         <obj_property name="ObjectShortName">btn_D</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_wt_s2_btn_simul/dut/U_BD_D/o_btn" type="logic">
+         <obj_property name="DisplayName">label</obj_property>
+         <obj_property name="ElementShortName">o_btn</obj_property>
+         <obj_property name="ObjectShortName">o_btn</obj_property>
+         <obj_property name="label">D_tick</obj_property>
+         <obj_property name="CustomSignalColor">#FFD700</obj_property>
+         <obj_property name="UseCustomSignalColor">true</obj_property>
+      </wvobject>
+   </wvobject>
+   <wvobject fp_name="group3" type="group">
+      <obj_property name="label">WATCH_STATE</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="isExpanded"></obj_property>
+      <wvobject fp_name="/tb_wt_s2_btn_simul/dut/U_WATCH_CONTROL_UNIT/n_state" type="array">
+         <obj_property name="ElementShortName">n_state[1:0]</obj_property>
+         <obj_property name="ObjectShortName">n_state[1:0]</obj_property>
+         <obj_property name="CustomSignalColor">#FF00FF</obj_property>
+         <obj_property name="UseCustomSignalColor">true</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_wt_s2_btn_simul/dut/U_WATCH_CONTROL_UNIT/c_state" type="array">
+         <obj_property name="ElementShortName">c_state[1:0]</obj_property>
+         <obj_property name="ObjectShortName">c_state[1:0]</obj_property>
+         <obj_property name="CustomSignalColor">#FF00FF</obj_property>
+         <obj_property name="UseCustomSignalColor">true</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_wt_s2_btn_simul/dut/U_WATCH_CONTROL_UNIT/o_wt_cursor" type="array">
+         <obj_property name="ElementShortName">o_wt_cursor[1:0]</obj_property>
+         <obj_property name="ObjectShortName">o_wt_cursor[1:0]</obj_property>
+         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+         <obj_property name="CustomSignalColor">#FF00FF</obj_property>
+         <obj_property name="UseCustomSignalColor">true</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_wt_s2_btn_simul/dut/U_WATCH_CONTROL_UNIT/o_wt_up" type="logic">
+         <obj_property name="ElementShortName">o_wt_up</obj_property>
+         <obj_property name="ObjectShortName">o_wt_up</obj_property>
+         <obj_property name="CustomSignalColor">#FF00FF</obj_property>
+         <obj_property name="UseCustomSignalColor">true</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_wt_s2_btn_simul/dut/U_WATCH_CONTROL_UNIT/o_wt_down" type="logic">
+         <obj_property name="ElementShortName">o_wt_down</obj_property>
+         <obj_property name="ObjectShortName">o_wt_down</obj_property>
+         <obj_property name="CustomSignalColor">#FF00FF</obj_property>
+         <obj_property name="UseCustomSignalColor">true</obj_property>
+      </wvobject>
+   </wvobject>
+   <wvobject fp_name="group4" type="group">
+      <obj_property name="label">WATCH_TIME_OUT</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="isExpanded"></obj_property>
+      <wvobject fp_name="/tb_wt_s2_btn_simul/dut/U_WATCH_DATAPATH/o_wt_hour" type="array">
+         <obj_property name="ElementShortName">o_wt_hour[4:0]</obj_property>
+         <obj_property name="ObjectShortName">o_wt_hour[4:0]</obj_property>
+         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+         <obj_property name="CustomSignalColor">#00FFFF</obj_property>
+         <obj_property name="UseCustomSignalColor">true</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_wt_s2_btn_simul/dut/U_WATCH_DATAPATH/o_wt_min" type="array">
+         <obj_property name="ElementShortName">o_wt_min[5:0]</obj_property>
+         <obj_property name="ObjectShortName">o_wt_min[5:0]</obj_property>
+         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+         <obj_property name="CustomSignalColor">#00FFFF</obj_property>
+         <obj_property name="UseCustomSignalColor">true</obj_property>
+      </wvobject>
+   </wvobject>
+</wave_config>
