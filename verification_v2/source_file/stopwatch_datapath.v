@@ -1,10 +1,10 @@
 `timescale 1ns / 1ps
 
-// ìŠ¤í†±ì›Œì¹˜ ë°ì´í„°íŒ¨ìŠ¤ (v2 í¬íŠ¸ í†µì¼)
-// i_tick_10ms ëŠ” Top ì˜ ìŠ¤í†±ì›Œì¹˜ ì „ìš© tick (U_TICK_GEN_SW) â€” ì´ë¯¸ run_stop ì¼ ë•Œë§Œ ë‚˜ì˜¤ë¯€ë¡œ ê·¸ëŒ€ë¡œ ë°›ëŠ”ë‹¤
-// (10/17) ì „ì—ëŠ” ì—¬ê¸°ì„œ i_tick_10ms & i_sw_run_stop ìœ¼ë¡œ í•œ ë²ˆ ë” ë§‰ì•˜ëŠ”ë°, STOP ì´ tick ì´ ë‚˜ì˜¨ ë°”ë¡œ ê·¸ í´ëŸ­ì—
-//         ë“¤ì–´ì˜¤ë©´ RUN ë™ì•ˆ ë‹¤ ì„¼ ë§ˆì§€ë§‰ 10 ms ê°€ ë§‰í˜€ 1/100ì´ˆê°€ í•˜ë‚˜ ëœ ì…ˆ â†’ AND ì™€ i_sw_run_stop í¬íŠ¸ë¥¼ ì§€ì›€
-// ì¹´ìš´í„° ê°’(w_cnt_*) â†’ lap_controller â†’ o_sw_* (ë© ì¤‘ì´ë©´ ê³ ì •ê°’)
+// ?Š¤?†±?›Œì¹? ?°?´?„°?Œ¨?Š¤ (v2 ?¬?Š¸ ?†µ?¼)
+// i_tick_10ms ?Š” Top ?˜ ?Š¤?†±?›Œì¹? ? „?š© tick (U_TICK_GEN_SW) ?? ?´ë¯? run_stop ?¼ ?•Œë§? ?‚˜?˜¤ë¯?ë¡? ê·¸ë?ë¡? ë°›ëŠ”?‹¤
+// (10/17) ? „?—?Š” ?—¬ê¸°ì„œ i_tick_10ms & i_sw_run_stop ?œ¼ë¡? ?•œ ë²? ?” ë§‰ì•˜?Š”?°, STOP ?´ tick ?´ ?‚˜?˜¨ ë°”ë¡œ ê·? ?´?Ÿ­?—
+//         ?“¤?–´?˜¤ë©? RUN ?™?•ˆ ?‹¤ ?„¼ ë§ˆì?ë§? 10 ms ê°? ë§‰í? 1/100ì´ˆê? ?•˜?‚˜ ?œ ?…ˆ ?†’ AND ?? i_sw_run_stop ?¬?Š¸ë¥? ì§???
+// ì¹´ìš´?„° ê°?(w_cnt_*) ?†’ lap_controller ?†’ o_sw_* (?© ì¤‘ì´ë©? ê³ ì •ê°?)
 module stopwatch_datapath #(
     parameter MSEC_BIT_WIDTH = 7,
     parameter SEC_BIT_WIDTH  = 6,
@@ -13,18 +13,18 @@ module stopwatch_datapath #(
 ) (
     input                       i_clk,
     input                       i_rst,
-    input                       i_tick_10ms,    // top ì˜ 100hz tick
+    input                       i_tick_10ms,    // top ?˜ 100hz tick
     input                       i_sw_clear,
     input                       i_sw_down,
-    input                       i_sw_btn_D,     // ë©
+    input                       i_sw_btn_D,     // ?©
     output [MSEC_BIT_WIDTH-1:0] o_sw_msec,
     output [ SEC_BIT_WIDTH-1:0] o_sw_sec,
     output [ MIN_BIT_WIDTH-1:0] o_sw_min,
     output [HOUR_BIT_WIDTH-1:0] o_sw_hour,
-    output                      o_sw_lap        // 1 = ë© í‘œì‹œ ì¤‘
+    output                      o_sw_lap        // 1 = ?© ?‘œ?‹œ ì¤?
 );
     wire w_tick_10ms, w_tick_sec, w_tick_min, w_tick_hour;
-    // ì¹´ìš´í„° ì‹¤ì œ ê°’ (ë© ì»¨íŠ¸ë¡¤ëŸ¬ë¥¼ ê±°ì³ o_sw_* ë¡œ ë‚˜ê°)
+    // ì¹´ìš´?„° ?‹¤? œ ê°? (?© ì»¨íŠ¸ë¡¤ëŸ¬ë¥? ê±°ì³ o_sw_* ë¡? ?‚˜ê°?)
     wire [MSEC_BIT_WIDTH-1:0] w_cnt_msec;
     wire [ SEC_BIT_WIDTH-1:0] w_cnt_sec;
     wire [ MIN_BIT_WIDTH-1:0] w_cnt_min;
@@ -87,10 +87,10 @@ module stopwatch_datapath #(
     );
 
 
-    // tick ì€ U_TICK_GEN_SW ê°€ RUN ë™ì•ˆë§Œ ë§Œë“ ë‹¤ (10/17: run_stop AND ì‚­ì œ)
+    // tick ?? U_TICK_GEN_SW ê°? RUN ?™?•ˆë§? ë§Œë“ ?‹¤ (10/17: run_stop AND ?‚­? œ)
     assign w_tick_10ms = i_tick_10ms;
 
-    // ë©íƒ€ì„: ë© í™œì„±í™” ì‹œ ì €ì¥ëœ ì‹œê°„, ì•„ë‹ˆë©´ í˜„ì¬ ì‹œê°„ ì¶œë ¥
+    // ?©???„: ?© ?™œ?„±?™” ?‹œ ???¥?œ ?‹œê°?, ?•„?‹ˆë©? ?˜„?¬ ?‹œê°? ì¶œë ¥
     lap_controller U_LAP_CONTROLLER (
         .i_clk     (i_clk),
         .i_rst     (i_rst),
@@ -132,7 +132,7 @@ module stopwatch_tick_counter #(
             counter_reg <= 0;
             o_tick <= 1'b0;
         end else begin
-            if (i_down) begin
+          if (i_down) begin
                 if (i_tick) begin
                     counter_reg <= counter_reg - 1;
                     if (counter_reg == 0) begin

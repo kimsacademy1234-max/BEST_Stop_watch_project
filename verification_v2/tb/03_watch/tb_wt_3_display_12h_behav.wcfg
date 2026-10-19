@@ -11,15 +11,22 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="30000000000000fs"></ZoomStartTime>
-      <ZoomEndTime time="1100000000000000fs"></ZoomEndTime>
-      <Cursor1Time time="540000000000000fs"></Cursor1Time>
+      <ZoomStartTime time="1538137721667fs"></ZoomStartTime>
+      <ZoomEndTime time="1539457721668fs"></ZoomEndTime>
+      <Cursor1Time time="1539056065000fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
-      <NameColumnWidth column_width="204"></NameColumnWidth>
-      <ValueColumnWidth column_width="94"></ValueColumnWidth>
+      <NameColumnWidth column_width="210"></NameColumnWidth>
+      <ValueColumnWidth column_width="84"></ValueColumnWidth>
    </column_width_setting>
    <WVObjectSize size="13" />
+   <wave_markers>
+      <marker time="1540056055000" label="" />
+      <marker time="1541056055000" label="" />
+      <marker time="1542056065000" label="" />
+      <marker time="1539056055000" label="" />
+      <marker time="1538056055000" label="" />
+   </wave_markers>
    <wvobject fp_name="/tb_wt_3_display_12h/clk" type="logic">
       <obj_property name="ElementShortName">clk</obj_property>
       <obj_property name="ObjectShortName">clk</obj_property>
@@ -56,7 +63,6 @@
    <wvobject fp_name="group2" type="group">
       <obj_property name="label">Button</obj_property>
       <obj_property name="DisplayName">label</obj_property>
-      <obj_property name="isExpanded"></obj_property>
       <wvobject fp_name="/tb_wt_3_display_12h/dut/btn_R" type="logic">
          <obj_property name="ElementShortName">btn_R</obj_property>
          <obj_property name="ObjectShortName">btn_R</obj_property>
@@ -107,20 +113,15 @@
       </wvobject>
    </wvobject>
    <wvobject fp_name="group3" type="group">
-      <obj_property name="label">STOPWATCH_STATE</obj_property>
+      <obj_property name="label">STOPWATCgroup3H_STATE</obj_property>
       <obj_property name="DisplayName">label</obj_property>
-      <obj_property name="isExpanded"></obj_property>
-      <wvobject fp_name="/tb_wt_3_display_12h/dut/U_STOPWATCH_CONTROL_UNIT/n_state" type="logic">
+      <wvobject fp_name="/tb_wt_3_display_12h/dut/U_STOPWATCH_CONTROL_UNIT/n_state" type="other">
          <obj_property name="ElementShortName">n_state</obj_property>
          <obj_property name="ObjectShortName">n_state</obj_property>
-         <obj_property name="CustomSignalColor">#FF00FF</obj_property>
-         <obj_property name="UseCustomSignalColor">true</obj_property>
       </wvobject>
-      <wvobject fp_name="/tb_wt_3_display_12h/dut/U_STOPWATCH_CONTROL_UNIT/c_state" type="logic">
+      <wvobject fp_name="/tb_wt_3_display_12h/dut/U_STOPWATCH_CONTROL_UNIT/c_state" type="other">
          <obj_property name="ElementShortName">c_state</obj_property>
          <obj_property name="ObjectShortName">c_state</obj_property>
-         <obj_property name="CustomSignalColor">#FF00FF</obj_property>
-         <obj_property name="UseCustomSignalColor">true</obj_property>
       </wvobject>
       <wvobject fp_name="/tb_wt_3_display_12h/dut/U_STOPWATCH_CONTROL_UNIT/o_sw_clear" type="logic">
          <obj_property name="ElementShortName">o_sw_clear</obj_property>
@@ -135,33 +136,9 @@
          <obj_property name="UseCustomSignalColor">true</obj_property>
       </wvobject>
    </wvobject>
-   <wvobject fp_name="group4" type="group">
-      <obj_property name="label">WATCH_STATE</obj_property>
-      <obj_property name="DisplayName">label</obj_property>
-      <obj_property name="isExpanded"></obj_property>
-      <wvobject fp_name="/tb_wt_3_display_12h/dut/U_WATCH_CONTROL_UNIT/n_state" type="array">
-         <obj_property name="ElementShortName">n_state[1:0]</obj_property>
-         <obj_property name="ObjectShortName">n_state[1:0]</obj_property>
-         <obj_property name="CustomSignalColor">#FF00FF</obj_property>
-         <obj_property name="UseCustomSignalColor">true</obj_property>
-      </wvobject>
-      <wvobject fp_name="/tb_wt_3_display_12h/dut/U_WATCH_CONTROL_UNIT/c_state" type="array">
-         <obj_property name="ElementShortName">c_state[1:0]</obj_property>
-         <obj_property name="ObjectShortName">c_state[1:0]</obj_property>
-         <obj_property name="CustomSignalColor">#FF00FF</obj_property>
-         <obj_property name="UseCustomSignalColor">true</obj_property>
-      </wvobject>
-      <wvobject fp_name="/tb_wt_3_display_12h/dut/U_WATCH_DATAPATH/i_wt_cursor" type="array">
-         <obj_property name="ElementShortName">i_wt_cursor[1:0]</obj_property>
-         <obj_property name="ObjectShortName">i_wt_cursor[1:0]</obj_property>
-         <obj_property name="CustomSignalColor">#FF00FF</obj_property>
-         <obj_property name="UseCustomSignalColor">true</obj_property>
-      </wvobject>
-   </wvobject>
    <wvobject fp_name="group5" type="group">
       <obj_property name="label">TIMER_STATE</obj_property>
       <obj_property name="DisplayName">label</obj_property>
-      <obj_property name="isExpanded"></obj_property>
       <wvobject fp_name="/tb_wt_3_display_12h/dut/U_TIMER_CONTROL_UNIT/n_state" type="array">
          <obj_property name="ElementShortName">n_state[1:0]</obj_property>
          <obj_property name="ObjectShortName">n_state[1:0]</obj_property>
@@ -221,6 +198,37 @@
       <wvobject fp_name="/tb_wt_3_display_12h/dut/U_STOPWATCH_DATAPATH/o_sw_lap" type="logic">
          <obj_property name="ElementShortName">o_sw_lap</obj_property>
          <obj_property name="ObjectShortName">o_sw_lap</obj_property>
+      </wvobject>
+   </wvobject>
+   <wvobject fp_name="/tb_wt_3_display_12h/dut/U_WATCH_DATAPATH/i_tick_10ms" type="logic">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">i_tick_10ms</obj_property>
+      <obj_property name="ObjectShortName">i_tick_10ms</obj_property>
+      <obj_property name="CustomSignalColor">#00FFFF</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+      <obj_property name="label">i_tick_1/tb_wt_3_display_12h/dut/U_WATCH_DATAPATH/i_tick_10ms0ms</obj_property>
+   </wvobject>
+   <wvobject fp_name="group4" type="group">
+      <obj_property name="label">WATCH_STATE</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="isExpanded"></obj_property>
+      <wvobject fp_name="/tb_wt_3_display_12h/dut/U_WATCH_CONTROL_UNIT/n_state" type="array">
+         <obj_property name="ElementShortName">n_state[1:0]</obj_property>
+         <obj_property name="ObjectShortName">n_state[1:0]</obj_property>
+         <obj_property name="CustomSignalColor">#FF00FF</obj_property>
+         <obj_property name="UseCustomSignalColor">true</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_wt_3_display_12h/dut/U_WATCH_CONTROL_UNIT/c_state" type="array">
+         <obj_property name="ElementShortName">c_state[1:0]</obj_property>
+         <obj_property name="ObjectShortName">c_state[1:0]</obj_property>
+         <obj_property name="CustomSignalColor">#FF00FF</obj_property>
+         <obj_property name="UseCustomSignalColor">true</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_wt_3_display_12h/dut/U_WATCH_DATAPATH/i_wt_cursor" type="array">
+         <obj_property name="ElementShortName">i_wt_cursor[1:0]</obj_property>
+         <obj_property name="ObjectShortName">i_wt_cursor[1:0]</obj_property>
+         <obj_property name="CustomSignalColor">#FF00FF</obj_property>
+         <obj_property name="UseCustomSignalColor">true</obj_property>
       </wvobject>
    </wvobject>
    <wvobject fp_name="group7" type="group">
@@ -292,12 +300,6 @@
          <obj_property name="UseCustomSignalColor">true</obj_property>
       </wvobject>
    </wvobject>
-   <wvobject fp_name="/tb_wt_3_display_12h/dut/U_WATCH_DATAPATH/i_tick_10ms" type="logic">
-      <obj_property name="ElementShortName">i_tick_10ms</obj_property>
-      <obj_property name="ObjectShortName">i_tick_10ms</obj_property>
-      <obj_property name="CustomSignalColor">#00FFFF</obj_property>
-      <obj_property name="UseCustomSignalColor">true</obj_property>
-   </wvobject>
    <wvobject fp_name="/tb_wt_3_display_12h/led" type="array">
       <obj_property name="ElementShortName">led[15:0]</obj_property>
       <obj_property name="ObjectShortName">led[15:0]</obj_property>
@@ -306,6 +308,11 @@
    <wvobject fp_name="group9" type="group">
       <obj_property name="label">FND_OUT</obj_property>
       <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="isExpanded"></obj_property>
+      <wvobject fp_name="/tb_wt_3_display_12h/dut/U_FND_CONTROLLER/U_DOT/o_blink_off" type="logic">
+         <obj_property name="ElementShortName">o_blink_off</obj_property>
+         <obj_property name="ObjectShortName">o_blink_off</obj_property>
+      </wvobject>
       <wvobject fp_name="/tb_wt_3_display_12h/dut/U_CLK_GEN_4KHZ/o_clk_4khz" type="logic">
          <obj_property name="ElementShortName">o_clk_4khz</obj_property>
          <obj_property name="ObjectShortName">o_clk_4khz</obj_property>

@@ -658,13 +658,15 @@ module tb_wt_1_set_ui;
         end
         // ------------------------------------------------------------------ P6
         if (phase_begin(6, "hour +-1 wrap: 12->13, 23->0, 0->23, min unchanged (WB3)")) begin
-            phase_plan("cursor 2 (hour), U -> PRELOAD 23:30 (skip U x10) -> U -> D", "13:00 -> 00:30 (min stays 30) -> 23:30");
+            phase_plan("cursor 2 (hour), U -> PRELOAD 23:30 (skip U x10) -> wait 4 ms -> U -> D",
+                       "13:00 -> 23:30 (FND 4 ms) -> 00:30 (min stays 30) -> 23:30");
             do_reset();
             set_sw(0, 0, 1, 1, 0);
             press(BL); press(BL);
             expect_cur("WB3", 2, "cursor hour");
             press(BU); expect_hm("WB3", "13:00", "12 +1 -> 13");
             preload_watch(23, 30, 0, 0);
+            #(4 * MS);                        // FND 에 23:30 이 보이도록 U 를 4 ms (FND 2 바퀴) 늦게
             press(BU); expect_hm("WB3", "00:30", "23 +1 -> 0, min unchanged");
             press(BD); expect_hm("WB3", "23:30", "0 -1 -> 23");
             phase_end();
