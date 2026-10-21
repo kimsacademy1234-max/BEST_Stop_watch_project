@@ -126,7 +126,7 @@ module stopwatch_watch (
     assign w_sw_btn_run_stop = w_btnR & w_sel_sw;
     assign w_sw_btn_clear    = w_btnL & w_sel_sw;
     assign w_sw_btn_mode     = w_btnU & w_sel_sw;
-    // (btnD & w_sel_sw 는 랩타임 옵션용 — 이 참고 구현에는 없음)
+    // (btnD & w_sel_sw 는 랩타임 옵션용 — 이 판에는 없음)
 
     assign w_wt_btn_right = w_btnR & w_sel_wt;
     assign w_wt_btn_left  = w_btnL & w_sel_wt;
