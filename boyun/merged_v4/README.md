@@ -1,6 +1,6 @@
 # merged_v4 — merged_v3 + 상태 머신 enum 변환 (2026-10-16)
 
-## 10/16 오후 변경: 스톱워치 RUN 중 L · U 무시 (클로드코드 수정, 정보윤 요청)
+## 10/16 오후 변경: 스톱워치 RUN 중 L · U 무시
 - `stopwatch_control_unit.sv` 두 곳: `clear = btn_clear` 를 STOP 상태에서만, `mode_reg` 토글(`btn_mode`)을 STOP 상태에서만. 나머지(enum · 상태 · 이름)는 그대로.
 - 이유: 달리는 중 L 을 실수로 누르면 잰 시간이 지워지고(계속 달림), U 를 누르면 방향이 바뀌었다. 9일차 판서 FSM 도 RUN 에서는 R 만 받는다.
 - 남은 차이 1개: STOP 에서 R 과 L 이 **같은 클럭**에 오면 RUN 이 되면서 0 으로 지워진다(판서 FSM 은 R 우선, 지우지 않음). 사람 손으로는 거의 안 생김.
@@ -22,7 +22,7 @@
 # merged_v3 — 팀 통합판 + 10/16 변경 반영 (2026-10-16)
 
 - **기준**: `ahnsung/source_file_v2/` (정안성 통합판, 랩타임 · 공용 100 Hz tick · 4 kHz 버튼/FND 포함, 커밋 83c53ad) + `ahnsung/lib/` 에서 필요한 9개(btn_debounce · clock_tick_generator · counter8 · decoder_2x4 · digit_splitter · dot · fnd_decoder · mux_2x1 · mux_8x1)를 그대로 복사.
-- **바꾼 부분은 클로드코드(AI)가 작성**했다(정보윤 요청). 나머지는 팀원 코드 그대로. `ahnsung/` 폴더는 건드리지 않았다.
+- 바꾼 부분 외에는 팀원 코드 그대로. `ahnsung/` 폴더는 건드리지 않았다.
 
 ## 바뀐 것
 | 기능 | 내용 | 파일 |

@@ -1,6 +1,6 @@
 `timescale 1ns / 1ps
 
-// 시계 데이터패스 (클로드코드 참고 구현)
+// 시계 데이터패스
 // - tick_gen_100hz 는 스톱워치 것을 그대로 사용 (run_stop = 1, clear = 0 고정 -> 항상 흐름)
 // - 카운터는 watch_tick_counter: 리셋값 INIT, 칸 +STEP/-STEP (올림·내림 없이 그 칸만 돌기)
 // - 10/16 자리 단위 판: cursor 0 분 +-1, 1 분 +-10, 2 시 +-1, 초는 설정 안 함

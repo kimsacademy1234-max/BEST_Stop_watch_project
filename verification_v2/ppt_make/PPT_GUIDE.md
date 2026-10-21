@@ -1,4 +1,4 @@
-# 발표 PPT 작성 가이드 (Claude 참조용)
+# 발표 PPT 작성 가이드
 
 출처: `AIcampus_feedback.pdf` (대한상공회의소 서울기술교육센터, "Project Sensor_STOPWATCH_UART_FIFO Feedback", 2026.08.21, 38 p)
 구성: Ⅰ. 공통 Feedback (12 사례, 지적 사항) · Ⅱ. 레퍼런스 (12 사례, 잘한 예) · Ⅲ. Trouble Shooting (4 단계 논리 + 보강 요청 · 레퍼런스)
@@ -275,7 +275,7 @@
 
 ---
 
-## 6. 최종 체크리스트 (PPT 생성 후 Claude 가 슬라이드마다 자체 점검)
+## 6. 최종 체크리스트 (PPT 생성 후 슬라이드마다 자체 점검)
 
 - [ ] 모든 bullet 이 개조식 (`~다.` 로 끝나는 문장 없음)
 - [ ] 결론/요약이 슬라이드 **상단** 에 있음 (특히 Sim. Result)

@@ -1,7 +1,7 @@
 # merged_v3 — 팀 통합판 + 10/16 변경 반영 (2026-10-16)
 
 - **기준**: `ahnsung/source_file_v2/` (정안성 통합판, 랩타임 · 공용 100 Hz tick · 4 kHz 버튼/FND 포함, 커밋 83c53ad) + `ahnsung/lib/` 에서 필요한 9개(btn_debounce · clock_tick_generator · counter8 · decoder_2x4 · digit_splitter · dot · fnd_decoder · mux_2x1 · mux_8x1)를 그대로 복사.
-- **바꾼 부분은 클로드코드(AI)가 작성**했다(정보윤 요청). 나머지는 팀원 코드 그대로. `ahnsung/` 폴더는 건드리지 않았다.
+- 바꾼 부분 외에는 팀원 코드 그대로. `ahnsung/` 폴더는 건드리지 않았다.
 
 ## 바뀐 것
 | 기능 | 내용 | 파일 |

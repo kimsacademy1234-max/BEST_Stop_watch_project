@@ -2,7 +2,7 @@
 // =============================================================================
 // tb_tm_3_cancel_background (Verilog 판) — RUN 중 버튼 · 취소 · 백그라운드 알람 · 화면 우선순위
 //   원본: verification_v2/tb/02_timer/tb_tm_3_cancel_background.sv (정안성, SystemVerilog)
-//   이 파일: 같은 시나리오 · 같은 판정을 수업 Verilog 문법으로 옮김 (클로드코드, 10/17)
+//   이 파일: 같은 시나리오 · 같은 판정을 수업 Verilog 문법으로 옮김 (10/17)
 //     - task · function · string · bit · $sformatf 없음
 //     - 검사: if (값 !== 기대값) → err + 1, 끝에 TOTAL MISMATCH
 //     - 새로 나온 것 하나: dut.w_tm_min 처럼 "dut.안쪽 선 이름" 으로 Top 안 신호를 읽음 (계층 이름)

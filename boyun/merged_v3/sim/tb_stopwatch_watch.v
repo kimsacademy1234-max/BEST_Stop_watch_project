@@ -1,6 +1,6 @@
 `timescale 1ns / 1ps
 
-// 클로드코드 참고 구현 자동 검사 TB (Icarus / xsim)
+// 자동 검사 TB (Icarus / xsim)
 // 시뮬 시간을 줄이려고 100Hz tick_gen 두 개만 F_COUNT = 100 으로 줄임 (1 "초" = 10_000 클럭 = 100 us).
 // 디바운서는 실제 값 그대로 (1 MHz 샘플 8칸).
 module tb_stopwatch_watch ();

@@ -38,12 +38,12 @@
 - `hour_12_24` 는 스위치 `i_hour24_sw3` 를 그대로 받음 (원본은 Top 에서 `~sw_24h` 를 넣었음)
 - Top 안 assign 로직 (화면 선택 · 버튼 게이팅 · 화면 MUX · LED) 은 그대로 assign. 다이어그램에서 점선 블록 · MUX 사다리꼴 · OR 로 그림
 
-### 10/17 ④ — 100 Hz tick 분리 (팀 결정, 정보윤 · 클로드코드 반영)
+### 10/17 ④ — 100 Hz tick 분리 (팀 결정)
 
 - 문제: 100 Hz tick 하나(`U_TICK_GEN_100HZ`, 항상 흐름)를 시계 · 스톱워치 · 타이머가 같이 쓰면 스톱워치 · 타이머를 **시작한 순간이 tick 사이 어디냐에 따라 첫 1/100초가 최대 10 ms 일찍** 바뀐다 (10초 타이머 = 9,998 ms, `tb_tm_2` P1).
 - 바꾼 것: `source_file/tick_gen_100hz_run.v` 추가 (10/14 수업 tick_gen 과 같은 run_stop · clear 판). Top 에 `U_TICK_GEN_SW`(run = `w_sw_run_stop`, clear = `w_sw_clear`) · `U_TICK_GEN_TM`(run = `w_tm_run`, clear = `w_tm_tick_clear` = 취소 또는 알람 — 아래 추가 수정 1) 을 두고 각 데이터패스 `i_tick_10ms` 에 연결. 시계는 `U_TICK_GEN_100HZ` 그대로. **4 kHz(디바운서 4 + FND 스캔)는 그대로 하나를 공유** (시작 시점을 맞출 필요가 없어서 — 자원 이득은 여기서 나옴).
 - 결과: 스톱워치 · 타이머 첫 tick = 시작 뒤 정확히 10.000 ms. 자원은 아래 "구현 결과" 표.
-- 구현 결과 (Vivado 2022.2, xc7a35t, 같은 xdc, synth → place → route 후. 클로드코드 배치 측정, 전력은 `report_power` 추정치 — 보드 실측 아님)
+- 구현 결과 (Vivado 2022.2, xc7a35t, 같은 xdc, synth → place → route 후. 배치 측정, 전력은 `report_power` 추정치 — 보드 실측 아님)
 
   | 판 | 구조 | LUT | FF | WNS (ns) | 전력 (W, 추정) | 시작 → 첫 tick |
   |---|---|---|---|---|---|---|

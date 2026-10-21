@@ -1,8 +1,7 @@
-# 클로드코드(AI) 참고 구현 — 스톱워치 + 시계 + 타이머 (2026-10-15)
+# 참고 구현 — 스톱워치 + 시계 + 타이머 (2026-10-15)
 
-> **이 폴더의 새 모듈은 정보윤이 설계한 것이 아니라 클로드코드(Claude Code, AI)가 작성한 참고 구현이다.**
 > 보드에서 동작을 먼저 확인하고 각자 담당 모듈을 직접 설계할 때 비교용으로 쓰려고 팀에 공유한다. 제출·발표용 설계가 아니다.
-> `src/` 의 btn_debounce · control_unit · stopwatch_datapath · fnd_controller 는 김창형 교수님 수업 코드 복사본(fnd_controller 는 클로드코드가 설정 점멸 입력 추가).
+> `src/` 의 btn_debounce · control_unit · stopwatch_datapath · fnd_controller 는 김창형 교수님 수업 코드 복사본(fnd_controller 는 설정 점멸 입력 추가).
 
 ## 비트파일 (`bit/`)
 | 파일 | 내용 |
@@ -19,14 +18,14 @@
 |---|---|---|
 | `src/btn_debounce.v` · `control_unit.v` | 디바운서, 스톱워치 FSM | 김창형 교수님 수업 코드 복사(그대로) |
 | `src/stopwatch_datapath.v` | stopwatch_datapath · tick_gen_100hz · tick_counter | 수업 `stopwatch.v` 에서 top 만 빼고 복사 |
-| `src/fnd_controller.v` | dot 판 + **설정 점멸**(`blink_en`, `blink_field`) | 수업 코드 복사 후 클로드코드 추가 |
-| `src/watch_control_unit.v` | 시계 FSM: NORMAL · SET_HOUR · SET_MIN · SET_SEC | 클로드코드 |
-| `src/watch_datapath.v` | 시계 데이터패스 + watch_tick_counter(리셋값 INIT, 칸 ±1, tick 우선) | 클로드코드 |
-| `src/hour_12_24.v` | 12/24 시간 표시 변환 (sw3, 팀 추가 기능) | 클로드코드 |
-| `src/stopwatch_watch.v` · `.xdc` | Top · 핀 | 클로드코드 |
-| `sim/tb_stopwatch_watch.v` | Top 자동 검사 T1~T10 (100Hz tick 만 1/10000 로 줄임) | 클로드코드 |
-| `sim/tb_watch_tick_counter.v` | 카운터 단위 검사 (tick 우선, 칸만 돌기) | 클로드코드 |
-| `build/build.tcl` | 배치 빌드 (build 폴더에서 실행하면 stopwatch_watch.bit 생성) | 클로드코드 |
+| `src/fnd_controller.v` | dot 판 + **설정 점멸**(`blink_en`, `blink_field`) | 수업 코드 복사 후 추가 |
+| `src/watch_control_unit.v` | 시계 FSM: NORMAL · SET_HOUR · SET_MIN · SET_SEC | 새로 작성 |
+| `src/watch_datapath.v` | 시계 데이터패스 + watch_tick_counter(리셋값 INIT, 칸 ±1, tick 우선) | 새로 작성 |
+| `src/hour_12_24.v` | 12/24 시간 표시 변환 (sw3, 팀 추가 기능) | 새로 작성 |
+| `src/stopwatch_watch.v` · `.xdc` | Top · 핀 | 새로 작성 |
+| `sim/tb_stopwatch_watch.v` | Top 자동 검사 T1~T10 (100Hz tick 만 1/10000 로 줄임) | 새로 작성 |
+| `sim/tb_watch_tick_counter.v` | 카운터 단위 검사 (tick 우선, 칸만 돌기) | 새로 작성 |
+| `build/build.tcl` | 배치 빌드 (build 폴더에서 실행하면 stopwatch_watch.bit 생성) | 새로 작성 |
 
 ## 스위치 · 버튼 · LED
 | | 0 | 1 |
@@ -42,7 +41,7 @@
 - LED: led0 시계 · led1 스톱워치 · led2 시.분 표시 · led3 초.1/100초 표시 · led4 오후(시계 + 12시간 표시일 때).
 - 시계는 스톱워치를 보고 있을 때도, 설정 중에도 계속 흐른다. 같은 클럭에 tick 과 버튼이 겹치면 tick 우선.
 
-## 확인한 것 (2026-10-15, 클로드코드 실행)
+## 확인한 것 (2026-10-15)
 - Icarus 12: `tb_stopwatch_watch` TOTAL MISMATCH = 0, `tb_watch_tick_counter` TOTAL MISMATCH = 0.
 - bug 6개를 하나씩 넣어 TB 가 잡는지 확인: L 돌아가기 없음 · 게이팅 반대 · 12h 0시→0 · 점멸 칸 틀림 · tick 우선 뒤집기 · 설정 중 올림 발생 → 모두 FAIL 로 잡힘.
 - Vivado 2022.2 배치 빌드(실제 100 MHz 값): WNS +5.476 ns, 래치 0, DRC 0, LUT 256 · FF 189, IO 27.

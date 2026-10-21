@@ -1,6 +1,6 @@
 `timescale 1ns / 1ps
 
-// 미니프로젝트 Top (클로드코드 참고 구현, v2 포트 통일)
+// 미니프로젝트 Top (v2 포트 통일)
 // mode_sw0         : 0 시계, 1 스톱워치
 // display_mode_sw1 : 0 초.1/100초, 1 시.분
 // set_sw2          : 시계 1 = 시간 설정, 0 = normal

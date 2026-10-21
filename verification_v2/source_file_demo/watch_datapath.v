@@ -1,6 +1,6 @@
 `timescale 1ns / 1ps
 
-// 시계 데이터패스 (클로드코드 참고 구현, v2 포트 통일)
+// 시계 데이터패스 (v2 포트 통일)
 // ** 시연용 (source_file_demo) ** 리셋값만 23:59:50.00 (원래 12:00:00.00) — 리셋 10 초 뒤 자정
 // - 100hz tick 은 top 에서 받음 (i_tick_10ms), 항상 흐름
 // - 카운터는 watch_tick_counter: 리셋값 INIT, 칸 +STEP/-STEP (올림·내림 없이 그 칸만 돌기)

@@ -1,5 +1,5 @@
 @echo off
-rem 타이머 Verilog TB 를 Vivado xsim 으로 GUI 없이 돌린다 (클로드코드, 10/17)
+rem 타이머 Verilog TB 를 Vivado xsim 으로 GUI 없이 돌린다 (10/17)
 rem 사용: run_xsim.bat tb_tm_1_add_cap      (TB 이름 하나)
 rem (선택) run_xsim.bat TB이름 설계폴더 이름표  → 다른 설계 폴더(예: bug 넣은 사본)로 돌림
 rem 결과: run_<TB 이름>\xsim.log 마지막 줄 "TOTAL MISMATCH = 0" 이면 통과

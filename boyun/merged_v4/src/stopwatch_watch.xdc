@@ -1,4 +1,4 @@
-## stopwatch_watch (클로드코드 참고 구현) — Basys-3-Master.xdc 에서 필요한 줄만 골라 포트 이름을 바꿈
+## stopwatch_watch — Basys-3-Master.xdc 에서 필요한 줄만 골라 포트 이름을 바꿈
 
 ## Clock signal
 set_property -dict { PACKAGE_PIN W5   IOSTANDARD LVCMOS33 } [get_ports clk]

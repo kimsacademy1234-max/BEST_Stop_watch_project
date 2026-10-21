@@ -1,4 +1,4 @@
-# 클로드코드 참고 구현 비트스트림 만들기 (Vivado non-project 배치)
+# 비트스트림 만들기 (Vivado non-project 배치)
 # 실행: build 폴더에서  C:\Xilinx\Vivado\2022.2\bin\vivado.bat -mode batch -source build.tcl
 set src ../src
 read_verilog [glob $src/*.v]

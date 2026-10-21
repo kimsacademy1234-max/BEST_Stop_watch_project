@@ -9,7 +9,7 @@ module fnd_controller #(
     input                       clk,
     input                       rst,
     input                       sw_display_mode,
-    input                       blink_en,     // 1 = 시계 설정 중 (클로드코드 추가)
+    input                       blink_en,     // 1 = 시계 설정 중
     input  [               1:0] blink_field,  // 점멸할 자리(시.분 화면 AN 번호): 0 분 일, 1 분 십, 2 시 일, 3 없음
     input  [MSEC_BIT_WIDTH-1:0] msec,
     input  [ SEC_BIT_WIDTH-1:0] sec,
@@ -89,7 +89,7 @@ module fnd_controller #(
         .msec(msec),
         .dot_onoff(w_dot_onoff)
     );
-    // 설정 점멸 (클로드코드 추가): dot 과 같은 타이밍(msec >= 50)에 고르는 칸 두 자리를 4'hf(다 끔)로
+    // 설정 점멸: dot 과 같은 타이밍(msec >= 50)에 고르는 칸 두 자리를 4'hf(다 끔)로
     // 10/16 자리 단위 판: 한 자리만 끔. 초 · 시 십의 자리는 설정 대상이 아니라 안 끔
     assign w_blank_sec  = 1'b0;
     assign w_blank_min  = blink_en & (blink_field == 2'd0) & w_dot_onoff;  // 분 일
