@@ -1,7 +1,5 @@
 
 
-
-
 `timescale 1ns / 1ps
 
 
@@ -44,12 +42,17 @@ DUT_FIFO(
 
 
 always #5 i_clk = ~i_clk; 
-
+integer pass_cnt;
+integer fail_cnt;
 integer i;
 initial begin
 
 i_clk =0 ; i_reset =1; push =0; pop =0; push_data =0;
 push_cnt = 0; pop_cnt = 0;
+
+pass_cnt = 0;
+fail_cnt = 0;
+
 
 @(negedge i_clk);
 @(negedge i_clk);
@@ -103,15 +106,16 @@ push_cnt = 0; pop_cnt = 0;
 		@(negedge i_clk);
 
 			pop = 1'b1;
-			if(pop_data == compare_buffer[pop_cnt])begin
-				$display("%t : pass pop data",$stime);
+			if(!empty)begin
+				if(pop_data == compare_buffer[pop_cnt])begin
+					$display("%t : pass pop data",$stime);
+				end
+				
+				else begin
+					$display("%t : fail pop data",$stime);
+				end
+				pop_cnt = pop_cnt + 1;
 			end
-			
-			else begin
-				$display("%t : fail pop data",$stime);
-			end
-			pop_cnt = pop_cnt + 1;
-
 
 	end
 	// empty state is '1' - pop을 4번 했으므로 
@@ -164,13 +168,67 @@ push_cnt = 0; pop_cnt = 0;
 
 	end
 
-
-	#100;
-
-	$finish;
-
+//////////////////////////////////////////////////////////////////////////////
+// randome test 
+///////////////////////////////////////////////////////////////////////////
 
 
+
+	
+		@(negedge i_clk);
+			push = 1'b0;
+			pop  = 1'b1;
+			pop_cnt = pop_cnt +1 ;
+			
+		@(negedge i_clk);
+			pop =1'b0;
+		@(negedge i_clk);
+
+	for(i=0; i<256; i= i+1)begin	
+		@(negedge i_clk);
+
+		push  =$random()%2;
+		pop   =$random()%2;
+		push_data = $random()%256;
+
+		if(push&(!full))begin
+			compare_buffer[push_cnt] =push_data;
+			push_cnt = push_cnt + 1 ; 
+		end
+		
+		
+		if(pop&(!empty))begin
+
+			if(pop_data == compare_buffer[pop_cnt])begin
+				$display("%t :Random test pass pop data",$stime);
+				pass_cnt = pass_cnt +1;
+			end
+				
+			else begin
+					$display("%t : Random test fail pop data",$stime);
+					fail_cnt =fail_cnt +1;
+			end
+
+			pop_cnt = pop_cnt + 1 ; 
+		end
+
+
+	end
+		
+		#10;
+		
+		
+	$display("*** random result ***");	
+	$display("total random test  =%d", i);	
+	$display("pass count =%d", pass_cnt);
+	$display("fail count =%d", fail_cnt);
+			
+
+
+		#10;
+		$finish;
+
+		
 
 end
 
