@@ -1,4 +1,7 @@
 
+
+
+
 `timescale 1ns / 1ps
 
 
@@ -54,17 +57,17 @@ push_cnt = 0; pop_cnt = 0;
 	i_reset =0;
 	@(negedge i_clk);
 	if(full == 0)begin
-		$display("%t :pass full signal", $stime);
+		$display("%t :ass full signal", $stime);
 	end else begin
 		
-		$display("%t :fail full signal", $stime);
+		$display("%t :ail full signal", $stime);
 	end
 
 	if(empty == 1)begin
-		$display("%t :pass empty signal", $stime);
+		$display("%t :ass empty signal", $stime);
 	end else begin
 		
-		$display("%t :fail empty signal", $stime);
+		$display("%t :ail empty signal", $stime);
 	end
 
 	#10;
@@ -100,13 +103,12 @@ push_cnt = 0; pop_cnt = 0;
 		@(negedge i_clk);
 
 			pop = 1'b1;
-
 			if(pop_data == compare_buffer[pop_cnt])begin
-				$display("%t : pass pop data : %d ",$stime,pop_data);
+				$display("%t : pass pop data",$stime);
 			end
 			
 			else begin
-				$display("%t : fail pop data = %d, compare data = %d ",$stime,pop_data,compare_buffer[pop_cnt]);
+				$display("%t : fail pop data",$stime);
 			end
 			pop_cnt = pop_cnt + 1;
 
@@ -128,8 +130,39 @@ push_cnt = 0; pop_cnt = 0;
 	@(negedge i_clk);
 			pop = 1'b0;
 
+/////////////////////////////////////////////////////////////////////////////////
+// 마지막 시나리오 : 4 push_pop 5time
+/////////////////////////////////////////////////////////////////////////////////
 
 
+
+	for(i=0; i<5;i=i+1)begin
+
+		@(negedge i_clk);
+			push = 1'b1;
+			push_data = 8'h0f - i;
+
+			if(!full)begin
+				compare_buffer[push_cnt] = push_data;
+				push_cnt = push_cnt +1;
+			end
+			
+			pop = 1'b1;
+
+			if(!empty) begin
+
+				if(pop_data == compare_buffer[pop_cnt])begin
+					$display("%t : pass pop data",$stime);
+				end
+				
+				else begin
+					$display("%t : fail pop data",$stime);
+				end
+				pop_cnt = pop_cnt + 1;
+
+			end
+
+	end
 
 
 	#100;
@@ -140,12 +173,6 @@ push_cnt = 0; pop_cnt = 0;
 
 
 end
-
-
-
-
-
-
 
 
 endmodule
