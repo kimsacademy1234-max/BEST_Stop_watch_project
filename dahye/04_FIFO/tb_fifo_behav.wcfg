@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="tb_fifo_behav.wdb" id="1">
+         <top_modules>
+            <top_module name="glbl" />
+            <top_module name="tb_fifo" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <zoom_setting>
+      <ZoomStartTime time="0fs"></ZoomStartTime>
+      <ZoomEndTime time="204201fs"></ZoomEndTime>
+      <Cursor1Time time="105fs"></Cursor1Time>
+   </zoom_setting>
+   <column_width_setting>
+      <NameColumnWidth column_width="316"></NameColumnWidth>
+      <ValueColumnWidth column_width="131"></ValueColumnWidth>
+   </column_width_setting>
+   <WVObjectSize size="10" />
+   <wave_markers>
+      <marker time="40000" label="" />
+      <marker time="50000" label="" />
+      <marker time="60000" label="" />
+      <marker time="70000" label="" />
+      <marker time="80000" label="" />
+      <marker time="90000" label="" />
+   </wave_markers>
+   <wvobject fp_name="/tb_fifo/i_clk" type="logic">
+      <obj_property name="ElementShortName">i_clk</obj_property>
+      <obj_property name="ObjectShortName">i_clk</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_fifo/i_reset" type="logic">
+      <obj_property name="ElementShortName">i_reset</obj_property>
+      <obj_property name="ObjectShortName">i_reset</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_fifo/push" type="logic">
+      <obj_property name="ElementShortName">push</obj_property>
+      <obj_property name="ObjectShortName">push</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_fifo/pop" type="logic">
+      <obj_property name="ElementShortName">pop</obj_property>
+      <obj_property name="ObjectShortName">pop</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_fifo/push_data" type="array">
+      <obj_property name="ElementShortName">push_data[7:0]</obj_property>
+      <obj_property name="ObjectShortName">push_data[7:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_fifo/pop_data" type="array">
+      <obj_property name="ElementShortName">pop_data[7:0]</obj_property>
+      <obj_property name="ObjectShortName">pop_data[7:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_fifo/full" type="logic">
+      <obj_property name="ElementShortName">full</obj_property>
+      <obj_property name="ObjectShortName">full</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_fifo/empty" type="logic">
+      <obj_property name="ElementShortName">empty</obj_property>
+      <obj_property name="ObjectShortName">empty</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_fifo/DUT_FIFO/U_REG_FILE/register_file" type="array">
+      <obj_property name="ElementShortName">register_file[0:3][7:0]</obj_property>
+      <obj_property name="ObjectShortName">register_file[0:3][7:0]</obj_property>
+      <obj_property name="isExpanded"></obj_property>
+   </wvobject>
+   <wvobject fp_name="group308" type="group">
+      <obj_property name="label">TB_Mon</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="isExpanded"></obj_property>
+   </wvobject>
+</wave_config>
