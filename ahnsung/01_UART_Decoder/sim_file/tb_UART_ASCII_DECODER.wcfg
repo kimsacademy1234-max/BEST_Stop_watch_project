@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="tb_UART_ASCII_DECODER_behav.wdb" id="1">
+         <top_modules>
+            <top_module name="glbl" />
+            <top_module name="tb_UART_ASCII_DECODER" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <zoom_setting>
+      <ZoomStartTime time="23360400fs"></ZoomStartTime>
+      <ZoomEndTime time="23465634fs"></ZoomEndTime>
+      <Cursor1Time time="23484921fs"></Cursor1Time>
+   </zoom_setting>
+   <column_width_setting>
+      <NameColumnWidth column_width="180"></NameColumnWidth>
+      <ValueColumnWidth column_width="106"></ValueColumnWidth>
+   </column_width_setting>
+   <WVObjectSize size="16" />
+   <wvobject fp_name="/tb_UART_ASCII_DECODER/tname" type="array">
+      <obj_property name="ElementShortName">tname[127:0]</obj_property>
+      <obj_property name="ObjectShortName">tname[127:0]</obj_property>
+      <obj_property name="Radix">ASCIIRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_UART_ASCII_DECODER/clk" type="logic">
+      <obj_property name="ElementShortName">clk</obj_property>
+      <obj_property name="ObjectShortName">clk</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_UART_ASCII_DECODER/reset" type="logic">
+      <obj_property name="ElementShortName">reset</obj_property>
+      <obj_property name="ObjectShortName">reset</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_UART_ASCII_DECODER/i_enable" type="logic">
+      <obj_property name="ElementShortName">i_enable</obj_property>
+      <obj_property name="ObjectShortName">i_enable</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_UART_ASCII_DECODER/i_ascii" type="array">
+      <obj_property name="ElementShortName">i_ascii[7:0]</obj_property>
+      <obj_property name="ObjectShortName">i_ascii[7:0]</obj_property>
+      <obj_property name="Radix">ASCIIRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_UART_ASCII_DECODER/o_pop" type="logic">
+      <obj_property name="ElementShortName">o_pop</obj_property>
+      <obj_property name="ObjectShortName">o_pop</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_UART_ASCII_DECODER/sender_busy" type="logic">
+      <obj_property name="ElementShortName">sender_busy</obj_property>
+      <obj_property name="ObjectShortName">sender_busy</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_UART_ASCII_DECODER/U_ASCII_DECODER/c_state" type="array">
+      <obj_property name="ElementShortName">c_state[3:0]</obj_property>
+      <obj_property name="ObjectShortName">c_state[3:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_UART_ASCII_DECODER/U_ASCII_DECODER/done_cnt" type="array">
+      <obj_property name="ElementShortName">done_cnt[2:0]</obj_property>
+      <obj_property name="ObjectShortName">done_cnt[2:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_UART_ASCII_DECODER/o_handshake" type="logic">
+      <obj_property name="ElementShortName">o_handshake</obj_property>
+      <obj_property name="ObjectShortName">o_handshake</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_UART_ASCII_DECODER/o_error" type="logic">
+      <obj_property name="ElementShortName">o_error</obj_property>
+      <obj_property name="ObjectShortName">o_error</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_UART_ASCII_DECODER/o_get" type="logic">
+      <obj_property name="ElementShortName">o_get</obj_property>
+      <obj_property name="ObjectShortName">o_get</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_UART_ASCII_DECODER/o_mode" type="logic">
+      <obj_property name="ElementShortName">o_mode</obj_property>
+      <obj_property name="ObjectShortName">o_mode</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_UART_ASCII_DECODER/o_btn" type="logic">
+      <obj_property name="ElementShortName">o_btn</obj_property>
+      <obj_property name="ObjectShortName">o_btn</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_UART_ASCII_DECODER/o_auto" type="logic">
+      <obj_property name="ElementShortName">o_auto</obj_property>
+      <obj_property name="ObjectShortName">o_auto</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_UART_ASCII_DECODER/o_ascii" type="array">
+      <obj_property name="ElementShortName">o_ascii[39:0]</obj_property>
+      <obj_property name="ObjectShortName">o_ascii[39:0]</obj_property>
+      <obj_property name="Radix">ASCIIRADIX</obj_property>
+   </wvobject>
+</wave_config>
