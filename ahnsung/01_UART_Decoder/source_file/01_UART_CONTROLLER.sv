@@ -15,20 +15,18 @@ module 01_UART_CONTROLLER#(
     input  i_pop,
     input  i_handshake,
 
-    input  i_get,
-    input  i_btn,
+    input  i_get, // get mode 
+    input  i_btn, //btn 
 
     input  i_mode, // stopwatch / watch / timer / 거리/ 온습도 
-    input  i_auto,
+    input  i_auto, // 1-> 유지 다음 1 -> 0
 
-    input  i_set
+    input  i_set, //시간 세팅 assert 
 
 
     output [3:0] o_fnd_sel, //FND 출력    
     output [23:0] o_fnd_data,
-    
-    
-    
+
 
 );
 
