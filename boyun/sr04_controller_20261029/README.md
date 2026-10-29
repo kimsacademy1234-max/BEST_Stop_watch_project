@@ -39,6 +39,10 @@ btnR → btn_debounce → sr04_controller (i_start)
 - **ILA 없이 쓰려면** 그 인스턴스 (33 ~ 40 줄) 를 지우거나 주석 처리. 쓰려면 IP Catalog → ILA 를 위 설정으로 만들거나 이 xci 를 Add Sources 로 추가
 - TB 시뮬레이션 때도 ILA 인스턴스는 주석 처리하는 게 안전
 
+## ILA 보드 파형 (10/29)
+
+`ila/README.md` : 상태 천이 5 개 · trig 11.01 µs · echo → DIST 3 / 2 샘플 · 거리 3 점 (ILA echo 폭 ÷ 58 = FND) 정리 + 캡처 13 장
+
 ## 보드 결과 (10/29)
 
 | 확인 | 결과 |
