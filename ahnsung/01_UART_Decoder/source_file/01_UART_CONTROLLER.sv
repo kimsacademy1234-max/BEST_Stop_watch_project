@@ -10,10 +10,13 @@ module UART_CONTROLLER#(
         )(
     
 
+
+	input i_error, // 디코더에서 보내는 에러 시호 
+	input [23:0] i_for_sender_data,
+	input i_handshake,
 	input i_sender_busy,
     input i_clk, i_reset,
     input [DATA_WIDTH-1 :0] i_con_ascii,
-    input  i_handshake,
 
 
     input  i_get, // get mode 
@@ -25,18 +28,15 @@ module UART_CONTROLLER#(
 	input  i_off_set, // set 기능 끄기 switch 역할 
 	input  i_set,
 
-	output o_error,
 	output [6:0] o_module_control_bit, // switch 기능 
 
 
 	output [2:0] o_send_sel, // sender로 데이터가 무슨 데이터인지
 							// auto mode 시 0.25s 간격으로 업데이트 
-    output [2:0] o_fnd_sel, //FND 출력 
-    output [23:0] o_fnd_data,
-	
+    
 
-
-	output o_sender_go,
+	output [23:0] o_sender_data,
+	output o_sender_go, // 
 
 
 	output o_uart_R,
@@ -48,17 +48,45 @@ module UART_CONTROLLER#(
 
 
 
-assign o_uart_R = (i_con_ascii == "000R")? 1:0;
-assign o_uart_L = (i_con_ascii == "000L")? 1:0;
-assign o_uart_U = (i_con_ascii == "000U")? 1:0;
-assign o_uart_D = (i_con_ascii == "000D")? 1:0;
-
 
 
 
 reg [DATA_WIDTH -1 :0] c_con_ascii,n_con_ascii;
 reg [6:0] c_module_control_bit, n_module_control_bit;
-reg [2:0] c_fnd_sel,n_fnd_sel;
+
+
+reg [2:0] c_sender_sel,n_sender_sel;
+reg c_sender_go, n_sender_go; 
+
+reg c_btn_R,n_btn_R;
+reg c_btn_L,n_btn_L;
+reg c_btn_U,n_btn_U;
+reg c_btn_D,n_btn_D;
+
+
+
+assign o_send_sel =(i_error == 1'b1) ? 3'd7 : c_sender_sel;
+
+
+
+
+
+
+typedef enum{
+
+
+	AUTO_IDLE,
+	AUTO_ALL,
+	AUTO_OFF,
+	AUTO_SW,
+	AUTO_TM,
+	AUTO_WH
+
+
+}state_auto;
+
+state_auto c_auto_state,n_auto_state;
+
 
 
 
@@ -72,7 +100,7 @@ MODE = 1
 
 
 
-state_m mode_state,n_mode_state;
+state_m c_mode_state,n_mode_state;
 
 
 
@@ -84,33 +112,40 @@ always@(posedge i_clk, posedge i_reset)begin
 	if(i_reset)begin
 		
 		c_mode_state <= MODE_IDLE;
-		c_fnd_sel	<= 3'd1;
 		c_con_ascii <= 0; 
 		c_module_control_bit <= 7'b000_0000;
-
+//auto 
+		c_auto_state <= AUTO_IDLE;
+		c_sender_go <= 0;		
+		c_sender_sel <= 0;	
 	end
 
 	else begin
 
 		c_mode_state <=  n_mode_state;
-		c_fnd_sel <= n_fnd_sel;
 		c_con_ascii  <=  n_con_ascii;
 		c_module_control_bit <= n_module_control_bit;
-	
+//auto
+
+
+		c_auto_state <= n_auto_state;
+		c_sender_go <= n_sender_go;		
+		c_sender_sel <= n_sender_sel;
+
+
 	end
 
 end
 
-
+/////////////////////////////////////////////////////// mode //////////////////////////////////////////
 always@(*)begin
 
 		
 		n_mode_state  =  c_mode_state;
-		n_fnd_sel 	  =  c_fnd_sel;
 		n_con_ascii   =  c_con_ascii;
 		n_module_control_bit  = c_module_control_bit;
 
-		case(mode_state)
+		case(c_mode_state)
 
 		MODE_IDLE : begin
 
@@ -122,91 +157,61 @@ always@(*)begin
 	
 		MODE : begin
 
-			if(i_hanshake)begin
+				if(i_handshake)begin
+					
+					if(i_mode)begin					
+					case(i_con_ascii)
 
-				case(i_con_ascii)
+					"w_hm" : begin
+							n_module_control_bit = 7'b0000_010;
+						   end 
+					
+					"w_ms" : begin
+							n_module_control_bit = 7'b0000_000;
+						   end
+					
+					
+					"t_hm" : begin
+							n_module_control_bit = 7'b0010_010;
+						   end
+					"t_ms" :  begin
+							n_module_control_bit = 7'b0010_000;
+							end
+					
+					"s_hm" :  begin
+							n_module_control_bit = 7'b0000_011;
+							end
+					
+					"s_ms"  :  begin
+							n_module_control_bit = 7'b0000_001;
+							end
 
-				"w_hm" : begin
-						n_module_control_bit = 7'b0000_010;
-					   end 
-				
-				"w_ms" : begin
-						n_module_control_bit = 7'b0000_000;
-					   end
-				
-				
-				"t_hm" : begin
-						n_module_control_bit = 7'b0010_010;
-					   end
-				"t_ms" :  begin
-					 	n_module_control_bit = 7'b0010_000;
-						end
-				
-				"s_hm" :  begin
-					 	n_module_control_bit = 7'b0000_011;
-						end
-				
-				"s_ms"  :  begin
-					 	n_module_control_bit = 7'b0000_001;
-						end
+					"dist"  :  begin
+							n_module_control_bit = 7'b0100_000;
+							end
 
-				"dist"  :  begin
-					 	n_module_control_bit = 7'b1000_000;
-						end
-
-				"temp"  :  begin
-					 	n_module_control_bit = 7'b1100_001;
-						end
-
-
-
-				endcase
+					"temp"  :  begin
+							n_module_control_bit = 7'b1000_000;
+							end
 
 
+					endcase
 
+					end
+
+					else if(i_set&&(c_module_control_bit == 7'b0000_010)) n_module_control_bit = 7'b0000_110;
+					else if(i_off_set&& c_module_control_bit == 7'b0000_110) n_module_control_bit = 7'b0000_010;
+
+				end
 
 			end
-				
-				
-			
-			
-		
-			
-			
-		
-		
-
-
-
-		end
-
-
-
-
-
 
 		endcase
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 end
 
 
-
+////////////////////////////////  auto /////////////////////////////////////////////
 
 
 
