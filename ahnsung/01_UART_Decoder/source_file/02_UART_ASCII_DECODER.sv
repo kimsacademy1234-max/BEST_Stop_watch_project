@@ -332,6 +332,13 @@ always@(*)begin
                     endcase
                 end
 
+                else if(get_state)begin
+
+                    if(i_ascii == CR || i_ascii == LF) done = 1;
+                    else bad = 1;
+                end
+
+
                 else if(auto_state||off_state)begin
 
                     if(i_ascii == CR || i_ascii == LF)begin
