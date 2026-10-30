@@ -1,6 +1,7 @@
 # Vivado generated project and build artifacts (recreate with create_project.tcl)
 /vivado/
 /output/
+/.github-sync/
 /.Xil/
 *.jou
 *.log
