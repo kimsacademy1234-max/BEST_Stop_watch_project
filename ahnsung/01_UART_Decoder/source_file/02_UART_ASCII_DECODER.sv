@@ -11,7 +11,6 @@ module UART_ASCII_DECODER#(
     input i_clk,i_reset,
     input[BIT_WIDTH-1:0] i_ascii,
     input i_enable,
-    input i_sender_busy,
     output o_error,
     output o_pop,
     output o_handshake,
