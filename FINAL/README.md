@@ -117,13 +117,13 @@ merge_final_top
 | 버튼 디바운스 | 4 kHz 로 8 번 샘플, 8 개 모두 1 이면 눌림 (약 2 ms) → 1 클럭 펄스 |
 | FND 스캔 | 4 kHz 마다 한 칸, 8 칸 (숫자 4 + 빈칸 · 점 4), 한 바퀴 2 ms |
 | UART | 9600 bps, 8N1, 16 배 오버샘플링, RX FIFO 8 칸, TX FIFO 64 칸 |
-| UART 자동 전송 | 5 Hz (`AUTO_FRQ`), 전송 중이면 차례를 저장했다가 바로 이어서 보냄 |
+| UART 자동 전송 | 1 Hz (`AUTO_FRQ`), 전송 중이면 차례를 저장했다가 바로 이어서 보냄 |
 | 스톱워치 | 1/100 초 단위, 최대 23:59:59.99, 업 / 다운, 랩 |
 | 시계 | 1/100 초 단위, 12 / 24 시간 표시, 시 · 분 설정 (커서 점멸) |
 | 타이머 | 분 · 초 표시 (최대 59:59), +10 초 · +1 분 · +10 분, 0 이 되면 알람 (LED 전체 0.5 초 점멸) |
 | SR04 거리 | 0 ~ 400 cm, 0.1 cm 단위 표시, 측정 주기 60 ms (자동), echo 대기 30 ms 넘으면 NO_ECHO |
 | DHT11 온습도 | 습도 %RH · 온도 ℃ 정수, 전원 / 리셋 뒤 1 s 대기, 측정 간격 2 s (자동 측정 주기) |
-| 센서 핀 | SR04 trig = JA1, echo = JA2 / DHT11 data = JA3 (PULLUP, 외부 5 kΩ 권장) |
+| 센서 핀 | SR04 trig = JA1, echo = JA2 / DHT11 data = JXADC3 (M2, PULLUP, 외부 5 kΩ 권장) |
 
 ---
 
@@ -152,7 +152,7 @@ merge_final_top
 |---|---|
 | mode FSM | `/mod xxxx` → `module_control_bit` 갱신, `/set` · `/off` (시계 설정, 12/24 시간) |
 | `o_uart_mode` | 정상 `/mod` 를 한 번이라도 받으면 1 (리셋 전까지) → Top 이 스위치 대신 UART 값 사용 |
-| auto FSM | `/auto` → 5 Hz 마다 sel 갱신 + go, `/get` → 지금 모드 sel + go |
+| auto FSM | `/auto` → 1 Hz 마다 sel 갱신 + go, `/get` → 지금 모드 sel + go |
 | error | 디코더 error → sel 7 (ERROR) 을 최우선으로 전송, sender 가 바쁘면 저장했다가 전송 |
 | 전송 대기 | sender 바쁠 때 온 get / auto 차례를 저장 → 끝나면 바로 전송 (데이터 안 빠짐) |
 | `/btn` | 물리 버튼이 들어온 클럭에는 UART 버튼을 저장, 물리 버튼 끝난 클럭에 출력 |
@@ -215,7 +215,7 @@ FSM : `IDLE → START (LOW 18 ms) → WAIT (30 us) → SYNC_L → SYNC_H → {DA
 | out | `tx` | 1 | A18 | USB-UART FPGA → PC |
 | out | `trig` | 1 | J1 (JA1) | SR04 TRIG |
 | in | `echo` | 1 | L2 (JA2) | SR04 ECHO |
-| inout | `dht11_io` | 1 | J2 (JA3) | DHT11 DATA (PULLUP) |
+| inout | `dht11_io` | 1 | M2 (JXADC3) | DHT11 DATA (PULLUP) |
 | out | `fnd_com` | 4 | U2 U4 V4 W4 | FND 자리 선택 (active-low) |
 | out | `fnd_font` | 8 | W7 W6 U8 V8 U5 V5 U7 V7 | FND 세그먼트 `{dp,g,f,e,d,c,b,a}` (active-low) |
 | out | `led` | 16 | U16 … L1 | LED |
@@ -224,15 +224,18 @@ FSM : `IDLE → START (LOW 18 ms) → WAIT (30 us) → SYNC_L → SYNC_H → {DA
 
 ![Basys3 핀 연결](docs/basys3_pinmap.png)
 
-### 센서 배선 (Pmod JA)
+### 센서 배선 (Pmod JA · JXADC)
 
 | Pmod 핀 | FPGA 핀 | 연결 | 비고 |
 |---|---|---|---|
 | JA1 | J1 | SR04 **TRIG** | FPGA → 센서 |
 | JA2 | L2 | SR04 **ECHO** | 센서 → FPGA. 센서 출력이 5 V 면 분압 저항으로 3.3 V 로 낮출 것 |
-| JA3 | J2 | DHT11 **DATA** | 양방향. xdc 에 PULLUP, 외부 5 kΩ 풀업 권장. **원래 JA1 → JA3 으로 옮김** |
-| JA5 | — | 센서 GND | |
-| JA6 | — | 3.3 V (PWR) | DHT11 VCC 에 사용 가능. HC-SR04 는 보통 **5 V** 필요 (팀원 단독 테스트 때 쓴 전원 연결 그대로) |
+| JA5 | — | SR04 GND | HC-SR04 VCC 는 보통 **5 V** 필요 (Pmod PWR 는 3.3 V, 팀원 단독 테스트 때 쓴 전원 연결 그대로) |
+| JXADC3 | M2 | DHT11 **DATA** | 양방향. xdc 에 PULLUP, 외부 5 kΩ 풀업 권장. **원래 JA1 → JXADC3 으로 옮김** (JA 바로 아래 커넥터의 3 번 핀) |
+| JXADC5 | — | DHT11 GND | |
+| JXADC6 | — | DHT11 VCC (3.3 V) | |
+
+JXADC 는 아날로그 (XADC) 겸용 핀이지만 xdc 에서 LVCMOS33 으로 잡아 일반 디지털 입출력으로 씁니다.
 
 ---
 
@@ -372,12 +375,12 @@ FSM : `IDLE → START (LOW 18 ms) → WAIT (30 us) → SYNC_L → SYNC_H → {DA
 
 | 입력 | 동작 |
 |---|---|
-| `/auto all` | 5 Hz (0.2 초) 마다 스톱워치 → 타이머 → 시계 → 거리 → 온습도 돌아가며 한 줄씩 |
-| `/auto _sw` | 5 Hz 마다 스톱워치 |
-| `/auto _tm` | 5 Hz 마다 타이머 |
-| `/auto _wh` | 5 Hz 마다 시계 |
-| `/auto dis` | 5 Hz 마다 거리 |
-| `/auto tem` | 5 Hz 마다 온습도 |
+| `/auto all` | 1 Hz (1 초) 마다 스톱워치 → 타이머 → 시계 → 거리 → 온습도 돌아가며 한 줄씩 |
+| `/auto _sw` | 1 초마다 스톱워치 |
+| `/auto _tm` | 1 초마다 타이머 |
+| `/auto _wh` | 1 초마다 시계 |
+| `/auto dis` | 1 초마다 거리 |
+| `/auto tem` | 1 초마다 온습도 |
 | `/auto off` | 자동 전송 끄기 |
 
 - 자동 전송 중에도 `/auto xxx` 로 바로 다른 데이터로 바꿀 수 있습니다.
@@ -409,7 +412,7 @@ FSM : `IDLE → START (LOW 18 ms) → WAIT (30 us) → SYNC_L → SYNC_H → {DA
 /off w_h           → 시계 설정 끝
 /mod dist          → FND : 거리
 /btn U             → SR04 자동 측정 켜기 (60 ms 마다)
-/auto dis          ← 045cm  (0.2 초마다 계속)
+/auto dis          ← 045cm  (1 초마다 계속)
 /auto all          ← 00:00:00.00 / 00:00:00.00 / 14:05:10.30 / 045cm / 55%24C / ...
 /auto off          → 자동 전송 끄기
 /mod temp          → FND : 온습도
@@ -465,7 +468,7 @@ LED : LD9 = 오류, LD8 = 측정 중 (거리 화면).
 
 | 표시 | status | 이름 | 뜻 | 확인할 것 |
 |---|---|---|---|---|
-| `Err1` | `01` | NO_RESPONSE | 시작 신호 (LOW 18 ms) 뒤 센서 응답이 없음 | DATA 선이 **JA3** 에 있는지 (JA1 아님), 센서 VCC · GND, 풀업 |
+| `Err1` | `01` | NO_RESPONSE | 시작 신호 (LOW 18 ms) 뒤 센서 응답이 없음 | DATA 선이 **JXADC3 (M2)** 에 있는지 (JA1 아님), 센서 VCC · GND, 풀업 |
 | `Err2` | `10` | TIMEOUT | 응답은 왔는데 40 비트 받는 도중 끊김 | 선 접촉 불량, 선이 너무 김, 풀업 약함 (외부 5 kΩ) |
 | `Err3` | `11` | CHECKSUM | 40 비트는 다 받았지만 체크섬 틀림 | 노이즈 · 풀업, 다시 측정 (R) 해 보기 |
 
@@ -541,7 +544,7 @@ DHT11 은 리셋 후 1 s, 측정 사이 2 s 를 기다려야 하므로 그 안�
 | out | `o_send_sel` | 3 | 0 SW, 1 TM, 2 WH, 3 DIST, 4 TEMP, 7 ERROR |
 | out | `o_uart_btn_R/L/U/D` | 1 | `/btn` (물리 버튼 끝난 뒤) |
 
-파라미터 : `AUTO_FRQ = 5`, `RX_DEPTH = 8`, `TX_DEPTH = 64`, `DATA_WIDTH = 40`
+파라미터 : `AUTO_FRQ = 1`, `RX_DEPTH = 8`, `TX_DEPTH = 64`, `DATA_WIDTH = 40`
 
 ### `sr04_top`
 
@@ -610,7 +613,7 @@ DHT11 은 리셋 후 1 s, 측정 사이 2 s 를 기다려야 하므로 그 안�
 | 센서 오류 표시 | FND `----` | `Err1` ~ `Err3` (오류 번호 = 센서 status), 온습도 첫 측정 전만 `----` |
 | SR04 버튼 U | 누르고 있는 동안 자동 측정 | 누를 때마다 자동 켜기 / 끄기 (DHT11 과 같음) |
 | SR04 버튼 R | 자동 중이면 자동 해제 | 1 회 측정 |
-| DHT11 핀 | JA1 (SR04 trig 와 겹침) | JA3 (J2) |
+| DHT11 핀 | JA1 (SR04 trig 와 겹침) | JXADC3 (M2) |
 | UART 컨트롤러 | — | `o_uart_mode` 추가, `/set 24h` · `/set 12h` 추가, `/mod` 해도 12/24 시간 유지 |
 
 ---

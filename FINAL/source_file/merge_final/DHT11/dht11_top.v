@@ -16,7 +16,7 @@ module dht11_top #(
     input         i_rst,
     input         i_btn_R,        // 1회 측정 tick
     input         i_btn_U,        // 자동 측정 켜기/끄기 tick
-    inout         io_dht11,       // DHT11 DATA (JA3, PULLUP)
+    inout         io_dht11,       // DHT11 DATA (JXADC3, PULLUP)
     output [13:0] o_fnd_data,     // → FND_CONTROLLER
     output        o_dashes,       // 1 : 첫 측정 전 · 오류 → "----"
     output [ 3:0] o_led,          // [0] 측정 중 [1] 오류 [2] 정상값 [3] 자동 측정

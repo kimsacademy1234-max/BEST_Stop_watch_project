@@ -35,7 +35,7 @@ module merge_final_top (
     output        tx,                // USB-UART (FPGA → PC)
     output        trig,              // SR04 TRIG (JA1)
     input         echo,              // SR04 ECHO (JA2)
-    inout         dht11_io,          // DHT11 DATA (JA3)
+    inout         dht11_io,          // DHT11 DATA (JXADC3, M2)
     output [ 3:0] fnd_com,
     output [ 7:0] fnd_font,
     output [15:0] led

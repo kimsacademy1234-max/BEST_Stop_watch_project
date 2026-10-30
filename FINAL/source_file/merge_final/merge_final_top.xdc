@@ -59,8 +59,8 @@ set_property -dict { PACKAGE_PIN U17   IOSTANDARD LVCMOS33 } [get_ports btn_D]
 set_property -dict { PACKAGE_PIN J1   IOSTANDARD LVCMOS33 } [get_ports trig];                     #Sch name = JA1
 set_property -dict { PACKAGE_PIN L2   IOSTANDARD LVCMOS33 } [get_ports echo];                     #Sch name = JA2
 
-## Pmod JXADC : DHT11 (JXADC1, 디지털 I/O 로 사용)
-set_property -dict { PACKAGE_PIN J3   IOSTANDARD LVCMOS33   PULLUP true } [get_ports dht11_io];   #Sch name = XA1_P (JXADC1, 외부 5k 풀업 권장)
+## Pmod JXADC : DHT11 (JXADC3, 디지털 I/O 로 사용)
+set_property -dict { PACKAGE_PIN M2   IOSTANDARD LVCMOS33   PULLUP true } [get_ports dht11_io];   #Sch name = XA3_P (JXADC3, 외부 5k 풀업 권장)
 
 ## USB-RS232 Interface
 set_property -dict { PACKAGE_PIN B18   IOSTANDARD LVCMOS33 } [get_ports rx]
