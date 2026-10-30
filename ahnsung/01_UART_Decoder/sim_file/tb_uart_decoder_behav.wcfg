@@ -11,15 +11,15 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="89213690000fs"></ZoomStartTime>
-      <ZoomEndTime time="126513690001fs"></ZoomEndTime>
-      <Cursor1Time time="128741770000fs"></Cursor1Time>
+      <ZoomStartTime time="127769565000fs"></ZoomStartTime>
+      <ZoomEndTime time="145609565001fs"></ZoomEndTime>
+      <Cursor1Time time="133789565000fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
       <NameColumnWidth column_width="180"></NameColumnWidth>
-      <ValueColumnWidth column_width="102"></ValueColumnWidth>
+      <ValueColumnWidth column_width="97"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="30" />
+   <WVObjectSize size="31" />
    <wave_markers>
       <marker time="99983710118" label="" />
    </wave_markers>
@@ -127,6 +127,10 @@
    <wvobject fp_name="/tb_uart_decoder/w_get" type="logic">
       <obj_property name="ElementShortName">w_get</obj_property>
       <obj_property name="ObjectShortName">w_get</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_uart_decoder/w_set" type="logic">
+      <obj_property name="ElementShortName">w_set</obj_property>
+      <obj_property name="ObjectShortName">w_set</obj_property>
    </wvobject>
    <wvobject fp_name="/tb_uart_decoder/w_btn" type="logic">
       <obj_property name="ElementShortName">w_btn</obj_property>

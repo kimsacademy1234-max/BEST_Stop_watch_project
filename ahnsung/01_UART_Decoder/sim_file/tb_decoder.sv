@@ -25,11 +25,11 @@ reg sender_busy;
      wire [39:0] w_ascii;
      wire w_rx_empty;
      wire w_rx_full;
-     wire w_rx_done;
+     wire w_set;
      wire [7:0] w_rx_data;
      wire [7:0] w_pop_data;
      wire w_pop; 
-
+     wire w_off_set;
 
 uart_rx U_UART_RX (
         .clk    (clk),
@@ -42,7 +42,7 @@ uart_rx U_UART_RX (
 
 
 fifo#(
-    .DEPTH(16),
+    .DEPTH(8),
     .BIT_WIDTH(8)
 
     )DUT_FIFO_RX(
@@ -67,12 +67,13 @@ UART_ASCII_DECODER#(
      .i_reset(rst),
      .i_ascii(w_pop_data),
      .i_enable(~w_rx_empty),
-     .i_rx_done(w_rx_done),
      .i_sender_busy(sender_busy),
      .o_error(w_error),
      .o_pop(w_pop),
      .o_handshake(w_handshake),
      .o_get(w_get),
+	 .o_set(w_set),
+	 .o_off_set(w_off_set),
      .o_btn(w_btn),
      .o_mode(w_mode),
      .o_auto(w_auto),
@@ -138,7 +139,7 @@ always #5 clk = ~clk;
 
 // ë¬´ì‘?œ„ sender_busy : ë°”ì´?Š¸ ?‹¨?œ„ (TXê°? 1ë°”ì´?Š¸ ë³´ë‚´?Š” ?‹œê°? = 10bit)
 // busy ?™?•ˆ?? ?””ì½”ë”ê°? pop?„ ?•ˆ ?•˜ë¯?ë¡? FIFO?— ê¸??ê°? ?Œ“???‹¤ê°? busyê°? ??ë¦¬ë©´ ë¹ ì§
-// ON = 1~3 ë°”ì´?Š¸ ?†’ FIFO(DEPTH 4)ê°? ?„˜ì¹˜ì? ?•Š?Š” ë²”ìœ„
+// ON = 1~8 ë°”ì´?Š¸ ?†’ FIFO(DEPTH 16)ê°? ?„˜ì¹˜ì? ?•Š?Š” ë²”ìœ„
 localparam BYTE_CLK = BAUD_RATE*10/10;   // 1ë°”ì´?Š¸ ? „?†¡ ?‹œê°? (clk ê°œìˆ˜)
 
 integer busy_on, busy_off;
@@ -150,7 +151,7 @@ initial begin : RAND_BUSY
 		repeat(busy_off*BYTE_CLK) @(negedge clk);
 		sender_busy = 1;
 
-		busy_on  = $urandom_range(1, 3);         // busy ?‹œê°? : 1~3 ë°”ì´?Š¸
+		busy_on  = $urandom_range(1, 8);         // busy ?‹œê°? : 1~8 ë°”ì´?Š¸
 		repeat(busy_on*BYTE_CLK)  @(negedge clk);
 		sender_busy = 0;
 	end
@@ -165,35 +166,15 @@ sender_busy = 0;
 
 #10 rst = 0;
 
-sender("/get sw_hm");
-sender("/get sw_ms");
+sender("/get s_hm");
+sender("/get s_ms");
 sender("/btn R");
-sender("/auto f");
 sender("/mod sw_hm");
 sender("/mod sw_ms");
-
-// ---- sender_busy ê³„ì† 0 ?¸ ?ƒ?ƒœ?—?„œ ?°?´?„° ?„£ê¸? ----
-// ê¸??ê°? ?“¤?–´?˜¤?Š” ì¦‰ì‹œ pop ?†’ FIFO?Š” ê±°ì˜ ?•­?ƒ empty, ëª…ë ¹ ? „ë¶? ? •?ƒ handshake
-disable RAND_BUSY;
-@(negedge clk) sender_busy = 0;
-sender("/get sw_hm");
-sender("/btn L");
-sender("/auto f");
-sender("/mod sw_ms");
-
-// ---- sender_busy ê³„ì† 1 ?¸ ?ƒ?ƒœ?—?„œ ?°?´?„° ?„£ê¸? ----
-// ?””ì½”ë”ê°? pop?„ ëª? ?•˜ë¯?ë¡? FIFO(DEPTH 4)?— 4ê¸??ë§? ?Œ“?´ê³? (w_rx_full = 1)
-// ?‚˜ë¨¸ì? ê¸???Š” ë²„ë ¤ì§? ?†’ busy ??ë¦¬ë©´ "/get" 4ê¸??ë§? pop ?¨
-@(negedge clk) sender_busy = 1;
-sender("/get sw_hm");
-#(BAUD_RATE*3);
-@(negedge clk) sender_busy = 0;
-#(BAUD_RATE*3);
-
-// ë³µêµ¬ ?™•?¸ : ?• ëª…ë ¹?´ ?œ ??‚œ ?ƒ?ƒœ?¼ "/" ?—?„œ error 1ë²? ?œ¨ê³? ?‹¤?‹œ ? •?ƒ ?™?‘?•´?•¼ ?•¨
-sender("/get sw_ms");
-
-sender("gxt ");
+sender("/set w_hm");
+sender("/off w_hm");
+sender("/auto all");
+sender("/gxt ");
 
 
 
