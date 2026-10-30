@@ -1,0 +1,163 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1640" height="990" viewBox="0 0 1640 990" font-family="'Malgun Gothic','Apple SD Gothic Neo','Noto Sans KR',sans-serif">
+<defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#37474f"/></marker></defs>
+<rect x="0" y="0" width="1640" height="990" fill="#ffffff"/>
+<text x="20" y="30" font-size="20" text-anchor="start" fill="#263238" font-weight="bold">merge_final_top — 전체 블록 다이어그램</text>
+<text x="20" y="52" font-size="13" text-anchor="start" fill="#546e7a" font-weight="normal">굵은 선 = 버스 · 점(●) = 분기 · 회색 화살표 칸 = 보드 핀</text>
+<g transform="translate(0,0)">
+<polygon points="20,70 120,70 130,84.0 120,98 20,98" fill="#f5f5f5" stroke="#616161" stroke-width="1.5"/>
+<text x="72.0" y="88.0" font-size="12" text-anchor="middle" fill="#212121" font-weight="bold">rst</text>
+<polygon points="20,210 120,210 130,224.0 120,238 20,238" fill="#f5f5f5" stroke="#616161" stroke-width="1.5"/>
+<text x="72.0" y="228.0" font-size="12" text-anchor="middle" fill="#212121" font-weight="bold">btn_R/L/U/D</text>
+<polygon points="20,290 120,290 130,304.0 120,318 20,318" fill="#f5f5f5" stroke="#616161" stroke-width="1.5"/>
+<text x="72.0" y="308.0" font-size="12" text-anchor="middle" fill="#212121" font-weight="bold">rx</text>
+<polygon points="30,330 130,330 130,358 30,358 20,344.0" fill="#f5f5f5" stroke="#616161" stroke-width="1.5"/>
+<text x="78.0" y="348.0" font-size="12" text-anchor="middle" fill="#212121" font-weight="bold">tx</text>
+<polygon points="20,466 120,466 130,480.0 120,494 20,494" fill="#f5f5f5" stroke="#616161" stroke-width="1.5"/>
+<text x="72.0" y="484.0" font-size="12" text-anchor="middle" fill="#212121" font-weight="bold">sw0 ~ sw6</text>
+<polygon points="20,846 120,846 130,860.0 120,874 20,874" fill="#f5f5f5" stroke="#616161" stroke-width="1.5"/>
+<text x="72.0" y="864.0" font-size="12" text-anchor="middle" fill="#212121" font-weight="bold">dist_led_sw15</text>
+<polygon points="20,876 120,876 130,890.0 120,904 20,904" fill="#f5f5f5" stroke="#616161" stroke-width="1.5"/>
+<text x="72.0" y="894.0" font-size="12" text-anchor="middle" fill="#212121" font-weight="bold">echo</text>
+<polygon points="30,906 130,906 130,934 30,934 20,920.0" fill="#f5f5f5" stroke="#616161" stroke-width="1.5"/>
+<text x="78.0" y="924.0" font-size="12" text-anchor="middle" fill="#212121" font-weight="bold">trig</text>
+<polygon points="30,936 130,936 130,964 30,964 20,950.0" fill="#f5f5f5" stroke="#616161" stroke-width="1.5"/>
+<text x="78.0" y="954.0" font-size="12" text-anchor="middle" fill="#212121" font-weight="bold">dht11_io</text>
+<rect x="170" y="60" width="150" height="48" rx="6" fill="#eceff1" stroke="#455a64" stroke-width="2"/>
+<text x="245.0" y="82.0" font-size="12" text-anchor="middle" fill="#455a64" font-weight="bold">U_RESET_SYNC</text>
+<text x="245.0" y="98.0" font-size="11" text-anchor="middle" fill="#37474f" font-weight="normal">reset_sync</text>
+<polyline points="130,84 170,84" fill="none" stroke="#37474f" stroke-width="1.6" marker-end="url(#a)"/>
+<polyline points="320,84 360,84" fill="none" stroke="#37474f" stroke-width="1.6" marker-end="url(#a)"/>
+<text x="366" y="88" font-size="11" text-anchor="start" fill="#0d47a1" font-weight="normal">w_rst → 모든 모듈의 i_rst</text>
+<rect x="170" y="130" width="150" height="48" rx="6" fill="#eceff1" stroke="#455a64" stroke-width="2"/>
+<text x="245.0" y="152.0" font-size="12" text-anchor="middle" fill="#455a64" font-weight="bold">U_CLK_GEN_4KHZ</text>
+<text x="245.0" y="168.0" font-size="11" text-anchor="middle" fill="#37474f" font-weight="normal">clock_tick_generator</text>
+<rect x="170" y="196" width="150" height="56" rx="6" fill="#eceff1" stroke="#455a64" stroke-width="2"/>
+<text x="245.0" y="222.0" font-size="12" text-anchor="middle" fill="#455a64" font-weight="bold">U_BD_R/L/U/D</text>
+<text x="245.0" y="238.0" font-size="11" text-anchor="middle" fill="#37474f" font-weight="normal">btn_debounce x4</text>
+<polyline points="245,178 245,196" fill="none" stroke="#37474f" stroke-width="1.6" marker-end="url(#a)"/>
+<polyline points="130,224 170,224" fill="none" stroke="#37474f" stroke-width="1.6" marker-end="url(#a)"/>
+<polyline points="320,154 345,154 345,120 1385,120 1385,420" fill="none" stroke="#37474f" stroke-width="1.6" marker-end="url(#a)"/>
+<text x="700" y="114" font-size="11" text-anchor="middle" fill="#0d47a1" font-weight="normal">w_clk_4khz (4 kHz)</text>
+<rect x="380" y="270" width="200" height="140" rx="6" fill="#e8f5e9" stroke="#2e7d32" stroke-width="2"/>
+<text x="480.0" y="318.0" font-size="14" text-anchor="middle" fill="#2e7d32" font-weight="bold">U_UART</text>
+<text x="480.0" y="334.0" font-size="11" text-anchor="middle" fill="#37474f" font-weight="normal">uart_top</text>
+<text x="480.0" y="349.0" font-size="11" text-anchor="middle" fill="#37474f" font-weight="normal">RX · FIFO · DECODER</text>
+<text x="480.0" y="364.0" font-size="11" text-anchor="middle" fill="#37474f" font-weight="normal">UART_CONTROLLER</text>
+<text x="480.0" y="379.0" font-size="11" text-anchor="middle" fill="#37474f" font-weight="normal">SENDER · FIFO · TX</text>
+<polyline points="130,304 380,304" fill="none" stroke="#37474f" stroke-width="1.6" marker-end="url(#a)"/>
+<text x="300" y="299" font-size="11" text-anchor="middle" fill="#0d47a1" font-weight="normal">i_rx</text>
+<polyline points="380,344 130,344" fill="none" stroke="#37474f" stroke-width="1.6" marker-end="url(#a)"/>
+<text x="300" y="339" font-size="11" text-anchor="middle" fill="#0d47a1" font-weight="normal">o_tx</text>
+<polyline points="320,224 609,224" fill="none" stroke="#37474f" stroke-width="3" marker-end="url(#a)"/>
+<text x="470" y="218" font-size="11" text-anchor="middle" fill="#0d47a1" font-weight="normal">w_phy_btn_* (물리)</text>
+<circle cx="350" cy="224" r="4" fill="#37474f"/>
+<polyline points="350,224 350,380 380,380" fill="none" stroke="#37474f" stroke-width="1.6" marker-end="url(#a)"/>
+<text x="283" y="376" font-size="11" text-anchor="start" fill="#0d47a1" font-weight="normal">i_btn_*</text>
+<circle cx="625" cy="224" r="16" fill="#ffffff" stroke="#37474f" stroke-width="2"/>
+<text x="625" y="228" font-size="11" text-anchor="middle" fill="#37474f" font-weight="bold">OR</text>
+<polyline points="580,300 625,300 625,240" fill="none" stroke="#37474f" stroke-width="1.6" marker-end="url(#a)"/>
+<text x="585" y="318" font-size="11" text-anchor="start" fill="#0d47a1" font-weight="normal">o_uart_btn_*</text>
+<polyline points="641,224 680,224" fill="none" stroke="#37474f" stroke-width="3" marker-end="url(#a)"/>
+<rect x="680" y="190" width="140" height="68" rx="6" fill="#e0f7fa" stroke="#00838f" stroke-width="2"/>
+<text x="750.0" y="215.5" font-size="13" text-anchor="middle" fill="#00838f" font-weight="bold">버튼 게이팅</text>
+<text x="750.0" y="231.5" font-size="11" text-anchor="middle" fill="#37474f" font-weight="normal">w_btn &amp; w_mode_*</text>
+<text x="750.0" y="246.5" font-size="11" text-anchor="middle" fill="#37474f" font-weight="normal">지금 화면에만</text>
+<polygon points="420,450 490,470 490,550 420,570" fill="#c8e6c9" stroke="#1b5e20" stroke-width="2"/>
+<text x="433" y="475" font-size="10" text-anchor="start" fill="#1b5e20" font-weight="bold">0 스위치</text>
+<text x="433" y="535" font-size="10" text-anchor="start" fill="#1b5e20" font-weight="bold">1 UART</text>
+<text x="455" y="590" font-size="12" text-anchor="middle" fill="#1b5e20" font-weight="bold">모드 선택</text>
+<polyline points="130,480 420,480" fill="none" stroke="#37474f" stroke-width="3" marker-end="url(#a)"/>
+<text x="200" y="474" font-size="11" text-anchor="start" fill="#0d47a1" font-weight="normal">w_sw_ctrl_bit[6:0]</text>
+<polyline points="400,410 400,540 420,540" fill="none" stroke="#37474f" stroke-width="3" marker-end="url(#a)"/>
+<text x="300" y="560" font-size="11" text-anchor="start" fill="#0d47a1" font-weight="normal">o_module_control_bit</text>
+<polyline points="455,410 455,460" fill="none" stroke="#37474f" stroke-width="1.6" marker-end="url(#a)"/>
+<text x="460" y="436" font-size="11" text-anchor="start" fill="#0d47a1" font-weight="normal">o_uart_mode</text>
+<polyline points="490,510 600,510" fill="none" stroke="#37474f" stroke-width="3"/>
+<text x="545" y="504" font-size="11" text-anchor="middle" fill="#0d47a1" font-weight="normal">w_ctrl_bit[6:0]</text>
+<circle cx="600" cy="510" r="4" fill="#37474f"/>
+<polyline points="600,510 600,272 750,272 750,258" fill="none" stroke="#37474f" stroke-width="1.6" marker-end="url(#a)"/>
+<text x="612" y="288" font-size="11" text-anchor="start" fill="#0d47a1" font-weight="normal">w_mode_wts / dist / dht</text>
+<polyline points="600,510 815,510 815,340 920,340" fill="none" stroke="#37474f" stroke-width="3" marker-end="url(#a)"/>
+<text x="700" y="526" font-size="11" text-anchor="middle" fill="#0d47a1" font-weight="normal">[4:0] 스위치 기능</text>
+<polyline points="600,510 600,690 1340,690 1340,720" fill="none" stroke="#37474f" stroke-width="3" marker-end="url(#a)"/>
+<text x="610" y="684" font-size="11" text-anchor="start" fill="#0d47a1" font-weight="normal">w_disp_sel = w_ctrl_bit[6:5]  (0 WTS · 1 거리 · 2 온습도)</text>
+<circle cx="1195" cy="690" r="4" fill="#37474f"/>
+<polyline points="1195,690 1195,655" fill="none" stroke="#37474f" stroke-width="1.6" marker-end="url(#a)"/>
+<polyline points="820,224 850,224 850,595" fill="none" stroke="#37474f" stroke-width="3"/>
+<polyline points="850,290 920,290" fill="none" stroke="#37474f" stroke-width="1.6" marker-end="url(#a)"/>
+<text x="856" y="284" font-size="11" text-anchor="start" fill="#0d47a1" font-weight="normal">R/L/U/D</text>
+<polyline points="850,452 920,452" fill="none" stroke="#37474f" stroke-width="1.6" marker-end="url(#a)"/>
+<text x="856" y="446" font-size="11" text-anchor="start" fill="#0d47a1" font-weight="normal">R / U</text>
+<polyline points="850,595 920,595" fill="none" stroke="#37474f" stroke-width="1.6" marker-end="url(#a)"/>
+<text x="856" y="589" font-size="11" text-anchor="start" fill="#0d47a1" font-weight="normal">R / U</text>
+<circle cx="850" cy="290" r="4" fill="#37474f"/>
+<circle cx="850" cy="452" r="4" fill="#37474f"/>
+<rect x="920" y="250" width="180" height="130" rx="6" fill="#fff3e0" stroke="#e65100" stroke-width="2"/>
+<text x="1010.0" y="307.0" font-size="14" text-anchor="middle" fill="#e65100" font-weight="bold">U_WTS</text>
+<text x="1010.0" y="323.0" font-size="11" text-anchor="middle" fill="#37474f" font-weight="normal">wts_top</text>
+<text x="1010.0" y="338.0" font-size="11" text-anchor="middle" fill="#37474f" font-weight="normal">스톱워치 · 시계 · 타이머</text>
+<rect x="920" y="425" width="180" height="105" rx="6" fill="#f3e5f5" stroke="#6a1b9a" stroke-width="2"/>
+<text x="1010.0" y="469.5" font-size="14" text-anchor="middle" fill="#6a1b9a" font-weight="bold">U_SR04</text>
+<text x="1010.0" y="485.5" font-size="11" text-anchor="middle" fill="#37474f" font-weight="normal">sr04_top</text>
+<text x="1010.0" y="500.5" font-size="11" text-anchor="middle" fill="#37474f" font-weight="normal">초음파 거리</text>
+<rect x="920" y="560" width="180" height="100" rx="6" fill="#fffde7" stroke="#f9a825" stroke-width="2"/>
+<text x="1010.0" y="602.0" font-size="14" text-anchor="middle" fill="#f9a825" font-weight="bold">U_DHT11</text>
+<text x="1010.0" y="618.0" font-size="11" text-anchor="middle" fill="#37474f" font-weight="normal">dht11_top</text>
+<text x="1010.0" y="633.0" font-size="11" text-anchor="middle" fill="#37474f" font-weight="normal">온습도</text>
+<polyline points="130,860 860,860 860,470 920,470" fill="none" stroke="#37474f" stroke-width="1.6" marker-end="url(#a)"/>
+<polyline points="130,890 872,890 872,492 920,492" fill="none" stroke="#37474f" stroke-width="1.6" marker-end="url(#a)"/>
+<polyline points="920,512 886,512 886,920 130,920" fill="none" stroke="#37474f" stroke-width="1.6" marker-end="url(#a)"/>
+<polyline points="920,635 900,635 900,950 130,950" fill="none" stroke="#37474f" stroke-width="1.6" marker-end="url(#a)" marker-start="url(#a)"/>
+<polygon points="1165,270 1225,300 1225,640 1165,670" fill="#c8e6c9" stroke="#1b5e20" stroke-width="2"/>
+<text x="1195.0" y="376" font-size="12" text-anchor="middle" fill="#1b5e20" font-weight="bold">FND</text>
+<text x="1195.0" y="391" font-size="12" text-anchor="middle" fill="#1b5e20" font-weight="bold">데이터</text>
+<text x="1195.0" y="406" font-size="12" text-anchor="middle" fill="#1b5e20" font-weight="bold">MUX</text>
+<text x="1178" y="295" font-size="10" text-anchor="start" fill="#1b5e20" font-weight="bold">0</text>
+<text x="1178" y="465" font-size="10" text-anchor="start" fill="#1b5e20" font-weight="bold">1</text>
+<text x="1178" y="605" font-size="10" text-anchor="start" fill="#1b5e20" font-weight="bold">2</text>
+<polyline points="1100,300 1165,300" fill="none" stroke="#37474f" stroke-width="3" marker-end="url(#a)"/>
+<text x="1132" y="293" font-size="10" text-anchor="middle" fill="#0d47a1" font-weight="normal">w_disp_*</text>
+<polyline points="1100,470 1165,470" fill="none" stroke="#37474f" stroke-width="3" marker-end="url(#a)"/>
+<text x="1132" y="463" font-size="10" text-anchor="middle" fill="#0d47a1" font-weight="normal">x10 · err</text>
+<polyline points="1100,610 1165,610" fill="none" stroke="#37474f" stroke-width="3" marker-end="url(#a)"/>
+<text x="1132" y="603" font-size="10" text-anchor="middle" fill="#0d47a1" font-weight="normal">data · dash</text>
+<polyline points="1225,470 1300,470" fill="none" stroke="#37474f" stroke-width="3" marker-end="url(#a)"/>
+<text x="1262" y="463" font-size="10" text-anchor="middle" fill="#0d47a1" font-weight="normal">w_fnd_data</text>
+<rect x="1300" y="420" width="170" height="100" rx="6" fill="#e3f2fd" stroke="#1565c0" stroke-width="2"/>
+<text x="1385.0" y="461.0" font-size="12" text-anchor="middle" fill="#1565c0" font-weight="bold">U_FND_CONTROLLER</text>
+<text x="1385.0" y="477.0" font-size="11" text-anchor="middle" fill="#37474f" font-weight="normal">SW2_FND_CONTROLLER</text>
+<text x="1385.0" y="492.0" font-size="11" text-anchor="middle" fill="#37474f" font-weight="normal">WTS + 거리 + 온습도</text>
+<text x="1302" y="540" font-size="10" text-anchor="start" fill="#546e7a" font-weight="normal">+ disp_mode · wt_cursor</text>
+<text x="1302" y="555" font-size="10" text-anchor="start" fill="#546e7a" font-weight="normal">   sel_wt · set_sw2 (U_WTS)</text>
+<polygon points="1520,436 1620,436 1620,464 1520,464 1510,450.0" fill="#f5f5f5" stroke="#616161" stroke-width="1.5"/>
+<text x="1568.0" y="454.0" font-size="12" text-anchor="middle" fill="#212121" font-weight="bold">fnd_com[3:0]</text>
+<polygon points="1520,476 1620,476 1620,504 1520,504 1510,490.0" fill="#f5f5f5" stroke="#616161" stroke-width="1.5"/>
+<text x="1568.0" y="494.0" font-size="12" text-anchor="middle" fill="#212121" font-weight="bold">fnd_font[7:0]</text>
+<polyline points="1470,450 1510,450" fill="none" stroke="#37474f" stroke-width="1.6" marker-end="url(#a)"/>
+<polyline points="1470,490 1510,490" fill="none" stroke="#37474f" stroke-width="1.6" marker-end="url(#a)"/>
+<rect x="1300" y="720" width="170" height="80" rx="6" fill="#fce4ec" stroke="#ad1457" stroke-width="2"/>
+<text x="1385.0" y="759.0" font-size="14" text-anchor="middle" fill="#ad1457" font-weight="bold">U_LED</text>
+<text x="1385.0" y="775.0" font-size="11" text-anchor="middle" fill="#37474f" font-weight="normal">led_output</text>
+<text x="1150" y="816" font-size="10" text-anchor="start" fill="#546e7a" font-weight="normal">← U_WTS : sel · tm_run · tm_alarm · lap · pm</text>
+<text x="1150" y="831" font-size="10" text-anchor="start" fill="#546e7a" font-weight="normal">← U_SR04 o_led[9:0]  ·  U_DHT11 o_led[3:0]</text>
+<polyline points="1270,760 1300,760" fill="none" stroke="#37474f" stroke-width="1.6" marker-end="url(#a)"/>
+<text x="1266" y="764" font-size="10" text-anchor="end" fill="#0d47a1" font-weight="normal">LED 신호</text>
+<polygon points="1520,746 1620,746 1620,774 1520,774 1510,760.0" fill="#f5f5f5" stroke="#616161" stroke-width="1.5"/>
+<text x="1568.0" y="764.0" font-size="12" text-anchor="middle" fill="#212121" font-weight="bold">led[15:0]</text>
+<polyline points="1470,760 1510,760" fill="none" stroke="#37474f" stroke-width="1.6" marker-end="url(#a)"/>
+<polygon points="640,740 696,720 696,830 640,810" fill="#c8e6c9" stroke="#1b5e20" stroke-width="2"/>
+<text x="683" y="740" font-size="10" text-anchor="end" fill="#1b5e20" font-weight="bold">0~2</text>
+<text x="683" y="780" font-size="10" text-anchor="end" fill="#1b5e20" font-weight="bold">3</text>
+<text x="683" y="810" font-size="10" text-anchor="end" fill="#1b5e20" font-weight="bold">4</text>
+<text x="668" y="850" font-size="11" text-anchor="middle" fill="#1b5e20" font-weight="bold">전송 데이터 MUX</text>
+<polyline points="845,745 696,745" fill="none" stroke="#37474f" stroke-width="1.6" marker-end="url(#a)"/>
+<text x="708" y="739" font-size="10" text-anchor="start" fill="#0d47a1" font-weight="normal">← U_WTS *_time</text>
+<polyline points="845,785 696,785" fill="none" stroke="#37474f" stroke-width="1.6" marker-end="url(#a)"/>
+<text x="708" y="779" font-size="10" text-anchor="start" fill="#0d47a1" font-weight="normal">← U_SR04 distance</text>
+<polyline points="845,815 696,815" fill="none" stroke="#37474f" stroke-width="1.6" marker-end="url(#a)"/>
+<text x="708" y="809" font-size="10" text-anchor="start" fill="#0d47a1" font-weight="normal">← U_DHT11 hum·temp</text>
+<polyline points="640,775 540,775 540,410" fill="none" stroke="#37474f" stroke-width="3" marker-end="url(#a)"/>
+<text x="534" y="760" font-size="11" text-anchor="end" fill="#0d47a1" font-weight="normal">w_send_data[23:0]</text>
+<polyline points="562,410 562,705 668,705 668,729" fill="none" stroke="#37474f" stroke-width="1.6" marker-end="url(#a)"/>
+<text x="572" y="722" font-size="11" text-anchor="start" fill="#0d47a1" font-weight="normal">o_send_sel</text>
+</g></svg>

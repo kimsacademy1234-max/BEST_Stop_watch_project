@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1060" height="440" viewBox="0 0 1060 440" font-family="'Malgun Gothic','Apple SD Gothic Neo','Noto Sans KR',sans-serif">
+<defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#37474f"/></marker></defs>
+<rect x="0" y="0" width="1060" height="440" fill="#ffffff"/>
+<text x="20" y="30" font-size="20" text-anchor="start" fill="#263238" font-weight="bold">U_LED (led_output) — 화면별 LED</text>
+<text x="20" y="52" font-size="13" text-anchor="start" fill="#546e7a" font-weight="normal">타이머 알람이면 어느 화면이든 16개 전부 0.5 초 점멸</text>
+<g transform="translate(0,0)">
+<polygon points="20,76 160,76 170,90.0 160,104 20,104" fill="#f5f5f5" stroke="#616161" stroke-width="1.5"/>
+<text x="92.0" y="94.0" font-size="12" text-anchor="middle" fill="#212121" font-weight="bold">WTS 신호들</text>
+<polygon points="20,186 160,186 170,200.0 160,214 20,214" fill="#f5f5f5" stroke="#616161" stroke-width="1.5"/>
+<text x="92.0" y="204.0" font-size="12" text-anchor="middle" fill="#212121" font-weight="bold">i_sr04_led[9:0]</text>
+<polygon points="20,236 160,236 170,250.0 160,264 20,264" fill="#f5f5f5" stroke="#616161" stroke-width="1.5"/>
+<text x="92.0" y="254.0" font-size="12" text-anchor="middle" fill="#212121" font-weight="bold">i_dht_led[3:0]</text>
+<polygon points="20,316 160,316 170,330.0 160,344 20,344" fill="#f5f5f5" stroke="#616161" stroke-width="1.5"/>
+<text x="92.0" y="334.0" font-size="12" text-anchor="middle" fill="#212121" font-weight="bold">i_wt_msec[6:0]</text>
+<polygon points="20,376 160,376 170,390.0 160,404 20,404" fill="#f5f5f5" stroke="#616161" stroke-width="1.5"/>
+<text x="92.0" y="394.0" font-size="12" text-anchor="middle" fill="#212121" font-weight="bold">i_tm_alarm</text>
+<polygon points="20,140 160,140 170,154.0 160,168 20,168" fill="#f5f5f5" stroke="#616161" stroke-width="1.5"/>
+<text x="92.0" y="158.0" font-size="12" text-anchor="middle" fill="#212121" font-weight="bold">i_disp_sel[1:0]</text>
+<rect x="210" y="60" width="200" height="60" rx="6" fill="#fff3e0" stroke="#e65100" stroke-width="2"/>
+<text x="310.0" y="88.5" font-size="12" text-anchor="middle" fill="#e65100" font-weight="bold">w_wts_led</text>
+<text x="310.0" y="103.5" font-size="10" text-anchor="middle" fill="#37474f" font-weight="normal">원래 WTS LED (0~7, 15)</text>
+<polyline points="170,90 210,90" fill="none" stroke="#37474f" stroke-width="3" marker-end="url(#a)"/>
+<polygon points="470,60 530,90 530,260 470,290" fill="#c8e6c9" stroke="#1b5e20" stroke-width="2"/>
+<text x="500.0" y="175.0" font-size="12" text-anchor="middle" fill="#1b5e20" font-weight="bold">3:1</text>
+<text x="483" y="85" font-size="10" text-anchor="start" fill="#1b5e20" font-weight="bold">0</text>
+<text x="483" y="195" font-size="10" text-anchor="start" fill="#1b5e20" font-weight="bold">1</text>
+<text x="483" y="245" font-size="10" text-anchor="start" fill="#1b5e20" font-weight="bold">2</text>
+<polyline points="410,90 470,90" fill="none" stroke="#37474f" stroke-width="3" marker-end="url(#a)"/>
+<polyline points="170,200 470,200" fill="none" stroke="#37474f" stroke-width="3" marker-end="url(#a)"/>
+<text x="300" y="194" font-size="10" text-anchor="middle" fill="#0d47a1" font-weight="normal">{6'd0, sr04}</text>
+<polyline points="170,250 470,250" fill="none" stroke="#37474f" stroke-width="3" marker-end="url(#a)"/>
+<text x="300" y="244" font-size="10" text-anchor="middle" fill="#0d47a1" font-weight="normal">{12'd0, dht}</text>
+<polyline points="170,154 440,154 440,300 500,300 500,276" fill="none" stroke="#37474f" stroke-width="1.6" marker-end="url(#a)"/>
+<rect x="210" y="300" width="200" height="60" rx="6" fill="#eceff1" stroke="#455a64" stroke-width="2"/>
+<text x="310.0" y="328.5" font-size="12" text-anchor="middle" fill="#455a64" font-weight="bold">w_alarm_blink</text>
+<text x="310.0" y="343.5" font-size="10" text-anchor="middle" fill="#37474f" font-weight="normal">wt_msec &gt;= 50 (0.5 초)</text>
+<polyline points="170,330 210,330" fill="none" stroke="#37474f" stroke-width="1.6" marker-end="url(#a)"/>
+<polygon points="650,110 700,135 700,285 650,310" fill="#c8e6c9" stroke="#1b5e20" stroke-width="2"/>
+<text x="675.0" y="210.0" font-size="12" text-anchor="middle" fill="#1b5e20" font-weight="bold">2:1</text>
+<text x="663" y="170" font-size="10" text-anchor="start" fill="#1b5e20" font-weight="bold">0</text>
+<text x="663" y="265" font-size="10" text-anchor="start" fill="#1b5e20" font-weight="bold">1</text>
+<polyline points="530,175 650,175" fill="none" stroke="#37474f" stroke-width="3" marker-end="url(#a)"/>
+<text x="590" y="169" font-size="10" text-anchor="middle" fill="#0d47a1" font-weight="normal">w_mode_led</text>
+<polyline points="410,330 600,330 600,270 650,270" fill="none" stroke="#37474f" stroke-width="3" marker-end="url(#a)"/>
+<text x="605" y="345" font-size="10" text-anchor="start" fill="#0d47a1" font-weight="normal">{16{blink}}</text>
+<polyline points="170,390 675,390 675,297" fill="none" stroke="#37474f" stroke-width="1.6" marker-end="url(#a)"/>
+<text x="500" y="384" font-size="10" text-anchor="middle" fill="#0d47a1" font-weight="normal">tm_alarm</text>
+<polygon points="770,196 900,196 900,224 770,224 760,210.0" fill="#f5f5f5" stroke="#616161" stroke-width="1.5"/>
+<text x="833.0" y="214.0" font-size="12" text-anchor="middle" fill="#212121" font-weight="bold">o_led[15:0]</text>
+<polyline points="700,210 760,210" fill="none" stroke="#37474f" stroke-width="3" marker-end="url(#a)"/>
+</g></svg>
