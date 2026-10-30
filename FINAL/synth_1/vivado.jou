@@ -1,0 +1,12 @@
+#-----------------------------------------------------------
+# Vivado v2020.2 (64-bit)
+# SW Build 3064766 on Wed Nov 18 09:12:45 MST 2020
+# IP Build 3064653 on Wed Nov 18 14:17:31 MST 2020
+# Start of session at: Sat Oct 31 02:26:39 2026
+# Process ID: 69344
+# Current directory: C:/26_AI_CAMP/BEST_Stop_watch_project/FINAL/synth_1
+# Command line: vivado.exe -log merge_final_top.vds -product Vivado -mode batch -messageDb vivado.pb -notrace -source merge_final_top.tcl
+# Log file: C:/26_AI_CAMP/BEST_Stop_watch_project/FINAL/synth_1/merge_final_top.vds
+# Journal file: C:/26_AI_CAMP/BEST_Stop_watch_project/FINAL/synth_1\vivado.jou
+#-----------------------------------------------------------
+source merge_final_top.tcl -notrace

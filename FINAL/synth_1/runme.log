@@ -1,0 +1,696 @@
+
+*** Running vivado
+    with args -log merge_final_top.vds -m64 -product Vivado -mode batch -messageDb vivado.pb -notrace -source merge_final_top.tcl
+
+
+
+****** Vivado v2020.2 (64-bit)
+  **** SW Build 3064766 on Wed Nov 18 09:12:45 MST 2020
+  **** IP Build 3064653 on Wed Nov 18 14:17:31 MST 2020
+    ** Copyright 1986-2020 Xilinx, Inc. All Rights Reserved.
+
+source merge_final_top.tcl -notrace
+Command: synth_design -top merge_final_top -part xc7a35tcpg236-1
+Starting synth_design
+Attempting to get a license for feature 'Synthesis' and/or device 'xc7a35t'
+INFO: [Common 17-349] Got license for feature 'Synthesis' and/or device 'xc7a35t'
+INFO: [Device 21-403] Loading part xc7a35tcpg236-1
+INFO: [Synth 8-7079] Multithreading enabled for synth_design using a maximum of 2 processes.
+INFO: [Synth 8-7078] Launching helper process for spawning children vivado processes
+INFO: [Synth 8-7075] Helper process launched with PID 55076
+WARNING: [Synth 8-2507] parameter declaration becomes local in sender_tick_generator with formal parameter declaration list [C:/26_AI_CAMP/BEST_Stop_watch_project/FINAL/source_file/merge_final/UART/01_UART_CONTROLLER.sv:502]
+WARNING: [Synth 8-2507] parameter declaration becomes local in baud_tick_gen with formal parameter declaration list [C:/26_AI_CAMP/BEST_Stop_watch_project/FINAL/source_file/merge_final/IP/baud_tick_gen.v:14]
+WARNING: [Synth 8-2507] parameter declaration becomes local in clock_tick_generator with formal parameter declaration list [C:/26_AI_CAMP/BEST_Stop_watch_project/FINAL/source_file/merge_final/IP/clock_tick_generator.v:14]
+---------------------------------------------------------------------------------
+Starting RTL Elaboration : Time (s): cpu = 00:00:02 ; elapsed = 00:00:03 . Memory (MB): peak = 1008.238 ; gain = 0.000
+---------------------------------------------------------------------------------
+INFO: [Synth 8-6157] synthesizing module 'merge_final_top' [C:/26_AI_CAMP/BEST_Stop_watch_project/FINAL/source_file/merge_final/merge_final_top.v:19]
+INFO: [Synth 8-6157] synthesizing module 'reset_sync' [C:/26_AI_CAMP/BEST_Stop_watch_project/FINAL/source_file/merge_final/IP/reset_sync.v:6]
+INFO: [Synth 8-6155] done synthesizing module 'reset_sync' (1#1) [C:/26_AI_CAMP/BEST_Stop_watch_project/FINAL/source_file/merge_final/IP/reset_sync.v:6]
+INFO: [Synth 8-6157] synthesizing module 'clock_tick_generator' [C:/26_AI_CAMP/BEST_Stop_watch_project/FINAL/source_file/merge_final/IP/clock_tick_generator.v:6]
+	Parameter CLK_FRQ bound to: 4000 - type: integer 
+	Parameter FCOUNT bound to: 25000 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'clock_tick_generator' (2#1) [C:/26_AI_CAMP/BEST_Stop_watch_project/FINAL/source_file/merge_final/IP/clock_tick_generator.v:6]
+INFO: [Synth 8-6157] synthesizing module 'btn_debounce' [C:/26_AI_CAMP/BEST_Stop_watch_project/FINAL/source_file/merge_final/IP/btn_debounce.v:6]
+INFO: [Synth 8-6155] done synthesizing module 'btn_debounce' (3#1) [C:/26_AI_CAMP/BEST_Stop_watch_project/FINAL/source_file/merge_final/IP/btn_debounce.v:6]
+INFO: [Synth 8-6157] synthesizing module 'uart_top' [C:/26_AI_CAMP/BEST_Stop_watch_project/FINAL/source_file/merge_final/UART/uart_top.v:11]
+	Parameter AUTO_FRQ bound to: 5 - type: integer 
+	Parameter RX_DEPTH bound to: 8 - type: integer 
+	Parameter TX_DEPTH bound to: 64 - type: integer 
+	Parameter DATA_WIDTH bound to: 40 - type: integer 
+INFO: [Synth 8-6157] synthesizing module 'baud_tick_gen' [C:/26_AI_CAMP/BEST_Stop_watch_project/FINAL/source_file/merge_final/IP/baud_tick_gen.v:5]
+	Parameter SAMPLING_RATE bound to: 16 - type: integer 
+	Parameter BAUD_RATE bound to: 9600 - type: integer 
+	Parameter F_COUNT bound to: 651 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'baud_tick_gen' (4#1) [C:/26_AI_CAMP/BEST_Stop_watch_project/FINAL/source_file/merge_final/IP/baud_tick_gen.v:5]
+INFO: [Synth 8-6157] synthesizing module 'uart_rx' [C:/26_AI_CAMP/BEST_Stop_watch_project/FINAL/source_file/merge_final/UART/uart_rx.sv:6]
+INFO: [Synth 8-155] case statement is not full and has no default [C:/26_AI_CAMP/BEST_Stop_watch_project/FINAL/source_file/merge_final/UART/uart_rx.sv:65]
+INFO: [Synth 8-6155] done synthesizing module 'uart_rx' (5#1) [C:/26_AI_CAMP/BEST_Stop_watch_project/FINAL/source_file/merge_final/UART/uart_rx.sv:6]
+INFO: [Synth 8-6157] synthesizing module 'fifo' [C:/26_AI_CAMP/BEST_Stop_watch_project/FINAL/source_file/merge_final/IP/fifo.v:9]
+	Parameter DEPTH bound to: 8 - type: integer 
+	Parameter BIT_WIDTH bound to: 8 - type: integer 
+	Parameter ADDR_BIT_WIDTH bound to: 3 - type: integer 
+INFO: [Synth 8-6157] synthesizing module 'fifo_control_unit' [C:/26_AI_CAMP/BEST_Stop_watch_project/FINAL/source_file/merge_final/IP/fifo.v:54]
+	Parameter ADDR_BIT_WIDTH bound to: 3 - type: integer 
+INFO: [Synth 8-155] case statement is not full and has no default [C:/26_AI_CAMP/BEST_Stop_watch_project/FINAL/source_file/merge_final/IP/fifo.v:97]
+INFO: [Synth 8-6155] done synthesizing module 'fifo_control_unit' (6#1) [C:/26_AI_CAMP/BEST_Stop_watch_project/FINAL/source_file/merge_final/IP/fifo.v:54]
+INFO: [Synth 8-6157] synthesizing module 'fifo_register_file' [C:/26_AI_CAMP/BEST_Stop_watch_project/FINAL/source_file/merge_final/IP/fifo.v:133]
+	Parameter DEPTH bound to: 8 - type: integer 
+	Parameter ADDR_BIT_WIDTH bound to: 3 - type: integer 
+	Parameter BIT_WIDTH bound to: 8 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'fifo_register_file' (7#1) [C:/26_AI_CAMP/BEST_Stop_watch_project/FINAL/source_file/merge_final/IP/fifo.v:133]
+INFO: [Synth 8-6155] done synthesizing module 'fifo' (8#1) [C:/26_AI_CAMP/BEST_Stop_watch_project/FINAL/source_file/merge_final/IP/fifo.v:9]
+INFO: [Synth 8-6157] synthesizing module 'UART_ASCII_DECODER' [C:/26_AI_CAMP/BEST_Stop_watch_project/FINAL/source_file/merge_final/UART/02_UART_ASCII_DECODER.sv:5]
+	Parameter BIT_WIDTH bound to: 8 - type: integer 
+	Parameter DATA_WIDTH bound to: 40 - type: integer 
+	Parameter START_CHAR bound to: / - type: string 
+	Parameter CR bound to: 8'b00001101 
+	Parameter LF bound to: 8'b00001010 
+	Parameter OPT_LEN bound to: 4 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'UART_ASCII_DECODER' (9#1) [C:/26_AI_CAMP/BEST_Stop_watch_project/FINAL/source_file/merge_final/UART/02_UART_ASCII_DECODER.sv:5]
+INFO: [Synth 8-6157] synthesizing module 'UART_CONTROLLER' [C:/26_AI_CAMP/BEST_Stop_watch_project/FINAL/source_file/merge_final/UART/01_UART_CONTROLLER.sv:4]
+	Parameter BIT_WIDTH bound to: 8 - type: integer 
+	Parameter DATA_WIDTH bound to: 40 - type: integer 
+	Parameter AUTO_FRQ bound to: 5 - type: integer 
+	Parameter SEL_SW bound to: 3'b000 
+	Parameter SEL_TM bound to: 3'b001 
+	Parameter SEL_WH bound to: 3'b010 
+	Parameter SEL_DIST bound to: 3'b011 
+	Parameter SEL_TEMP bound to: 3'b100 
+	Parameter SEL_ERR bound to: 3'b111 
+INFO: [Synth 8-6157] synthesizing module 'sender_tick_generator' [C:/26_AI_CAMP/BEST_Stop_watch_project/FINAL/source_file/merge_final/UART/01_UART_CONTROLLER.sv:493]
+	Parameter CLK_FRQ bound to: 5 - type: integer 
+	Parameter FCOUNT bound to: 20000000 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'sender_tick_generator' (10#1) [C:/26_AI_CAMP/BEST_Stop_watch_project/FINAL/source_file/merge_final/UART/01_UART_CONTROLLER.sv:493]
+INFO: [Synth 8-6157] synthesizing module 'counter' [C:/26_AI_CAMP/BEST_Stop_watch_project/FINAL/source_file/merge_final/UART/01_UART_CONTROLLER.sv:466]
+	Parameter COUNT_NUM bound to: 5 - type: integer 
+	Parameter SEL_BIT bound to: 3 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'counter' (11#1) [C:/26_AI_CAMP/BEST_Stop_watch_project/FINAL/source_file/merge_final/UART/01_UART_CONTROLLER.sv:466]
+INFO: [Synth 8-155] case statement is not full and has no default [C:/26_AI_CAMP/BEST_Stop_watch_project/FINAL/source_file/merge_final/UART/01_UART_CONTROLLER.sv:250]
+INFO: [Synth 8-155] case statement is not full and has no default [C:/26_AI_CAMP/BEST_Stop_watch_project/FINAL/source_file/merge_final/UART/01_UART_CONTROLLER.sv:235]
+INFO: [Synth 8-155] case statement is not full and has no default [C:/26_AI_CAMP/BEST_Stop_watch_project/FINAL/source_file/merge_final/UART/01_UART_CONTROLLER.sv:336]
+INFO: [Synth 8-155] case statement is not full and has no default [C:/26_AI_CAMP/BEST_Stop_watch_project/FINAL/source_file/merge_final/UART/01_UART_CONTROLLER.sv:376]
+INFO: [Synth 8-155] case statement is not full and has no default [C:/26_AI_CAMP/BEST_Stop_watch_project/FINAL/source_file/merge_final/UART/01_UART_CONTROLLER.sv:388]
+INFO: [Synth 8-155] case statement is not full and has no default [C:/26_AI_CAMP/BEST_Stop_watch_project/FINAL/source_file/merge_final/UART/01_UART_CONTROLLER.sv:321]
+INFO: [Synth 8-155] case statement is not full and has no default [C:/26_AI_CAMP/BEST_Stop_watch_project/FINAL/source_file/merge_final/UART/01_UART_CONTROLLER.sv:437]
+INFO: [Synth 8-6155] done synthesizing module 'UART_CONTROLLER' (12#1) [C:/26_AI_CAMP/BEST_Stop_watch_project/FINAL/source_file/merge_final/UART/01_UART_CONTROLLER.sv:4]
+INFO: [Synth 8-6157] synthesizing module 'uart_sender' [C:/26_AI_CAMP/BEST_Stop_watch_project/FINAL/source_file/merge_final/UART/uart_sender.v:5]
+	Parameter IDLE bound to: 1'b0 
+	Parameter SEND bound to: 1'b1 
+INFO: [Synth 8-6157] synthesizing module 'sender_char_mux' [C:/26_AI_CAMP/BEST_Stop_watch_project/FINAL/source_file/merge_final/UART/sender_char_mux.v:3]
+	Parameter CR bound to: 8'b00001101 
+	Parameter LF bound to: 8'b00001010 
+INFO: [Synth 8-155] case statement is not full and has no default [C:/26_AI_CAMP/BEST_Stop_watch_project/FINAL/source_file/merge_final/UART/sender_char_mux.v:27]
+INFO: [Synth 8-155] case statement is not full and has no default [C:/26_AI_CAMP/BEST_Stop_watch_project/FINAL/source_file/merge_final/UART/sender_char_mux.v:73]
+INFO: [Synth 8-155] case statement is not full and has no default [C:/26_AI_CAMP/BEST_Stop_watch_project/FINAL/source_file/merge_final/UART/sender_char_mux.v:99]
+INFO: [Synth 8-155] case statement is not full and has no default [C:/26_AI_CAMP/BEST_Stop_watch_project/FINAL/source_file/merge_final/UART/sender_char_mux.v:128]
+INFO: [Synth 8-6155] done synthesizing module 'sender_char_mux' (13#1) [C:/26_AI_CAMP/BEST_Stop_watch_project/FINAL/source_file/merge_final/UART/sender_char_mux.v:3]
+INFO: [Synth 8-6155] done synthesizing module 'uart_sender' (14#1) [C:/26_AI_CAMP/BEST_Stop_watch_project/FINAL/source_file/merge_final/UART/uart_sender.v:5]
+INFO: [Synth 8-6157] synthesizing module 'fifo__parameterized0' [C:/26_AI_CAMP/BEST_Stop_watch_project/FINAL/source_file/merge_final/IP/fifo.v:9]
+	Parameter DEPTH bound to: 64 - type: integer 
+	Parameter BIT_WIDTH bound to: 8 - type: integer 
+	Parameter ADDR_BIT_WIDTH bound to: 6 - type: integer 
+INFO: [Synth 8-6157] synthesizing module 'fifo_control_unit__parameterized0' [C:/26_AI_CAMP/BEST_Stop_watch_project/FINAL/source_file/merge_final/IP/fifo.v:54]
+	Parameter ADDR_BIT_WIDTH bound to: 6 - type: integer 
+INFO: [Synth 8-155] case statement is not full and has no default [C:/26_AI_CAMP/BEST_Stop_watch_project/FINAL/source_file/merge_final/IP/fifo.v:97]
+INFO: [Synth 8-6155] done synthesizing module 'fifo_control_unit__parameterized0' (14#1) [C:/26_AI_CAMP/BEST_Stop_watch_project/FINAL/source_file/merge_final/IP/fifo.v:54]
+INFO: [Synth 8-6157] synthesizing module 'fifo_register_file__parameterized0' [C:/26_AI_CAMP/BEST_Stop_watch_project/FINAL/source_file/merge_final/IP/fifo.v:133]
+	Parameter DEPTH bound to: 64 - type: integer 
+	Parameter ADDR_BIT_WIDTH bound to: 6 - type: integer 
+	Parameter BIT_WIDTH bound to: 8 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'fifo_register_file__parameterized0' (14#1) [C:/26_AI_CAMP/BEST_Stop_watch_project/FINAL/source_file/merge_final/IP/fifo.v:133]
+INFO: [Synth 8-6155] done synthesizing module 'fifo__parameterized0' (14#1) [C:/26_AI_CAMP/BEST_Stop_watch_project/FINAL/source_file/merge_final/IP/fifo.v:9]
+INFO: [Synth 8-6157] synthesizing module 'uart_tx' [C:/26_AI_CAMP/BEST_Stop_watch_project/FINAL/source_file/merge_final/UART/uart_tx.v:6]
+	Parameter IDLE bound to: 2'b00 
+	Parameter START bound to: 2'b01 
+	Parameter DATA bound to: 2'b10 
+	Parameter STOP bound to: 2'b11 
+INFO: [Synth 8-6155] done synthesizing module 'uart_tx' (15#1) [C:/26_AI_CAMP/BEST_Stop_watch_project/FINAL/source_file/merge_final/UART/uart_tx.v:6]
+INFO: [Synth 8-6155] done synthesizing module 'uart_top' (16#1) [C:/26_AI_CAMP/BEST_Stop_watch_project/FINAL/source_file/merge_final/UART/uart_top.v:11]
+INFO: [Synth 8-6157] synthesizing module 'wts_top' [C:/26_AI_CAMP/BEST_Stop_watch_project/FINAL/source_file/merge_final/WTS/wts_top.v:11]
+	Parameter MSEC_BIT_WIDTH bound to: 7 - type: integer 
+	Parameter SEC_BIT_WIDTH bound to: 6 - type: integer 
+	Parameter MIN_BIT_WIDTH bound to: 6 - type: integer 
+	Parameter HOUR_BIT_WIDTH bound to: 5 - type: integer 
+INFO: [Synth 8-6157] synthesizing module 'tick_gen_100hz' [C:/26_AI_CAMP/BEST_Stop_watch_project/FINAL/source_file/merge_final/IP/tick_gen_100hz.v:6]
+	Parameter F_COUNT bound to: 1000000 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'tick_gen_100hz' (17#1) [C:/26_AI_CAMP/BEST_Stop_watch_project/FINAL/source_file/merge_final/IP/tick_gen_100hz.v:6]
+INFO: [Synth 8-6157] synthesizing module 'tick_gen_100hz_run' [C:/26_AI_CAMP/BEST_Stop_watch_project/FINAL/source_file/merge_final/IP/tick_gen_100hz_run.v:10]
+	Parameter F_COUNT bound to: 1000000 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'tick_gen_100hz_run' (18#1) [C:/26_AI_CAMP/BEST_Stop_watch_project/FINAL/source_file/merge_final/IP/tick_gen_100hz_run.v:10]
+INFO: [Synth 8-6157] synthesizing module 'stopwatch_control_unit' [C:/26_AI_CAMP/BEST_Stop_watch_project/FINAL/source_file/merge_final/WTS/stopwatch_control_unit.sv:8]
+INFO: [Synth 8-226] default block is never used [C:/26_AI_CAMP/BEST_Stop_watch_project/FINAL/source_file/merge_final/WTS/stopwatch_control_unit.sv:42]
+INFO: [Synth 8-226] default block is never used [C:/26_AI_CAMP/BEST_Stop_watch_project/FINAL/source_file/merge_final/WTS/stopwatch_control_unit.sv:63]
+INFO: [Synth 8-6155] done synthesizing module 'stopwatch_control_unit' (19#1) [C:/26_AI_CAMP/BEST_Stop_watch_project/FINAL/source_file/merge_final/WTS/stopwatch_control_unit.sv:8]
+INFO: [Synth 8-6157] synthesizing module 'stopwatch_datapath' [C:/26_AI_CAMP/BEST_Stop_watch_project/FINAL/source_file/merge_final/WTS/stopwatch_datapath.v:8]
+	Parameter MSEC_BIT_WIDTH bound to: 7 - type: integer 
+	Parameter SEC_BIT_WIDTH bound to: 6 - type: integer 
+	Parameter MIN_BIT_WIDTH bound to: 6 - type: integer 
+	Parameter HOUR_BIT_WIDTH bound to: 5 - type: integer 
+INFO: [Synth 8-6157] synthesizing module 'stopwatch_tick_counter' [C:/26_AI_CAMP/BEST_Stop_watch_project/FINAL/source_file/merge_final/WTS/stopwatch_datapath.v:113]
+	Parameter TIMES bound to: 24 - type: integer 
+	Parameter BIT_WIDTH bound to: 5 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'stopwatch_tick_counter' (20#1) [C:/26_AI_CAMP/BEST_Stop_watch_project/FINAL/source_file/merge_final/WTS/stopwatch_datapath.v:113]
+INFO: [Synth 8-6157] synthesizing module 'stopwatch_tick_counter__parameterized0' [C:/26_AI_CAMP/BEST_Stop_watch_project/FINAL/source_file/merge_final/WTS/stopwatch_datapath.v:113]
+	Parameter TIMES bound to: 60 - type: integer 
+	Parameter BIT_WIDTH bound to: 6 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'stopwatch_tick_counter__parameterized0' (20#1) [C:/26_AI_CAMP/BEST_Stop_watch_project/FINAL/source_file/merge_final/WTS/stopwatch_datapath.v:113]
+INFO: [Synth 8-6157] synthesizing module 'stopwatch_tick_counter__parameterized1' [C:/26_AI_CAMP/BEST_Stop_watch_project/FINAL/source_file/merge_final/WTS/stopwatch_datapath.v:113]
+	Parameter TIMES bound to: 100 - type: integer 
+	Parameter BIT_WIDTH bound to: 7 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'stopwatch_tick_counter__parameterized1' (20#1) [C:/26_AI_CAMP/BEST_Stop_watch_project/FINAL/source_file/merge_final/WTS/stopwatch_datapath.v:113]
+INFO: [Synth 8-6157] synthesizing module 'lap_controller' [C:/26_AI_CAMP/BEST_Stop_watch_project/FINAL/source_file/merge_final/WTS/lap_controller.v:5]
+INFO: [Synth 8-6155] done synthesizing module 'lap_controller' (21#1) [C:/26_AI_CAMP/BEST_Stop_watch_project/FINAL/source_file/merge_final/WTS/lap_controller.v:5]
+INFO: [Synth 8-6155] done synthesizing module 'stopwatch_datapath' (22#1) [C:/26_AI_CAMP/BEST_Stop_watch_project/FINAL/source_file/merge_final/WTS/stopwatch_datapath.v:8]
+INFO: [Synth 8-6157] synthesizing module 'watch_control_unit' [C:/26_AI_CAMP/BEST_Stop_watch_project/FINAL/source_file/merge_final/WTS/watch_control_unit.sv:12]
+	Parameter CUR_MIN_1 bound to: 2'b00 
+	Parameter CUR_MIN_10 bound to: 2'b01 
+	Parameter CUR_HOUR bound to: 2'b10 
+	Parameter CUR_NONE bound to: 2'b11 
+INFO: [Synth 8-6155] done synthesizing module 'watch_control_unit' (23#1) [C:/26_AI_CAMP/BEST_Stop_watch_project/FINAL/source_file/merge_final/WTS/watch_control_unit.sv:12]
+INFO: [Synth 8-6157] synthesizing module 'watch_datapath' [C:/26_AI_CAMP/BEST_Stop_watch_project/FINAL/source_file/merge_final/WTS/watch_datapath.v:7]
+	Parameter MSEC_BIT_WIDTH bound to: 7 - type: integer 
+	Parameter SEC_BIT_WIDTH bound to: 6 - type: integer 
+	Parameter MIN_BIT_WIDTH bound to: 6 - type: integer 
+	Parameter HOUR_BIT_WIDTH bound to: 5 - type: integer 
+INFO: [Synth 8-6157] synthesizing module 'watch_tick_counter' [C:/26_AI_CAMP/BEST_Stop_watch_project/FINAL/source_file/merge_final/WTS/watch_datapath.v:101]
+	Parameter TIMES bound to: 100 - type: integer 
+	Parameter BIT_WIDTH bound to: 7 - type: integer 
+	Parameter INIT bound to: 32'sb00000000000000000000000000000000 
+INFO: [Synth 8-6155] done synthesizing module 'watch_tick_counter' (24#1) [C:/26_AI_CAMP/BEST_Stop_watch_project/FINAL/source_file/merge_final/WTS/watch_datapath.v:101]
+INFO: [Synth 8-6157] synthesizing module 'watch_tick_counter__parameterized0' [C:/26_AI_CAMP/BEST_Stop_watch_project/FINAL/source_file/merge_final/WTS/watch_datapath.v:101]
+	Parameter TIMES bound to: 60 - type: integer 
+	Parameter BIT_WIDTH bound to: 6 - type: integer 
+	Parameter INIT bound to: 32'sb00000000000000000000000000000000 
+INFO: [Synth 8-6155] done synthesizing module 'watch_tick_counter__parameterized0' (24#1) [C:/26_AI_CAMP/BEST_Stop_watch_project/FINAL/source_file/merge_final/WTS/watch_datapath.v:101]
+INFO: [Synth 8-6157] synthesizing module 'watch_tick_counter__parameterized1' [C:/26_AI_CAMP/BEST_Stop_watch_project/FINAL/source_file/merge_final/WTS/watch_datapath.v:101]
+	Parameter TIMES bound to: 24 - type: integer 
+	Parameter BIT_WIDTH bound to: 5 - type: integer 
+	Parameter INIT bound to: 32'sb00000000000000000000000000001100 
+INFO: [Synth 8-6155] done synthesizing module 'watch_tick_counter__parameterized1' (24#1) [C:/26_AI_CAMP/BEST_Stop_watch_project/FINAL/source_file/merge_final/WTS/watch_datapath.v:101]
+INFO: [Synth 8-6155] done synthesizing module 'watch_datapath' (25#1) [C:/26_AI_CAMP/BEST_Stop_watch_project/FINAL/source_file/merge_final/WTS/watch_datapath.v:7]
+INFO: [Synth 8-6157] synthesizing module 'hour_12_24' [C:/26_AI_CAMP/BEST_Stop_watch_project/FINAL/source_file/merge_final/WTS/hour_12_24.v:8]
+	Parameter HOUR_BIT_WIDTH bound to: 5 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'hour_12_24' (26#1) [C:/26_AI_CAMP/BEST_Stop_watch_project/FINAL/source_file/merge_final/WTS/hour_12_24.v:8]
+INFO: [Synth 8-6157] synthesizing module 'timer_control_unit' [C:/26_AI_CAMP/BEST_Stop_watch_project/FINAL/source_file/merge_final/WTS/timer_control_unit.sv:8]
+INFO: [Synth 8-6155] done synthesizing module 'timer_control_unit' (27#1) [C:/26_AI_CAMP/BEST_Stop_watch_project/FINAL/source_file/merge_final/WTS/timer_control_unit.sv:8]
+INFO: [Synth 8-6157] synthesizing module 'timer_datapath' [C:/26_AI_CAMP/BEST_Stop_watch_project/FINAL/source_file/merge_final/WTS/timer_datapath.v:8]
+	Parameter MSEC_BIT_WIDTH bound to: 7 - type: integer 
+	Parameter SEC_BIT_WIDTH bound to: 6 - type: integer 
+	Parameter MIN_BIT_WIDTH bound to: 6 - type: integer 
+	Parameter HOUR_BIT_WIDTH bound to: 5 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'timer_datapath' (28#1) [C:/26_AI_CAMP/BEST_Stop_watch_project/FINAL/source_file/merge_final/WTS/timer_datapath.v:8]
+INFO: [Synth 8-6155] done synthesizing module 'wts_top' (29#1) [C:/26_AI_CAMP/BEST_Stop_watch_project/FINAL/source_file/merge_final/WTS/wts_top.v:11]
+INFO: [Synth 8-6157] synthesizing module 'sr04_top' [C:/26_AI_CAMP/BEST_Stop_watch_project/FINAL/source_file/merge_final/SR04/sr04_top.v:10]
+INFO: [Synth 8-6157] synthesizing module 'sr04_mode_ctrl' [C:/26_AI_CAMP/BEST_Stop_watch_project/FINAL/source_file/merge_final/SR04/sr04_mode_ctrl.v:9]
+INFO: [Synth 8-6155] done synthesizing module 'sr04_mode_ctrl' (30#1) [C:/26_AI_CAMP/BEST_Stop_watch_project/FINAL/source_file/merge_final/SR04/sr04_mode_ctrl.v:9]
+INFO: [Synth 8-6157] synthesizing module 'sr04_core' [C:/26_AI_CAMP/BEST_Stop_watch_project/FINAL/source_file/merge_final/SR04/sr04_core.v:26]
+INFO: [Synth 8-6157] synthesizing module 'synchronizer' [C:/26_AI_CAMP/BEST_Stop_watch_project/FINAL/source_file/merge_final/IP/synchronizer.v:6]
+INFO: [Synth 8-6155] done synthesizing module 'synchronizer' (31#1) [C:/26_AI_CAMP/BEST_Stop_watch_project/FINAL/source_file/merge_final/IP/synchronizer.v:6]
+INFO: [Synth 8-6157] synthesizing module 'tick_gen_us' [C:/26_AI_CAMP/BEST_Stop_watch_project/FINAL/source_file/merge_final/IP/tick_gen_us.v:9]
+	Parameter F_COUNT bound to: 100 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'tick_gen_us' (32#1) [C:/26_AI_CAMP/BEST_Stop_watch_project/FINAL/source_file/merge_final/IP/tick_gen_us.v:9]
+INFO: [Synth 8-6157] synthesizing module 'sr04_controller' [C:/26_AI_CAMP/BEST_Stop_watch_project/FINAL/source_file/merge_final/SR04/sr04_core.v:89]
+	Parameter TRIG_US bound to: 11 - type: integer 
+	Parameter WAIT_TIMEOUT_US bound to: 30000 - type: integer 
+	Parameter MAX_ECHO_US bound to: 23200 - type: integer 
+	Parameter STOP_US bound to: 10000 - type: integer 
+	Parameter MEAS_PERIOD_US bound to: 60000 - type: integer 
+	Parameter STUCK_US bound to: 50000 - type: integer 
+	Parameter US_PER_CM bound to: 58 - type: integer 
+	Parameter MAX_CM bound to: 400 - type: integer 
+	Parameter IDLE bound to: 3'b000 
+	Parameter START bound to: 3'b001 
+	Parameter WAIT bound to: 3'b010 
+	Parameter DIST bound to: 3'b011 
+	Parameter STOP bound to: 3'b100 
+	Parameter MAX_X10 bound to: 4000 - type: integer 
+	Parameter ST_OK bound to: 2'b00 
+	Parameter ST_NO_ECHO bound to: 2'b01 
+	Parameter ST_OUT_RANGE bound to: 2'b10 
+	Parameter ST_STUCK bound to: 2'b11 
+INFO: [Synth 8-6155] done synthesizing module 'sr04_controller' (33#1) [C:/26_AI_CAMP/BEST_Stop_watch_project/FINAL/source_file/merge_final/SR04/sr04_core.v:89]
+INFO: [Synth 8-6155] done synthesizing module 'sr04_core' (34#1) [C:/26_AI_CAMP/BEST_Stop_watch_project/FINAL/source_file/merge_final/SR04/sr04_core.v:26]
+INFO: [Synth 8-6157] synthesizing module 'sr04_led_bar' [C:/26_AI_CAMP/BEST_Stop_watch_project/FINAL/source_file/merge_final/SR04/sr04_led_bar.v:10]
+	Parameter BLINK_HALF_CYC bound to: 25000000 - type: integer 
+	Parameter WARN_ON_X10 bound to: 100 - type: integer 
+	Parameter WARN_OFF_X10 bound to: 120 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'sr04_led_bar' (35#1) [C:/26_AI_CAMP/BEST_Stop_watch_project/FINAL/source_file/merge_final/SR04/sr04_led_bar.v:10]
+INFO: [Synth 8-6155] done synthesizing module 'sr04_top' (36#1) [C:/26_AI_CAMP/BEST_Stop_watch_project/FINAL/source_file/merge_final/SR04/sr04_top.v:10]
+INFO: [Synth 8-6157] synthesizing module 'dht11_top' [C:/26_AI_CAMP/BEST_Stop_watch_project/FINAL/source_file/merge_final/DHT11/dht11_top.v:8]
+	Parameter BOOT_CYCLES bound to: 100000000 - type: integer 
+	Parameter INTERVAL_CYCLES bound to: 200000000 - type: integer 
+	Parameter TICK_F_COUNT bound to: 100 - type: integer 
+	Parameter START_US bound to: 18000 - type: integer 
+	Parameter USE_ILA bound to: 0 - type: integer 
+INFO: [Synth 8-6157] synthesizing module 'dht11_core' [C:/26_AI_CAMP/BEST_Stop_watch_project/FINAL/source_file/merge_final/DHT11/dht11_core.v:11]
+	Parameter BOOT_CYCLES bound to: 100000000 - type: integer 
+	Parameter INTERVAL_CYCLES bound to: 200000000 - type: integer 
+	Parameter TICK_F_COUNT bound to: 100 - type: integer 
+	Parameter START_US bound to: 18000 - type: integer 
+	Parameter USE_ILA bound to: 0 - type: integer 
+	Parameter CD_MAX bound to: 200000000 - type: integer 
+INFO: [Synth 8-6157] synthesizing module 'dht11_controller' [C:/26_AI_CAMP/BEST_Stop_watch_project/FINAL/source_file/merge_final/DHT11/dht11_controller.v:12]
+	Parameter START_US bound to: 18000 - type: integer 
+	Parameter WAIT_US bound to: 30 - type: integer 
+	Parameter TIMEOUT_US bound to: 200 - type: integer 
+	Parameter BIT1_US bound to: 40 - type: integer 
+	Parameter USE_ILA bound to: 0 - type: integer 
+	Parameter IDLE bound to: 4'b0000 
+	Parameter START bound to: 4'b0001 
+	Parameter WAIT bound to: 4'b0010 
+	Parameter SYNC_L bound to: 4'b0011 
+	Parameter SYNC_H bound to: 4'b0100 
+	Parameter DATA_SYNC bound to: 4'b0101 
+	Parameter DATA_BIT bound to: 4'b0110 
+	Parameter BIT_DEC bound to: 4'b0111 
+	Parameter STOP bound to: 4'b1000 
+	Parameter ST_OK bound to: 2'b00 
+	Parameter ST_NO_RESPONSE bound to: 2'b01 
+	Parameter ST_TIMEOUT bound to: 2'b10 
+	Parameter ST_CHECKSUM bound to: 2'b11 
+INFO: [Synth 8-6155] done synthesizing module 'dht11_controller' (37#1) [C:/26_AI_CAMP/BEST_Stop_watch_project/FINAL/source_file/merge_final/DHT11/dht11_controller.v:12]
+INFO: [Synth 8-6155] done synthesizing module 'dht11_core' (38#1) [C:/26_AI_CAMP/BEST_Stop_watch_project/FINAL/source_file/merge_final/DHT11/dht11_core.v:11]
+INFO: [Synth 8-6157] synthesizing module 'dht11_manager' [C:/26_AI_CAMP/BEST_Stop_watch_project/FINAL/source_file/merge_final/DHT11/dht11_manager.v:7]
+INFO: [Synth 8-6155] done synthesizing module 'dht11_manager' (39#1) [C:/26_AI_CAMP/BEST_Stop_watch_project/FINAL/source_file/merge_final/DHT11/dht11_manager.v:7]
+INFO: [Synth 8-6155] done synthesizing module 'dht11_top' (40#1) [C:/26_AI_CAMP/BEST_Stop_watch_project/FINAL/source_file/merge_final/DHT11/dht11_top.v:8]
+INFO: [Synth 8-6157] synthesizing module 'SW2_FND_CONTROLLER' [C:/26_AI_CAMP/BEST_Stop_watch_project/FINAL/source_file/merge_final/FND_LED/SW2_FND_CONTROLLER.v:18]
+	Parameter MSEC_BIT_WIDTH bound to: 7 - type: integer 
+	Parameter SEC_BIT_WIDTH bound to: 6 - type: integer 
+	Parameter MIN_BIT_WIDTH bound to: 6 - type: integer 
+	Parameter HOUR_BIT_WIDTH bound to: 6 - type: integer 
+	Parameter DATA_WIDTH bound to: 25 - type: integer 
+INFO: [Synth 8-6157] synthesizing module 'digit_splitter' [C:/26_AI_CAMP/BEST_Stop_watch_project/FINAL/source_file/merge_final/IP/digit_splitter.v:9]
+	Parameter WIDTH bound to: 7 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'digit_splitter' (41#1) [C:/26_AI_CAMP/BEST_Stop_watch_project/FINAL/source_file/merge_final/IP/digit_splitter.v:9]
+INFO: [Synth 8-6157] synthesizing module 'digit_splitter__parameterized0' [C:/26_AI_CAMP/BEST_Stop_watch_project/FINAL/source_file/merge_final/IP/digit_splitter.v:9]
+	Parameter WIDTH bound to: 6 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'digit_splitter__parameterized0' (41#1) [C:/26_AI_CAMP/BEST_Stop_watch_project/FINAL/source_file/merge_final/IP/digit_splitter.v:9]
+INFO: [Synth 8-6157] synthesizing module 'counter8' [C:/26_AI_CAMP/BEST_Stop_watch_project/FINAL/source_file/merge_final/IP/counter8.v:6]
+INFO: [Synth 8-6155] done synthesizing module 'counter8' (42#1) [C:/26_AI_CAMP/BEST_Stop_watch_project/FINAL/source_file/merge_final/IP/counter8.v:6]
+INFO: [Synth 8-6157] synthesizing module 'dot' [C:/26_AI_CAMP/BEST_Stop_watch_project/FINAL/source_file/merge_final/FND_LED/dot.v:6]
+INFO: [Synth 8-6155] done synthesizing module 'dot' (43#1) [C:/26_AI_CAMP/BEST_Stop_watch_project/FINAL/source_file/merge_final/FND_LED/dot.v:6]
+INFO: [Synth 8-6157] synthesizing module 'SW2_ANODE_CHOICE' [C:/26_AI_CAMP/BEST_Stop_watch_project/FINAL/source_file/merge_final/FND_LED/SW2_ANODE_CHOICE.v:9]
+INFO: [Synth 8-6155] done synthesizing module 'SW2_ANODE_CHOICE' (44#1) [C:/26_AI_CAMP/BEST_Stop_watch_project/FINAL/source_file/merge_final/FND_LED/SW2_ANODE_CHOICE.v:9]
+INFO: [Synth 8-6157] synthesizing module 'mux_8x1' [C:/26_AI_CAMP/BEST_Stop_watch_project/FINAL/source_file/merge_final/IP/mux_8x1.v:9]
+	Parameter WIDTH bound to: 4 - type: integer 
+INFO: [Synth 8-226] default block is never used [C:/26_AI_CAMP/BEST_Stop_watch_project/FINAL/source_file/merge_final/IP/mux_8x1.v:26]
+INFO: [Synth 8-6155] done synthesizing module 'mux_8x1' (45#1) [C:/26_AI_CAMP/BEST_Stop_watch_project/FINAL/source_file/merge_final/IP/mux_8x1.v:9]
+INFO: [Synth 8-6157] synthesizing module 'fnd_dist' [C:/26_AI_CAMP/BEST_Stop_watch_project/FINAL/source_file/merge_final/FND_LED/fnd_dist.v:7]
+INFO: [Synth 8-6155] done synthesizing module 'fnd_dist' (46#1) [C:/26_AI_CAMP/BEST_Stop_watch_project/FINAL/source_file/merge_final/FND_LED/fnd_dist.v:7]
+INFO: [Synth 8-6157] synthesizing module 'fnd_dht' [C:/26_AI_CAMP/BEST_Stop_watch_project/FINAL/source_file/merge_final/FND_LED/fnd_dht.v:7]
+INFO: [Synth 8-6155] done synthesizing module 'fnd_dht' (47#1) [C:/26_AI_CAMP/BEST_Stop_watch_project/FINAL/source_file/merge_final/FND_LED/fnd_dht.v:7]
+INFO: [Synth 8-6157] synthesizing module 'decoder_2x4' [C:/26_AI_CAMP/BEST_Stop_watch_project/FINAL/source_file/merge_final/IP/decoder_2x4.v:9]
+INFO: [Synth 8-226] default block is never used [C:/26_AI_CAMP/BEST_Stop_watch_project/FINAL/source_file/merge_final/IP/decoder_2x4.v:16]
+INFO: [Synth 8-6155] done synthesizing module 'decoder_2x4' (48#1) [C:/26_AI_CAMP/BEST_Stop_watch_project/FINAL/source_file/merge_final/IP/decoder_2x4.v:9]
+INFO: [Synth 8-6157] synthesizing module 'fnd_decoder' [C:/26_AI_CAMP/BEST_Stop_watch_project/FINAL/source_file/merge_final/IP/fnd_decoder.v:5]
+INFO: [Synth 8-6155] done synthesizing module 'fnd_decoder' (49#1) [C:/26_AI_CAMP/BEST_Stop_watch_project/FINAL/source_file/merge_final/IP/fnd_decoder.v:5]
+INFO: [Synth 8-6155] done synthesizing module 'SW2_FND_CONTROLLER' (50#1) [C:/26_AI_CAMP/BEST_Stop_watch_project/FINAL/source_file/merge_final/FND_LED/SW2_FND_CONTROLLER.v:18]
+INFO: [Synth 8-6157] synthesizing module 'led_output' [C:/26_AI_CAMP/BEST_Stop_watch_project/FINAL/source_file/merge_final/FND_LED/led_output.v:10]
+INFO: [Synth 8-6155] done synthesizing module 'led_output' (51#1) [C:/26_AI_CAMP/BEST_Stop_watch_project/FINAL/source_file/merge_final/FND_LED/led_output.v:10]
+INFO: [Synth 8-6155] done synthesizing module 'merge_final_top' (52#1) [C:/26_AI_CAMP/BEST_Stop_watch_project/FINAL/source_file/merge_final/merge_final_top.v:19]
+---------------------------------------------------------------------------------
+Finished RTL Elaboration : Time (s): cpu = 00:00:03 ; elapsed = 00:00:04 . Memory (MB): peak = 1008.238 ; gain = 0.000
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Handling Custom Attributes
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Handling Custom Attributes : Time (s): cpu = 00:00:04 ; elapsed = 00:00:05 . Memory (MB): peak = 1008.238 ; gain = 0.000
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished RTL Optimization Phase 1 : Time (s): cpu = 00:00:04 ; elapsed = 00:00:05 . Memory (MB): peak = 1008.238 ; gain = 0.000
+---------------------------------------------------------------------------------
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.034 . Memory (MB): peak = 1008.238 ; gain = 0.000
+INFO: [Project 1-570] Preparing netlist for logic optimization
+
+Processing XDC Constraints
+Initializing timing engine
+Parsing XDC File [C:/26_AI_CAMP/BEST_Stop_watch_project/FINAL/source_file/merge_final/merge_final_top.xdc]
+Finished Parsing XDC File [C:/26_AI_CAMP/BEST_Stop_watch_project/FINAL/source_file/merge_final/merge_final_top.xdc]
+INFO: [Project 1-236] Implementation specific constraints were found while reading constraint file [C:/26_AI_CAMP/BEST_Stop_watch_project/FINAL/source_file/merge_final/merge_final_top.xdc]. These constraints will be ignored for synthesis but will be used in implementation. Impacted constraints are listed in the file [.Xil/merge_final_top_propImpl.xdc].
+Resolution: To avoid this warning, move constraints listed in [.Xil/merge_final_top_propImpl.xdc] to another XDC file and exclude this new file from synthesis with the used_in_synthesis property (File Properties dialog in GUI) and re-run elaboration/synthesis.
+Completed Processing XDC Constraints
+
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.001 . Memory (MB): peak = 1034.402 ; gain = 0.000
+INFO: [Project 1-111] Unisim Transformation Summary:
+No Unisim elements were transformed.
+
+Constraint Validation Runtime : Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.010 . Memory (MB): peak = 1034.402 ; gain = 0.000
+---------------------------------------------------------------------------------
+Finished Constraint Validation : Time (s): cpu = 00:00:08 ; elapsed = 00:00:10 . Memory (MB): peak = 1034.402 ; gain = 26.164
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Loading Part and Timing Information
+---------------------------------------------------------------------------------
+Loading part: xc7a35tcpg236-1
+---------------------------------------------------------------------------------
+Finished Loading Part and Timing Information : Time (s): cpu = 00:00:08 ; elapsed = 00:00:10 . Memory (MB): peak = 1034.402 ; gain = 26.164
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Applying 'set_property' XDC Constraints
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished applying 'set_property' XDC Constraints : Time (s): cpu = 00:00:08 ; elapsed = 00:00:10 . Memory (MB): peak = 1034.402 ; gain = 26.164
+---------------------------------------------------------------------------------
+INFO: [Synth 8-802] inferred FSM for state register 'c_state_reg' in module 'uart_rx'
+INFO: [Synth 8-802] inferred FSM for state register 'c_auto_state_reg' in module 'UART_CONTROLLER'
+INFO: [Synth 8-802] inferred FSM for state register 'c_state_reg' in module 'uart_tx'
+INFO: [Synth 8-802] inferred FSM for state register 'c_state_reg' in module 'watch_control_unit'
+INFO: [Synth 8-802] inferred FSM for state register 'c_state_reg' in module 'timer_control_unit'
+INFO: [Synth 8-802] inferred FSM for state register 'c_state_reg' in module 'sr04_controller'
+INFO: [Synth 8-4490] FSM extraction disabled for register 'c_state_reg' through user attribute
+INFO: [Synth 8-4490] FSM extraction disabled for register 'c_state_reg' through user attribute
+---------------------------------------------------------------------------------------------------
+                   State |                     New Encoding |                Previous Encoding 
+---------------------------------------------------------------------------------------------------
+                    IDLE |                               00 | 00000000000000000000000000000001
+                   START |                               01 | 00000000000000000000000000000010
+                    DATA |                               10 | 00000000000000000000000000000011
+                    STOP |                               11 | 00000000000000000000000000000100
+---------------------------------------------------------------------------------------------------
+INFO: [Synth 8-3354] encoded FSM with state register 'c_state_reg' using encoding 'sequential' in module 'uart_rx'
+---------------------------------------------------------------------------------------------------
+                   State |                     New Encoding |                Previous Encoding 
+---------------------------------------------------------------------------------------------------
+                    IDLE |                             0000 | 00000000000000000000000000000000
+                     GET |                             0001 | 00000000000000000000000000000001
+                AUTO_ALL |                             0010 | 00000000000000000000000000000010
+               AUTO_TEMP |                             0011 | 00000000000000000000000000001000
+               AUTO_DIST |                             0100 | 00000000000000000000000000000111
+                 AUTO_SW |                             0101 | 00000000000000000000000000000100
+                 AUTO_WH |                             0110 | 00000000000000000000000000000110
+                 AUTO_TM |                             0111 | 00000000000000000000000000000101
+                AUTO_OFF |                             1000 | 00000000000000000000000000000011
+---------------------------------------------------------------------------------------------------
+INFO: [Synth 8-3354] encoded FSM with state register 'c_auto_state_reg' using encoding 'sequential' in module 'UART_CONTROLLER'
+---------------------------------------------------------------------------------------------------
+                   State |                     New Encoding |                Previous Encoding 
+---------------------------------------------------------------------------------------------------
+                    IDLE |                               00 |                               00
+                   START |                               01 |                               01
+                    DATA |                               10 |                               10
+                    STOP |                               11 |                               11
+---------------------------------------------------------------------------------------------------
+INFO: [Synth 8-3354] encoded FSM with state register 'c_state_reg' using encoding 'sequential' in module 'uart_tx'
+---------------------------------------------------------------------------------------------------
+                   State |                     New Encoding |                Previous Encoding 
+---------------------------------------------------------------------------------------------------
+                  NORMAL |                               00 |                               00
+               SET_MIN_1 |                               01 |                               11
+                SET_HOUR |                               10 |                               01
+              SET_MIN_10 |                               11 |                               10
+---------------------------------------------------------------------------------------------------
+INFO: [Synth 8-3354] encoded FSM with state register 'c_state_reg' using encoding 'sequential' in module 'watch_control_unit'
+---------------------------------------------------------------------------------------------------
+                   State |                     New Encoding |                Previous Encoding 
+---------------------------------------------------------------------------------------------------
+                     SET |                              001 |                               00
+                     RUN |                              010 |                               01
+                   ALARM |                              100 |                               10
+---------------------------------------------------------------------------------------------------
+INFO: [Synth 8-3354] encoded FSM with state register 'c_state_reg' using encoding 'one-hot' in module 'timer_control_unit'
+---------------------------------------------------------------------------------------------------
+                   State |                     New Encoding |                Previous Encoding 
+---------------------------------------------------------------------------------------------------
+                    IDLE |                              000 |                              000
+                   START |                              100 |                              001
+                    WAIT |                              011 |                              010
+                    DIST |                              010 |                              011
+                    STOP |                              001 |                              100
+---------------------------------------------------------------------------------------------------
+INFO: [Synth 8-3354] encoded FSM with state register 'c_state_reg' using encoding 'sequential' in module 'sr04_controller'
+---------------------------------------------------------------------------------
+Finished RTL Optimization Phase 2 : Time (s): cpu = 00:00:11 ; elapsed = 00:00:13 . Memory (MB): peak = 1034.402 ; gain = 26.164
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start RTL Component Statistics 
+---------------------------------------------------------------------------------
+Detailed RTL Component Info : 
++---Adders : 
+	   2 Input   25 Bit       Adders := 2     
+	   2 Input   20 Bit       Adders := 3     
+	   2 Input   16 Bit       Adders := 3     
+	   2 Input   15 Bit       Adders := 2     
+	   2 Input   12 Bit       Adders := 1     
+	   2 Input   10 Bit       Adders := 1     
+	   2 Input    9 Bit       Adders := 1     
+	   2 Input    8 Bit       Adders := 2     
+	   4 Input    8 Bit       Adders := 1     
+	   2 Input    7 Bit       Adders := 13    
+	   3 Input    7 Bit       Adders := 4     
+	   2 Input    6 Bit       Adders := 18    
+	   3 Input    6 Bit       Adders := 6     
+	   2 Input    5 Bit       Adders := 6     
+	   3 Input    5 Bit       Adders := 3     
+	   2 Input    4 Bit       Adders := 4     
+	   2 Input    3 Bit       Adders := 7     
++---Registers : 
+	               40 Bit    Registers := 2     
+	               32 Bit    Registers := 1     
+	               25 Bit    Registers := 2     
+	               24 Bit    Registers := 1     
+	               20 Bit    Registers := 3     
+	               16 Bit    Registers := 3     
+	               15 Bit    Registers := 2     
+	               14 Bit    Registers := 1     
+	               12 Bit    Registers := 2     
+	               10 Bit    Registers := 1     
+	                9 Bit    Registers := 2     
+	                8 Bit    Registers := 8     
+	                7 Bit    Registers := 8     
+	                6 Bit    Registers := 12    
+	                5 Bit    Registers := 4     
+	                4 Bit    Registers := 6     
+	                3 Bit    Registers := 9     
+	                2 Bit    Registers := 3     
+	                1 Bit    Registers := 68    
++---Muxes : 
+	   2 Input   40 Bit        Muxes := 8     
+	  16 Input   40 Bit        Muxes := 1     
+	   2 Input   25 Bit        Muxes := 1     
+	   3 Input   25 Bit        Muxes := 1     
+	   2 Input   24 Bit        Muxes := 1     
+	   2 Input   20 Bit        Muxes := 5     
+	   2 Input   16 Bit        Muxes := 12    
+	   5 Input   16 Bit        Muxes := 3     
+	   4 Input   16 Bit        Muxes := 1     
+	   3 Input   16 Bit        Muxes := 1     
+	   2 Input   15 Bit        Muxes := 7     
+	   8 Input   15 Bit        Muxes := 1     
+	   2 Input   13 Bit        Muxes := 1     
+	   2 Input   12 Bit        Muxes := 1     
+	   5 Input   12 Bit        Muxes := 2     
+	   2 Input    9 Bit        Muxes := 1     
+	   5 Input    9 Bit        Muxes := 2     
+	   4 Input    8 Bit        Muxes := 2     
+	   2 Input    8 Bit        Muxes := 3     
+	   9 Input    7 Bit        Muxes := 2     
+	   2 Input    7 Bit        Muxes := 26    
+	   5 Input    7 Bit        Muxes := 2     
+	   8 Input    7 Bit        Muxes := 2     
+	   2 Input    6 Bit        Muxes := 33    
+	   5 Input    6 Bit        Muxes := 1     
+	  10 Input    6 Bit        Muxes := 1     
+	   2 Input    5 Bit        Muxes := 16    
+	   2 Input    4 Bit        Muxes := 37    
+	   4 Input    4 Bit        Muxes := 4     
+	   7 Input    4 Bit        Muxes := 1     
+	   3 Input    4 Bit        Muxes := 4     
+	   8 Input    4 Bit        Muxes := 2     
+	   4 Input    3 Bit        Muxes := 2     
+	   2 Input    3 Bit        Muxes := 19    
+	  16 Input    3 Bit        Muxes := 1     
+	   5 Input    3 Bit        Muxes := 3     
+	   3 Input    3 Bit        Muxes := 2     
+	   7 Input    3 Bit        Muxes := 1     
+	  10 Input    3 Bit        Muxes := 1     
+	   4 Input    2 Bit        Muxes := 4     
+	   2 Input    2 Bit        Muxes := 10    
+	   5 Input    2 Bit        Muxes := 2     
+	   3 Input    2 Bit        Muxes := 2     
+	  11 Input    2 Bit        Muxes := 1     
+	   2 Input    1 Bit        Muxes := 137   
+	   3 Input    1 Bit        Muxes := 25    
+	   4 Input    1 Bit        Muxes := 29    
+	   7 Input    1 Bit        Muxes := 3     
+	  22 Input    1 Bit        Muxes := 6     
+	  16 Input    1 Bit        Muxes := 5     
+	   8 Input    1 Bit        Muxes := 1     
+	   5 Input    1 Bit        Muxes := 16    
+	  10 Input    1 Bit        Muxes := 6     
+---------------------------------------------------------------------------------
+Finished RTL Component Statistics 
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Part Resource Summary
+---------------------------------------------------------------------------------
+Part Resources:
+DSPs: 90 (col length:60)
+BRAMs: 100 (col length: RAMB18 60 RAMB36 30)
+---------------------------------------------------------------------------------
+Finished Part Resource Summary
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Cross Boundary and Area Optimization
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Cross Boundary and Area Optimization : Time (s): cpu = 00:00:30 ; elapsed = 00:00:35 . Memory (MB): peak = 1078.500 ; gain = 70.262
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start ROM, RAM, DSP, Shift Register and Retiming Reporting
+---------------------------------------------------------------------------------
+
+Distributed RAM: Preliminary Mapping	Report (see note below)
++-----------------+-----------------------------------+-----------+----------------------+--------------------------+
+|Module Name      | RTL Object                        | Inference | Size (Depth x Width) | Primitives               | 
++-----------------+-----------------------------------+-----------+----------------------+--------------------------+
+|U_UART/U_FIFO_RX | U_FIFO_REG_FILE/register_file_reg | Implied   | 8 x 8                | RAM32M x 2	              | 
+|U_UART/U_FIFO_TX | U_FIFO_REG_FILE/register_file_reg | Implied   | 64 x 8               | RAM64X1D x 2	RAM64M x 2	 | 
++-----------------+-----------------------------------+-----------+----------------------+--------------------------+
+
+Note: The table above is a preliminary report that shows the Distributed RAMs at the current stage of the synthesis flow. Some Distributed RAMs may be reimplemented as non Distributed RAM primitives later in the synthesis flow. Multiple instantiated RAMs are reported only once.
+---------------------------------------------------------------------------------
+Finished ROM, RAM, DSP, Shift Register and Retiming Reporting
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Applying XDC Timing Constraints
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Applying XDC Timing Constraints : Time (s): cpu = 00:00:34 ; elapsed = 00:00:39 . Memory (MB): peak = 1078.500 ; gain = 70.262
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Timing Optimization
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Timing Optimization : Time (s): cpu = 00:00:35 ; elapsed = 00:00:41 . Memory (MB): peak = 1078.500 ; gain = 70.262
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start ROM, RAM, DSP, Shift Register and Retiming Reporting
+---------------------------------------------------------------------------------
+
+Distributed RAM: Final Mapping	Report
++-----------------+-----------------------------------+-----------+----------------------+--------------------------+
+|Module Name      | RTL Object                        | Inference | Size (Depth x Width) | Primitives               | 
++-----------------+-----------------------------------+-----------+----------------------+--------------------------+
+|U_UART/U_FIFO_RX | U_FIFO_REG_FILE/register_file_reg | Implied   | 8 x 8                | RAM32M x 2	              | 
+|U_UART/U_FIFO_TX | U_FIFO_REG_FILE/register_file_reg | Implied   | 64 x 8               | RAM64X1D x 2	RAM64M x 2	 | 
++-----------------+-----------------------------------+-----------+----------------------+--------------------------+
+
+---------------------------------------------------------------------------------
+Finished ROM, RAM, DSP, Shift Register and Retiming Reporting
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Technology Mapping
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Technology Mapping : Time (s): cpu = 00:00:36 ; elapsed = 00:00:42 . Memory (MB): peak = 1125.180 ; gain = 116.941
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Flattening Before IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Flattening Before IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Final Netlist Cleanup
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Final Netlist Cleanup
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished IO Insertion : Time (s): cpu = 00:00:38 ; elapsed = 00:00:44 . Memory (MB): peak = 1138.992 ; gain = 130.754
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Renaming Generated Instances
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Instances : Time (s): cpu = 00:00:38 ; elapsed = 00:00:44 . Memory (MB): peak = 1138.992 ; gain = 130.754
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Rebuilding User Hierarchy
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Rebuilding User Hierarchy : Time (s): cpu = 00:00:38 ; elapsed = 00:00:45 . Memory (MB): peak = 1138.992 ; gain = 130.754
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Renaming Generated Ports
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Ports : Time (s): cpu = 00:00:38 ; elapsed = 00:00:45 . Memory (MB): peak = 1138.992 ; gain = 130.754
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Handling Custom Attributes
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Handling Custom Attributes : Time (s): cpu = 00:00:38 ; elapsed = 00:00:45 . Memory (MB): peak = 1138.992 ; gain = 130.754
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Renaming Generated Nets
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Nets : Time (s): cpu = 00:00:38 ; elapsed = 00:00:45 . Memory (MB): peak = 1138.992 ; gain = 130.754
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Writing Synthesis Report
+---------------------------------------------------------------------------------
+
+Report BlackBoxes: 
++-+--------------+----------+
+| |BlackBox name |Instances |
++-+--------------+----------+
++-+--------------+----------+
+
+Report Cell Usage: 
++------+---------+------+
+|      |Cell     |Count |
++------+---------+------+
+|1     |BUFG     |     2|
+|2     |CARRY4   |   106|
+|3     |LUT1     |    22|
+|4     |LUT2     |   358|
+|5     |LUT3     |   237|
+|6     |LUT4     |   260|
+|7     |LUT5     |   327|
+|8     |LUT6     |   684|
+|9     |MUXF7    |    25|
+|10    |MUXF8    |     1|
+|11    |RAM32M   |     2|
+|12    |RAM64M   |     2|
+|13    |RAM64X1D |     1|
+|14    |FDCE     |   709|
+|15    |FDPE     |    24|
+|16    |IBUF     |    16|
+|17    |IOBUF    |     1|
+|18    |OBUF     |    30|
++------+---------+------+
+---------------------------------------------------------------------------------
+Finished Writing Synthesis Report : Time (s): cpu = 00:00:38 ; elapsed = 00:00:45 . Memory (MB): peak = 1138.992 ; gain = 130.754
+---------------------------------------------------------------------------------
+Synthesis finished with 0 errors, 0 critical warnings and 0 warnings.
+Synthesis Optimization Runtime : Time (s): cpu = 00:00:33 ; elapsed = 00:00:43 . Memory (MB): peak = 1138.992 ; gain = 104.590
+Synthesis Optimization Complete : Time (s): cpu = 00:00:38 ; elapsed = 00:00:45 . Memory (MB): peak = 1138.992 ; gain = 130.754
+INFO: [Project 1-571] Translating synthesized netlist
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.030 . Memory (MB): peak = 1145.449 ; gain = 0.000
+INFO: [Netlist 29-17] Analyzing 138 Unisim elements for replacement
+INFO: [Netlist 29-28] Unisim Transformation completed in 0 CPU seconds
+INFO: [Project 1-570] Preparing netlist for logic optimization
+INFO: [Opt 31-138] Pushed 0 inverter(s) to 0 load pin(s).
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.001 . Memory (MB): peak = 1147.348 ; gain = 0.000
+INFO: [Project 1-111] Unisim Transformation Summary:
+  A total of 6 instances were transformed.
+  IOBUF => IOBUF (IBUF, OBUFT): 1 instance 
+  RAM32M => RAM32M (RAMD32(x6), RAMS32(x2)): 2 instances
+  RAM64M => RAM64M (RAMD64E(x4)): 2 instances
+  RAM64X1D => RAM64X1D (RAMD64E(x2)): 1 instance 
+
+INFO: [Common 17-83] Releasing license: Synthesis
+167 Infos, 3 Warnings, 0 Critical Warnings and 0 Errors encountered.
+synth_design completed successfully
+synth_design: Time (s): cpu = 00:00:43 ; elapsed = 00:00:51 . Memory (MB): peak = 1147.348 ; gain = 139.109
+INFO: [Common 17-1381] The checkpoint 'C:/26_AI_CAMP/BEST_Stop_watch_project/FINAL/synth_1/merge_final_top.dcp' has been generated.
+INFO: [runtcl-4] Executing : report_utilization -file merge_final_top_utilization_synth.rpt -pb merge_final_top_utilization_synth.pb
+INFO: [Common 17-206] Exiting Vivado at Sat Oct 31 02:27:34 2026...
