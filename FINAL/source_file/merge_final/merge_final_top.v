@@ -68,11 +68,13 @@ module merge_final_top (
     wire [ 8:0] w_distance;
     wire [11:0] w_distance_x10;
     wire        w_dist_err, w_dist_auto, w_dist_done;
+    wire [ 1:0] w_dist_status;  // FND 오류 번호 (Err1~3)
     wire [ 9:0] w_sr04_led;
     // DHT11
     wire [13:0] w_dht_fnd_data;
     wire        w_dht_dashes;
     wire [ 3:0] w_dht_led;
+    wire        w_dht_err;      // 마지막 측정 실패 (= dht11_manager LED[1]) → FND "Err1~3"
     wire [ 7:0] w_humidity, w_temperature;
     wire        w_dht_valid, w_dht_done;
     wire [ 1:0] w_dht_status;
@@ -206,6 +208,7 @@ module merge_final_top (
         .o_distance    (w_distance),
         .o_distance_x10(w_distance_x10),
         .o_err         (w_dist_err),
+        .o_status      (w_dist_status),
         .o_auto_en     (w_dist_auto),
         .o_done        (w_dist_done),
         .o_led         (w_sr04_led)
@@ -228,10 +231,12 @@ module merge_final_top (
         .o_done       (w_dht_done)
     );
 
+    assign w_dht_err = w_dht_led[1];
+
     // ---------------------------------------------------------------- FND 데이터 MUX (그림 2 data_path)
     // module_control_bit[6:5] : 0 WTS, 1 거리, 2 온습도 → U_FND_CONTROLLER 안의 디코더가 다시 나눔
-    assign w_fnd_data = (w_disp_sel == 2'd1) ? {12'd0, w_dist_err, w_distance_x10} :
-                        (w_disp_sel == 2'd2) ? {10'd0, w_dht_dashes, w_dht_fnd_data} :
+    assign w_fnd_data = (w_disp_sel == 2'd1) ? {10'd0, w_dist_status, w_dist_err, w_distance_x10} :
+                        (w_disp_sel == 2'd2) ? {7'd0, w_dht_status, w_dht_err, w_dht_dashes, w_dht_fnd_data} :
                                                {w_disp_hour, w_disp_min, w_disp_sec, w_disp_msec};
 
     SW2_FND_CONTROLLER U_FND_CONTROLLER (

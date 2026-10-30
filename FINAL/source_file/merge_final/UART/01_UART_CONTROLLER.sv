@@ -5,7 +5,7 @@ module UART_CONTROLLER#(
      
         parameter BIT_WIDTH = 8,
         parameter DATA_WIDTH = 32,
-        parameter AUTO_FRQ = 5  // auto mode sel 갱신 주기 (tb 에서 빠르게 바꿔서 사용)
+        parameter AUTO_FRQ = 1  // auto mode sel 갱신 주기 (tb 에서 빠르게 바꿔서 사용)
 
         )(
     

@@ -182,8 +182,8 @@ FSM : `IDLE → START (LOW 18 ms) → WAIT (30 us) → SYNC_L → SYNC_H → {DA
 | `w_disp_sel` | 화면 | 배치 |
 |---|---|---|
 | 0 | WTS | `{hour[5:0], min[5:0], sec[5:0], msec[6:0]}` |
-| 1 | 거리 | `{12'd0, err, distance_x10[11:0]}` |
-| 2 | 온습도 | `{10'd0, dashes, fnd_data[13:0]}` |
+| 1 | 거리 | `{10'd0, status[1:0], err, distance_x10[11:0]}` |
+| 2 | 온습도 | `{7'd0, status[1:0], err, dashes, fnd_data[13:0]}` |
 
 ### 4-6. LED (`led_output`)
 
@@ -219,6 +219,20 @@ FSM : `IDLE → START (LOW 18 ms) → WAIT (30 us) → SYNC_L → SYNC_H → {DA
 | out | `fnd_com` | 4 | U2 U4 V4 W4 | FND 자리 선택 (active-low) |
 | out | `fnd_font` | 8 | W7 W6 U8 V8 U5 V5 U7 V7 | FND 세그먼트 `{dp,g,f,e,d,c,b,a}` (active-low) |
 | out | `led` | 16 | U16 … L1 | LED |
+
+### 보드 핀 위치
+
+![Basys3 핀 연결](docs/basys3_pinmap.png)
+
+### 센서 배선 (Pmod JA)
+
+| Pmod 핀 | FPGA 핀 | 연결 | 비고 |
+|---|---|---|---|
+| JA1 | J1 | SR04 **TRIG** | FPGA → 센서 |
+| JA2 | L2 | SR04 **ECHO** | 센서 → FPGA. 센서 출력이 5 V 면 분압 저항으로 3.3 V 로 낮출 것 |
+| JA3 | J2 | DHT11 **DATA** | 양방향. xdc 에 PULLUP, 외부 5 kΩ 풀업 권장. **원래 JA1 → JA3 으로 옮김** |
+| JA5 | — | 센서 GND | |
+| JA6 | — | 3.3 V (PWR) | DHT11 VCC 에 사용 가능. HC-SR04 는 보통 **5 V** 필요 (팀원 단독 테스트 때 쓴 전원 연결 그대로) |
 
 ---
 
@@ -429,8 +443,34 @@ FSM : `IDLE → START (LOW 18 ms) → WAIT (30 us) → SYNC_L → SYNC_H → {DA
 | 시계 · 스톱워치 (sw1 = 1) | 시.분 `HH.MM` | 가운데 0.5 초 점멸 | — |
 | 타이머 | 분.초 `MM.SS` | 가운데 점멸 | — |
 | 시계 설정 중 | 시.분, 커서 자리 0.5 초 점멸 | | — |
-| 거리 | `352.7` (0.1 cm) | AN1 | `----` |
-| 온습도 | `55.24` (습도.온도) | AN2 | `----` (첫 측정 전 · 오류) |
+| 거리 | `352.7` (0.1 cm) | AN1 | 측정 실패 `Err1` ~ `Err3` (아래 표) |
+| 온습도 | `55.24` (습도.온도) | AN2 | 측정 실패 `Err1` ~ `Err3` (아래 표), 첫 측정 전 `----` |
+
+### 오류 코드 (`Err1` ~ `Err3`)
+
+측정에 실패하면 FND 왼쪽 세 자리에 `Err`, 맨 오른쪽 자리에 **오류 번호** 가 나옵니다.
+번호는 센서 컨트롤러의 상태 코드 (`status`) 그대로이고, 다음 측정이 성공하면 숫자 표시로 돌아옵니다.
+
+#### 거리 (SR04) — `sr04_controller` status
+
+| 표시 | status | 이름 | 뜻 | 확인할 것 |
+|---|---|---|---|---|
+| `Err1` | `01` | NO_ECHO | trig 뒤 30 ms 안에 echo 가 안 올라옴 | ECHO 선 (JA2) · TRIG 선 (JA1) 이 바뀌었거나 빠짐, 센서 전원 (5 V), GND 공통 |
+| `Err2` | `10` | OUT_RANGE | echo 가 23.2 ms (= 400 cm) 넘게 1 | 앞에 물체 없음 / 너무 멂, 센서 방향 |
+| `Err3` | `11` | ECHO_STUCK | 측정 뒤에도 echo 가 50 ms 넘게 계속 1 | ECHO 선이 HIGH 에 붙음, 센서 불량 · 배선 단락 |
+
+LED : LD9 = 오류, LD8 = 측정 중 (거리 화면).
+
+#### 온습도 (DHT11) — `dht11_controller` status
+
+| 표시 | status | 이름 | 뜻 | 확인할 것 |
+|---|---|---|---|---|
+| `Err1` | `01` | NO_RESPONSE | 시작 신호 (LOW 18 ms) 뒤 센서 응답이 없음 | DATA 선이 **JA3** 에 있는지 (JA1 아님), 센서 VCC · GND, 풀업 |
+| `Err2` | `10` | TIMEOUT | 응답은 왔는데 40 비트 받는 도중 끊김 | 선 접촉 불량, 선이 너무 김, 풀업 약함 (외부 5 kΩ) |
+| `Err3` | `11` | CHECKSUM | 40 비트는 다 받았지만 체크섬 틀림 | 노이즈 · 풀업, 다시 측정 (R) 해 보기 |
+
+LED : LD1 = 오류, LD0 = 측정 중, LD2 = 정상값 있음 (온습도 화면).
+DHT11 은 리셋 후 1 s, 측정 사이 2 s 를 기다려야 하므로 그 안에 누른 R 은 기억했다가 나중에 측정합니다.
 
 ---
 
@@ -515,6 +555,7 @@ FSM : `IDLE → START (LOW 18 ms) → WAIT (30 us) → SYNC_L → SYNC_H → {DA
 | out | `o_distance` | 9 | cm (UART) |
 | out | `o_distance_x10` | 12 | 0.1 cm (FND) |
 | out | `o_err`, `o_auto_en`, `o_done` | 1 | |
+| out | `o_status` | 2 | 01 NO_ECHO · 10 OUT_RANGE · 11 ECHO_STUCK (FND 오류 번호) |
 | out | `o_led` | 10 | LD0~9 |
 
 ### `dht11_top`
@@ -565,7 +606,8 @@ FSM : `IDLE → START (LOW 18 ms) → WAIT (30 us) → SYNC_L → SYNC_H → {DA
 | baud tick | RX · TX 각자 | `uart_top` 안 하나를 같이 씀 |
 | uart_tx | — | TS-44 고친 판 (`boyun/uart_fifo_ascii_hw_20261028`) : start 받는 클럭에 바로 busy |
 | FND / LED | WTS · SR04 · DHT11 각자 | `SW2_FND_CONTROLLER` (WTS 기본) + `fnd_dist` / `fnd_dht`, `led_output` 하나 |
-| `fnd_decoder` | `4'hc` = "0" (default) | `4'hc` = "-" 추가 |
+| `fnd_decoder` | `4'ha` ~ `4'hc` = "0" (default) | `4'ha` = "E", `4'hb` = "r", `4'hc` = "-" 추가 |
+| 센서 오류 표시 | FND `----` | `Err1` ~ `Err3` (오류 번호 = 센서 status), 온습도 첫 측정 전만 `----` |
 | SR04 버튼 U | 누르고 있는 동안 자동 측정 | 누를 때마다 자동 켜기 / 끄기 (DHT11 과 같음) |
 | SR04 버튼 R | 자동 중이면 자동 해제 | 1 회 측정 |
 | DHT11 핀 | JA1 (SR04 trig 와 겹침) | JA3 (J2) |

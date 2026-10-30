@@ -9,7 +9,7 @@
 //  - o_send_sel → Top 의 전송 데이터 MUX 선택, 고른 값이 i_send_data 로 돌아옴
 //  - i_btn_* (물리 버튼) 이 먼저, /btn 으로 들어온 버튼은 o_uart_btn_* 로 물리 버튼이 끝난 뒤 나감
 module uart_top #(
-    parameter AUTO_FRQ   = 5,     // /auto 전송 주기 (Hz)
+    parameter AUTO_FRQ   = 1,     // /auto 전송 주기 (Hz)
     parameter RX_DEPTH   = 8,
     parameter TX_DEPTH   = 64,
     parameter DATA_WIDTH = 40     // 디코더 → 컨트롤러 명령 문자열 폭 (5 글자)

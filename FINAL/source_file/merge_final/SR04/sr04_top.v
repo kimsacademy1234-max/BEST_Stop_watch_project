@@ -17,14 +17,14 @@ module sr04_top (
     output        o_trig,           // Pmod JA1
     output [ 8:0] o_distance,       // cm (UART 전송용)
     output [11:0] o_distance_x10,   // 0.1cm (FND "352.7")
-    output        o_err,            // 마지막 측정 실패 → FND "----" / LD9
+    output        o_err,            // 마지막 측정 실패 → FND "Err1~3" / LD9
+    output [ 1:0] o_status,         // 01 NO_ECHO / 10 OUT_RANGE / 11 ECHO_STUCK → FND 오류 번호
     output        o_auto_en,        // 자동 측정 중
     output        o_done,
     output [ 9:0] o_led             // LD0~7 거리 막대 / LD8 측정 중 / LD9 측정 오류
 );
 
     wire        w_start;
-    wire [ 1:0] w_status;
     wire        w_measuring;
     wire        w_busy;
     wire [ 2:0] w_state;
@@ -47,7 +47,7 @@ module sr04_top (
         .o_trig        (o_trig),
         .o_distance    (o_distance),
         .o_distance_x10(o_distance_x10),
-        .o_status      (w_status),
+        .o_status      (o_status),
         .o_measuring   (w_measuring),
         .o_busy        (w_busy),
         .o_done        (o_done),
@@ -60,7 +60,7 @@ module sr04_top (
         .i_rst      (i_rst),
         .i_en       (i_led_sw),
         .i_done     (o_done),
-        .i_status   (w_status),
+        .i_status   (o_status),
         .i_dist_x10 (o_distance_x10),
         .i_measuring(w_measuring),
         .o_bar      (o_led[7:0]),

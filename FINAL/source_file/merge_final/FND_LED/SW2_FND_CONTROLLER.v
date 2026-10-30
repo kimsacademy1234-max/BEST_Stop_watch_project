@@ -11,8 +11,8 @@
 // (merge) 그림 3 (fnd_controller 부분) 대로 추가
 //   ① 디코더 : i_disp_sel (= module_control_bit[6:5]) 로 i_disp_data 를 WTS / DIST / DHT 쪽으로 나눔
 //        i_disp_data 배치  WTS  : {hour 6, min 6, sec 6, msec 7}
-//                          DIST : {12'b0, err 1, x10 12}     (0.1cm, "352.7" / 오류 "----")
-//                          DHT  : {10'b0, dashes 1, data 14} (습도 x 100 + 온도, "55.24" / "----")
+//                          DIST : {10'b0, status 2, err 1, x10 12}           (0.1cm, "352.7" / 오류 "Err1~3")
+//                          DHT  : {7'b0, status 2, err 1, dashes 1, data 14} (습도 x 100 + 온도, "55.24" / 오류 "Err1~3" / 측정 전 "----")
 //   ② U_FND_DIST · U_FND_DHT : 자기 데이터를 4자리 + 점으로 (스캔 카운터는 WTS 와 같이 씀)
 //   ③ 3:1 MUX (i_disp_sel) : 0 WTS, 1 거리, 2 온습도 → fnd_decoder
 module SW2_FND_CONTROLLER #(
@@ -37,8 +37,8 @@ module SW2_FND_CONTROLLER #(
 
     // ---------------------------------------------------------------- ① 디코더 (i_disp_sel)
     wire [DATA_WIDTH-1:0] w_wts_data  = (i_disp_sel == 2'd0) ? i_disp_data       : {DATA_WIDTH{1'b0}};
-    wire [          12:0] w_dist_data = (i_disp_sel == 2'd1) ? i_disp_data[12:0] : 13'd0;
-    wire [          14:0] w_dht_data  = (i_disp_sel == 2'd2) ? i_disp_data[14:0] : 15'd0;
+    wire [          14:0] w_dist_data = (i_disp_sel == 2'd1) ? i_disp_data[14:0] : 15'd0;
+    wire [          17:0] w_dht_data  = (i_disp_sel == 2'd2) ? i_disp_data[17:0] : 18'd0;
 
     wire [MSEC_BIT_WIDTH-1:0] w_disp_msec = w_wts_data[MSEC_BIT_WIDTH-1:0];
     wire [ SEC_BIT_WIDTH-1:0] w_disp_sec  = w_wts_data[MSEC_BIT_WIDTH +: SEC_BIT_WIDTH];
@@ -162,6 +162,7 @@ module SW2_FND_CONTROLLER #(
         .i_scan_sel(w_scan_sel),
         .i_value   (w_dist_data[11:0]),
         .i_err     (w_dist_data[12]),
+        .i_status  (w_dist_data[14:13]),
         .o_bcd     (w_dist_bcd)
     );
 
@@ -169,6 +170,8 @@ module SW2_FND_CONTROLLER #(
         .i_scan_sel(w_scan_sel),
         .i_value   (w_dht_data[13:0]),
         .i_dashes  (w_dht_data[14]),
+        .i_err     (w_dht_data[15]),
+        .i_status  (w_dht_data[17:16]),
         .o_bcd     (w_dht_bcd)
     );
 

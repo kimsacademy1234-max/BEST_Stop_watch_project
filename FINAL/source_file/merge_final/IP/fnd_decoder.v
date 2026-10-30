@@ -1,7 +1,8 @@
 `timescale 1ns / 1ps
 
 // BCD → 7 세그먼트 (v2 포트 통일), active-low, o_fnd_font[7] = 점(DP)
-// 0~9 숫자, 4'hc = "-" (BF, 거리/온습도 오류), 4'hd · 4'hf = 빈칸(FF), 4'he = 점만 켬(7F)
+// 0~9 숫자, 4'ha = "E" (86), 4'hb = "r" (AF) : 거리/온습도 오류 "Err"
+// 4'hc = "-" (BF, 온습도 첫 측정 전 "----"), 4'hd · 4'hf = 빈칸(FF), 4'he = 점만 켬(7F)
 module fnd_decoder (
     input      [3:0] i_bcd,
     output reg [7:0] o_fnd_font
@@ -19,6 +20,8 @@ module fnd_decoder (
             4'h7: o_fnd_font = 8'hF8;
             4'h8: o_fnd_font = 8'h80;
             4'h9: o_fnd_font = 8'h90;
+            4'ha: o_fnd_font = 8'h86;           // (merge) a d e f g = "E"
+            4'hb: o_fnd_font = 8'hAF;           // (merge) e g = "r"
             4'hc: o_fnd_font = 8'hBF;           // (merge) g 세그먼트만 = "-"
             4'hd: o_fnd_font = 8'hFF;
             4'he: o_fnd_font = 8'b0111_1111;
