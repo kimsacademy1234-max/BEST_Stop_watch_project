@@ -3,6 +3,7 @@
 //  top_dht11 에서 fnd_controller 만 뺀 것. FND 는 팀 쪽 fnd_controller 에 연결
 //  - o_fnd_data : 습도 x 100 + 온도 (예 : 5524 → "55.24"), o_dashes = 1 이면 "----" 표시
 //  - o_humidity · o_temperature · o_valid · o_status · o_done : 원래 값 (다른 용도로 쓸 때)
+//  - btnU : 자동 측정 켜기/끄기 (켜면 2 s 마다 측정, led[3])
 //  - 데이터선 3상태 버퍼는 이 모듈 안에 있음 → 팀 top 에서는 dht11_io 를 inout 포트로 그대로 연결
 module dht11_top #(
     parameter BTN_F_COUNT     = 100_000,       // 디바운스 샘플 1 ms
@@ -15,17 +16,18 @@ module dht11_top #(
     input         clk,
     input         rst,            // 버튼 그대로 (안에서 reset_sync)
     input         btnR,           // 측정 버튼 (안에서 디바운스)
+    input         btnU,           // 자동 측정 켜기/끄기 (안에서 디바운스)
     inout         dht11_io,       // DHT11 DATA (JA1, PULLUP)
     output [13:0] o_fnd_data,     // → 팀 fnd_controller 의 fnd_data
     output        o_dashes,       // 1 : 첫 측정 전 · 오류 → "----"
-    output [2:0]  led,            // [0] 측정 중, [1] 오류, [2] 정상값
+    output [3:0]  led,            // [0] 측정 중 [1] 오류 [2] 정상값 [3] 자동 측정
     output [7:0]  o_humidity,
     output [7:0]  o_temperature,
     output        o_valid,
     output [1:0]  o_status,       // 00 OK · 01 응답 없음 · 10 중간 끊김 · 11 체크섬
     output        o_done
 );
-    wire        w_rst, w_btn;
+    wire        w_rst, w_btn, w_btn_auto;
     wire        w_measuring, w_busy;
     wire [3:0]  w_state;
     wire        w_dht_oe, w_dht_in;
@@ -47,6 +49,21 @@ module dht11_top #(
         .o_btn(w_btn)
     );
 
+    btn_debounce #(.F_COUNT(BTN_F_COUNT)) U_BTN_AUTO (
+        .clk  (clk),
+        .reset(w_rst),
+        .i_btn(btnU),
+        .o_btn(w_btn_auto)
+    );
+
+    // btnU 누를 때마다 자동 측정 켜기/끄기
+    reg c_auto_mode;
+    always @(posedge clk, posedge w_rst) begin
+        if (w_rst)           c_auto_mode <= 1'b0;
+        else if (w_btn_auto) c_auto_mode <= ~c_auto_mode;
+    end
+    assign led[3] = c_auto_mode;
+
     dht11_core #(
         .BOOT_CYCLES    (BOOT_CYCLES),
         .INTERVAL_CYCLES(INTERVAL_CYCLES),
@@ -57,7 +74,7 @@ module dht11_top #(
         .clk          (clk),
         .rst          (w_rst),
         .i_start      (w_btn),
-        .i_auto_en    (1'b0),
+        .i_auto_en    (c_auto_mode),
         .i_dht11      (w_dht_in),
         .o_dht_oe     (w_dht_oe),
         .o_humidity   (o_humidity),
@@ -80,6 +97,6 @@ module dht11_top #(
         .i_temperature(o_temperature),
         .o_fnd_data   (o_fnd_data),
         .o_dashes     (o_dashes),
-        .o_led        (led)
+        .o_led        (led[2:0])
     );
 endmodule
