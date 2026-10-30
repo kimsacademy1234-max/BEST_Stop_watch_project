@@ -57,6 +57,9 @@ reg [6:0] c_module_control_bit, n_module_control_bit;
 
 reg [2:0] c_sender_sel,n_sender_sel;
 reg c_sender_go, n_sender_go; 
+reg c_auto_enable, n_auto_enable;
+
+
 
 reg c_btn_R,n_btn_R;
 reg c_btn_L,n_btn_L;
@@ -64,9 +67,12 @@ reg c_btn_U,n_btn_U;
 reg c_btn_D,n_btn_D;
 
 
+wire w_clk_5hz;
+wire w_auto_enable;
 
-assign o_send_sel =(i_error == 1'b1) ? 3'd7 : c_sender_sel;
 
+assign o_send_sel = c_sender_sel;
+assign w_auto_enable = c_auto_enable;
 
 
 
@@ -74,14 +80,13 @@ assign o_send_sel =(i_error == 1'b1) ? 3'd7 : c_sender_sel;
 
 typedef enum{
 
-
-	AUTO_IDLE,
-	AUTO_ALL,
-	AUTO_OFF,
-	AUTO_SW,
-	AUTO_TM,
-	AUTO_WH
-
+	IDLE = 0,
+	GET  = 1,
+	AUTO_ALL = 2,
+	AUTO_OFF = 3,
+	AUTO_SW  = 4,
+	AUTO_TM  = 5,
+	AUTO_WH  = 6
 
 }state_auto;
 
@@ -98,10 +103,18 @@ MODE = 1
 
 }state_m;
 
-
-
 state_m c_mode_state,n_mode_state;
 
+
+
+sender_tick_generator #(
+        .CLK_FRQ(5)
+    ) U_CLK_GEN_5HZ (
+        .i_clk     (i_clk),
+        .i_rst     (i_reset),
+		.i_enable  (w_auto_enable),
+        .o_clk(w_clk_5hz)
+    );
 
 
 
@@ -239,16 +252,56 @@ end
 
 
 
+endmodule 
 
 
 
 
 
+module sender_tick_generator #(
+    parameter CLK_FRQ = 1000
+) (
+    input      i_clk,
+    input      i_rst,
+	input 	   i_enable,
+    output reg o_clk
+);
+
+    parameter FCOUNT = (100_000_000 / CLK_FRQ);
+    reg [$clog2(FCOUNT)-1:0] r_counter;
+
+    always @(posedge i_clk or posedge i_rst) begin
+        if (i_rst) begin
+            r_counter  <= 0;
+            o_clk <= 0;
+        end else begin
+
+			if(i_enable)begin 
+				r_counter <= r_counter + 1;
+				if (r_counter == FCOUNT - 1) begin
+					r_counter  <= 0;
+					o_clk <= 1;
+            	end 
+
+				else begin
+                	o_clk <= 0;
+            	end
+			end
+		
+			else begin 
+				o_clk <= 0;
+			end
 
 
 
-
-
-
+        end
+    end
 
 endmodule
+
+
+
+
+
+
+
