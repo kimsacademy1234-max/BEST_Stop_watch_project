@@ -1,0 +1,19 @@
+# Vivado generated project and build artifacts (recreate with create_project.tcl)
+/vivado/
+/output/
+/.Xil/
+*.jou
+*.log
+*.str
+*.wdb
+*.wcfg
+
+# Local credentials and editor temporary files
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.swp
+*.tmp
+*~
