@@ -1,0 +1,11 @@
+[START] tb_F1 timeout=14000 ms
+[PASS] F1-01 @ 12.376025 ms : U 뒤 FND 기대 "00.10" / 실제 "00.10" (disp_sel=0, sel_tm=1)
+[INFO] F1-t0 @ 12.376055 ms : 시작 t0 = 12376035 ns, w_tm_run=1, cnt_btn_L=1
+[PASS] F1-02 @ 10012.376056 ms : 알람 진입 기대 t0 + 10.000 s ± 50 ns, alarm 1, run(LED6 원천) 0 / 실제 t0 + 10000000020 ns (오차 20 ns), alarm 1, run 0, led=0000
+[PASS] F1-03 @ 11212.376056 ms : 알람 LED 기대 16 개 = {시계 1/100 >= 50}, 0.5 s 마다 바뀜 / 실제 1200 샘플 중 불일치 0, 켜짐 500 · 꺼짐 700, 바뀜 2 번 (간격 500 ms)
+[SUMMARY] tb_F1 pass=3 fail=0 known=0 xpass=0 @ 11212.376056 ms
+- /home/yns2027/stw/FINAL/sim_file/tb/common/tb_env.svh:124: Verilog $finish
+- S i m u l a t i o n   R e p o r t: Verilator 5.032 2025-01-01
+- Verilator: $finish at 11s; walltime 958.372 s; speed 11.703 ms/s
+- Verilator: cpu 958.058 s on 1 threads; alloced 121 MB
+[WALL] tb_F1 958 s
