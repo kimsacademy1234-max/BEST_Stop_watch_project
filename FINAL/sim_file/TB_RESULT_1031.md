@@ -15,6 +15,7 @@
 | TB | `FINAL/sim_file` 그대로 (수정 없음) — 하네스 `tb_merge_harness.sv` + 그룹 TB, `FAST = 1` (README 표의 시간 단축값) |
 | 시뮬레이터 | Vivado 2022.2 xsim, `-debug off` (`run_xsim.bat` 과 같은 옵션), 한 번에 하나씩 |
 | 판정 | 콘솔 마지막 `[SUMMARY] ... => PASS` |
+| 교차 확인 | 같은 12 개를 `-debug typical` 로도 돌림 → 12 개 모두 `[SUMMARY]` 같고, 검사 줄 (`[OK]` · `[FAIL]` · `[ISSUE]`) 도 한 줄도 안 다름 |
 
 ## 2. 그룹 TB (A ~ L)
 
