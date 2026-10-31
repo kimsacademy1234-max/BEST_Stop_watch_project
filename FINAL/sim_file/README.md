@@ -22,6 +22,10 @@
 | `run_xsim.bat` | xsim 배치 실행 (`wave` 를 붙이면 GUI + 파형) |
 | `wcfg/tb_*.wcfg` | 그룹 TB 별 파형 설정 12 개 (시나리오 · 판정 · UART 줄 · FND 문자열 ASCII + 그룹 내부 신호) |
 | `make_wcfg.py` | wcfg 생성기 — 신호를 더하려면 표를 고치고 `python3 make_wcfg.py` |
+| `tb_P_present.sv` | **발표용** 대표 파형 P1 ~ P6 (`/mod` · `/btn`+`/get` · `/auto all` · ERROR · SR04 Err1~3 · DHT11 Err1~3), **시간 줄이기 없음 (실제 1 Hz)** |
+| `run_present.bat` | `run_present.bat P3 wave` — 발표용 장면 하나 + `wcfg/present/P3.wcfg` |
+| `make_wcfg_present.py` | 발표용 장면별 wcfg 생성기 (`wcfg/present/P1~P6.wcfg`) |
+| 발표 안내서 | `../../ahnsung/FINAL/ppt_make/top_파형_캡처_안내.md` — 캡처 구간 · 슬라이드 메시지 |
 
 설계 : `../source_file/merge_final/` = **v2 (B-2 · B-3, 10/31)** — 센서 오류 · 측정 전에 PC 도 `Err N` · `--%--C` (`../v2/README.md`). TB 기대값도 v2 기준.
 

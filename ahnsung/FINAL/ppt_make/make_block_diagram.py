@@ -1,5 +1,6 @@
 # merge_final_top 블록 다이어그램 (레퍼런스 BEST_stopwatch_presentation_v2.8 5~8p 포맷)
-# 사용 : python make_bd.py out.pptx
+# 사용 : python make_block_diagram.py out.pptx [팀 v2 덱 (v1 → v2 바뀌는 곳 표 1 장을 복사해 옴)]
+import copy
 import sys
 from pptx import Presentation
 from pptx.util import Inches, Pt
@@ -25,6 +26,7 @@ DOM = {
 }
 PIN = "2D3748"
 TXT = "1A202C"
+V2G = "1E8E3E"   # v2 : 센서 상태 → 전송 MUX (새 연결)
 OFF_LN, OFF_FILL, OFF_TXT, OFF_TAG, OFF_BAND = "D5D9DE", "F7F8F9", "A0A7B0", "E2E5E9", "FAFAFB"
 
 
@@ -35,9 +37,10 @@ def rgb(h):
 class Ctx:
     """한 슬라이드의 상태 : overview 면 도메인 색, 아니면 on / neu / off."""
 
-    def __init__(self, slide, overview, on=(), neu=(), accent="uart"):
+    def __init__(self, slide, overview, on=(), neu=(), accent="uart", v2=False):
         self.s = slide
         self.overview = overview
+        self.v2 = v2
         self.on = set(on)
         self.neu = set(neu)
         self.acc = DOM[accent]
@@ -88,6 +91,27 @@ def text(slide, x, y, w, h, s, size, color, bold=False, align="l", font=FONT, an
         r.font.bold = bold
         r.font.color.rgb = rgb(color)
         _ea(r, font)
+    return tb
+
+
+def text_runs(slide, x, y, w, h, runs, size, align="l", name="라벨"):
+    """한 줄에 색 · 굵기가 다른 글자 여러 개 : runs = [(글자, 색, 굵게), ...]"""
+    tb = slide.shapes.add_textbox(Inches(x), Inches(y), Inches(w), Inches(h))
+    tb.name = name
+    tf = tb.text_frame
+    tf.margin_left = tf.margin_right = tf.margin_top = tf.margin_bottom = 0
+    tf.word_wrap = True
+    tf.vertical_anchor = MSO_ANCHOR.MIDDLE
+    p = tf.paragraphs[0]
+    p.alignment = {"l": PP_ALIGN.LEFT, "c": PP_ALIGN.CENTER, "r": PP_ALIGN.RIGHT}[align]
+    for s, color, bold in runs:
+        r = p.add_run()
+        r.text = s
+        r.font.name = FONT
+        r.font.size = Pt(size)
+        r.font.bold = bold
+        r.font.color.rgb = rgb(color)
+        _ea(r, FONT)
     return tb
 
 
@@ -223,7 +247,23 @@ def label(cx, key, dom, x, y, w, s, size=11, bold=None, align="l", h=0.26):
     text(cx.s, x, y, w, h, s, size, L["lab"], bold=L["bold"] if bold is None else bold, align=align)
 
 
-def mux(cx, key, dom, x, y, w, h, title=None, inputs=()):
+def trap(slide, x, y, w, h, slant, fill, line, lw, name):
+    """MUX 기호 : 왼쪽 (입력) 이 넓고 오른쪽 (출력) 이 좁은 사다리꼴."""
+    fb = slide.shapes.build_freeform(Inches(x), Inches(y), scale=1.0)
+    pts = [(x + w, y + slant), (x + w, y + h - slant), (x, y + h), (x, y)]
+    fb.add_line_segments([(Inches(px), Inches(py)) for px, py in pts], close=True)
+    sh = fb.convert_to_shape()
+    sh.name = name
+    sh.shadow.inherit = False
+    sh.fill.solid()
+    sh.fill.fore_color.rgb = rgb(fill)
+    sh.line.color.rgb = rgb(line)
+    sh.line.width = Pt(lw)
+    return sh
+
+
+def mux(cx, key, dom, x, y, w, h, title=None, inputs=(), slant=0.25):
+    """사다리꼴 MUX · 입력 번호는 왼쪽 안쪽 · 글자 색 (상태별) 을 돌려줌."""
     st = cx.state(key)
     ln, lt = DOM[dom]
     if st == "dom":
@@ -234,11 +274,10 @@ def mux(cx, key, dom, x, y, w, h, title=None, inputs=()):
         f, l, tc = "F3F4F6", "4A5568", "4A5568"
     else:
         f, l, tc = OFF_FILL, OFF_LN, OFF_TXT
-    shape(cx.s, MSO_SHAPE.ROUNDED_RECTANGLE, x, y, w, h, f, l, 1.5, name=f"MUX {title}")
-    for (iy, s) in inputs:
-        text(cx.s, x, iy - 0.13, w, 0.26, s, 9.5, tc, bold=True, align="c")
-    if title:
-        return tc
+    trap(cx.s, x, y, w, h, slant, f, l, 1.5, name=f"MUX {title}")
+    for (iy, t) in inputs:
+        text(cx.s, x + 0.06, iy - 0.13, 0.3, 0.26, t, 9.5, tc, bold=True)
+    return tc
 
 
 # ---------------------------------------------------------------- 좌표
@@ -308,7 +347,8 @@ def diagram(cx):
     text(s, 1.82, 4.57, 2.0, 0.28, "모드 선택", 12, "4A5568", bold=True)
     tag(cx, "sw_pin", "com", 0.45, 4.92, 1.1, "sw0 ~ sw6", pin=True, size=10.5)
     wire(cx, "sw_w", "com", [(1.55, 5.08), (2.15, 5.08)])
-    mux(cx, "modemux", "com", 2.15, 4.9, 0.5, 1.08, title="MUX", inputs=[(5.08, "0"), (5.7, "1")])
+    tc = mux(cx, "modemux", "com", 2.15, 4.9, 0.5, 1.08, title="모드", inputs=[(5.08, "0"), (5.7, "1")], slant=0.12)
+    text(s, 2.65, 4.58, 0.8, 0.26, "2:1 × 7 bit", 9.5, tc, bold=True)
     wire(cx, "mux_out", "com", [(2.65, 5.43), (2.95, 5.43)])
     block(cx, "decode", "com", 2.95, 5.1, 1.0, 0.66, "모드\n디코드", tsz=11)
     label(cx, "decode", "com", 2.55, 5.84, 1.5, "→ mode_* · disp_sel", size=9.5, align="r")
@@ -322,12 +362,10 @@ def diagram(cx):
         label(cx, f"n_{k}", dom, 9.5, c + 0.05, 3.45, note, size=10)
 
     # ---------------- FND · LED
-    mux(cx, "fndmux", "disp", 13.3, 2.85, 0.7, 3.4, title="FND",
-        inputs=[(ROW_C["wts"], "0"), (ROW_C["sr04"], "1"), (ROW_C["dht"], "2")])
-    st = cx.state("fndmux")
-    mc = {"dom": DOM["disp"][0], "on": cx.acc[0], "neu": "4A5568", "off": OFF_TXT}[st]
-    text(s, 13.05, 6.28, 1.2, 0.26, "FND MUX", 11, mc, bold=True, align="c")
-    text(s, 12.75, 6.52, 1.8, 0.26, "sel = disp_sel", 10.5, mc, align="c")
+    mc = mux(cx, "fndmux", "disp", 13.3, 2.85, 0.7, 3.4, title="FND",
+             inputs=[(ROW_C["wts"], "0"), (ROW_C["sr04"], "1"), (ROW_C["dht"], "2")])
+    text(s, 13.1, 6.28, 2.2, 0.26, "FND MUX  3:1 × 25 bit", 11, mc, bold=True)
+    text(s, 13.1, 6.52, 2.2, 0.26, "sel = disp_sel (2 bit)", 10.5, mc)
     wire(cx, "fmux_out", "disp", [(14.0, 3.3), (15.4, 3.3)], label="fnd_data", lpos=(14.08, 3.03), lw=1.2, lsize=10.5)
     block(cx, "fndctrl", "disp", 15.4, 2.85, 2.0, 1.65, "FND\n컨트롤러", "SW2_FND_CONTROLLER", tsz=14)
     tag(cx, "t_dsel", "disp", 14.4, 3.56, 0.98, "disp_sel", h=0.28, size=10)
@@ -359,10 +397,11 @@ def diagram(cx):
     label(cx, "baud", "uart", 3.35, 8.56, 2.0, "→ RX · TX 공용", size=10)
 
     block(cx, "ctrl", "uart", 7.4, 7.3, 2.6, 1.5, "UART_CONTROLLER", "mode · auto · btn FSM", tsz=12.5)
+    phy_tag(cx)
     # 컨트롤러 → 위쪽 (모드 · 버튼)
     wire(cx, "w_cbit", "uart", [(7.55, 7.3), (7.55, 6.8), (1.85, 6.8), (1.85, 5.7), (2.15, 5.7)],
          label="module_control_bit[6:0]", lpos=(4.3, 6.82), lw=2.6, lsize=10)
-    wire(cx, "w_umode", "uart", [(7.85, 7.3), (7.85, 6.65), (2.4, 6.65), (2.4, 5.98)],
+    wire(cx, "w_umode", "uart", [(7.85, 7.3), (7.85, 6.65), (2.4, 6.65), (2.4, 5.92)],
          label="uart_mode", lpos=(2.5, 6.40), lw=1.2, lsize=10)
     wire(cx, "w_btn", "uart", [(8.15, 7.3), (8.15, 6.5), (4.1, 6.5), (4.1, 3.76), (4.35, 3.76)],
          label="uart_btn", lpos=(4.2, 4.05), lw=0.9, lsize=10)
@@ -372,20 +411,16 @@ def diagram(cx):
     wire(cx, "tick", "uart", [(10.45, 7.93), (10.0, 7.93)])
     # send_go
     wire(cx, "w_go", "uart", [(10.0, 7.42), (15.17, 7.42), (15.17, 7.75)],
-         label="send_go", lpos=(12.15, 7.16), lw=1.0, lsize=10)
-    # 전송 MUX
-    mux(cx, "smux", "uart", 13.3, 7.6, 0.7, 1.2, title="전송", inputs=[(8.2, "")])
-    st = cx.state("smux")
-    mc = {"dom": DOM["uart"][0], "on": cx.acc[0], "neu": "4A5568", "off": OFF_TXT}[st]
-    text(s, 13.3, 7.95, 0.7, 0.5, ["전송", "MUX"], 10, mc, bold=True, align="c")
-    tag(cx, "st_wts", "wts", 12.12, 7.66, 1.12, "*_time 0~2", h=0.28, size=9.5)
-    tag(cx, "st_dist", "sr04", 12.12, 8.06, 1.12, "distance 3", h=0.28, size=9.5)
-    tag(cx, "st_dht", "dht", 12.12, 8.46, 1.12, "hum·temp 4", h=0.28, size=9.5)
-    wire(cx, "w_sm", "uart", [(14.0, 8.2), (14.45, 8.2)])
+         label="send_go", lpos=(11.2, 7.16), lw=1.0, lsize=10)
+    # 전송 MUX : 8:1 × 24 bit (send_sel 3 bit) · 입력은 실제 출처에서 선으로
+    tc = mux(cx, "smux", "uart", SMX, SMY, SMW, SMH, title="전송", slant=SMS)
+    text(s, 12.95, 7.14, 2.4, 0.26, "전송 MUX  8:1 × 24 bit", 10.5, tc, bold=True)
+    send_inputs(cx, tc)
+    wire(cx, "w_sm", "uart", [(SMX + SMW, 8.2), (14.45, 8.2)])
     # send_sel
     wire(cx, "w_sel", "uart", [(9.7, 8.8), (9.7, 9.02), (15.17, 9.02), (15.17, 8.65)],
          label="send_sel", lpos=(10.4, 8.76), lw=1.0, lsize=10)
-    wire(cx, "w_selmux", "uart", [(13.65, 9.02), (13.65, 8.8)])
+    wire(cx, "w_selmux", "uart", [(13.65, 9.02), (13.65, SMY + SMH - SMS * (13.65 - SMX) / SMW)])
     dot(cx, "w_sel", "uart", 13.65, 9.02)
 
     block(cx, "sender", "uart", 14.45, 7.75, 1.45, 0.9, "uart_sender", "숫자 → ASCII 한 줄", tsz=11.5)
@@ -395,6 +430,52 @@ def diagram(cx):
     block(cx, "utx", "uart", 17.3, 7.89, 0.95, 0.62, "uart_tx", tsz=11.5)
     wire(cx, "w_tx", "uart", [(18.25, 8.2), (18.45, 8.2)])
     tag(cx, "tx_pin", "uart", 18.45, 8.04, 0.9, "tx")
+    if cx.v2 and cx.state("v2") != "off":
+        for y in (4.0, 5.25):   # 센서 상태가 FND 와 전송 둘 다로
+            text_runs(s, 9.15, y, 3.55, 0.28, [("상태 → FND MUX ", V2G, True), ("+ 전송 MUX", V2G, True)],
+                      10, align="r", name="라벨 v2")
+
+
+# 전송 MUX 자리 (왼쪽 x · 위 y · 폭 · 왼쪽 높이 · 기울기)
+SMX, SMY, SMW, SMH, SMS = 13.0, 7.55, 0.95, 1.4, 0.18
+
+
+def send_inputs(cx, tc):
+    """전송 MUX 입력 : 0 · 1 · 2 = wts_top 시간 3 개, 3 = sr04_top, 4 = dht11_top, 5~7 = 24'd0 (7 = ERROR).
+    센서마다 선 1 개 = MUX 입력 1 개 (v2 는 값 + 상태 비트를 한 묶음으로).
+    세로선은 아래 입력일수록 왼쪽 → 서로 안 겹침."""
+    s = cx.s
+    xw, xs, xd = 12.88, 12.78, 12.5
+    # WTS : 시간 3 개 → 0 · 1 · 2
+    wire(cx, "st_wts", "wts", [(xw, ROW_C["wts"]), (xw, 8.00), (SMX, 8.00)])
+    for y in (7.68, 7.84):
+        wire(cx, "st_wts", "wts", [(xw, y), (SMX, y)])
+        dot(cx, "st_wts", "wts", xw, y)
+    dot(cx, "st_wts", "wts", xw, ROW_C["wts"])
+    wire(cx, "st_dist", "sr04", [(xs, ROW_C["sr04"]), (xs, 8.22), (SMX, 8.22)])
+    dot(cx, "st_dist", "sr04", xs, ROW_C["sr04"])
+    wire(cx, "st_dht", "dht", [(xd, ROW_C["dht"]), (xd, 8.44), (SMX, 8.44)])
+    dot(cx, "st_dht", "dht", xd, ROW_C["dht"])
+    # 핀 번호 · 이름 (MUX 안쪽)
+    g = V2G if cx.state("smux") != "off" else tc
+    pins = [(7.68, [("0 sw", tc)]), (7.84, [("1 tm", tc)]), (8.00, [("2 wt", tc)]),
+            (8.22, [("3 거리", tc)] + ([("·상태", g)] if cx.v2 else [])),
+            (8.44, [("4 온습도", tc)] + ([("·상태", g)] if cx.v2 else [])),
+            (8.72, [("5~7 = 0", tc)])]
+    for y, runs in pins:
+        text_runs(s, SMX + 0.05, y - 0.1, 0.88, 0.2, [(t, c, True) for t, c in runs], 8.5, name="MUX 핀")
+
+
+def phy_tag(cx):
+    """디바운서 출력 phy_btn → UART_CONTROLLER (i_btn_R/L/U/D).
+    같은 clk 에 물리 버튼이 있으면 컨트롤러가 uart_btn 을 막고 저장 → 다음 clk 에 출력 (물리 먼저)."""
+    tag(cx, "t_phy", "com", 6.42, 8.2, 0.98, "phy_btn", h=0.28, size=10)
+    label(cx, "t_phy", "com", 4.32, 8.21, 2.0, "같은 clk 면 물리 먼저", size=9.5, align="r")
+
+
+def v2_note(cx, head, body):
+    text_runs(cx.s, 0.92, 10.48, 16.8, 0.32, [(head, V2G, True), ("  " + body, "4A5568", False)], 11,
+              name="라벨 v2")
 
 
 # ---------------------------------------------------------------- 슬라이드 틀
@@ -430,7 +511,10 @@ def steps(cx, items):
         y = 9.42 + 0.5 * row
         b = shape(cx.s, MSO_SHAPE.OVAL, x, y, 0.36, 0.36, a, None, name=f"단계표 {i + 1}")
         set_text(b, [str(i + 1)], "FFFFFF", [13])
-        text(cx.s, x + 0.45, y - 0.01, 5.6, 0.38, t, 13.5, "262626", bold=True)
+        if isinstance(t, list):   # [(글자, 색), ...]
+            text_runs(cx.s, x + 0.45, y - 0.01, 5.65, 0.38, [(a_, c_, True) for a_, c_ in t], 13.5)
+        else:
+            text(cx.s, x + 0.45, y - 0.01, 5.6, 0.38, t, 13.5, "262626", bold=True)
 
 
 def legend(cx):
@@ -468,7 +552,7 @@ MODESEL = ["modemux", "mux_out", "decode", "selbus"]
 
 def btn_slide(k, dom):
     on = RX + ["w_btn", "or", "orout", "bus", f"br_{k}", f"sel_{k}", f"and_{k}", f"a2m_{k}",
-               f"band_{k}", k, f"o_{k}", f"n_{k}"] + FND
+               f"band_{k}", k, f"o_{k}", f"n_{k}", "t_phy"] + FND
     on += {"wts": ["t_lwts"], "sr04": ["t_lsr"], "dht": ["t_ldht"]}[k]
     if k == "wts":
         on += ["t_cursor"]
@@ -481,7 +565,26 @@ SLIDES = [
          title="Top 블록 다이어그램 — UART 명령에서 FND · LED · TX 까지",
          summary="명령은 RX → 디코더 → 컨트롤러에서 갈라짐 · 모드 비트 / 버튼 / 전송 요청으로 각 모듈 · 화면 · TX 까지"),
 
-    dict(accent="uart", section="02  시스템 구조 · 명령별 흐름",
+    dict(accent="disp", v2=True, section="02  시스템 구조 · 보드 입력",
+         title="스위치 · 버튼 흐름 — /mod 전에는 보드 입력으로 조작",
+         summary="리셋 후 첫 /mod 전까지 sw0 ~ sw6 이 모드 결정 · 버튼 4 개는 디바운스 → OR → 지금 화면 모듈의 AND 만 통과",
+         on=CLK + ["btn_pin", "deb", "phy", "or", "orout", "bus", "br_wts", "br_sr04", "br_dht",
+                   "sel_wts", "sel_sr04", "sel_dht", "and_wts", "and_sr04", "and_dht",
+                   "a2m_wts", "a2m_sr04", "a2m_dht", "sw_pin", "sw_w", "modemux", "mux_out", "decode", "selbus"]
+            + MODS + FND + ["t_cursor", "t_set2", "t_lwts", "t_lsr", "t_ldht"],
+         neu=["t_phy"],
+         ann=[(0.45, 5.28, 1.25, "첫 /mod 전")],
+         badges=[(1.22, 4.5), (3.5, 4.68), (3.45, 2.72), (4.05, 2.95), (5.45, 2.68), (14.2, 2.6)],
+         steps=["sw0 ~ sw6 → 모드 선택 MUX 0 번 (uart_mode = 0)",
+                "모드 디코드 : sw6 온습도 > sw5 거리 > WTS",
+                "btn R · L · U · D → 디바운서 (4 kHz × 8 샘플)",
+                "OR : 물리 btn | uart_btn → 같은 버튼 tick",
+                "AND : 지금 화면 mode_* 모듈만 통과",
+                "disp_sel → FND MUX · LED (sw15 거리 막대)"],
+         v2_note=("참고", "sw0 ~ sw4 → WTS 기능 (시계 · 스톱워치 · 설정 · 12/24 · 타이머)  ·  "
+                          "첫 /mod 를 받으면 스위치 무시 · btnC 리셋하면 다시 스위치  →  다음 장 /mod 흐름")),
+
+    dict(accent="uart", v2=True, section="02  시스템 구조 · 명령별 흐름",
          title="/mod 흐름 — 화면 · 버튼 대상 바꾸기",
          summary="첫 /mod 부터 스위치 대신 UART 비트가 모드 결정 · [6:5] 로 버튼 대상과 FND · LED 화면이 같이 바뀜",
          on=RX + ["w_cbit", "w_umode", "modemux", "mux_out", "decode", "selbus", "sel_wts", "sel_sr04", "sel_dht",
@@ -489,6 +592,7 @@ SLIDES = [
          neu=CLK + MODS + ["deb", "btn_pin", "phy", "or", "orout", "bus", "br_wts", "br_sr04", "br_dht",
                            "and_wts", "and_sr04", "and_dht", "a2m_wts", "a2m_sr04", "a2m_dht",
                            "t_cursor", "t_set2", "t_lwts", "t_lsr", "t_ldht"],
+         v2_note=("v2", "이 흐름은 v1 과 같음 · 바뀐 곳은 전송 MUX 입력 3 · 4 (거리·상태 · 온습도·상태) 뿐  →  /get · /auto (v2) 장 참고"),
          ann=[(0.45, 5.28, 1.25, "/mod 후 무시")],
          badges=[(6.66, 7.08), (7.0, 8.55), (1.3, 6.05), (3.5, 4.68), (9.1, 3.55), (14.2, 2.6)],
          steps=["rx → uart_rx → FIFO → 디코더 : \"/mod \" + 4 글자",
@@ -502,6 +606,8 @@ SLIDES = [
          title="/btn 흐름 ① WTS 화면 — /btn R · L · U · D",
          summary="UART 버튼은 물리 버튼과 OR → mode_wts AND 만 통과 · 같은 clk 에 겹치면 물리 버튼 먼저",
          btn="wts",
+         v2=True,
+         v2_note=("v2", "이 흐름은 v1 과 같음 · 바뀐 곳은 전송 MUX 입력 3 · 4 (거리·상태 · 온습도·상태) 뿐  →  /get · /auto (v2) 장 참고"),
          badges=[(6.66, 7.08), (8.3, 6.12), (4.05, 2.95), (5.45, 2.68), (9.1, 2.95), (14.2, 2.6)],
          steps=["디코더 : \"/btn \" + 1 글자 (R · L · U · D)",
                 "컨트롤러 : uart_btn 1 clk 펄스 (물리 버튼 clk 엔 대기)",
@@ -514,6 +620,8 @@ SLIDES = [
          title="/btn 흐름 ② 거리 화면 — /btn R 측정 · /btn U 자동",
          summary="/mod dist 상태에서 R · U 만 SR04 로 · trig 펄스 → echo 폭 측정 → 0.1 cm 표시 · 막대 LED",
          btn="sr04",
+         v2=True,
+         v2_note=("v2", "이 흐름은 v1 과 같음 · 바뀐 곳은 전송 MUX 입력 3 · 4 (거리·상태 · 온습도·상태) 뿐  →  /get · /auto (v2) 장 참고"),
          badges=[(6.66, 7.08), (8.3, 6.12), (4.05, 2.95), (5.45, 3.93), (9.1, 4.2), (14.2, 2.6)],
          steps=["디코더 : \"/btn R\" 또는 \"/btn U\"",
                 "컨트롤러 : uart_btn 1 clk 펄스 (물리 버튼 clk 엔 대기)",
@@ -526,6 +634,8 @@ SLIDES = [
          title="/btn 흐름 ③ 온습도 화면 — /btn R 측정 · /btn U 자동",
          summary="/mod temp 상태에서 R · U 만 DHT11 로 · 단선 dht11_io 로 40 비트 수신 → 습도.온도 표시",
          btn="dht",
+         v2=True,
+         v2_note=("v2", "이 흐름은 v1 과 같음 · 바뀐 곳은 전송 MUX 입력 3 · 4 (거리·상태 · 온습도·상태) 뿐  →  /get · /auto (v2) 장 참고"),
          badges=[(6.66, 7.08), (8.3, 6.12), (4.05, 2.95), (5.45, 5.18), (9.1, 5.45), (14.2, 2.6)],
          steps=["디코더 : \"/btn R\" 또는 \"/btn U\"",
                 "컨트롤러 : uart_btn 1 clk 펄스 (물리 버튼 clk 엔 대기)",
@@ -539,7 +649,7 @@ SLIDES = [
          summary="컨트롤러가 현재 모드로 send_sel 을 정하고 send_go 1 펄스 · sender 가 그 순간 값을 ASCII 한 줄로 TX",
          on=RX + TX + ["smux", "st_wts", "st_dist", "st_dht", "w_sm", "w_selmux"],
          neu=CLK + MODS + FND + ["t_cursor", "t_set2", "t_lwts", "t_lsr", "t_ldht"],
-         badges=[(6.66, 7.08), (9.3, 9.0), (11.7, 8.5), (14.15, 7.0), (14.8, 8.62), (18.3, 7.55)],
+         badges=[(6.66, 7.08), (9.3, 9.0), (12.06, 8.56), (15.28, 7.0), (14.8, 8.62), (18.3, 7.55)],
          steps=["디코더 : \"/get \" + Enter",
                 "컨트롤러 : /mod 모드 → send_sel (온습도 4 · 거리 3 · …)",
                 "전송 MUX : *_time · distance · hum·temp 중 선택",
@@ -552,7 +662,7 @@ SLIDES = [
          summary="컨트롤러가 AUTO 상태로 1 Hz tick 을 켬 · 매 tick 마다 정해진 (all 이면 0→4 순환) 데이터를 한 줄씩 TX",
          on=RX + TX + ["smux", "st_wts", "st_dist", "st_dht", "w_sm", "w_selmux", "tick"],
          neu=CLK + MODS + FND + ["t_cursor", "t_set2", "t_lwts", "t_lsr", "t_ldht"],
-         badges=[(6.66, 7.08), (7.0, 8.55), (10.55, 8.32), (11.7, 8.5), (14.8, 8.62), (18.3, 7.55)],
+         badges=[(6.66, 7.08), (7.0, 8.55), (10.55, 8.32), (12.06, 8.56), (14.8, 8.62), (18.3, 7.55)],
          steps=["디코더 : \"/auto \" + 3 글자 (_sw _tm _wh dis tem all off)",
                 "컨트롤러 : AUTO 상태 · sender_tick 켜기",
                 "1 Hz 마다 send_sel · all = 0→1→2→3→4 순환",
@@ -587,21 +697,83 @@ SLIDES = [
                 "send_sel = 7 → sender 가 \"ERROR\" 글자 생성",
                 "FIFO_TX → uart_tx → tx : \"ERROR\" CR LF",
                 "모드 · 버튼 · 화면 그대로 · 다음 \"/\" 부터 다시"]),
+
+    # ---------------- v2 (팀 덱 FINAL/block_diagram 10 · 11 · 16 · 17 장 문구)
+    dict(copy=10),   # v1 → v2 바뀌는 곳 (표 · 그림 없음) : 팀 덱에서 그대로
+
+    dict(overview=True, v2=True, accent="err", chip="C00000", section="02  시스템 구조  ·  v2",
+         title="Top 블록 다이어그램 — UART 명령에서 FND · LED · TX 까지  (v2)",
+         summary="명령은 RX → 디코더 → 컨트롤러에서 갈라짐 · 모드 비트 / 버튼 / 전송 요청으로 각 모듈 · 화면 · TX 까지",
+         v2_note=("v2", "센서 상태 비트를 전송 MUX 입력 3 · 4 에 같이 실음  (3 = {13'd0, 상태, 거리} · "
+                        "4 = {4'd0, err, dashes, 상태, 습도, 온도})  ·  블록 · 포트 · 24 bit 폭은 그대로")),
+
+    dict(accent="uart", v2=True, section="02  시스템 구조 · 명령별 흐름  ·  v2",
+         title="/get 흐름 — 지금 화면 값 1 회 전송  (v2)",
+         summary="전송 MUX 에 상태 비트를 같이 실음 (24 비트의 빈 윗비트) → sender 가 상태를 보고 Err N · --%--C 글자",
+         on=RX + TX + ["smux", "st_wts", "st_dist", "st_dht", "w_sm", "w_selmux", "v2"],
+         neu=CLK + MODS + FND + ["t_cursor", "t_set2", "t_lwts", "t_lsr", "t_ldht"],
+         badges=[(6.66, 7.08), (9.3, 9.0), (12.06, 8.56), (15.28, 7.0), (14.8, 8.62), (18.3, 7.55)],
+         steps=["디코더 : \"/get \" + Enter",
+                "컨트롤러 : /mod 모드 → send_sel (온습도 4 · 거리 3 · …)",
+                "전송 MUX : *_time · 거리·상태 · 온습도·상태",
+                "send_go 1 펄스 → sender 가 그 순간 값 캡처",
+                [("sender : \"045cm\" · \"55%24C\"", "262626"), (" + \"Err 2\" · \"--%--C\"", V2G)],
+                "FIFO_TX → uart_tx → tx · /auto 중엔 /get 무시"],
+         v2_note=("v2", "전송 MUX 3 = {13'd0, 상태, 거리} · 4 = {4'd0, err, dashes, 상태, 습도, 온도}  →  "
+                        "PC 도 Err 1 · Err 2 · Err 3 · --%--C")),
+
+    dict(accent="uart", v2=True, section="02  시스템 구조 · 명령별 흐름  ·  v2",
+         title="/auto 흐름 — 1 초마다 자동 전송  (v2)",
+         summary="컨트롤러가 AUTO 상태로 1 Hz tick 을 켬 · 매 tick 마다 정해진 (all 이면 0→4 순환) 데이터를 한 줄씩 TX",
+         on=RX + TX + ["smux", "st_wts", "st_dist", "st_dht", "w_sm", "w_selmux", "tick", "v2"],
+         neu=CLK + MODS + FND + ["t_cursor", "t_set2", "t_lwts", "t_lsr", "t_ldht"],
+         badges=[(6.66, 7.08), (7.0, 8.55), (10.55, 8.32), (12.06, 8.56), (14.8, 8.62), (18.3, 7.55)],
+         steps=["디코더 : \"/auto \" + 3 글자 (_sw _tm _wh dis tem all off)",
+                "컨트롤러 : AUTO 상태 · sender_tick 켜기",
+                "1 Hz 마다 send_sel · all = 0→1→2→3→4 순환",
+                "전송 MUX (상태 비트 포함) → sender (busy 면 저장 후 이어서)",
+                "FIFO_TX → uart_tx → tx 한 줄씩",
+                "/auto off → 멈춤 · FND 화면은 그대로 (/mod 와 별개)"],
+         v2_note=("v2", "/auto dis · tem · all 의 거리 · 온습도 줄도 /get 과 같은 길  →  "
+                        "오류면 Err N · 측정 전이면 --%--C")),
 ]
 
 
-def build(out):
+def copy_slide(prs, src, n, page):
+    """다른 덱 (src) 의 n 장을 도형 그대로 복사 (그림 · 차트 없는 장 전용) · 쪽 번호만 새로."""
+    ss = src.slides[n - 1]
+    d = prs.slides.add_slide(prs.slide_layouts[6])
+    tree = d.shapes._spTree
+    for el in list(tree)[2:]:          # nvGrpSpPr · grpSpPr 만 남김
+        tree.remove(el)
+    for el in list(ss.shapes._spTree)[2:]:
+        tree.append(copy.deepcopy(el))
+    hit = [sh for sh in d.shapes if sh.has_text_frame and sh.text_frame.text == str(n)
+           and abs(sh.left - Inches(18.2)) < Inches(0.05)]
+    assert len(hit) == 1, (n, len(hit))
+    hit[0].text_frame.paragraphs[0].runs[0].text = f"{page:02d}"
+
+
+def build(out, v2_src=None):
     prs = Presentation()
     prs.slide_width = Inches(20)
     prs.slide_height = Inches(11.25)
-    for i, d in enumerate(SLIDES, 1):
+    src = Presentation(v2_src) if v2_src else None
+    page = 0
+    for d in SLIDES:
+        if "copy" in d:
+            if src:
+                page += 1
+                copy_slide(prs, src, d["copy"], page)
+            continue
+        page += 1
         acc = DOM[d["accent"]][0]
-        s = frame(prs, d["section"], d["title"], d["summary"], d.get("chip", acc), i)
+        s = frame(prs, d["section"], d["title"], d["summary"], d.get("chip", acc), page)
         if d.get("btn"):
             on, neu = btn_slide(d["btn"], d["accent"])
         else:
             on, neu = d.get("on", ()), d.get("neu", ())
-        cx = Ctx(s, d.get("overview", False), on, neu, d["accent"])
+        cx = Ctx(s, d.get("overview", False), on, neu, d["accent"], v2=d.get("v2", False))
         cx.notes = d.get("notes", {})
         if d.get("btn"):
             for k in ("wts", "sr04", "dht"):
@@ -615,8 +787,11 @@ def build(out):
         else:
             badges(cx, d["badges"])
             steps(cx, d["steps"])
+        if d.get("v2_note"):
+            v2_note(cx, *d["v2_note"])
     prs.save(out)
 
 
 if __name__ == "__main__":
-    build(sys.argv[1])
+    # python make_block_diagram.py out.pptx [FINAL/block_diagram/merge_final_block_diagram.pptx]
+    build(sys.argv[1], sys.argv[2] if len(sys.argv) > 2 else None)

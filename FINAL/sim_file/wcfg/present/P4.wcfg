@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="tb_P_present_behav.wdb" id="1">
+         <top_modules>
+            <top_module name="glbl" />
+            <top_module name="tb_P_present" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <zoom_setting>
+      <ZoomStartTime time="500000000000fs"></ZoomStartTime>
+      <ZoomEndTime time="34500000000000fs"></ZoomEndTime>
+      <Cursor1Time time="0fs"></Cursor1Time>
+   </zoom_setting>
+   <column_width_setting>
+      <NameColumnWidth column_width="250"></NameColumnWidth>
+      <ValueColumnWidth column_width="130"></ValueColumnWidth>
+   </column_width_setting>
+   <WVObjectSize size="3" />
+   <wvobject fp_name="group1" type="group">
+      <obj_property name="label">TB : step / PC command (CR = #)</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <wvobject fp_name="/tb_P_present/W_STEP" type="array">
+         <obj_property name="ElementShortName">W_STEP[127:0]</obj_property>
+         <obj_property name="ObjectShortName">W_STEP[127:0]</obj_property>
+         <obj_property name="Radix">ASCIIRADIX</obj_property>
+         <obj_property name="CustomSignalColor">#FFFF00</obj_property>
+         <obj_property name="UseCustomSignalColor">true</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_P_present/h/W_CMD" type="array">
+         <obj_property name="ElementShortName">W_CMD[127:0]</obj_property>
+         <obj_property name="ObjectShortName">W_CMD[127:0]</obj_property>
+         <obj_property name="Radix">ASCIIRADIX</obj_property>
+         <obj_property name="CustomSignalColor">#00FFFF</obj_property>
+         <obj_property name="UseCustomSignalColor">true</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_P_present/h/rx" type="logic">
+         <obj_property name="ElementShortName">rx</obj_property>
+         <obj_property name="ObjectShortName">rx</obj_property>
+         <obj_property name="CustomSignalColor">#00FFFF</obj_property>
+         <obj_property name="UseCustomSignalColor">true</obj_property>
+      </wvobject>
+   </wvobject>
+   <wvobject fp_name="group2" type="group">
+      <obj_property name="label">UART RX / decoder -&gt; error</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <wvobject fp_name="/tb_P_present/h/dut/U_UART/w_rx_done" type="logic">
+         <obj_property name="ElementShortName">w_rx_done</obj_property>
+         <obj_property name="ObjectShortName">w_rx_done</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_P_present/W_RX" type="array">
+         <obj_property name="ElementShortName">W_RX[7:0]</obj_property>
+         <obj_property name="ObjectShortName">W_RX[7:0]</obj_property>
+         <obj_property name="Radix">ASCIIRADIX</obj_property>
+         <obj_property name="CustomSignalColor">#00FFFF</obj_property>
+         <obj_property name="UseCustomSignalColor">true</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_P_present/DEC_STATE" type="array">
+         <obj_property name="ElementShortName">DEC_STATE[63:0]</obj_property>
+         <obj_property name="ObjectShortName">DEC_STATE[63:0]</obj_property>
+         <obj_property name="Radix">ASCIIRADIX</obj_property>
+         <obj_property name="CustomSignalColor">#FFFF00</obj_property>
+         <obj_property name="UseCustomSignalColor">true</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_P_present/h/dut/U_UART/U_ASCII_DECODER/c_state" type="array">
+         <obj_property name="ElementShortName">c_state[3:0]</obj_property>
+         <obj_property name="ObjectShortName">c_state[3:0]</obj_property>
+         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_P_present/h/dut/U_UART/w_ascii" type="array">
+         <obj_property name="ElementShortName">w_ascii[39:0]</obj_property>
+         <obj_property name="ObjectShortName">w_ascii[39:0]</obj_property>
+         <obj_property name="Radix">ASCIIRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_P_present/h/dut/U_UART/w_handshake" type="logic">
+         <obj_property name="ElementShortName">w_handshake</obj_property>
+         <obj_property name="ObjectShortName">w_handshake</obj_property>
+         <obj_property name="CustomSignalColor">#FFFF00</obj_property>
+         <obj_property name="UseCustomSignalColor">true</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_P_present/h/dut/U_UART/w_error" type="logic">
+         <obj_property name="ElementShortName">w_error</obj_property>
+         <obj_property name="ObjectShortName">w_error</obj_property>
+         <obj_property name="CustomSignalColor">#FF5050</obj_property>
+         <obj_property name="UseCustomSignalColor">true</obj_property>
+      </wvobject>
+   </wvobject>
+   <wvobject fp_name="group3" type="group">
+      <obj_property name="label">UART TX : send_go / sel / data -&gt; tx -&gt; line</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <wvobject fp_name="/tb_P_present/h/dut/U_UART/w_send_go" type="logic">
+         <obj_property name="ElementShortName">w_send_go</obj_property>
+         <obj_property name="ObjectShortName">w_send_go</obj_property>
+         <obj_property name="CustomSignalColor">#FFFF00</obj_property>
+         <obj_property name="UseCustomSignalColor">true</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_P_present/h/dut/U_UART/o_send_sel" type="array">
+         <obj_property name="ElementShortName">o_send_sel[2:0]</obj_property>
+         <obj_property name="ObjectShortName">o_send_sel[2:0]</obj_property>
+         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_P_present/h/dut/U_UART/w_send_data" type="array">
+         <obj_property name="ElementShortName">w_send_data[23:0]</obj_property>
+         <obj_property name="ObjectShortName">w_send_data[23:0]</obj_property>
+         <obj_property name="Radix">HEXRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_P_present/h/dut/U_UART/w_tx_push_data" type="array">
+         <obj_property name="ElementShortName">w_tx_push_data[7:0]</obj_property>
+         <obj_property name="ObjectShortName">w_tx_push_data[7:0]</obj_property>
+         <obj_property name="Radix">ASCIIRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_P_present/h/tx" type="logic">
+         <obj_property name="ElementShortName">tx</obj_property>
+         <obj_property name="ObjectShortName">tx</obj_property>
+         <obj_property name="CustomSignalColor">#00FFFF</obj_property>
+         <obj_property name="UseCustomSignalColor">true</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_P_present/h/W_LINE" type="array">
+         <obj_property name="ElementShortName">W_LINE[127:0]</obj_property>
+         <obj_property name="ObjectShortName">W_LINE[127:0]</obj_property>
+         <obj_property name="Radix">ASCIIRADIX</obj_property>
+         <obj_property name="CustomSignalColor">#FFFF00</obj_property>
+         <obj_property name="UseCustomSignalColor">true</obj_property>
+      </wvobject>
+   </wvobject>
+</wave_config>
