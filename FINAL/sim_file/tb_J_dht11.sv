@@ -58,7 +58,7 @@ module tb_J_dht11;
         bit      ok;
         integer  n0, r0;
         realtime d, T, t2, tr;
-        real     hi0s[5], hi1s[5];
+        integer  hi0s[5], hi1s[5];
 
         D     = h.DH_US;
         LINE8 = 8 * 10 * h.TX_BIT_NS;
@@ -103,14 +103,15 @@ module tb_J_dht11;
             h.begin_sc("J4", "bit HIGH length threshold (40 us)", "0-bit HIGH 26/28/38 us, 1-bit HIGH 43/70 us",
                        "decoded right (55 / 24, checksum OK)");
             start_temp();
-            hi0s = '{26, 28, 38, 26, 26};
-            hi1s = '{70, 70, 70, 43, 70};
+            // (xelab 2020.2 는 initial 안 로컬 real 배열이 있으면 EXCEPTION_ACCESS_VIOLATION → integer 배열 · 한 칸씩 대입)
+            hi0s[0] = 26; hi0s[1] = 28; hi0s[2] = 38; hi0s[3] = 26; hi0s[4] = 26;
+            hi1s[0] = 70; hi1s[1] = 70; hi1s[2] = 70; hi1s[3] = 43; hi1s[4] = 70;
             for (int i = 0; i < 5; i++) begin
                 h.dh_hi0 = hi0s[i];
                 h.dh_hi1 = hi1s[i];
                 measure(ok);
                 h.check($sformatf("J4-%0d", i + 1), ok && (h.dht_st == 0) && (h.dut.w_humidity == 55) && (h.dut.w_temperature == 24),
-                        $sformatf("0-bit %0.0f us, 1-bit %0.0f us", hi0s[i], hi1s[i]), "status 0, 55 / 24", st());
+                        $sformatf("0-bit %0d us, 1-bit %0d us", hi0s[i], hi1s[i]), "status 0, 55 / 24", st());
             end
             h.dh_default();
         end
@@ -128,18 +129,20 @@ module tb_J_dht11;
         // ---------------------------------------------------------------- J6
         if (h.run("J6")) begin
             h.begin_sc("J6", "checksum error keeps last good value", "55/24 OK -> checksum +1 -> 60/25 OK",
-                       "Err3 + LD1, UART still 55%24C ; then 6025, LD1 0");
+                       "Err3 + LD1, UART Err 3 (v2) ; then 6025, LD1 0, UART 60%25C");
             start_temp();
             measure(ok);
             h.dh_chk_off = 1;
             measure(ok);
             h.check("J6-1", ok && (h.dht_st == 3) && (h.led[1] == 1) && (h.led[2] == 0), "bad checksum", "status 3, LD1 1, LD2 0", st());
             uget_line(s);
-            h.check("J6-2", s == "55%24C", "UART during error", "55%24C (last good)", {"\"", s, "\""});
+            h.check("J6-2", s == "Err 3", "UART during error", "Err 3 (v2)", {"\"", s, "\""});
             h.dh_chk_off = 0;
             h.dh_data = '{8'd60, 8'd0, 8'd25, 8'd0};
             measure(ok);
-            h.check("J6-3", ok && (h.dht_st == 0) && (h.dut.w_dht_fnd_data == 6025) && (h.led[1] == 0), "next good", "6025, LD1 0", st());
+            uget_line(s);
+            h.check("J6-3", ok && (h.dht_st == 0) && (h.dut.w_dht_fnd_data == 6025) && (h.led[1] == 0) && (s == "60%25C"), "next good",
+                    "6025, LD1 0, UART 60%25C", {st(), ", \"", s, "\""});
             h.dh_default();
         end
 
@@ -150,8 +153,10 @@ module tb_J_dht11;
             h.dh_mode = h.DH_NONE;
             measure(ok);
             d = h.t_dht_done - h.t_oe_f;
-            h.check("J7-1", ok && (h.dht_st == 1) && (d >= 228 * D) && (d <= 233 * D), "sensor silent",
-                    $sformatf("status 1 at %0.1f us", 230 * D / 1000.0), $sformatf("status %0d at %0.1f us", h.dht_st, d / 1000.0));
+            uget_line(s);                                    // (v2) UART 도 "Err 1"
+            h.check("J7-1", ok && (h.dht_st == 1) && (d >= 228 * D) && (d <= 233 * D) && (s == "Err 1"), "sensor silent",
+                    $sformatf("status 1 at %0.1f us, UART Err 1", 230 * D / 1000.0),
+                    $sformatf("status %0d at %0.1f us, \"%s\"", h.dht_st, d / 1000.0, s));
             h.dh_mode = h.DH_STUCK;
             measure(ok);
             d = h.t_dht_done - h.t_oe_f;
@@ -167,8 +172,10 @@ module tb_J_dht11;
             h.dh_nbits = 20;
             measure(ok);
             d = h.t_dht_done - h.t_dh_last_rise;
-            h.check("J8-1", ok && (h.dht_st == 2) && (d >= 199 * D) && (d <= 203 * D), "20 bits then silence",
-                    $sformatf("status 2 at %0.1f us", 200 * D / 1000.0), $sformatf("status %0d at %0.1f us", h.dht_st, d / 1000.0));
+            uget_line(s);                                    // (v2) UART 도 "Err 2"
+            h.check("J8-1", ok && (h.dht_st == 2) && (d >= 199 * D) && (d <= 203 * D) && (s == "Err 2"), "20 bits then silence",
+                    $sformatf("status 2 at %0.1f us, UART Err 2", 200 * D / 1000.0),
+                    $sformatf("status %0d at %0.1f us, \"%s\"", h.dht_st, d / 1000.0, s));
             h.dh_default();
         end
 
@@ -230,14 +237,14 @@ module tb_J_dht11;
 
         // ---------------------------------------------------------------- J12
         if (h.run("J12")) begin
-            h.begin_sc("J12", "before the first measurement", "reset -> /mod temp", "FND ----, UART 00%00C");
+            h.begin_sc("J12", "before the first measurement", "reset -> /mod temp", "FND ----, UART --%--C (v2)");
             h.dh_default();
             h.do_reset();
             h.mod("temp");
             h.fnd_read(s);
             h.check("J12-1", (s == "----") && (h.dut.w_dht_dashes == 1), "FND", "\"----\"", {"\"", s, "\""});
             uget_line(s);
-            h.check("J12-2", s == "00%00C", "UART /get", "00%00C", {"\"", s, "\""});
+            h.check("J12-2", s == "--%--C", "UART /get", "--%--C (v2)", {"\"", s, "\""});
         end
 
         // ---------------------------------------------------------------- J13

@@ -132,6 +132,21 @@ module tb_merge_harness #(
     integer sc_fail0 = 0, sc_chk0 = 0;
     string  sc_result[$];
 
+    // 파형용 ASCII 레지스터 (wcfg 에서 ASCII radix 로 보임) — 시뮬 동작에는 영향 없음
+    reg [8*8-1:0]  W_SC   = 0;   // 지금 시나리오 ID ("D3")
+    reg [8*8-1:0]  W_CHK  = 0;   // 마지막 검사 ID ("D3-1")
+    reg [8*8-1:0]  W_RES  = 0;   // 마지막 검사 결과 ("OK" / "FAIL" / "ISSUE")
+    reg [8*16-1:0] W_CMD  = 0;   // PC → FPGA 로 마지막에 보낸 문자열 (CR = '#')
+    reg [8*16-1:0] W_LINE = 0;   // FPGA → PC 로 마지막에 받은 줄 (CR LF 뺌)
+    reg [8*8-1:0]  W_FND  = 0;   // FND 표시 문자열 (2 ms 마다 갱신, "12.34" · "Err1" · "----")
+
+    function automatic [8*16-1:0] s2v(input string s);   // 오른쪽 정렬, 넘치면 앞 글자 잘림
+        reg [8*16-1:0] v;
+        v = 0;
+        for (int i = 0; i < s.len(); i++) v = {v[8*15-1:0], s[i]};
+        return v;
+    endfunction
+
     function automatic string ts();
         return $sformatf("[%12.6f ms]", $realtime / 1.0e6);
     endfunction
@@ -193,6 +208,7 @@ module tb_merge_harness #(
     task automatic begin_sc(input string id, input string title, input string plan, input string expect_s);
         end_sc();
         cur_sc   = id;
+        W_SC     = s2v(id);
         sc_fail0 = n_fail;
         sc_chk0  = n_chk;
         $display("");
@@ -205,6 +221,8 @@ module tb_merge_harness #(
 
     task automatic check(input string id, input bit ok, input string desc, input string exp_s, input string got_s);
         n_chk++;
+        W_CHK = s2v(id);
+        W_RES = s2v(ok ? "OK" : "FAIL");
         if (ok) begin
             log("OK", $sformatf("%s %s | exp %s | got %s", padn(id, 6), desc, exp_s, got_s));
         end else begin
@@ -217,6 +235,8 @@ module tb_merge_harness #(
     // ⚠ 항목 : ok = 스펙대로 동작. 아니면 ISSUE (FAIL 과 따로 셈)
     task automatic spec(input string id, input bit ok, input string desc, input string exp_s, input string got_s);
         n_chk++;
+        W_CHK = s2v(id);
+        W_RES = s2v(ok ? "OK" : "ISSUE");
         if (ok) begin
             log("OK", $sformatf("%s %s | exp %s | got %s", padn(id, 6), desc, exp_s, got_s));
         end else begin
@@ -427,11 +447,13 @@ module tb_merge_harness #(
     endtask
 
     task automatic uart_send(input string s);
+        W_CMD = s2v(s);
         for (int i = 0; i < s.len(); i++) uart_byte(s[i]);
         #(2 * US);
     endtask
 
     task automatic uart_cr();
+        W_CMD = {W_CMD[8*15-1:0], "#"};
         uart_byte(8'h0D);
         #(2 * US);
     endtask
@@ -470,10 +492,14 @@ module tb_merge_harness #(
         return 8'h30 + v;
     endfunction
 
+    // (v2, 10/31) 거리 d[10:9] = 상태 (00 정상) → "Err N" / 온습도 d[19] err → "Err N", d[18] dashes → "--%--C"
     function automatic string fmt_line(input [2:0] sel, input [23:0] d);
         integer hh, mi, se, cs, cm, hu, te;
         hh = d[23:19]; mi = d[18:13]; se = d[12:7]; cs = d[6:0];
         cm = d[8:0];   hu = d[15:8];  te = d[7:0];
+        if (sel == 3'd3 && d[10:9] != 2'b00) return $sformatf("Err %0d", d[10:9]);
+        if (sel == 3'd4 && d[19])            return $sformatf("Err %0d", d[17:16]);
+        if (sel == 3'd4 && d[18])            return "--%--C";
         case (sel)
             3'd0, 3'd1, 3'd2:
                 return $sformatf("%c%c:%c%c:%c%c.%c%c", dg(hh / 10), dg(hh % 10), dg(mi / 10), dg(mi % 10),
@@ -514,6 +540,7 @@ module tb_merge_harness #(
                 if (s.len() > 0 && s[s.len() - 1] == 8'h0D) s = s.substr(0, s.len() - 2);
                 else n_bad_line++;
                 lines.push_back(s);
+                W_LINE = s2v(s);
                 line_t0.push_back(cur_t0);
                 line_t1.push_back($realtime + TX_BIT_NS / 2);
                 if (exp_q.size() > 0) begin
@@ -582,6 +609,12 @@ module tb_merge_harness #(
         return is_dig(s[0]) && is_dig(s[1]) && is_dig(s[2]) && (s[3] == "c") && (s[4] == "m");
     endfunction
 
+    // (v2) 센서 오류 줄 "Err 1" ~ "Err 3"
+    function automatic bit is_err(input string s);
+        if (s.len() != 5) return 0;
+        return (s.substr(0, 3) == "Err ") && (s[4] >= "1") && (s[4] <= "3");
+    endfunction
+
     function automatic bit is_temp(input string s);
         if (s.len() != 6) return 0;
         return is_dig(s[0]) && is_dig(s[1]) && (s[2] == "%") && is_dig(s[3]) && is_dig(s[4]) && (s[5] == "C");
@@ -643,6 +676,33 @@ module tb_merge_harness #(
             if (dp[a]) s = {s, "."};
         end
     endtask
+
+    // 파형용 FND 문자열 (fnd_read 와 같은 방법으로 2 ms 마다 W_FND 갱신)
+    always begin : FNDMON
+        reg [7:0] ch[4];
+        bit       dp[4];
+        integer   an;
+        reg [2:0] sel;
+        string    t;
+        for (int i = 0; i < 4; i++) begin ch[i] = " "; dp[i] = 0; end
+        for (int k = 0; k < 8; k++) begin
+            @(posedge dut.w_clk_4khz);
+            repeat (3) @(posedge clk);
+            #1;
+            sel = dut.U_FND_CONTROLLER.w_scan_sel;
+            an  = com2an(fnd_com);
+            if (an >= 0) begin
+                if (sel < 4) ch[an] = seg2ch(fnd_font[6:0]);
+                else         dp[an] = ~fnd_font[7];
+            end
+        end
+        t = "";
+        for (int a = 3; a >= 0; a--) begin
+            t = $sformatf("%s%c", t, ch[a]);
+            if (dp[a]) t = {t, "."};
+        end
+        W_FND = s2v(t);
+    end
 
     // 두 번 연속 같은 글자가 나올 때까지 (값이 바뀌는 중에 읽는 경우 대비)
     task automatic fnd_read_stable(output string s);

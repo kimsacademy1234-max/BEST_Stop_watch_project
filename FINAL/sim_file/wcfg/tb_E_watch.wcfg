@@ -1,0 +1,305 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="tb_E_watch_behav.wdb" id="1">
+         <top_modules>
+            <top_module name="glbl" />
+            <top_module name="tb_E_watch" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <zoom_setting>
+      <ZoomStartTime time="0fs"></ZoomStartTime>
+      <ZoomEndTime time="100000000000000fs"></ZoomEndTime>
+      <Cursor1Time time="0fs"></Cursor1Time>
+   </zoom_setting>
+   <column_width_setting>
+      <NameColumnWidth column_width="230"></NameColumnWidth>
+      <ValueColumnWidth column_width="120"></ValueColumnWidth>
+   </column_width_setting>
+   <WVObjectSize size="8" />
+   <wvobject fp_name="group1" type="group">
+      <obj_property name="label">TB : scenario / last check / result (ASCII)</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <wvobject fp_name="/tb_E_watch/h/W_SC" type="array">
+         <obj_property name="ElementShortName">W_SC[63:0]</obj_property>
+         <obj_property name="ObjectShortName">W_SC[63:0]</obj_property>
+         <obj_property name="Radix">ASCIIRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_E_watch/h/W_CHK" type="array">
+         <obj_property name="ElementShortName">W_CHK[63:0]</obj_property>
+         <obj_property name="ObjectShortName">W_CHK[63:0]</obj_property>
+         <obj_property name="Radix">ASCIIRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_E_watch/h/W_RES" type="array">
+         <obj_property name="ElementShortName">W_RES[63:0]</obj_property>
+         <obj_property name="ObjectShortName">W_RES[63:0]</obj_property>
+         <obj_property name="Radix">ASCIIRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_E_watch/h/n_chk" type="array">
+         <obj_property name="ElementShortName">n_chk[31:0]</obj_property>
+         <obj_property name="ObjectShortName">n_chk[31:0]</obj_property>
+         <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_E_watch/h/n_fail" type="array">
+         <obj_property name="ElementShortName">n_fail[31:0]</obj_property>
+         <obj_property name="ObjectShortName">n_fail[31:0]</obj_property>
+         <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_E_watch/h/n_issue" type="array">
+         <obj_property name="ElementShortName">n_issue[31:0]</obj_property>
+         <obj_property name="ObjectShortName">n_issue[31:0]</obj_property>
+         <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+      </wvobject>
+   </wvobject>
+   <wvobject fp_name="group2" type="group">
+      <obj_property name="label">PIN : reset / switch / button</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <wvobject fp_name="/tb_E_watch/h/rst" type="logic">
+         <obj_property name="ElementShortName">rst</obj_property>
+         <obj_property name="ObjectShortName">rst</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_E_watch/h/dut/w_rst" type="logic">
+         <obj_property name="ElementShortName">w_rst</obj_property>
+         <obj_property name="ObjectShortName">w_rst</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_E_watch/h/sw" type="array">
+         <obj_property name="ElementShortName">sw[6:0]</obj_property>
+         <obj_property name="ObjectShortName">sw[6:0]</obj_property>
+         <obj_property name="Radix">BINARYRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_E_watch/h/sw15" type="logic">
+         <obj_property name="ElementShortName">sw15</obj_property>
+         <obj_property name="ObjectShortName">sw15</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_E_watch/h/btn_R" type="logic">
+         <obj_property name="ElementShortName">btn_R</obj_property>
+         <obj_property name="ObjectShortName">btn_R</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_E_watch/h/btn_L" type="logic">
+         <obj_property name="ElementShortName">btn_L</obj_property>
+         <obj_property name="ObjectShortName">btn_L</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_E_watch/h/btn_U" type="logic">
+         <obj_property name="ElementShortName">btn_U</obj_property>
+         <obj_property name="ObjectShortName">btn_U</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_E_watch/h/btn_D" type="logic">
+         <obj_property name="ElementShortName">btn_D</obj_property>
+         <obj_property name="ObjectShortName">btn_D</obj_property>
+      </wvobject>
+   </wvobject>
+   <wvobject fp_name="group3" type="group">
+      <obj_property name="label">UART : PC cmd (CR=#) / rx / tx / FPGA line (ASCII)</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <wvobject fp_name="/tb_E_watch/h/W_CMD" type="array">
+         <obj_property name="ElementShortName">W_CMD[127:0]</obj_property>
+         <obj_property name="ObjectShortName">W_CMD[127:0]</obj_property>
+         <obj_property name="Radix">ASCIIRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_E_watch/h/rx" type="logic">
+         <obj_property name="ElementShortName">rx</obj_property>
+         <obj_property name="ObjectShortName">rx</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_E_watch/h/tx" type="logic">
+         <obj_property name="ElementShortName">tx</obj_property>
+         <obj_property name="ObjectShortName">tx</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_E_watch/h/W_LINE" type="array">
+         <obj_property name="ElementShortName">W_LINE[127:0]</obj_property>
+         <obj_property name="ObjectShortName">W_LINE[127:0]</obj_property>
+         <obj_property name="Radix">ASCIIRADIX</obj_property>
+      </wvobject>
+   </wvobject>
+   <wvobject fp_name="group4" type="group">
+      <obj_property name="label">FND / LED</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <wvobject fp_name="/tb_E_watch/h/W_FND" type="array">
+         <obj_property name="ElementShortName">W_FND[63:0]</obj_property>
+         <obj_property name="ObjectShortName">W_FND[63:0]</obj_property>
+         <obj_property name="Radix">ASCIIRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_E_watch/h/fnd_com" type="array">
+         <obj_property name="ElementShortName">fnd_com[3:0]</obj_property>
+         <obj_property name="ObjectShortName">fnd_com[3:0]</obj_property>
+         <obj_property name="Radix">BINARYRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_E_watch/h/fnd_font" type="array">
+         <obj_property name="ElementShortName">fnd_font[7:0]</obj_property>
+         <obj_property name="ObjectShortName">fnd_font[7:0]</obj_property>
+         <obj_property name="Radix">HEXRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_E_watch/h/led" type="array">
+         <obj_property name="ElementShortName">led[15:0]</obj_property>
+         <obj_property name="ObjectShortName">led[15:0]</obj_property>
+         <obj_property name="Radix">HEXRADIX</obj_property>
+      </wvobject>
+   </wvobject>
+   <wvobject fp_name="group5" type="group">
+      <obj_property name="label">MODE : ctrl bit {sw6..sw0} / screen 0 WTS 1 dist 2 temp</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <wvobject fp_name="/tb_E_watch/h/dut/w_uart_mode" type="logic">
+         <obj_property name="ElementShortName">w_uart_mode</obj_property>
+         <obj_property name="ObjectShortName">w_uart_mode</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_E_watch/h/dut/w_ctrl_bit" type="array">
+         <obj_property name="ElementShortName">w_ctrl_bit[6:0]</obj_property>
+         <obj_property name="ObjectShortName">w_ctrl_bit[6:0]</obj_property>
+         <obj_property name="Radix">BINARYRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_E_watch/h/dut/w_disp_sel" type="array">
+         <obj_property name="ElementShortName">w_disp_sel[1:0]</obj_property>
+         <obj_property name="ObjectShortName">w_disp_sel[1:0]</obj_property>
+         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+      </wvobject>
+   </wvobject>
+   <wvobject fp_name="group6" type="group">
+      <obj_property name="label">WATCH</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <wvobject fp_name="/tb_E_watch/h/dut/U_WTS/w_tick_10ms" type="logic">
+         <obj_property name="ElementShortName">w_tick_10ms</obj_property>
+         <obj_property name="ObjectShortName">w_tick_10ms</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_E_watch/h/dut/U_WTS/w_wt_hour" type="array">
+         <obj_property name="ElementShortName">w_wt_hour[5:0]</obj_property>
+         <obj_property name="ObjectShortName">w_wt_hour[5:0]</obj_property>
+         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_E_watch/h/dut/U_WTS/w_wt_hour_disp" type="array">
+         <obj_property name="ElementShortName">w_wt_hour_disp[5:0]</obj_property>
+         <obj_property name="ObjectShortName">w_wt_hour_disp[5:0]</obj_property>
+         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_E_watch/h/dut/U_WTS/w_wt_min" type="array">
+         <obj_property name="ElementShortName">w_wt_min[5:0]</obj_property>
+         <obj_property name="ObjectShortName">w_wt_min[5:0]</obj_property>
+         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_E_watch/h/dut/U_WTS/w_wt_sec" type="array">
+         <obj_property name="ElementShortName">w_wt_sec[5:0]</obj_property>
+         <obj_property name="ObjectShortName">w_wt_sec[5:0]</obj_property>
+         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_E_watch/h/dut/w_wt_msec" type="array">
+         <obj_property name="ElementShortName">w_wt_msec[6:0]</obj_property>
+         <obj_property name="ObjectShortName">w_wt_msec[6:0]</obj_property>
+         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_E_watch/h/dut/w_wt_pm" type="logic">
+         <obj_property name="ElementShortName">w_wt_pm</obj_property>
+         <obj_property name="ObjectShortName">w_wt_pm</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_E_watch/h/dut/w_wt_cursor" type="array">
+         <obj_property name="ElementShortName">w_wt_cursor[1:0]</obj_property>
+         <obj_property name="ObjectShortName">w_wt_cursor[1:0]</obj_property>
+         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_E_watch/h/dut/U_WTS/w_wt_up" type="logic">
+         <obj_property name="ElementShortName">w_wt_up</obj_property>
+         <obj_property name="ObjectShortName">w_wt_up</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_E_watch/h/dut/U_WTS/w_wt_down" type="logic">
+         <obj_property name="ElementShortName">w_wt_down</obj_property>
+         <obj_property name="ObjectShortName">w_wt_down</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_E_watch/h/dut/w_wt_time" type="array">
+         <obj_property name="ElementShortName">w_wt_time[23:0]</obj_property>
+         <obj_property name="ObjectShortName">w_wt_time[23:0]</obj_property>
+         <obj_property name="Radix">HEXRADIX</obj_property>
+      </wvobject>
+   </wvobject>
+   <wvobject fp_name="group7" type="group">
+      <obj_property name="label">WTS display</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <wvobject fp_name="/tb_E_watch/h/dut/w_disp_hour" type="array">
+         <obj_property name="ElementShortName">w_disp_hour[5:0]</obj_property>
+         <obj_property name="ObjectShortName">w_disp_hour[5:0]</obj_property>
+         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_E_watch/h/dut/w_disp_min" type="array">
+         <obj_property name="ElementShortName">w_disp_min[5:0]</obj_property>
+         <obj_property name="ObjectShortName">w_disp_min[5:0]</obj_property>
+         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_E_watch/h/dut/w_disp_sec" type="array">
+         <obj_property name="ElementShortName">w_disp_sec[5:0]</obj_property>
+         <obj_property name="ObjectShortName">w_disp_sec[5:0]</obj_property>
+         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_E_watch/h/dut/w_disp_msec" type="array">
+         <obj_property name="ElementShortName">w_disp_msec[6:0]</obj_property>
+         <obj_property name="ObjectShortName">w_disp_msec[6:0]</obj_property>
+         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_E_watch/h/dut/w_disp_mode" type="logic">
+         <obj_property name="ElementShortName">w_disp_mode</obj_property>
+         <obj_property name="ObjectShortName">w_disp_mode</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_E_watch/h/dut/w_sel_sw" type="logic">
+         <obj_property name="ElementShortName">w_sel_sw</obj_property>
+         <obj_property name="ObjectShortName">w_sel_sw</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_E_watch/h/dut/w_sel_wt" type="logic">
+         <obj_property name="ElementShortName">w_sel_wt</obj_property>
+         <obj_property name="ObjectShortName">w_sel_wt</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_E_watch/h/dut/w_sel_tm" type="logic">
+         <obj_property name="ElementShortName">w_sel_tm</obj_property>
+         <obj_property name="ObjectShortName">w_sel_tm</obj_property>
+      </wvobject>
+   </wvobject>
+   <wvobject fp_name="group8" type="group">
+      <obj_property name="label">BUTTON : phy / uart / merged</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <wvobject fp_name="/tb_E_watch/h/dut/w_phy_btn_R" type="logic">
+         <obj_property name="ElementShortName">w_phy_btn_R</obj_property>
+         <obj_property name="ObjectShortName">w_phy_btn_R</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_E_watch/h/dut/w_phy_btn_L" type="logic">
+         <obj_property name="ElementShortName">w_phy_btn_L</obj_property>
+         <obj_property name="ObjectShortName">w_phy_btn_L</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_E_watch/h/dut/w_phy_btn_U" type="logic">
+         <obj_property name="ElementShortName">w_phy_btn_U</obj_property>
+         <obj_property name="ObjectShortName">w_phy_btn_U</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_E_watch/h/dut/w_phy_btn_D" type="logic">
+         <obj_property name="ElementShortName">w_phy_btn_D</obj_property>
+         <obj_property name="ObjectShortName">w_phy_btn_D</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_E_watch/h/dut/w_uart_btn_R" type="logic">
+         <obj_property name="ElementShortName">w_uart_btn_R</obj_property>
+         <obj_property name="ObjectShortName">w_uart_btn_R</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_E_watch/h/dut/w_uart_btn_L" type="logic">
+         <obj_property name="ElementShortName">w_uart_btn_L</obj_property>
+         <obj_property name="ObjectShortName">w_uart_btn_L</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_E_watch/h/dut/w_uart_btn_U" type="logic">
+         <obj_property name="ElementShortName">w_uart_btn_U</obj_property>
+         <obj_property name="ObjectShortName">w_uart_btn_U</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_E_watch/h/dut/w_uart_btn_D" type="logic">
+         <obj_property name="ElementShortName">w_uart_btn_D</obj_property>
+         <obj_property name="ObjectShortName">w_uart_btn_D</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_E_watch/h/dut/w_btn_R" type="logic">
+         <obj_property name="ElementShortName">w_btn_R</obj_property>
+         <obj_property name="ObjectShortName">w_btn_R</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_E_watch/h/dut/w_btn_L" type="logic">
+         <obj_property name="ElementShortName">w_btn_L</obj_property>
+         <obj_property name="ObjectShortName">w_btn_L</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_E_watch/h/dut/w_btn_U" type="logic">
+         <obj_property name="ElementShortName">w_btn_U</obj_property>
+         <obj_property name="ObjectShortName">w_btn_U</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_E_watch/h/dut/w_btn_D" type="logic">
+         <obj_property name="ElementShortName">w_btn_D</obj_property>
+         <obj_property name="ObjectShortName">w_btn_D</obj_property>
+      </wvobject>
+   </wvobject>
+</wave_config>

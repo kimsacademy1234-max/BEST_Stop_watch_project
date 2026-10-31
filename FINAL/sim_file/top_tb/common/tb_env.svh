@@ -2,6 +2,11 @@
 // tb_env.svh — merge_final_top 공통 TB 환경 (LEAD 작성, 작업자는 수정 금지)
 //
 // 사용법 : TB 모듈 "안" 에서 include 한다. DUT · 클럭 · BFM · 모니터 · 스코어보드가 전부 들어온다.
+//   Vivado : 이 파일을 Simulation Sources 에 같이 추가 (헤더로 잡히면 include 경로 자동).
+//            안 잡히면 Settings > Simulation > Verilog options 의 include 경로에 top_tb/common 추가.
+//            시뮬은 run all (TB 가 env_finish 에서 $finish).
+//   파형 : W_STEP (지금 단계) · W_CHK_ID / W_CHK_RES (마지막 판정) · W_PASS / W_FAIL ·
+//          W_UART_CMD (보낸 명령, Enter = '#') · W_UART_LINE (받은 줄) · W_FND (FND 문자열) — ASCII radix
 //
 //   `timescale 1ns / 1ps
 //   module tb_G1;
@@ -18,7 +23,7 @@
 // 규칙
 //   - 시간 단위 ns. 상수 US · MS · SEC 를 곱해서 쓴다 (예 : #(18 * MS)).
 //   - defparam · 파라미터 축소 금지 (실시간 기준). force 는 시나리오 문서가 허용한 경로만.
-//   - 판정은 check / check_known / info 로만 출력 (결과 취합 스크립트가 이 형식을 읽음).
+//   - 판정은 check / check_known / info 로만 출력 (Tcl 콘솔에서 [FAIL] 검색).
 //   - Verilator 5.032 (--binary --timing) 와 Vivado xsim 둘 다에서 돌아가는 문법만 쓴다.
 // =============================================================================
 
@@ -86,17 +91,45 @@ int     sb_fail  = 0;
 int     sb_known = 0;   // ⚠ 항목 : 예상한 설계 이슈가 재현됨
 int     sb_xpass = 0;   // ⚠ 항목 : 이슈가 재현 안 됨 (스펙대로 동작)
 
+// ---------------------------------------------------------------- 파형용 레지스터 (wcfg 에서 ASCII 로 보임)
+reg [8*24-1:0] W_STEP      = 0;
+reg [8*8-1:0]  W_CHK_ID    = 0;
+reg [8*8-1:0]  W_CHK_RES   = 0;
+reg [31:0]     W_PASS      = 0;
+reg [31:0]     W_FAIL      = 0;
+reg [8*16-1:0] W_UART_CMD  = 0;
+reg [8*16-1:0] W_UART_LINE = 0;
+reg [8*8-1:0]  W_FND       = 0;
+
+// string → ASCII 벡터 (오른쪽 정렬, 넘치면 앞 글자가 잘림)
+function automatic [8*24-1:0] s2v(input string s);
+    reg [8*24-1:0] v;
+    v = 0;
+    for (int i = 0; i < s.len(); i++) v = {v[8*23-1:0], s[i]};
+    return v;
+endfunction
+
+// 단계 표시 (파형 W_STEP + 로그 [STEP])
+task automatic step(input string s);
+    W_STEP = s2v(s);
+    $display("[STEP] @ %s : %s", t_ms(), s);
+endtask
+
 function automatic string t_ms();      // 현재 시각 "1234.567890 ms"
     return $sformatf("%0.6f ms", $realtime / 1.0e6);
 endfunction
 
 // 일반 판정. id 는 "<시나리오>-<번호>" (예 "G1-03"). cond = 기대대로면 1.
 task automatic check(input string id, input bit cond, input string msg);
+    W_CHK_ID = s2v(id);
+    W_CHK_RES = s2v(cond ? "PASS" : "FAIL");
     if (cond) begin
         sb_pass++;
+        W_PASS = sb_pass;
         $display("[PASS] %s @ %s : %s", id, t_ms(), msg);
     end else begin
         sb_fail++;
+        W_FAIL = sb_fail;
         $display("[FAIL] %s @ %s : %s", id, t_ms(), msg);
     end
 endtask
@@ -104,6 +137,8 @@ endtask
 // ⚠ 항목 (tb_scenario.md 2 장). spec_ok = 스펙(README)대로 동작하면 1.
 //   0 이면 [KNOWN] (예상한 설계 이슈 재현), 1 이면 [XPASS] (이슈 없음 — 원인 확인 필요)
 task automatic check_known(input string id, input bit spec_ok, input string msg);
+    W_CHK_ID = s2v(id);
+    W_CHK_RES = s2v(spec_ok ? "XPASS" : "KNOWN");
     if (spec_ok) begin
         sb_xpass++;
         $display("[XPASS] %s @ %s : %s", id, t_ms(), msg);
@@ -244,6 +279,10 @@ endtask
 
 // 문자열 그대로 전송 (줄 끝은 넣지 않음 — 필요하면 "\r" / "\n" 직접 붙일 것)
 task automatic uart_send_str(input string s, input longint gap = 0);
+    string v;
+    v = s;
+    for (int i = 0; i < v.len(); i++) if (v[i] == 8'h0D || v[i] == 8'h0A) v[i] = "#";
+    W_UART_CMD = s2v(v);
     for (int i = 0; i < s.len(); i++) begin
         uart_send_byte(s[i]);
         if (gap > 0) #(gap);
@@ -301,6 +340,7 @@ initial begin : uart_monitor
             uart_lines.push_back(uart_cur);
             uart_line_t0.push_back(uart_cur_t0);
             uart_line_t1.push_back($time + UART_BIT_NS / 2);
+            W_UART_LINE = s2v(uart_cur);
             $display("[UART] @ %s : \"%s\"", t_ms(), uart_cur);
             uart_cur = "";
         end else begin
@@ -476,6 +516,7 @@ initial begin : fnd_monitor
                 fnd_dot[an] = (fnd_font == 8'h7F);
         end
         fnd_sample_cnt++;
+        W_FND = s2v(fnd_text());
     end
 end
 

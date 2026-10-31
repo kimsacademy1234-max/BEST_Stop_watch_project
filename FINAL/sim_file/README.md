@@ -19,7 +19,11 @@
 | `tb_J_dht11.sv` | J1 ~ J14 DHT11 |
 | `tb_K_display.sv` | K1 ~ K6 FND · LED |
 | `tb_L_integration.sv` | L1 ~ L6 통합 · 교차 |
-| `run_xsim.bat` | GUI 없이 xsim 배치 실행 |
+| `run_xsim.bat` | xsim 배치 실행 (`wave` 를 붙이면 GUI + 파형) |
+| `wcfg/tb_*.wcfg` | 그룹 TB 별 파형 설정 12 개 (시나리오 · 판정 · UART 줄 · FND 문자열 ASCII + 그룹 내부 신호) |
+| `make_wcfg.py` | wcfg 생성기 — 신호를 더하려면 표를 고치고 `python3 make_wcfg.py` |
+
+설계 : `../source_file/merge_final/` = **v2 (B-2 · B-3, 10/31)** — 센서 오류 · 측정 전에 PC 도 `Err N` · `--%--C` (`../v2/README.md`). TB 기대값도 v2 기준.
 
 ## 실행
 
@@ -27,7 +31,9 @@
 
 1. Design Sources : `../source_file/merge_final/` 아래 `*.v`, `*.sv` 전부
 2. Simulation Sources : `tb_merge_harness.sv` + 돌릴 그룹 TB 하나 → 그 TB 를 *Set as Top*
-3. Run Simulation → Run All. 콘솔 마지막 `[SUMMARY] ... => PASS` 확인
+3. 파형 : Simulation Sources 에 `wcfg/<tb>.wcfg` 도 추가 → *Settings > Simulation > Simulation* 탭 `xsim.view` 에 그 wcfg 지정 (그러면 Run Simulation 때 자동으로 열림).
+   이미 열린 시뮬이면 *File > Simulation Waveform > Open Configuration* 으로 열고 **Restart → Run All** (열기 전 구간은 기록이 안 됨)
+4. Run Simulation → Run All. 콘솔 마지막 `[SUMMARY] ... => PASS` 확인
 
 ### 배치 (명령창)
 
@@ -35,7 +41,18 @@
 run_xsim.bat tb_D_stopwatch        :: D 전부
 run_xsim.bat tb_D_stopwatch D3     :: D3 만 (bat 이 +only_D3 로 넘김)
 run_xsim.bat tb_D_stopwatch D      :: 그룹 글자도 됨
+run_xsim.bat tb_D_stopwatch D3 wave :: D3 만 + xsim GUI 에 wcfg 파형 (run all 까지 자동)
+run_xsim.bat tb_D_stopwatch all wave
 ```
+
+### 파형 (wcfg) 읽는 법
+
+| 묶음 | 신호 | 보는 법 |
+|---|---|---|
+| TB | `W_SC` · `W_CHK` · `W_RES` · `n_chk` · `n_fail` · `n_issue` | 지금 시나리오 · 마지막 검사 ID · `OK`/`FAIL`/`ISSUE` (ASCII). `n_fail` 이 늘어난 시각 = FAIL 위치 |
+| UART | `W_CMD` · `W_LINE` | PC 가 보낸 명령 (CR = `#`) · FPGA 가 보낸 줄 (CR LF 뺌) |
+| FND | `W_FND` | 2 ms 마다 갱신되는 표시 문자열 (`12.34` · `Err1` · `----`) |
+| 그 밖 | 그룹별 | A 리셋 · B 디바운서 · C 모드 비트 · D/E/F 카운터 · G/H UART 내부 · I SR04 · J DHT11 · K FND 스캔 · L 통합 |
 
 결과는 `xsim_work\<tb>\sim.log` (git 제외). Vivado 경로가 `C:\Xilinx\Vivado\2020.2` 가 아니면 bat 맨 위 `VIV` 수정.
 **sim 은 한 번에 하나씩** (동시에 여러 개 돌리면 PC 가 매우 느려짐).

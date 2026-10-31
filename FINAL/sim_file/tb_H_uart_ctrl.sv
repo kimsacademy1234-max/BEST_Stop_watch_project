@@ -31,7 +31,8 @@ module tb_H_uart_ctrl;
     function automatic string kind(input string s);
         if (s == "ERROR") return "ERR";
         if (h.is_dist(s)) return "DIST";
-        if (h.is_temp(s)) return "TEMP";
+        if (h.is_temp(s) || s == "--%--C") return "TEMP";   // (v2) 첫 측정 전 온습도 = "--%--C"
+        if (h.is_err(s)) return "SENSOR_ERR";                // (v2) 거리 · 온습도 오류 "Err N"
         if (h.is_time(s)) begin
             if (s.substr(0, 1) == "05") return "SW";
             if (s.substr(0, 4) == "00:30") return "TM";
@@ -87,14 +88,15 @@ module tb_H_uart_ctrl;
         // ---------------------------------------------------------------- H2
         if (h.run("H2")) begin
             h.begin_sc("H2", "/get in switch mode", "no /mod, sw5 = distance screen -> /get <CR>",
-                       "spec: distance line - code: watch line (issue 1)");
+                       "design intent (B-1, 10/31): terminal is used after /mod only -> watch line, no ERROR / hang");
             h.set_sw(7'b000_0000);
             h.do_reset();
             h.set_sw(7'b010_0000);
             h.flush_lines();
             h.uget();
             h.next_line(s, t0, 3 * LINE13);
-            h.spec("H2-1", h.is_dist(s), "/get on distance screen (switch mode)", "NNNcm", {"\"", s, "\""});
+            h.check("H2-1", h.is_time(s), "/get on distance screen (switch mode, before /mod)", "watch line HH:MM:SS.CC",
+                    {"\"", s, "\""});
             h.set_sw(7'b000_0000);
         end
 
@@ -272,7 +274,7 @@ module tb_H_uart_ctrl;
         // ---------------------------------------------------------------- H10
         if (h.run("H10")) begin
             h.begin_sc("H10", "reply format boundary values", "watch 13:05 on 12 h ; timer 01:30 running ; Err1 ; Err2 ; temp before first",
-                       "13:05 (24 h) ; 00:01:xx ; 000cm ; 400cm ; 00%00C");
+                       "13:05 (24 h) ; 00:01:xx ; Err 1 ; Err 2 ; --%--C (v2)");
             h.set_sw(7'b000_0000);
             h.do_reset();
             h.mod("w_hm");
@@ -299,7 +301,7 @@ module tb_H_uart_ctrl;
             h.flush_lines();
             h.uget();
             h.next_line(s, t0, 3 * LINE13);
-            h.check("H10-3", (s == "000cm") && (h.dist_st == 1), "distance Err1 (no echo)", "000cm",
+            h.check("H10-3", (s == "Err 1") && (h.dist_st == 1), "distance Err1 (no echo)", "Err 1",
                     $sformatf("\"%s\" status %0d", s, h.dist_st));
             h.wait_sr_idle(100);
             h.sr_mode = h.SR_NORMAL;
@@ -309,7 +311,7 @@ module tb_H_uart_ctrl;
             h.flush_lines();
             h.uget();
             h.next_line(s, t0, 3 * LINE13);
-            h.check("H10-4", (s == "400cm") && (h.dist_st == 2), "distance Err2 (out of range)", "400cm",
+            h.check("H10-4", (s == "Err 2") && (h.dist_st == 2), "distance Err2 (out of range)", "Err 2",
                     $sformatf("\"%s\" status %0d", s, h.dist_st));
             h.wait_sr_idle(100);
             h.sr_w_us = 1000;
@@ -318,7 +320,7 @@ module tb_H_uart_ctrl;
             h.flush_lines();
             h.uget();
             h.next_line(s, t0, 3 * LINE13);
-            h.check("H10-5", s == "00%00C", "temp before first measurement", "00%00C", {"\"", s, "\""});
+            h.check("H10-5", s == "--%--C", "temp before first measurement", "--%--C", {"\"", s, "\""});
         end
 
         // ---------------------------------------------------------------- H11

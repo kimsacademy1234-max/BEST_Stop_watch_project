@@ -57,7 +57,7 @@ module tb_I_sr04;
 
     initial begin
         string   s;
-        bit      ok, ff, zz, ot, meas_seen;
+        bit      ok, ff, zz, ot, meas_seen, bz;
         reg [7:0] ov;
         integer  n0, r0, cm, x10, wl[5];
         realtime te, d, iv[$];
@@ -104,21 +104,21 @@ module tb_I_sr04;
 
         // ---------------------------------------------------------------- I3
         if (h.run("I3")) begin
-            h.begin_sc("I3", "out of range", "echo 23,250 us", "Err2, 400cm, LD9, done = echo rise + 23.2 ms");
+            h.begin_sc("I3", "out of range", "echo 23,250 us", "Err2, UART Err 2 (v2), LD9, done = echo rise + 23.2 ms");
             h.do_reset();
             h.mod("dist");
             measure(23250, ok);
             d = h.t_dist_done - h.t_echo_r;
             uget_line(s);
-            h.check("I3-1", ok && (h.dist_st == 2) && (h.dut.w_distance_x10 == 4000) && (s == "400cm") && (h.led[9] == 1)
+            h.check("I3-1", ok && (h.dist_st == 2) && (h.dut.w_distance_x10 == 4000) && (s == "Err 2") && (h.led[9] == 1)
                     && (d >= 23200 * U - 3 * U) && (d <= 23200 * U + 3 * U),
-                    "echo 23,250 us", $sformatf("status 2, 400cm, LD9, %0.3f ms", 23200 * U / 1.0e6),
+                    "echo 23,250 us", $sformatf("status 2, Err 2, LD9, %0.3f ms", 23200 * U / 1.0e6),
                     $sformatf("status %0d, \"%s\", LD9 %b, %0.4f ms", h.dist_st, s, h.led[9], d / 1.0e6));
         end
 
         // ---------------------------------------------------------------- I4
         if (h.run("I4")) begin
-            h.begin_sc("I4", "no echo", "sensor gives no echo", "Err1 at trig fall + 30.0 ms, 000cm, LD9");
+            h.begin_sc("I4", "no echo", "sensor gives no echo", "Err1 at trig fall + 30.0 ms, UART Err 1 (v2), LD9");
             h.do_reset();
             h.mod("dist");
             h.sr_mode = h.SR_NONE;
@@ -126,8 +126,8 @@ module tb_I_sr04;
             h.wait_dist_done(100 * U / 1000.0, ok);
             d = h.t_dist_done - h.t_trig_f;
             uget_line(s);
-            h.check("I4-1", ok && (h.dist_st == 1) && (s == "000cm") && (h.led[9] == 1) && (d >= 30000 * U - 3 * U)
-                    && (d <= 30000 * U + 3 * U), "no echo", $sformatf("status 1, 000cm, LD9, %0.3f ms", 30000 * U / 1.0e6),
+            h.check("I4-1", ok && (h.dist_st == 1) && (s == "Err 1") && (h.led[9] == 1) && (d >= 30000 * U - 3 * U)
+                    && (d <= 30000 * U + 3 * U), "no echo", $sformatf("status 1, Err 1, LD9, %0.3f ms", 30000 * U / 1.0e6),
                     $sformatf("status %0d, \"%s\", LD9 %b, %0.4f ms", h.dist_st, s, h.led[9], d / 1.0e6));
             h.sr_mode = h.SR_NORMAL;
         end
@@ -149,10 +149,12 @@ module tb_I_sr04;
             h.wait_dist_done(100 * U / 1000.0, ok);
             d = h.t_dist_done - h.t_trig_f;
             h.wait_clk(5);
+            bz = h.dut.U_SR04.w_busy;
+            uget_line(s);                                    // (v2) UART 도 "Err 3"
             h.check("I5-2", ok && (h.dist_st == 3) && (d >= 73200 * U - 5 * U) && (d <= 73200 * U + 5 * U)
-                    && (h.dut.U_SR04.w_busy == 0), "second done",
-                    $sformatf("Err3 at %0.3f ms, IDLE", 73200 * U / 1.0e6),
-                    $sformatf("status %0d at %0.4f ms, busy %b", h.dist_st, d / 1.0e6, h.dut.U_SR04.w_busy));
+                    && (bz == 0) && (s == "Err 3"), "second done",
+                    $sformatf("Err3 at %0.3f ms, IDLE, UART Err 3", 73200 * U / 1.0e6),
+                    $sformatf("status %0d at %0.4f ms, busy %b, \"%s\"", h.dist_st, d / 1.0e6, bz, s));
             h.echo = 1'b0;
             h.wait_us(1000 * U / 1000.0);
             measure(5803, ok);

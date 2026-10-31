@@ -278,8 +278,8 @@ module merge_final_top (
             3'd0:    w_send_data = w_sw_time;                         // 스톱워치
             3'd1:    w_send_data = w_tm_time;                         // 타이머
             3'd2:    w_send_data = w_wt_time;                         // 시계
-            3'd3:    w_send_data = {15'd0, w_distance};               // 거리
-            3'd4:    w_send_data = {8'd0, w_humidity, w_temperature}; // 온습도
+            3'd3:    w_send_data = {13'd0, w_dist_status, w_distance}; // 거리 + 상태 (fix 10/31, 00 = 정상)
+            3'd4:    w_send_data = {4'd0, w_dht_err, w_dht_dashes, w_dht_status, w_humidity, w_temperature}; // 온습도 + 오류 · 측정 전 · 상태 (fix 10/31)
             default: w_send_data = 24'd0;                             // ERROR (7)
         endcase
     end
