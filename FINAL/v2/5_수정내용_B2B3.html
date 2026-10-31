@@ -1,0 +1,420 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>수정 내용 정리 — B-2 · B-3 (센서 오류를 PC 로도 보내기, 10/31)</title><style>
+:root{--ink:#111;--sub:#555;--line:#d0d4da;--bg:#fbfcfe}
+*{box-sizing:border-box}
+body{margin:0;font-family:"Malgun Gothic",sans-serif;color:var(--ink);background:var(--bg);line-height:1.7;font-size:15px}
+#side{position:fixed;top:0;left:0;width:270px;height:100vh;overflow-y:auto;background:#f1f4f9;border-right:1px solid var(--line);padding:12px 8px;font-size:13px}
+#side ul{list-style:none;padding-left:10px;margin:2px 0}
+#side a{color:var(--ink);text-decoration:none;display:block;border-radius:5px;padding:2px 6px}
+#side a:hover{background:#dfe7f3}
+main{margin-left:270px;max-width:1150px;padding:18px 30px 90px}
+h1{font-size:23px}h2{font-size:20px;margin-top:36px;padding-top:10px;border-top:3px solid #9fb3d1}h3{font-size:17px;margin-top:26px;color:#1f3864}
+table{border-collapse:collapse;margin:8px 0;font-size:14px}th,td{border:1px solid var(--line);padding:4px 8px;vertical-align:top}th{background:#e9eef6}
+code{font-family:Consolas,monospace;background:#eef1f6;border-radius:4px;padding:1px 4px}
+pre{background:#1e2430;color:#e6edf3;border-radius:6px;padding:10px 12px;overflow-x:auto}pre code{background:none;color:inherit}
+blockquote{border-left:4px solid #9fb3d1;margin:8px 0;padding:4px 12px;color:#333;background:#f3f6fb}
+@media (max-width:900px){#side{position:static;width:auto;height:auto}main{margin-left:0;padding:12px 16px}}
+</style></head><body><nav id="side"><div class="toc">
+<ul>
+<li><a href="#1">1. 무엇이 문제였나 (한 줄)</a></li>
+<li><a href="#2">2. 신호가 가는 길 — 어디서 상태가 빠졌나</a></li>
+<li><a href="#3-1-merge_final_topv-mux-2">3. 수정 ① — merge_final_top.v 송신 MUX (2 줄)</a></li>
+<li><a href="#4-2-uartsender_char_muxv">4. 수정 ② — UART/sender_char_mux.v (글자 고르기)</a><ul>
+<li><a href="#4-1-18-21">4-1. 윗비트를 이름 붙여 꺼냄 (18 ~ 21 줄)</a></li>
+<li><a href="#4-2-3d3-00-err-n">4-2. 거리 (3'd3) — 상태가 00 이 아니면 같은 자리에 Err N</a></li>
+<li><a href="#4-3-3d4-err-n-c">4-3. 온습도 (3'd4) — 오류면 Err N, 첫 측정 전이면 --%--C</a></li>
+</ul>
+</li>
+<li><a href="#5">5. 손대지 않은 것</a></li>
+<li><a href="#6">6. 확인</a></li>
+<li><a href="#7">7. 파일 위치</a></li>
+</ul>
+</div>
+</nav><main><h1 id="b-2-b-3-pc-1031">수정 내용 정리 — B-2 · B-3 (센서 오류를 PC 로도 보내기, 10/31)</h1>
+<ul>
+<li>대상 비트 : <code>C:\work\merge_fix2\merge_final_top_fix2_B2B3_1031.bit</code></li>
+<li>출발점 : 팀 FINAL 원본 (<code>FINAL/source_file/merge_final</code>, 커밋 5478555) 을 그대로 복사한 <code>C:\work\merge_fix2\src_orig\</code> → 고친 판 <code>C:\work\merge_fix2\src\</code></li>
+<li><strong>바꾼 파일 2 개뿐</strong> : <code>merge_final_top.v</code> (2 줄) · <code>UART/sender_char_mux.v</code> (글자 고르는 부분). 나머지 파일은 원본과 같음 (<code>fix_b2b3_1031.diff</code> 로 확인)</li>
+<li>B-1 (스위치 모드 <code>/get</code>) 은 "터미널은 <code>/mod</code> 뒤에만" 이 설계 의도라 이번 판에서 뺐다</li>
+</ul>
+<h2 id="1">1. 무엇이 문제였나 (한 줄)</h2>
+<p>센서 모듈은 <strong>값</strong>과 <strong>상태 (정상 · 오류 · 측정 전)</strong> 를 따로 내는데, FND 는 둘 다 받고 <strong>PC 로 가는 길에는 값만</strong> 실려서, 오류 · 측정 전에도 PC 는 숫자를 받았다.</p>
+<table>
+<thead>
+<tr>
+<th>상황</th>
+<th>FND</th>
+<th>원본 PC</th>
+<th>고친 판 PC</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>거리 범위 밖 (Err2)</td>
+<td><code>Err2</code></td>
+<td><code>400cm</code></td>
+<td><code>Err 2</code></td>
+</tr>
+<tr>
+<td>거리 무응답 (Err1)</td>
+<td><code>Err1</code></td>
+<td><code>000cm</code></td>
+<td><code>Err 1</code></td>
+</tr>
+<tr>
+<td>거리 echo 고착 (Err3)</td>
+<td><code>Err3</code></td>
+<td>직전 거리 숫자</td>
+<td><code>Err 3</code></td>
+</tr>
+<tr>
+<td>온습도 첫 측정 전</td>
+<td><code>----</code></td>
+<td><code>00%00C</code></td>
+<td><code>--%--C</code></td>
+</tr>
+<tr>
+<td>온습도 무응답 · 끊김 · 체크섬 (Err1~3)</td>
+<td><code>Err1</code> ~ <code>Err3</code></td>
+<td>마지막 정상값 (없으면 <code>00%00C</code>)</td>
+<td><code>Err 1</code> ~ <code>Err 3</code></td>
+</tr>
+<tr>
+<td>정상</td>
+<td>숫자</td>
+<td>숫자</td>
+<td>숫자 (같음)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="2">2. 신호가 가는 길 — 어디서 상태가 빠졌나</h2>
+<pre><code>SR04 (sr04_core)  ── o_distance (9 비트) ─────────┬──► FND MUX ─► FND        : 값 + 상태 둘 다 감
+                  └─ o_status   (2 비트) ─────────┤
+DHT11 (dht11_top) ── o_humidity · o_temperature ──┤
+                  ├─ o_status (2) · o_dashes (1) ─┤
+                  └─ o_led[1] = w_dht_err (1) ────┘
+                                                  │
+                                                  └──► 송신 MUX (merge_final_top) ─► U_CONTROL ─► uart_sender ─► sender_char_mux ─► FIFO_TX ─► tx
+                                                        ▲ 원본 : 값만 실음 (상태 버림)          (24 비트 그대로 잡아 둠)   ▲ 원본 : 숫자 글자만 만듦
+                                                        ① 수정 : 상태 비트도 실음                                         ② 수정 : 상태 보고 Err · -- 글자
+</code></pre>
+<ul>
+<li>송신 데이터 선은 원래부터 <strong>24 비트</strong>인데 거리는 9 비트 · 온습도는 16 비트만 써서 윗비트가 비어 있었다 → 그 빈 자리에 상태를 넣어서 <strong>포트 · 선 폭 · U_CONTROL · uart_sender FSM 은 손대지 않음</strong>.</li>
+</ul>
+<h2 id="3-1-merge_final_topv-mux-2">3. 수정 ① — <code>merge_final_top.v</code> 송신 MUX (2 줄)</h2>
+<p>위치 : <code>merge_final_top.v</code> 281 ~ 282 줄, <code>always @(*)</code> 의 <code>case (w_send_sel)</code></p>
+<pre><code class="language-verilog">// 원본
+            3'd3:    w_send_data = {15'd0, w_distance};               // 거리
+            3'd4:    w_send_data = {8'd0, w_humidity, w_temperature}; // 온습도
+
+// 고친 판
+            3'd3:    w_send_data = {13'd0, w_dist_status, w_distance}; // 거리 + 상태 (fix 10/31, 00 = 정상)
+            3'd4:    w_send_data = {4'd0, w_dht_err, w_dht_dashes, w_dht_status, w_humidity, w_temperature}; // 온습도 + 오류 · 측정 전 · 상태 (fix 10/31)
+</code></pre>
+<ul>
+<li>새 선을 만들지 않았다. <code>w_dist_status</code> · <code>w_dht_err</code> · <code>w_dht_dashes</code> · <code>w_dht_status</code> 는 <strong>FND MUX 가 이미 쓰던 선</strong> (238 ~ 239 줄) 을 그대로 가져옴.</li>
+</ul>
+<p>24 비트 배치 (sel 3 거리 · sel 4 온습도)</p>
+<table>
+<thead>
+<tr>
+<th>비트</th>
+<th>23 ~ 20</th>
+<th>19</th>
+<th>18</th>
+<th>17 ~ 16</th>
+<th>15 ~ 11</th>
+<th>10 ~ 9</th>
+<th>8 ~ 0</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>거리 원본</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>거리 cm</td>
+</tr>
+<tr>
+<td>거리 고친 판</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td><strong>상태</strong> (00 정상 · 01 Err1 · 10 Err2 · 11 Err3)</td>
+<td>거리 cm</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>비트</th>
+<th>23 ~ 20</th>
+<th>19</th>
+<th>18</th>
+<th>17 ~ 16</th>
+<th>15 ~ 8</th>
+<th>7 ~ 0</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>온습도 원본</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>습도</td>
+<td>온도</td>
+</tr>
+<tr>
+<td>온습도 고친 판</td>
+<td>0</td>
+<td><strong>err</strong> (마지막 측정 실패)</td>
+<td><strong>dashes</strong> (정상값 아직 없음)</td>
+<td><strong>상태</strong> (01 Err1 · 10 Err2 · 11 Err3)</td>
+<td>습도</td>
+<td>온도</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>온습도 <code>err</code> · <code>dashes</code> 는 FND 가 <code>ErrN</code> · <code>----</code> 를 고를 때 쓰는 것과 같은 두 비트 (<code>FND_LED/fnd_dht.v</code> 42 ~ 45 줄 : <code>err</code> 가 먼저, 아니면 <code>dashes</code>). 그래서 <strong>PC 와 FND 가 같은 규칙</strong>으로 갈린다.</li>
+</ul>
+<h2 id="4-2-uartsender_char_muxv">4. 수정 ② — <code>UART/sender_char_mux.v</code> (글자 고르기)</h2>
+<h3 id="4-1-18-21">4-1. 윗비트를 이름 붙여 꺼냄 (18 ~ 21 줄)</h3>
+<pre><code class="language-verilog">    wire [8:0] w_cm   = i_data[8:0];
+    wire [1:0] w_dst  = i_data[10:9];   // (fix 10/31) 거리 상태 : 00 정상 · 01 Err1 · 10 Err2 · 11 Err3
+    wire [1:0] w_hst  = i_data[17:16];  // (fix 10/31) 온습도 상태 : 01 Err1 · 10 Err2 · 11 Err3
+    wire       w_hdash = i_data[18];    // (fix 10/31) 온습도 아직 정상값 없음 (FND &quot;----&quot;)
+    wire       w_herr  = i_data[19];    // (fix 10/31) 온습도 마지막 측정 실패 (FND &quot;ErrN&quot;)
+</code></pre>
+<h3 id="4-2-3d3-00-err-n">4-2. 거리 (<code>3'd3</code>) — 상태가 00 이 아니면 같은 자리에 <code>Err N</code></h3>
+<pre><code class="language-verilog">            3'd3: begin               // 거리 &quot;123cm&quot; + CR LF (7 글자, 0 ~ 6), 오류면 &quot;Err 2&quot; + CR LF (fix 10/31)
+                o_last_idx = 6;
+                case (i_idx)
+                    4'd0: begin
+                        if (w_dst != 2'b00) o_char = &quot;E&quot;;
+                        else                o_char = 8'h30 + w_cm / 100;
+                    end
+                    4'd1: begin
+                        if (w_dst != 2'b00) o_char = &quot;r&quot;;
+                        else                o_char = 8'h30 + (w_cm / 10) % 10;
+                    end
+                    4'd2: begin
+                        if (w_dst != 2'b00) o_char = &quot;r&quot;;
+                        else                o_char = 8'h30 + w_cm % 10;
+                    end
+                    4'd3: begin
+                        if (w_dst != 2'b00) o_char = &quot; &quot;;
+                        else                o_char = &quot;c&quot;;
+                    end
+                    4'd4: begin
+                        if (w_dst != 2'b00) o_char = 8'h30 + w_dst;   // 오류 번호 1 ~ 3
+                        else                o_char = &quot;m&quot;;
+                    end
+                    4'd5: o_char = CR;   (원본 그대로)
+                    4'd6: o_char = LF;   (원본 그대로)
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>글자 번호 (<code>i_idx</code>)</th>
+<th>0</th>
+<th>1</th>
+<th>2</th>
+<th>3</th>
+<th>4</th>
+<th>5</th>
+<th>6</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>정상 (원본과 같음)</td>
+<td>백</td>
+<td>십</td>
+<td>일</td>
+<td><code>c</code></td>
+<td><code>m</code></td>
+<td>CR</td>
+<td>LF</td>
+</tr>
+<tr>
+<td>오류 (<code>w_dst</code> ≠ 00)</td>
+<td><code>E</code></td>
+<td><code>r</code></td>
+<td><code>r</code></td>
+<td>공백</td>
+<td><code>1</code>~<code>3</code></td>
+<td>CR</td>
+<td>LF</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>글자 수가 <strong>같아서</strong> (<code>o_last_idx = 6</code> 그대로) uart_sender FSM 이 줄 끝을 판단하는 방식은 그대로.</li>
+</ul>
+<h3 id="4-3-3d4-err-n-c">4-3. 온습도 (<code>3'd4</code>) — 오류면 <code>Err N</code>, 첫 측정 전이면 <code>--%--C</code></h3>
+<pre><code class="language-verilog">            3'd4: begin               // 온습도 &quot;45%25C&quot; + CR LF (8 글자, 0 ~ 7)
+                if (w_herr) begin         // (fix 10/31) 마지막 측정 실패 → &quot;Err 1&quot; + CR LF (7 글자, 거리 오류와 같은 꼴)
+                    o_last_idx = 6;
+                    case (i_idx)
+                        4'd0: o_char = &quot;E&quot;;
+                        4'd1: o_char = &quot;r&quot;;
+                        4'd2: o_char = &quot;r&quot;;
+                        4'd3: o_char = &quot; &quot;;
+                        4'd4: o_char = 8'h30 + w_hst;   // 오류 번호 1 ~ 3
+                        4'd5: o_char = CR;
+                        4'd6: o_char = LF;
+                    endcase
+                end else begin
+                    o_last_idx = 7;              (원본과 같은 8 글자)
+                    case (i_idx)
+                        4'd0: if (w_hdash) o_char = &quot;-&quot;; else o_char = 8'h30 + w_hum / 10;   // (fix 10/31) 첫 측정 전 → &quot;--%--C&quot;
+                        4'd1: if (w_hdash) o_char = &quot;-&quot;; else o_char = 8'h30 + w_hum % 10;
+                        4'd2: o_char = &quot;%&quot;;
+                        4'd3: if (w_hdash) o_char = &quot;-&quot;; else o_char = 8'h30 + w_temp / 10;
+                        4'd4: if (w_hdash) o_char = &quot;-&quot;; else o_char = 8'h30 + w_temp % 10;
+                        4'd5: o_char = &quot;C&quot;;
+                        4'd6: o_char = CR;
+                        4'd7: o_char = LF;
+                    endcase
+                end
+            end
+</code></pre>
+<p>(위 코드는 읽기 쉽게 한 줄로 줄여 적음 — 실제 파일은 원본처럼 <code>begin</code> · <code>end</code> 로 한 글자씩 나눠 씀)</p>
+<table>
+<thead>
+<tr>
+<th>상황 (<code>w_herr</code>, <code>w_hdash</code>)</th>
+<th>보내는 줄</th>
+<th><code>o_last_idx</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>정상 (0, 0)</td>
+<td><code>45%25C</code> + CR LF</td>
+<td>7 (원본과 같음)</td>
+</tr>
+<tr>
+<td>첫 측정 전 (0, 1)</td>
+<td><code>--%--C</code> + CR LF</td>
+<td>7</td>
+</tr>
+<tr>
+<td>오류 (1, x)</td>
+<td><code>Err 1</code> ~ <code>Err 3</code> + CR LF</td>
+<td><strong>6</strong> (한 글자 짧음)</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>오류 줄만 한 글자 짧다 (<code>Err 1</code> = 거리 오류 줄과 같은 꼴). <code>o_last_idx</code> 는 원래부터 <strong>형식마다 다르게 정하는 출력</strong>이고 uart_sender 는 send_go 순간 데이터를 잡아 두고 (<code>c_data</code>) 그 값으로 끝까지 보내므로, 줄 도중에 길이가 바뀌지 않는다.</li>
+<li>우선순위는 FND (<code>fnd_dht.v</code>) 와 같다 : <code>err</code> 먼저 → 아니면 <code>dashes</code> → 아니면 숫자.</li>
+</ul>
+<h2 id="5">5. 손대지 않은 것</h2>
+<table>
+<thead>
+<tr>
+<th>모듈</th>
+<th>이유</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>UART/01_UART_CONTROLLER.sv</code> (U_CONTROL)</td>
+<td>24 비트 데이터를 그대로 잡아 sender 로 넘기기만 함 → 윗비트가 늘어도 같음. B-1 을 뺐으므로 이 파일은 원본 그대로</td>
+</tr>
+<tr>
+<td><code>UART/uart_sender.v</code> (FSM)</td>
+<td>send_go 때 24 비트 · 형식 번호를 잡고 <code>o_last_idx</code> 까지 보냄 → 그대로</td>
+</tr>
+<tr>
+<td><code>uart_top.v</code> · FIFO · uart_tx</td>
+<td>포트 · 폭 변화 없음</td>
+</tr>
+<tr>
+<td>SR04 · DHT11 · FND · LED</td>
+<td>상태 신호는 원래부터 나오고 있었음 (FND 용) → 그대로</td>
+</tr>
+<tr>
+<td>XDC</td>
+<td>핀 변화 없음</td>
+</tr>
+</tbody>
+</table>
+<h2 id="6">6. 확인</h2>
+<table>
+<thead>
+<tr>
+<th>항목</th>
+<th>원본</th>
+<th>고친 판</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>통합 TB 2 판 (<code>tb/tb_top_full.v</code>, 20 시나리오 · 랜덤 명령 120)</td>
+<td>검사 560 · <strong>TOTAL MISMATCH = 0</strong> (<code>FIX = 0</code>)</td>
+<td>검사 560 · <strong>TOTAL MISMATCH = 0</strong> (<code>FIX = 6</code>)</td>
+</tr>
+<tr>
+<td>PC 줄 (시뮬)</td>
+<td><code>00%00C</code> · <code>000cm</code> · <code>400cm</code> · 마지막 정상값</td>
+<td><code>--%--C</code> · <code>Err 1</code> · <code>Err 2</code> · <code>Err 3</code></td>
+</tr>
+<tr>
+<td>구현 (Vivado 2022.2 · 100 MHz)</td>
+<td>LUT 1,473 · FF 737 · WNS +1.387 ns</td>
+<td>LUT 1,489 (+16) · FF 737 · WNS +0.320 ns · 위반 0</td>
+</tr>
+<tr>
+<td>보드 (10/31)</td>
+<td><code>400cm</code> · <code>00%00C</code></td>
+<td><code>Err 2</code> · <code>--%--C</code> · <code>Err 1</code> · ECHO 선 뽑음 → FND <code>Err3</code> = PC <code>Err 3</code></td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>시뮬 조건 : 시간 단축 파라미터 (UART 115200 bps, <code>/auto</code> 500 Hz, 센서 대기 시간 축소 — <code>2_시뮬검증_가이드</code> 참고), 클럭 100 MHz 그대로.</li>
+<li>WNS 가 줄었지만 가장 빠듯한 경로는 원본과 같은 <strong>리셋 배선</strong> (U_RESET_SYNC → SR04 카운터 CLR, 로직 0 단) → 배치가 바뀌며 배선이 길어진 것으로 보임 (추정).</li>
+<li>LUT +16 = 글자 고르는 MUX 가 오류 · 측정 전 경우만큼 늘어난 것.</li>
+</ul>
+<h2 id="7">7. 파일 위치</h2>
+<table>
+<thead>
+<tr>
+<th>무엇</th>
+<th>위치</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>고친 소스</td>
+<td><code>C:\work\merge_fix2\src\</code> (기록용 사본 <code>통합검증\수정판_1031_B2B3\src\</code>)</td>
+</tr>
+<tr>
+<td>원본 (비교용)</td>
+<td><code>C:\work\merge_fix2\src_orig\</code></td>
+</tr>
+<tr>
+<td>바뀐 줄만</td>
+<td><code>C:\work\merge_fix2\fix_b2b3_1031.diff</code></td>
+</tr>
+<tr>
+<td>Vivado 프로젝트 · 비트</td>
+<td><code>C:\work\merge_fix2\merge_fix2_build.xpr</code> · <code>merge_final_top_fix2_B2B3_1031.bit</code></td>
+</tr>
+<tr>
+<td>발견 · 논의 문서</td>
+<td><code>통합검증\4_보드검증_발견문제_정리.html</code></td>
+</tr>
+</tbody>
+</table></main></body></html>
