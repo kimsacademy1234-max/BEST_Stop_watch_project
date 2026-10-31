@@ -1,0 +1,876 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="tb_merge_final_top_behav.wdb" id="1">
+         <top_modules>
+            <top_module name="glbl" />
+            <top_module name="tb_merge_final_top" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <zoom_setting>
+      <ZoomStartTime time="0fs"></ZoomStartTime>
+      <ZoomEndTime time="20000000000001fs"></ZoomEndTime>
+      <Cursor1Time time="0fs"></Cursor1Time>
+   </zoom_setting>
+   <column_width_setting>
+      <NameColumnWidth column_width="230"></NameColumnWidth>
+      <ValueColumnWidth column_width="110"></ValueColumnWidth>
+   </column_width_setting>
+   <WVObjectSize size="10" />
+   <wvobject fp_name="group1" type="group">
+      <obj_property name="label">TB : sent command / received line / FND text (ASCII)</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <wvobject fp_name="/tb_merge_final_top/CMD_TEXT" type="array">
+         <obj_property name="ElementShortName">CMD_TEXT[127:0]</obj_property>
+         <obj_property name="ObjectShortName">CMD_TEXT[127:0]</obj_property>
+         <obj_property name="Radix">ASCIIRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_merge_final_top/PC_TEXT" type="array">
+         <obj_property name="ElementShortName">PC_TEXT[127:0]</obj_property>
+         <obj_property name="ObjectShortName">PC_TEXT[127:0]</obj_property>
+         <obj_property name="Radix">ASCIIRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_merge_final_top/FND_TEXT" type="array">
+         <obj_property name="ElementShortName">FND_TEXT[63:0]</obj_property>
+         <obj_property name="ObjectShortName">FND_TEXT[63:0]</obj_property>
+         <obj_property name="Radix">ASCIIRADIX</obj_property>
+      </wvobject>
+   </wvobject>
+   <wvobject fp_name="group101" type="group">
+      <obj_property name="label">CHECK : command / expect / got / PASS-FAIL / time (us)</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <wvobject fp_name="/tb_merge_final_top/CHK_NUM" type="array">
+         <obj_property name="ElementShortName">CHK_NUM[31:0]</obj_property>
+         <obj_property name="ObjectShortName">CHK_NUM[31:0]</obj_property>
+         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_merge_final_top/CHK_CMD" type="array">
+         <obj_property name="ElementShortName">CHK_CMD[127:0]</obj_property>
+         <obj_property name="ObjectShortName">CHK_CMD[127:0]</obj_property>
+         <obj_property name="Radix">ASCIIRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_merge_final_top/CHK_EXPECT" type="array">
+         <obj_property name="ElementShortName">CHK_EXPECT[127:0]</obj_property>
+         <obj_property name="ObjectShortName">CHK_EXPECT[127:0]</obj_property>
+         <obj_property name="Radix">ASCIIRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_merge_final_top/CHK_GOT" type="array">
+         <obj_property name="ElementShortName">CHK_GOT[127:0]</obj_property>
+         <obj_property name="ObjectShortName">CHK_GOT[127:0]</obj_property>
+         <obj_property name="Radix">ASCIIRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_merge_final_top/CHK_RESULT" type="array">
+         <obj_property name="ElementShortName">CHK_RESULT[31:0]</obj_property>
+         <obj_property name="ObjectShortName">CHK_RESULT[31:0]</obj_property>
+         <obj_property name="Radix">ASCIIRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_merge_final_top/CHK_SENT_US" type="array">
+         <obj_property name="ElementShortName">CHK_SENT_US[31:0]</obj_property>
+         <obj_property name="ObjectShortName">CHK_SENT_US[31:0]</obj_property>
+         <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_merge_final_top/CHK_RESULT_US" type="array">
+         <obj_property name="ElementShortName">CHK_RESULT_US[31:0]</obj_property>
+         <obj_property name="ObjectShortName">CHK_RESULT_US[31:0]</obj_property>
+         <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_merge_final_top/CHK_DELAY_US" type="array">
+         <obj_property name="ElementShortName">CHK_DELAY_US[31:0]</obj_property>
+         <obj_property name="ObjectShortName">CHK_DELAY_US[31:0]</obj_property>
+         <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+      </wvobject>
+   </wvobject>
+   <wvobject fp_name="group100" type="group">
+      <obj_property name="label">FND : AN3 AN2 AN1 AN0 (left -&gt; right, ASCII)</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <wvobject fp_name="/tb_merge_final_top/AN3" type="array">
+         <obj_property name="ElementShortName">AN3[7:0]</obj_property>
+         <obj_property name="ObjectShortName">AN3[7:0]</obj_property>
+         <obj_property name="Radix">ASCIIRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_merge_final_top/DP3" type="logic">
+         <obj_property name="ElementShortName">DP3</obj_property>
+         <obj_property name="ObjectShortName">DP3</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_merge_final_top/AN2" type="array">
+         <obj_property name="ElementShortName">AN2[7:0]</obj_property>
+         <obj_property name="ObjectShortName">AN2[7:0]</obj_property>
+         <obj_property name="Radix">ASCIIRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_merge_final_top/DP2" type="logic">
+         <obj_property name="ElementShortName">DP2</obj_property>
+         <obj_property name="ObjectShortName">DP2</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_merge_final_top/AN1" type="array">
+         <obj_property name="ElementShortName">AN1[7:0]</obj_property>
+         <obj_property name="ObjectShortName">AN1[7:0]</obj_property>
+         <obj_property name="Radix">ASCIIRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_merge_final_top/DP1" type="logic">
+         <obj_property name="ElementShortName">DP1</obj_property>
+         <obj_property name="ObjectShortName">DP1</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_merge_final_top/AN0" type="array">
+         <obj_property name="ElementShortName">AN0[7:0]</obj_property>
+         <obj_property name="ObjectShortName">AN0[7:0]</obj_property>
+         <obj_property name="Radix">ASCIIRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_merge_final_top/DP0" type="logic">
+         <obj_property name="ElementShortName">DP0</obj_property>
+         <obj_property name="ObjectShortName">DP0</obj_property>
+      </wvobject>
+   </wvobject>
+   <wvobject fp_name="group4" type="group">
+      <obj_property name="label">merge_final_top : board pins</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <wvobject fp_name="group2" type="group">
+         <obj_property name="label">Inputs</obj_property>
+         <obj_property name="DisplayName">label</obj_property>
+         <wvobject fp_name="/tb_merge_final_top/dut/clk" type="logic">
+            <obj_property name="ElementShortName">clk</obj_property>
+            <obj_property name="ObjectShortName">clk</obj_property>
+         </wvobject>
+         <wvobject fp_name="/tb_merge_final_top/dut/rst" type="logic">
+            <obj_property name="ElementShortName">rst</obj_property>
+            <obj_property name="ObjectShortName">rst</obj_property>
+         </wvobject>
+         <wvobject fp_name="/tb_merge_final_top/dut/btn_R" type="logic">
+            <obj_property name="ElementShortName">btn_R</obj_property>
+            <obj_property name="ObjectShortName">btn_R</obj_property>
+         </wvobject>
+         <wvobject fp_name="/tb_merge_final_top/dut/btn_L" type="logic">
+            <obj_property name="ElementShortName">btn_L</obj_property>
+            <obj_property name="ObjectShortName">btn_L</obj_property>
+         </wvobject>
+         <wvobject fp_name="/tb_merge_final_top/dut/btn_U" type="logic">
+            <obj_property name="ElementShortName">btn_U</obj_property>
+            <obj_property name="ObjectShortName">btn_U</obj_property>
+         </wvobject>
+         <wvobject fp_name="/tb_merge_final_top/dut/btn_D" type="logic">
+            <obj_property name="ElementShortName">btn_D</obj_property>
+            <obj_property name="ObjectShortName">btn_D</obj_property>
+         </wvobject>
+         <wvobject fp_name="/tb_merge_final_top/dut/mode_sw0" type="logic">
+            <obj_property name="ElementShortName">mode_sw0</obj_property>
+            <obj_property name="ObjectShortName">mode_sw0</obj_property>
+         </wvobject>
+         <wvobject fp_name="/tb_merge_final_top/dut/display_mode_sw1" type="logic">
+            <obj_property name="ElementShortName">display_mode_sw1</obj_property>
+            <obj_property name="ObjectShortName">display_mode_sw1</obj_property>
+         </wvobject>
+         <wvobject fp_name="/tb_merge_final_top/dut/set_sw2" type="logic">
+            <obj_property name="ElementShortName">set_sw2</obj_property>
+            <obj_property name="ObjectShortName">set_sw2</obj_property>
+         </wvobject>
+         <wvobject fp_name="/tb_merge_final_top/dut/hour24_sw3" type="logic">
+            <obj_property name="ElementShortName">hour24_sw3</obj_property>
+            <obj_property name="ObjectShortName">hour24_sw3</obj_property>
+         </wvobject>
+         <wvobject fp_name="/tb_merge_final_top/dut/timer_sw4" type="logic">
+            <obj_property name="ElementShortName">timer_sw4</obj_property>
+            <obj_property name="ObjectShortName">timer_sw4</obj_property>
+         </wvobject>
+         <wvobject fp_name="/tb_merge_final_top/dut/dist_sw5" type="logic">
+            <obj_property name="ElementShortName">dist_sw5</obj_property>
+            <obj_property name="ObjectShortName">dist_sw5</obj_property>
+         </wvobject>
+         <wvobject fp_name="/tb_merge_final_top/dut/dht_sw6" type="logic">
+            <obj_property name="ElementShortName">dht_sw6</obj_property>
+            <obj_property name="ObjectShortName">dht_sw6</obj_property>
+         </wvobject>
+         <wvobject fp_name="/tb_merge_final_top/dut/dist_led_sw15" type="logic">
+            <obj_property name="ElementShortName">dist_led_sw15</obj_property>
+            <obj_property name="ObjectShortName">dist_led_sw15</obj_property>
+         </wvobject>
+         <wvobject fp_name="/tb_merge_final_top/dut/rx" type="logic">
+            <obj_property name="ElementShortName">rx</obj_property>
+            <obj_property name="ObjectShortName">rx</obj_property>
+         </wvobject>
+         <wvobject fp_name="/tb_merge_final_top/dut/echo" type="logic">
+            <obj_property name="ElementShortName">echo</obj_property>
+            <obj_property name="ObjectShortName">echo</obj_property>
+         </wvobject>
+      </wvobject>
+      <wvobject fp_name="group3" type="group">
+         <obj_property name="label">Outputs</obj_property>
+         <obj_property name="DisplayName">label</obj_property>
+         <wvobject fp_name="/tb_merge_final_top/dut/tx" type="logic">
+            <obj_property name="ElementShortName">tx</obj_property>
+            <obj_property name="ObjectShortName">tx</obj_property>
+         </wvobject>
+         <wvobject fp_name="/tb_merge_final_top/dut/trig" type="logic">
+            <obj_property name="ElementShortName">trig</obj_property>
+            <obj_property name="ObjectShortName">trig</obj_property>
+         </wvobject>
+         <wvobject fp_name="/tb_merge_final_top/dut/dht11_io" type="logic">
+            <obj_property name="ElementShortName">dht11_io</obj_property>
+            <obj_property name="ObjectShortName">dht11_io</obj_property>
+         </wvobject>
+         <wvobject fp_name="/tb_merge_final_top/dut/fnd_com" type="array">
+            <obj_property name="ElementShortName">fnd_com[3:0]</obj_property>
+            <obj_property name="ObjectShortName">fnd_com[3:0]</obj_property>
+            <obj_property name="Radix">BINARYRADIX</obj_property>
+         </wvobject>
+         <wvobject fp_name="/tb_merge_final_top/dut/fnd_font" type="array">
+            <obj_property name="ElementShortName">fnd_font[7:0]</obj_property>
+            <obj_property name="ObjectShortName">fnd_font[7:0]</obj_property>
+            <obj_property name="Radix">HEXRADIX</obj_property>
+         </wvobject>
+         <wvobject fp_name="/tb_merge_final_top/dut/led" type="array">
+            <obj_property name="ElementShortName">led[15:0]</obj_property>
+            <obj_property name="ObjectShortName">led[15:0]</obj_property>
+            <obj_property name="Radix">BINARYRADIX</obj_property>
+         </wvobject>
+      </wvobject>
+   </wvobject>
+   <wvobject fp_name="group16" type="group">
+      <obj_property name="label">U_UART : uart_top</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <wvobject fp_name="group5" type="group">
+         <obj_property name="label">Inputs</obj_property>
+         <obj_property name="DisplayName">label</obj_property>
+         <wvobject fp_name="/tb_merge_final_top/dut/U_UART/i_rx" type="logic">
+            <obj_property name="ElementShortName">i_rx</obj_property>
+            <obj_property name="ObjectShortName">i_rx</obj_property>
+         </wvobject>
+         <wvobject fp_name="/tb_merge_final_top/dut/U_UART/i_btn_R" type="logic">
+            <obj_property name="ElementShortName">i_btn_R</obj_property>
+            <obj_property name="ObjectShortName">i_btn_R</obj_property>
+         </wvobject>
+         <wvobject fp_name="/tb_merge_final_top/dut/U_UART/i_btn_L" type="logic">
+            <obj_property name="ElementShortName">i_btn_L</obj_property>
+            <obj_property name="ObjectShortName">i_btn_L</obj_property>
+         </wvobject>
+         <wvobject fp_name="/tb_merge_final_top/dut/U_UART/i_btn_U" type="logic">
+            <obj_property name="ElementShortName">i_btn_U</obj_property>
+            <obj_property name="ObjectShortName">i_btn_U</obj_property>
+         </wvobject>
+         <wvobject fp_name="/tb_merge_final_top/dut/U_UART/i_btn_D" type="logic">
+            <obj_property name="ElementShortName">i_btn_D</obj_property>
+            <obj_property name="ObjectShortName">i_btn_D</obj_property>
+         </wvobject>
+         <wvobject fp_name="/tb_merge_final_top/dut/U_UART/i_send_data" type="array">
+            <obj_property name="ElementShortName">i_send_data[23:0]</obj_property>
+            <obj_property name="ObjectShortName">i_send_data[23:0]</obj_property>
+            <obj_property name="Radix">HEXRADIX</obj_property>
+         </wvobject>
+      </wvobject>
+      <wvobject fp_name="group6" type="group">
+         <obj_property name="label">Outputs</obj_property>
+         <obj_property name="DisplayName">label</obj_property>
+         <wvobject fp_name="/tb_merge_final_top/dut/U_UART/o_tx" type="logic">
+            <obj_property name="ElementShortName">o_tx</obj_property>
+            <obj_property name="ObjectShortName">o_tx</obj_property>
+         </wvobject>
+         <wvobject fp_name="/tb_merge_final_top/dut/U_UART/o_module_control_bit" type="array">
+            <obj_property name="ElementShortName">o_module_control_bit[6:0]</obj_property>
+            <obj_property name="ObjectShortName">o_module_control_bit[6:0]</obj_property>
+            <obj_property name="Radix">BINARYRADIX</obj_property>
+         </wvobject>
+         <wvobject fp_name="/tb_merge_final_top/dut/U_UART/o_uart_mode" type="logic">
+            <obj_property name="ElementShortName">o_uart_mode</obj_property>
+            <obj_property name="ObjectShortName">o_uart_mode</obj_property>
+         </wvobject>
+         <wvobject fp_name="/tb_merge_final_top/dut/U_UART/o_send_sel" type="array">
+            <obj_property name="ElementShortName">o_send_sel[2:0]</obj_property>
+            <obj_property name="ObjectShortName">o_send_sel[2:0]</obj_property>
+            <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+         </wvobject>
+         <wvobject fp_name="/tb_merge_final_top/dut/U_UART/o_uart_btn_R" type="logic">
+            <obj_property name="ElementShortName">o_uart_btn_R</obj_property>
+            <obj_property name="ObjectShortName">o_uart_btn_R</obj_property>
+         </wvobject>
+         <wvobject fp_name="/tb_merge_final_top/dut/U_UART/o_uart_btn_L" type="logic">
+            <obj_property name="ElementShortName">o_uart_btn_L</obj_property>
+            <obj_property name="ObjectShortName">o_uart_btn_L</obj_property>
+         </wvobject>
+         <wvobject fp_name="/tb_merge_final_top/dut/U_UART/o_uart_btn_U" type="logic">
+            <obj_property name="ElementShortName">o_uart_btn_U</obj_property>
+            <obj_property name="ObjectShortName">o_uart_btn_U</obj_property>
+         </wvobject>
+         <wvobject fp_name="/tb_merge_final_top/dut/U_UART/o_uart_btn_D" type="logic">
+            <obj_property name="ElementShortName">o_uart_btn_D</obj_property>
+            <obj_property name="ObjectShortName">o_uart_btn_D</obj_property>
+         </wvobject>
+      </wvobject>
+      <wvobject fp_name="group9" type="group">
+         <obj_property name="label">U_ASCII_DECODER : UART_ASCII_DECODER</obj_property>
+         <obj_property name="DisplayName">label</obj_property>
+         <wvobject fp_name="group7" type="group">
+            <obj_property name="label">Inputs</obj_property>
+            <obj_property name="DisplayName">label</obj_property>
+            <wvobject fp_name="/tb_merge_final_top/dut/U_UART/U_ASCII_DECODER/i_ascii" type="array">
+               <obj_property name="ElementShortName">i_ascii[7:0]</obj_property>
+               <obj_property name="ObjectShortName">i_ascii[7:0]</obj_property>
+               <obj_property name="Radix">ASCIIRADIX</obj_property>
+            </wvobject>
+            <wvobject fp_name="/tb_merge_final_top/dut/U_UART/U_ASCII_DECODER/i_enable" type="logic">
+               <obj_property name="ElementShortName">i_enable</obj_property>
+               <obj_property name="ObjectShortName">i_enable</obj_property>
+            </wvobject>
+         </wvobject>
+         <wvobject fp_name="group8" type="group">
+            <obj_property name="label">Outputs</obj_property>
+            <obj_property name="DisplayName">label</obj_property>
+            <wvobject fp_name="/tb_merge_final_top/dut/U_UART/U_ASCII_DECODER/o_pop" type="logic">
+               <obj_property name="ElementShortName">o_pop</obj_property>
+               <obj_property name="ObjectShortName">o_pop</obj_property>
+            </wvobject>
+            <wvobject fp_name="/tb_merge_final_top/dut/U_UART/U_ASCII_DECODER/o_handshake" type="logic">
+               <obj_property name="ElementShortName">o_handshake</obj_property>
+               <obj_property name="ObjectShortName">o_handshake</obj_property>
+            </wvobject>
+            <wvobject fp_name="/tb_merge_final_top/dut/U_UART/U_ASCII_DECODER/o_error" type="logic">
+               <obj_property name="ElementShortName">o_error</obj_property>
+               <obj_property name="ObjectShortName">o_error</obj_property>
+            </wvobject>
+            <wvobject fp_name="/tb_merge_final_top/dut/U_UART/U_ASCII_DECODER/o_get" type="logic">
+               <obj_property name="ElementShortName">o_get</obj_property>
+               <obj_property name="ObjectShortName">o_get</obj_property>
+            </wvobject>
+            <wvobject fp_name="/tb_merge_final_top/dut/U_UART/U_ASCII_DECODER/o_btn" type="logic">
+               <obj_property name="ElementShortName">o_btn</obj_property>
+               <obj_property name="ObjectShortName">o_btn</obj_property>
+            </wvobject>
+            <wvobject fp_name="/tb_merge_final_top/dut/U_UART/U_ASCII_DECODER/o_mode" type="logic">
+               <obj_property name="ElementShortName">o_mode</obj_property>
+               <obj_property name="ObjectShortName">o_mode</obj_property>
+            </wvobject>
+            <wvobject fp_name="/tb_merge_final_top/dut/U_UART/U_ASCII_DECODER/o_auto" type="logic">
+               <obj_property name="ElementShortName">o_auto</obj_property>
+               <obj_property name="ObjectShortName">o_auto</obj_property>
+            </wvobject>
+            <wvobject fp_name="/tb_merge_final_top/dut/U_UART/U_ASCII_DECODER/o_set" type="logic">
+               <obj_property name="ElementShortName">o_set</obj_property>
+               <obj_property name="ObjectShortName">o_set</obj_property>
+            </wvobject>
+            <wvobject fp_name="/tb_merge_final_top/dut/U_UART/U_ASCII_DECODER/o_off_set" type="logic">
+               <obj_property name="ElementShortName">o_off_set</obj_property>
+               <obj_property name="ObjectShortName">o_off_set</obj_property>
+            </wvobject>
+            <wvobject fp_name="/tb_merge_final_top/dut/U_UART/U_ASCII_DECODER/o_ascii" type="array">
+               <obj_property name="ElementShortName">o_ascii[39:0]</obj_property>
+               <obj_property name="ObjectShortName">o_ascii[39:0]</obj_property>
+               <obj_property name="Radix">ASCIIRADIX</obj_property>
+            </wvobject>
+         </wvobject>
+      </wvobject>
+      <wvobject fp_name="group12" type="group">
+         <obj_property name="label">U_CONTROL : UART_CONTROLLER</obj_property>
+         <obj_property name="DisplayName">label</obj_property>
+         <wvobject fp_name="group10" type="group">
+            <obj_property name="label">Inputs</obj_property>
+            <obj_property name="DisplayName">label</obj_property>
+            <wvobject fp_name="/tb_merge_final_top/dut/U_UART/U_CONTROL/i_handshake" type="logic">
+               <obj_property name="ElementShortName">i_handshake</obj_property>
+               <obj_property name="ObjectShortName">i_handshake</obj_property>
+            </wvobject>
+            <wvobject fp_name="/tb_merge_final_top/dut/U_UART/U_CONTROL/i_error" type="logic">
+               <obj_property name="ElementShortName">i_error</obj_property>
+               <obj_property name="ObjectShortName">i_error</obj_property>
+            </wvobject>
+            <wvobject fp_name="/tb_merge_final_top/dut/U_UART/U_CONTROL/i_con_ascii" type="array">
+               <obj_property name="ElementShortName">i_con_ascii[39:0]</obj_property>
+               <obj_property name="ObjectShortName">i_con_ascii[39:0]</obj_property>
+               <obj_property name="Radix">ASCIIRADIX</obj_property>
+            </wvobject>
+            <wvobject fp_name="/tb_merge_final_top/dut/U_UART/U_CONTROL/i_get" type="logic">
+               <obj_property name="ElementShortName">i_get</obj_property>
+               <obj_property name="ObjectShortName">i_get</obj_property>
+            </wvobject>
+            <wvobject fp_name="/tb_merge_final_top/dut/U_UART/U_CONTROL/i_btn" type="logic">
+               <obj_property name="ElementShortName">i_btn</obj_property>
+               <obj_property name="ObjectShortName">i_btn</obj_property>
+            </wvobject>
+            <wvobject fp_name="/tb_merge_final_top/dut/U_UART/U_CONTROL/i_mode" type="logic">
+               <obj_property name="ElementShortName">i_mode</obj_property>
+               <obj_property name="ObjectShortName">i_mode</obj_property>
+            </wvobject>
+            <wvobject fp_name="/tb_merge_final_top/dut/U_UART/U_CONTROL/i_auto" type="logic">
+               <obj_property name="ElementShortName">i_auto</obj_property>
+               <obj_property name="ObjectShortName">i_auto</obj_property>
+            </wvobject>
+            <wvobject fp_name="/tb_merge_final_top/dut/U_UART/U_CONTROL/i_set" type="logic">
+               <obj_property name="ElementShortName">i_set</obj_property>
+               <obj_property name="ObjectShortName">i_set</obj_property>
+            </wvobject>
+            <wvobject fp_name="/tb_merge_final_top/dut/U_UART/U_CONTROL/i_off_set" type="logic">
+               <obj_property name="ElementShortName">i_off_set</obj_property>
+               <obj_property name="ObjectShortName">i_off_set</obj_property>
+            </wvobject>
+            <wvobject fp_name="/tb_merge_final_top/dut/U_UART/U_CONTROL/i_btn_R" type="logic">
+               <obj_property name="ElementShortName">i_btn_R</obj_property>
+               <obj_property name="ObjectShortName">i_btn_R</obj_property>
+            </wvobject>
+            <wvobject fp_name="/tb_merge_final_top/dut/U_UART/U_CONTROL/i_btn_L" type="logic">
+               <obj_property name="ElementShortName">i_btn_L</obj_property>
+               <obj_property name="ObjectShortName">i_btn_L</obj_property>
+            </wvobject>
+            <wvobject fp_name="/tb_merge_final_top/dut/U_UART/U_CONTROL/i_btn_U" type="logic">
+               <obj_property name="ElementShortName">i_btn_U</obj_property>
+               <obj_property name="ObjectShortName">i_btn_U</obj_property>
+            </wvobject>
+            <wvobject fp_name="/tb_merge_final_top/dut/U_UART/U_CONTROL/i_btn_D" type="logic">
+               <obj_property name="ElementShortName">i_btn_D</obj_property>
+               <obj_property name="ObjectShortName">i_btn_D</obj_property>
+            </wvobject>
+            <wvobject fp_name="/tb_merge_final_top/dut/U_UART/U_CONTROL/i_sender_busy" type="logic">
+               <obj_property name="ElementShortName">i_sender_busy</obj_property>
+               <obj_property name="ObjectShortName">i_sender_busy</obj_property>
+            </wvobject>
+            <wvobject fp_name="/tb_merge_final_top/dut/U_UART/U_CONTROL/i_for_sender_data" type="array">
+               <obj_property name="ElementShortName">i_for_sender_data[23:0]</obj_property>
+               <obj_property name="ObjectShortName">i_for_sender_data[23:0]</obj_property>
+               <obj_property name="Radix">HEXRADIX</obj_property>
+            </wvobject>
+         </wvobject>
+         <wvobject fp_name="group11" type="group">
+            <obj_property name="label">Outputs</obj_property>
+            <obj_property name="DisplayName">label</obj_property>
+            <wvobject fp_name="/tb_merge_final_top/dut/U_UART/U_CONTROL/o_module_control_bit" type="array">
+               <obj_property name="ElementShortName">o_module_control_bit[6:0]</obj_property>
+               <obj_property name="ObjectShortName">o_module_control_bit[6:0]</obj_property>
+               <obj_property name="Radix">BINARYRADIX</obj_property>
+            </wvobject>
+            <wvobject fp_name="/tb_merge_final_top/dut/U_UART/U_CONTROL/o_uart_mode" type="logic">
+               <obj_property name="ElementShortName">o_uart_mode</obj_property>
+               <obj_property name="ObjectShortName">o_uart_mode</obj_property>
+            </wvobject>
+            <wvobject fp_name="/tb_merge_final_top/dut/U_UART/U_CONTROL/o_sender_go" type="logic">
+               <obj_property name="ElementShortName">o_sender_go</obj_property>
+               <obj_property name="ObjectShortName">o_sender_go</obj_property>
+            </wvobject>
+            <wvobject fp_name="/tb_merge_final_top/dut/U_UART/U_CONTROL/o_send_sel" type="array">
+               <obj_property name="ElementShortName">o_send_sel[2:0]</obj_property>
+               <obj_property name="ObjectShortName">o_send_sel[2:0]</obj_property>
+               <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+            </wvobject>
+            <wvobject fp_name="/tb_merge_final_top/dut/U_UART/U_CONTROL/o_sender_data" type="array">
+               <obj_property name="ElementShortName">o_sender_data[23:0]</obj_property>
+               <obj_property name="ObjectShortName">o_sender_data[23:0]</obj_property>
+               <obj_property name="Radix">HEXRADIX</obj_property>
+            </wvobject>
+            <wvobject fp_name="/tb_merge_final_top/dut/U_UART/U_CONTROL/o_uart_R" type="logic">
+               <obj_property name="ElementShortName">o_uart_R</obj_property>
+               <obj_property name="ObjectShortName">o_uart_R</obj_property>
+            </wvobject>
+            <wvobject fp_name="/tb_merge_final_top/dut/U_UART/U_CONTROL/o_uart_L" type="logic">
+               <obj_property name="ElementShortName">o_uart_L</obj_property>
+               <obj_property name="ObjectShortName">o_uart_L</obj_property>
+            </wvobject>
+            <wvobject fp_name="/tb_merge_final_top/dut/U_UART/U_CONTROL/o_uart_U" type="logic">
+               <obj_property name="ElementShortName">o_uart_U</obj_property>
+               <obj_property name="ObjectShortName">o_uart_U</obj_property>
+            </wvobject>
+            <wvobject fp_name="/tb_merge_final_top/dut/U_UART/U_CONTROL/o_uart_D" type="logic">
+               <obj_property name="ElementShortName">o_uart_D</obj_property>
+               <obj_property name="ObjectShortName">o_uart_D</obj_property>
+            </wvobject>
+         </wvobject>
+      </wvobject>
+      <wvobject fp_name="group15" type="group">
+         <obj_property name="label">U_ASCII_SENDER : uart_sender</obj_property>
+         <obj_property name="DisplayName">label</obj_property>
+         <wvobject fp_name="group13" type="group">
+            <obj_property name="label">Inputs</obj_property>
+            <obj_property name="DisplayName">label</obj_property>
+            <wvobject fp_name="/tb_merge_final_top/dut/U_UART/U_ASCII_SENDER/i_send_go" type="logic">
+               <obj_property name="ElementShortName">i_send_go</obj_property>
+               <obj_property name="ObjectShortName">i_send_go</obj_property>
+            </wvobject>
+            <wvobject fp_name="/tb_merge_final_top/dut/U_UART/U_ASCII_SENDER/i_send_sel" type="array">
+               <obj_property name="ElementShortName">i_send_sel[2:0]</obj_property>
+               <obj_property name="ObjectShortName">i_send_sel[2:0]</obj_property>
+               <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+            </wvobject>
+            <wvobject fp_name="/tb_merge_final_top/dut/U_UART/U_ASCII_SENDER/i_send_data" type="array">
+               <obj_property name="ElementShortName">i_send_data[23:0]</obj_property>
+               <obj_property name="ObjectShortName">i_send_data[23:0]</obj_property>
+               <obj_property name="Radix">HEXRADIX</obj_property>
+            </wvobject>
+            <wvobject fp_name="/tb_merge_final_top/dut/U_UART/U_ASCII_SENDER/i_tx_full" type="logic">
+               <obj_property name="ElementShortName">i_tx_full</obj_property>
+               <obj_property name="ObjectShortName">i_tx_full</obj_property>
+            </wvobject>
+         </wvobject>
+         <wvobject fp_name="group14" type="group">
+            <obj_property name="label">Outputs</obj_property>
+            <obj_property name="DisplayName">label</obj_property>
+            <wvobject fp_name="/tb_merge_final_top/dut/U_UART/U_ASCII_SENDER/o_send_busy" type="logic">
+               <obj_property name="ElementShortName">o_send_busy</obj_property>
+               <obj_property name="ObjectShortName">o_send_busy</obj_property>
+            </wvobject>
+            <wvobject fp_name="/tb_merge_final_top/dut/U_UART/U_ASCII_SENDER/o_tx_push" type="logic">
+               <obj_property name="ElementShortName">o_tx_push</obj_property>
+               <obj_property name="ObjectShortName">o_tx_push</obj_property>
+            </wvobject>
+            <wvobject fp_name="/tb_merge_final_top/dut/U_UART/U_ASCII_SENDER/o_tx_push_data" type="array">
+               <obj_property name="ElementShortName">o_tx_push_data[7:0]</obj_property>
+               <obj_property name="ObjectShortName">o_tx_push_data[7:0]</obj_property>
+               <obj_property name="Radix">ASCIIRADIX</obj_property>
+            </wvobject>
+         </wvobject>
+      </wvobject>
+   </wvobject>
+   <wvobject fp_name="group19" type="group">
+      <obj_property name="label">U_WTS : wts_top</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <wvobject fp_name="group17" type="group">
+         <obj_property name="label">Inputs</obj_property>
+         <obj_property name="DisplayName">label</obj_property>
+         <wvobject fp_name="/tb_merge_final_top/dut/U_WTS/i_btn_R" type="logic">
+            <obj_property name="ElementShortName">i_btn_R</obj_property>
+            <obj_property name="ObjectShortName">i_btn_R</obj_property>
+         </wvobject>
+         <wvobject fp_name="/tb_merge_final_top/dut/U_WTS/i_btn_L" type="logic">
+            <obj_property name="ElementShortName">i_btn_L</obj_property>
+            <obj_property name="ObjectShortName">i_btn_L</obj_property>
+         </wvobject>
+         <wvobject fp_name="/tb_merge_final_top/dut/U_WTS/i_btn_U" type="logic">
+            <obj_property name="ElementShortName">i_btn_U</obj_property>
+            <obj_property name="ObjectShortName">i_btn_U</obj_property>
+         </wvobject>
+         <wvobject fp_name="/tb_merge_final_top/dut/U_WTS/i_btn_D" type="logic">
+            <obj_property name="ElementShortName">i_btn_D</obj_property>
+            <obj_property name="ObjectShortName">i_btn_D</obj_property>
+         </wvobject>
+         <wvobject fp_name="/tb_merge_final_top/dut/U_WTS/i_mode_sw0" type="logic">
+            <obj_property name="ElementShortName">i_mode_sw0</obj_property>
+            <obj_property name="ObjectShortName">i_mode_sw0</obj_property>
+         </wvobject>
+         <wvobject fp_name="/tb_merge_final_top/dut/U_WTS/i_display_mode_sw1" type="logic">
+            <obj_property name="ElementShortName">i_display_mode_sw1</obj_property>
+            <obj_property name="ObjectShortName">i_display_mode_sw1</obj_property>
+         </wvobject>
+         <wvobject fp_name="/tb_merge_final_top/dut/U_WTS/i_set_sw2" type="logic">
+            <obj_property name="ElementShortName">i_set_sw2</obj_property>
+            <obj_property name="ObjectShortName">i_set_sw2</obj_property>
+         </wvobject>
+         <wvobject fp_name="/tb_merge_final_top/dut/U_WTS/i_hour24_sw3" type="logic">
+            <obj_property name="ElementShortName">i_hour24_sw3</obj_property>
+            <obj_property name="ObjectShortName">i_hour24_sw3</obj_property>
+         </wvobject>
+         <wvobject fp_name="/tb_merge_final_top/dut/U_WTS/i_timer_sw4" type="logic">
+            <obj_property name="ElementShortName">i_timer_sw4</obj_property>
+            <obj_property name="ObjectShortName">i_timer_sw4</obj_property>
+         </wvobject>
+      </wvobject>
+      <wvobject fp_name="group18" type="group">
+         <obj_property name="label">Outputs</obj_property>
+         <obj_property name="DisplayName">label</obj_property>
+         <wvobject fp_name="/tb_merge_final_top/dut/U_WTS/o_disp_hour" type="array">
+            <obj_property name="ElementShortName">o_disp_hour[5:0]</obj_property>
+            <obj_property name="ObjectShortName">o_disp_hour[5:0]</obj_property>
+            <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+         </wvobject>
+         <wvobject fp_name="/tb_merge_final_top/dut/U_WTS/o_disp_min" type="array">
+            <obj_property name="ElementShortName">o_disp_min[5:0]</obj_property>
+            <obj_property name="ObjectShortName">o_disp_min[5:0]</obj_property>
+            <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+         </wvobject>
+         <wvobject fp_name="/tb_merge_final_top/dut/U_WTS/o_disp_sec" type="array">
+            <obj_property name="ElementShortName">o_disp_sec[5:0]</obj_property>
+            <obj_property name="ObjectShortName">o_disp_sec[5:0]</obj_property>
+            <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+         </wvobject>
+         <wvobject fp_name="/tb_merge_final_top/dut/U_WTS/o_disp_msec" type="array">
+            <obj_property name="ElementShortName">o_disp_msec[6:0]</obj_property>
+            <obj_property name="ObjectShortName">o_disp_msec[6:0]</obj_property>
+            <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+         </wvobject>
+         <wvobject fp_name="/tb_merge_final_top/dut/U_WTS/o_disp_mode" type="logic">
+            <obj_property name="ElementShortName">o_disp_mode</obj_property>
+            <obj_property name="ObjectShortName">o_disp_mode</obj_property>
+         </wvobject>
+         <wvobject fp_name="/tb_merge_final_top/dut/U_WTS/o_wt_cursor" type="array">
+            <obj_property name="ElementShortName">o_wt_cursor[1:0]</obj_property>
+            <obj_property name="ObjectShortName">o_wt_cursor[1:0]</obj_property>
+            <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+         </wvobject>
+         <wvobject fp_name="/tb_merge_final_top/dut/U_WTS/o_sel_sw" type="logic">
+            <obj_property name="ElementShortName">o_sel_sw</obj_property>
+            <obj_property name="ObjectShortName">o_sel_sw</obj_property>
+         </wvobject>
+         <wvobject fp_name="/tb_merge_final_top/dut/U_WTS/o_sel_wt" type="logic">
+            <obj_property name="ElementShortName">o_sel_wt</obj_property>
+            <obj_property name="ObjectShortName">o_sel_wt</obj_property>
+         </wvobject>
+         <wvobject fp_name="/tb_merge_final_top/dut/U_WTS/o_sel_tm" type="logic">
+            <obj_property name="ElementShortName">o_sel_tm</obj_property>
+            <obj_property name="ObjectShortName">o_sel_tm</obj_property>
+         </wvobject>
+         <wvobject fp_name="/tb_merge_final_top/dut/U_WTS/o_sw_lap" type="logic">
+            <obj_property name="ElementShortName">o_sw_lap</obj_property>
+            <obj_property name="ObjectShortName">o_sw_lap</obj_property>
+         </wvobject>
+         <wvobject fp_name="/tb_merge_final_top/dut/U_WTS/o_wt_pm" type="logic">
+            <obj_property name="ElementShortName">o_wt_pm</obj_property>
+            <obj_property name="ObjectShortName">o_wt_pm</obj_property>
+         </wvobject>
+         <wvobject fp_name="/tb_merge_final_top/dut/U_WTS/o_tm_run" type="logic">
+            <obj_property name="ElementShortName">o_tm_run</obj_property>
+            <obj_property name="ObjectShortName">o_tm_run</obj_property>
+         </wvobject>
+         <wvobject fp_name="/tb_merge_final_top/dut/U_WTS/o_tm_alarm" type="logic">
+            <obj_property name="ElementShortName">o_tm_alarm</obj_property>
+            <obj_property name="ObjectShortName">o_tm_alarm</obj_property>
+         </wvobject>
+         <wvobject fp_name="/tb_merge_final_top/dut/U_WTS/o_sw_time" type="array">
+            <obj_property name="ElementShortName">o_sw_time[23:0]</obj_property>
+            <obj_property name="ObjectShortName">o_sw_time[23:0]</obj_property>
+            <obj_property name="Radix">HEXRADIX</obj_property>
+         </wvobject>
+         <wvobject fp_name="/tb_merge_final_top/dut/U_WTS/o_tm_time" type="array">
+            <obj_property name="ElementShortName">o_tm_time[23:0]</obj_property>
+            <obj_property name="ObjectShortName">o_tm_time[23:0]</obj_property>
+            <obj_property name="Radix">HEXRADIX</obj_property>
+         </wvobject>
+         <wvobject fp_name="/tb_merge_final_top/dut/U_WTS/o_wt_time" type="array">
+            <obj_property name="ElementShortName">o_wt_time[23:0]</obj_property>
+            <obj_property name="ObjectShortName">o_wt_time[23:0]</obj_property>
+            <obj_property name="Radix">HEXRADIX</obj_property>
+         </wvobject>
+      </wvobject>
+   </wvobject>
+   <wvobject fp_name="group22" type="group">
+      <obj_property name="label">U_SR04 : sr04_top</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <wvobject fp_name="group20" type="group">
+         <obj_property name="label">Inputs</obj_property>
+         <obj_property name="DisplayName">label</obj_property>
+         <wvobject fp_name="/tb_merge_final_top/dut/U_SR04/i_btn_R" type="logic">
+            <obj_property name="ElementShortName">i_btn_R</obj_property>
+            <obj_property name="ObjectShortName">i_btn_R</obj_property>
+         </wvobject>
+         <wvobject fp_name="/tb_merge_final_top/dut/U_SR04/i_btn_U" type="logic">
+            <obj_property name="ElementShortName">i_btn_U</obj_property>
+            <obj_property name="ObjectShortName">i_btn_U</obj_property>
+         </wvobject>
+         <wvobject fp_name="/tb_merge_final_top/dut/U_SR04/i_led_sw" type="logic">
+            <obj_property name="ElementShortName">i_led_sw</obj_property>
+            <obj_property name="ObjectShortName">i_led_sw</obj_property>
+         </wvobject>
+         <wvobject fp_name="/tb_merge_final_top/dut/U_SR04/i_echo" type="logic">
+            <obj_property name="ElementShortName">i_echo</obj_property>
+            <obj_property name="ObjectShortName">i_echo</obj_property>
+         </wvobject>
+      </wvobject>
+      <wvobject fp_name="group21" type="group">
+         <obj_property name="label">Outputs</obj_property>
+         <obj_property name="DisplayName">label</obj_property>
+         <wvobject fp_name="/tb_merge_final_top/dut/U_SR04/o_trig" type="logic">
+            <obj_property name="ElementShortName">o_trig</obj_property>
+            <obj_property name="ObjectShortName">o_trig</obj_property>
+         </wvobject>
+         <wvobject fp_name="/tb_merge_final_top/dut/U_SR04/o_auto_en" type="logic">
+            <obj_property name="ElementShortName">o_auto_en</obj_property>
+            <obj_property name="ObjectShortName">o_auto_en</obj_property>
+         </wvobject>
+         <wvobject fp_name="/tb_merge_final_top/dut/U_SR04/o_done" type="logic">
+            <obj_property name="ElementShortName">o_done</obj_property>
+            <obj_property name="ObjectShortName">o_done</obj_property>
+         </wvobject>
+         <wvobject fp_name="/tb_merge_final_top/dut/U_SR04/o_distance" type="array">
+            <obj_property name="ElementShortName">o_distance[8:0]</obj_property>
+            <obj_property name="ObjectShortName">o_distance[8:0]</obj_property>
+            <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+         </wvobject>
+         <wvobject fp_name="/tb_merge_final_top/dut/U_SR04/o_distance_x10" type="array">
+            <obj_property name="ElementShortName">o_distance_x10[11:0]</obj_property>
+            <obj_property name="ObjectShortName">o_distance_x10[11:0]</obj_property>
+            <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+         </wvobject>
+         <wvobject fp_name="/tb_merge_final_top/dut/U_SR04/o_err" type="logic">
+            <obj_property name="ElementShortName">o_err</obj_property>
+            <obj_property name="ObjectShortName">o_err</obj_property>
+         </wvobject>
+         <wvobject fp_name="/tb_merge_final_top/dut/U_SR04/o_status" type="array">
+            <obj_property name="ElementShortName">o_status[1:0]</obj_property>
+            <obj_property name="ObjectShortName">o_status[1:0]</obj_property>
+            <obj_property name="Radix">BINARYRADIX</obj_property>
+         </wvobject>
+         <wvobject fp_name="/tb_merge_final_top/dut/U_SR04/o_led" type="array">
+            <obj_property name="ElementShortName">o_led[9:0]</obj_property>
+            <obj_property name="ObjectShortName">o_led[9:0]</obj_property>
+            <obj_property name="Radix">BINARYRADIX</obj_property>
+         </wvobject>
+      </wvobject>
+   </wvobject>
+   <wvobject fp_name="group25" type="group">
+      <obj_property name="label">U_DHT11 : dht11_top</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <wvobject fp_name="group23" type="group">
+         <obj_property name="label">Inputs</obj_property>
+         <obj_property name="DisplayName">label</obj_property>
+         <wvobject fp_name="/tb_merge_final_top/dut/U_DHT11/i_btn_R" type="logic">
+            <obj_property name="ElementShortName">i_btn_R</obj_property>
+            <obj_property name="ObjectShortName">i_btn_R</obj_property>
+         </wvobject>
+         <wvobject fp_name="/tb_merge_final_top/dut/U_DHT11/i_btn_U" type="logic">
+            <obj_property name="ElementShortName">i_btn_U</obj_property>
+            <obj_property name="ObjectShortName">i_btn_U</obj_property>
+         </wvobject>
+         <wvobject fp_name="/tb_merge_final_top/dut/U_DHT11/io_dht11" type="logic">
+            <obj_property name="ElementShortName">io_dht11</obj_property>
+            <obj_property name="ObjectShortName">io_dht11</obj_property>
+         </wvobject>
+      </wvobject>
+      <wvobject fp_name="group24" type="group">
+         <obj_property name="label">Outputs</obj_property>
+         <obj_property name="DisplayName">label</obj_property>
+         <wvobject fp_name="/tb_merge_final_top/dut/U_DHT11/o_done" type="logic">
+            <obj_property name="ElementShortName">o_done</obj_property>
+            <obj_property name="ObjectShortName">o_done</obj_property>
+         </wvobject>
+         <wvobject fp_name="/tb_merge_final_top/dut/U_DHT11/o_valid" type="logic">
+            <obj_property name="ElementShortName">o_valid</obj_property>
+            <obj_property name="ObjectShortName">o_valid</obj_property>
+         </wvobject>
+         <wvobject fp_name="/tb_merge_final_top/dut/U_DHT11/o_status" type="array">
+            <obj_property name="ElementShortName">o_status[1:0]</obj_property>
+            <obj_property name="ObjectShortName">o_status[1:0]</obj_property>
+            <obj_property name="Radix">BINARYRADIX</obj_property>
+         </wvobject>
+         <wvobject fp_name="/tb_merge_final_top/dut/U_DHT11/o_humidity" type="array">
+            <obj_property name="ElementShortName">o_humidity[7:0]</obj_property>
+            <obj_property name="ObjectShortName">o_humidity[7:0]</obj_property>
+            <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+         </wvobject>
+         <wvobject fp_name="/tb_merge_final_top/dut/U_DHT11/o_temperature" type="array">
+            <obj_property name="ElementShortName">o_temperature[7:0]</obj_property>
+            <obj_property name="ObjectShortName">o_temperature[7:0]</obj_property>
+            <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+         </wvobject>
+         <wvobject fp_name="/tb_merge_final_top/dut/U_DHT11/o_fnd_data" type="array">
+            <obj_property name="ElementShortName">o_fnd_data[13:0]</obj_property>
+            <obj_property name="ObjectShortName">o_fnd_data[13:0]</obj_property>
+            <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+         </wvobject>
+         <wvobject fp_name="/tb_merge_final_top/dut/U_DHT11/o_dashes" type="logic">
+            <obj_property name="ElementShortName">o_dashes</obj_property>
+            <obj_property name="ObjectShortName">o_dashes</obj_property>
+         </wvobject>
+         <wvobject fp_name="/tb_merge_final_top/dut/U_DHT11/o_led" type="array">
+            <obj_property name="ElementShortName">o_led[3:0]</obj_property>
+            <obj_property name="ObjectShortName">o_led[3:0]</obj_property>
+            <obj_property name="Radix">BINARYRADIX</obj_property>
+         </wvobject>
+      </wvobject>
+   </wvobject>
+   <wvobject fp_name="group28" type="group">
+      <obj_property name="label">U_FND_CONTROLLER : SW2_FND_CONTROLLER</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <wvobject fp_name="group26" type="group">
+         <obj_property name="label">Inputs</obj_property>
+         <obj_property name="DisplayName">label</obj_property>
+         <wvobject fp_name="/tb_merge_final_top/dut/U_FND_CONTROLLER/i_clk_4khz" type="logic">
+            <obj_property name="ElementShortName">i_clk_4khz</obj_property>
+            <obj_property name="ObjectShortName">i_clk_4khz</obj_property>
+         </wvobject>
+         <wvobject fp_name="/tb_merge_final_top/dut/U_FND_CONTROLLER/i_disp_sel" type="array">
+            <obj_property name="ElementShortName">i_disp_sel[1:0]</obj_property>
+            <obj_property name="ObjectShortName">i_disp_sel[1:0]</obj_property>
+            <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+         </wvobject>
+         <wvobject fp_name="/tb_merge_final_top/dut/U_FND_CONTROLLER/i_disp_data" type="array">
+            <obj_property name="ElementShortName">i_disp_data[24:0]</obj_property>
+            <obj_property name="ObjectShortName">i_disp_data[24:0]</obj_property>
+            <obj_property name="Radix">HEXRADIX</obj_property>
+         </wvobject>
+         <wvobject fp_name="/tb_merge_final_top/dut/U_FND_CONTROLLER/i_disp_mode" type="logic">
+            <obj_property name="ElementShortName">i_disp_mode</obj_property>
+            <obj_property name="ObjectShortName">i_disp_mode</obj_property>
+         </wvobject>
+         <wvobject fp_name="/tb_merge_final_top/dut/U_FND_CONTROLLER/i_wt_cursor" type="array">
+            <obj_property name="ElementShortName">i_wt_cursor[1:0]</obj_property>
+            <obj_property name="ObjectShortName">i_wt_cursor[1:0]</obj_property>
+            <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+         </wvobject>
+         <wvobject fp_name="/tb_merge_final_top/dut/U_FND_CONTROLLER/i_sel_wt" type="logic">
+            <obj_property name="ElementShortName">i_sel_wt</obj_property>
+            <obj_property name="ObjectShortName">i_sel_wt</obj_property>
+         </wvobject>
+         <wvobject fp_name="/tb_merge_final_top/dut/U_FND_CONTROLLER/i_set_sw2" type="logic">
+            <obj_property name="ElementShortName">i_set_sw2</obj_property>
+            <obj_property name="ObjectShortName">i_set_sw2</obj_property>
+         </wvobject>
+      </wvobject>
+      <wvobject fp_name="group27" type="group">
+         <obj_property name="label">Outputs</obj_property>
+         <obj_property name="DisplayName">label</obj_property>
+         <wvobject fp_name="/tb_merge_final_top/dut/U_FND_CONTROLLER/o_fnd_com" type="array">
+            <obj_property name="ElementShortName">o_fnd_com[3:0]</obj_property>
+            <obj_property name="ObjectShortName">o_fnd_com[3:0]</obj_property>
+            <obj_property name="Radix">BINARYRADIX</obj_property>
+         </wvobject>
+         <wvobject fp_name="/tb_merge_final_top/dut/U_FND_CONTROLLER/o_fnd_font" type="array">
+            <obj_property name="ElementShortName">o_fnd_font[7:0]</obj_property>
+            <obj_property name="ObjectShortName">o_fnd_font[7:0]</obj_property>
+            <obj_property name="Radix">HEXRADIX</obj_property>
+         </wvobject>
+      </wvobject>
+   </wvobject>
+   <wvobject fp_name="group31" type="group">
+      <obj_property name="label">U_LED : led_output</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <wvobject fp_name="group29" type="group">
+         <obj_property name="label">Inputs</obj_property>
+         <obj_property name="DisplayName">label</obj_property>
+         <wvobject fp_name="/tb_merge_final_top/dut/U_LED/i_disp_sel" type="array">
+            <obj_property name="ElementShortName">i_disp_sel[1:0]</obj_property>
+            <obj_property name="ObjectShortName">i_disp_sel[1:0]</obj_property>
+            <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+         </wvobject>
+         <wvobject fp_name="/tb_merge_final_top/dut/U_LED/i_tm_alarm" type="logic">
+            <obj_property name="ElementShortName">i_tm_alarm</obj_property>
+            <obj_property name="ObjectShortName">i_tm_alarm</obj_property>
+         </wvobject>
+         <wvobject fp_name="/tb_merge_final_top/dut/U_LED/i_tm_run" type="logic">
+            <obj_property name="ElementShortName">i_tm_run</obj_property>
+            <obj_property name="ObjectShortName">i_tm_run</obj_property>
+         </wvobject>
+         <wvobject fp_name="/tb_merge_final_top/dut/U_LED/i_sel_wt" type="logic">
+            <obj_property name="ElementShortName">i_sel_wt</obj_property>
+            <obj_property name="ObjectShortName">i_sel_wt</obj_property>
+         </wvobject>
+         <wvobject fp_name="/tb_merge_final_top/dut/U_LED/i_sel_sw" type="logic">
+            <obj_property name="ElementShortName">i_sel_sw</obj_property>
+            <obj_property name="ObjectShortName">i_sel_sw</obj_property>
+         </wvobject>
+         <wvobject fp_name="/tb_merge_final_top/dut/U_LED/i_sel_tm" type="logic">
+            <obj_property name="ElementShortName">i_sel_tm</obj_property>
+            <obj_property name="ObjectShortName">i_sel_tm</obj_property>
+         </wvobject>
+         <wvobject fp_name="/tb_merge_final_top/dut/U_LED/i_sw_lap" type="logic">
+            <obj_property name="ElementShortName">i_sw_lap</obj_property>
+            <obj_property name="ObjectShortName">i_sw_lap</obj_property>
+         </wvobject>
+         <wvobject fp_name="/tb_merge_final_top/dut/U_LED/i_wt_pm" type="logic">
+            <obj_property name="ElementShortName">i_wt_pm</obj_property>
+            <obj_property name="ObjectShortName">i_wt_pm</obj_property>
+         </wvobject>
+         <wvobject fp_name="/tb_merge_final_top/dut/U_LED/i_sr04_led" type="array">
+            <obj_property name="ElementShortName">i_sr04_led[9:0]</obj_property>
+            <obj_property name="ObjectShortName">i_sr04_led[9:0]</obj_property>
+            <obj_property name="Radix">BINARYRADIX</obj_property>
+         </wvobject>
+         <wvobject fp_name="/tb_merge_final_top/dut/U_LED/i_dht_led" type="array">
+            <obj_property name="ElementShortName">i_dht_led[3:0]</obj_property>
+            <obj_property name="ObjectShortName">i_dht_led[3:0]</obj_property>
+            <obj_property name="Radix">BINARYRADIX</obj_property>
+         </wvobject>
+      </wvobject>
+      <wvobject fp_name="group30" type="group">
+         <obj_property name="label">Outputs</obj_property>
+         <obj_property name="DisplayName">label</obj_property>
+         <wvobject fp_name="/tb_merge_final_top/dut/U_LED/o_led" type="array">
+            <obj_property name="ElementShortName">o_led[15:0]</obj_property>
+            <obj_property name="ObjectShortName">o_led[15:0]</obj_property>
+            <obj_property name="Radix">BINARYRADIX</obj_property>
+         </wvobject>
+      </wvobject>
+   </wvobject>
+</wave_config>

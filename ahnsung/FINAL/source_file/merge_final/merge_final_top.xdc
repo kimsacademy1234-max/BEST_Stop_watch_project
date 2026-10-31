@@ -1,16 +1,19 @@
-## stopwatch_watch — Basys-3-Master.xdc 에서 필요한 줄만 골라 포트 이름을 바꿈
+## merge_final_top — Basys-3-Master.xdc 에서 필요한 줄만 골라 포트 이름을 바꿈
+## (WTS stopwatch_watch.xdc + sw5 · sw6 · sw15 + UART + SR04 + DHT11)
 
 ## Clock signal
 set_property -dict { PACKAGE_PIN W5   IOSTANDARD LVCMOS33 } [get_ports clk]
 create_clock -add -name sys_clk_pin -period 10.00 -waveform {0 5} [get_ports clk]
 
 ## Switches
-set_property -dict { PACKAGE_PIN V17   IOSTANDARD LVCMOS33 } [get_ports sw_mode]
-set_property -dict { PACKAGE_PIN V16   IOSTANDARD LVCMOS33 } [get_ports sw_display_mode]
-set_property -dict { PACKAGE_PIN W16   IOSTANDARD LVCMOS33 } [get_ports sw_set]
-set_property -dict { PACKAGE_PIN W17   IOSTANDARD LVCMOS33 } [get_ports sw_12h]
-set_property -dict { PACKAGE_PIN W15   IOSTANDARD LVCMOS33 } [get_ports sw_timer]
-set_property -dict { PACKAGE_PIN V15   IOSTANDARD LVCMOS33 } [get_ports sw_alt]
+set_property -dict { PACKAGE_PIN V17   IOSTANDARD LVCMOS33 } [get_ports mode_sw0]
+set_property -dict { PACKAGE_PIN V16   IOSTANDARD LVCMOS33 } [get_ports display_mode_sw1]
+set_property -dict { PACKAGE_PIN W16   IOSTANDARD LVCMOS33 } [get_ports set_sw2]
+set_property -dict { PACKAGE_PIN W17   IOSTANDARD LVCMOS33 } [get_ports hour24_sw3]
+set_property -dict { PACKAGE_PIN W15   IOSTANDARD LVCMOS33 } [get_ports timer_sw4]
+set_property -dict { PACKAGE_PIN V15   IOSTANDARD LVCMOS33 } [get_ports dist_sw5]
+set_property -dict { PACKAGE_PIN W14   IOSTANDARD LVCMOS33 } [get_ports dht_sw6]
+set_property -dict { PACKAGE_PIN R2    IOSTANDARD LVCMOS33 } [get_ports dist_led_sw15]
 
 ## LEDs
 set_property -dict { PACKAGE_PIN U16   IOSTANDARD LVCMOS33 } [get_ports {led[0]}]
@@ -47,10 +50,24 @@ set_property -dict { PACKAGE_PIN W4   IOSTANDARD LVCMOS33 } [get_ports {fnd_com[
 
 ## Buttons (btnC = rst)
 set_property -dict { PACKAGE_PIN U18   IOSTANDARD LVCMOS33 } [get_ports rst]
-set_property -dict { PACKAGE_PIN T18   IOSTANDARD LVCMOS33 } [get_ports btnU]
-set_property -dict { PACKAGE_PIN W19   IOSTANDARD LVCMOS33 } [get_ports btnL]
-set_property -dict { PACKAGE_PIN T17   IOSTANDARD LVCMOS33 } [get_ports btnR]
-set_property -dict { PACKAGE_PIN U17   IOSTANDARD LVCMOS33 } [get_ports btnD]
+set_property -dict { PACKAGE_PIN T18   IOSTANDARD LVCMOS33 } [get_ports btn_U]
+set_property -dict { PACKAGE_PIN W19   IOSTANDARD LVCMOS33 } [get_ports btn_L]
+set_property -dict { PACKAGE_PIN T17   IOSTANDARD LVCMOS33 } [get_ports btn_R]
+set_property -dict { PACKAGE_PIN U17   IOSTANDARD LVCMOS33 } [get_ports btn_D]
+
+## Pmod JA : SR04 (JA1 trig, JA2 echo)
+set_property -dict { PACKAGE_PIN J1   IOSTANDARD LVCMOS33 } [get_ports trig];                     #Sch name = JA1
+set_property -dict { PACKAGE_PIN L2   IOSTANDARD LVCMOS33 } [get_ports echo];                     #Sch name = JA2
+
+## Pmod JXADC : DHT11 (JXADC3, 디지털 I/O 로 사용)
+set_property -dict { PACKAGE_PIN M2   IOSTANDARD LVCMOS33   PULLUP true } [get_ports dht11_io];   #Sch name = XA3_P (JXADC3, 외부 5k 풀업 권장)
+
+## USB-RS232 Interface
+set_property -dict { PACKAGE_PIN B18   IOSTANDARD LVCMOS33 } [get_ports rx]
+set_property -dict { PACKAGE_PIN A18   IOSTANDARD LVCMOS33 } [get_ports tx]
+
+## 비동기 외부 입력 -> 타이밍 분석 제외 (내부 synchronizer / 디바운서로 처리)
+set_false_path -from [get_ports {echo dht11_io rx rst}]
 
 ## Configuration options
 set_property CONFIG_VOLTAGE 3.3 [current_design]
