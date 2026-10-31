@@ -84,43 +84,36 @@
       </wvobject>
    </wvobject>
    <wvobject fp_name="group100" type="group">
-      <obj_property name="label">FND : AN3 AN2 AN1 AN0 (left -&gt; right, ASCII)</obj_property>
+      <obj_property name="label">FND_OUT : anode lit now / character on it (ASCII)</obj_property>
       <obj_property name="DisplayName">label</obj_property>
-      <wvobject fp_name="/tb_merge_final_top/AN3" type="array">
-         <obj_property name="ElementShortName">AN3[7:0]</obj_property>
-         <obj_property name="ObjectShortName">AN3[7:0]</obj_property>
+      <wvobject fp_name="/tb_merge_final_top/dut/U_CLK_GEN_4KHZ/o_clk_4khz" type="logic">
+         <obj_property name="ElementShortName">o_clk_4khz</obj_property>
+         <obj_property name="ObjectShortName">o_clk_4khz</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_merge_final_top/FND_AN" type="array">
+         <obj_property name="ElementShortName">FND_AN[23:0]</obj_property>
+         <obj_property name="ObjectShortName">FND_AN[23:0]</obj_property>
          <obj_property name="Radix">ASCIIRADIX</obj_property>
       </wvobject>
-      <wvobject fp_name="/tb_merge_final_top/DP3" type="logic">
-         <obj_property name="ElementShortName">DP3</obj_property>
-         <obj_property name="ObjectShortName">DP3</obj_property>
-      </wvobject>
-      <wvobject fp_name="/tb_merge_final_top/AN2" type="array">
-         <obj_property name="ElementShortName">AN2[7:0]</obj_property>
-         <obj_property name="ObjectShortName">AN2[7:0]</obj_property>
+      <wvobject fp_name="/tb_merge_final_top/FND_NUM" type="array">
+         <obj_property name="ElementShortName">FND_NUM[7:0]</obj_property>
+         <obj_property name="ObjectShortName">FND_NUM[7:0]</obj_property>
          <obj_property name="Radix">ASCIIRADIX</obj_property>
       </wvobject>
-      <wvobject fp_name="/tb_merge_final_top/DP2" type="logic">
-         <obj_property name="ElementShortName">DP2</obj_property>
-         <obj_property name="ObjectShortName">DP2</obj_property>
+      <wvobject fp_name="/tb_merge_final_top/fnd_com" type="array">
+         <obj_property name="ElementShortName">fnd_com[3:0]</obj_property>
+         <obj_property name="ObjectShortName">fnd_com[3:0]</obj_property>
+         <obj_property name="Radix">BINARYRADIX</obj_property>
       </wvobject>
-      <wvobject fp_name="/tb_merge_final_top/AN1" type="array">
-         <obj_property name="ElementShortName">AN1[7:0]</obj_property>
-         <obj_property name="ObjectShortName">AN1[7:0]</obj_property>
+      <wvobject fp_name="/tb_merge_final_top/fnd_font" type="array">
+         <obj_property name="ElementShortName">fnd_font[7:0]</obj_property>
+         <obj_property name="ObjectShortName">fnd_font[7:0]</obj_property>
+         <obj_property name="Radix">HEXRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_merge_final_top/FND_TEXT" type="array">
+         <obj_property name="ElementShortName">FND_TEXT[63:0]</obj_property>
+         <obj_property name="ObjectShortName">FND_TEXT[63:0]</obj_property>
          <obj_property name="Radix">ASCIIRADIX</obj_property>
-      </wvobject>
-      <wvobject fp_name="/tb_merge_final_top/DP1" type="logic">
-         <obj_property name="ElementShortName">DP1</obj_property>
-         <obj_property name="ObjectShortName">DP1</obj_property>
-      </wvobject>
-      <wvobject fp_name="/tb_merge_final_top/AN0" type="array">
-         <obj_property name="ElementShortName">AN0[7:0]</obj_property>
-         <obj_property name="ObjectShortName">AN0[7:0]</obj_property>
-         <obj_property name="Radix">ASCIIRADIX</obj_property>
-      </wvobject>
-      <wvobject fp_name="/tb_merge_final_top/DP0" type="logic">
-         <obj_property name="ElementShortName">DP0</obj_property>
-         <obj_property name="ObjectShortName">DP0</obj_property>
       </wvobject>
    </wvobject>
    <wvobject fp_name="group4" type="group">

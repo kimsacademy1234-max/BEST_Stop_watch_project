@@ -55,7 +55,7 @@
 | B1 | 정상 누름 | R/L/U/D 각각 50 ms 누름 | 펄스 **1 개**, 누른 뒤 **1.75 ~ 2.00 ms** | 디바운스 규격 (4 kHz × 8) | 4 | P1 |
 | B2 | 채터링 | 누를 때 · 뗄 때 100 us 간격 토글 10 회 | 누름당 정확히 1 개, 뗄 때 0 개 | 두 번 눌림 방지 | 2 | P1 |
 | B3 | 짧은 누름 경계 | 1.5 ms 누름 / 2.25 ms 누름 | 0 개 / 1 개 | 8 샘플 경계 | 2 | P2 |
-| B4 | 길게 누름 | 3 s 누름 | 1 개 (반복 없음) | auto-repeat 없음 | 1 | P2 |
+| B4 | 길게 누름 | 0.5 s 누름 (시뮬 시간 때문에, 3 s 와 원리 같음) | 1 개 (반복 없음) | auto-repeat 없음 | 1 | P2 |
 | B5 | 화면 게이팅 | 5 화면에서 각각 R | **지금 화면 모듈만** 반응, 나머지 상태 불변 | 버튼 AND 게이팅 | 5 | P1 |
 
 ### C. 모드 선택 (스위치 ↔ UART)
@@ -111,7 +111,7 @@
 |---|---|---|---|---|:-:|:-:|
 | G1 | 정상 명령 전부 | 명령 24 개 | 명령당 handshake 1 번, ERROR 0 | 명령 표 전체 | 24 | P1 |
 | G2 | 형식 오류 | `/gxt` `/modw_hm` `/mod ⏎` 등 10 종 | ERROR **정확히 1 줄**, 틀린 바이트 rx_done 뒤 **0.1 ms 안에** 송신 시작 | 에러 판정 | 10 | P1 |
-| G3 | 형식 OK · 모르는 옵션 | `/mod abcd` `/auto xyz` `/set abcd` | ERROR 없음, 변화 없음 | README 문서 동작 | 3 | P2 |
+| G3 | 형식 OK · 모르는 옵션 | `/mod abcd` `/auto xyz` `/set abcd` | ERROR 없음, 변화 없음 / ⚠ `/set abcd` 는 w_hm 화면에서 설정 켜짐 | README 문서 동작 | 3 | P2 |
 | G4 | `/` 로 복구 | `/ge/get ⏎`, `//mod dist` | ERROR 1 줄 + 뒤 명령 정상 실행 | bad 뒤 SLASH 재시작 | 2 | P1 |
 | G5 | 쓰레기 · 꼬리 문자 | `abc⏎/mod dist`, `/off w_hm`, `/mod w_hm⏎` | ERROR 없음, 정상 실행 | 무시 규칙 | 3 | P2 |
 | G6 | 짧은 옵션 | `/mod w_h⏎` / `/set 24h` (Enter 없음) | 변화 없음 / Enter 올 때까지 대기 | 옵션 길이 규칙 | 2 | P2 |
@@ -209,6 +209,7 @@
 | 6 | D7 | 랩 표시 중 `/get` · `/auto _sw` → **랩 고정값** 전송 (실제 진행값 아님) | `WTS/wts_top.v:232` `o_sw_time` 이 lap_controller 출력 | 스펙 결정 |
 | 7 | J14 | 습도 ≥ 100 이면 UART 첫 글자가 숫자가 아님 (`:`) | `UART/sender_char_mux.v:101` 2 자리 가정 | 매우 하 (DHT11 범위 20~90 %) |
 | 8 | L6 | 캐리가 1~3 clk 늦게 전파 → 그 순간 `/get` 하면 1 초 · 1 분 어긋난 값 | 카운터 `o_tick` 이 레지스터 | 매우 하 |
+| 9 | G3 | 시계 시.분 화면에서 `/set abcd` 처럼 **아무 4 글자**나 오면 시계 설정이 켜짐 (`/set w_hm` 만 켜야 함). **시뮬로 확인됨** | `UART/01_UART_CONTROLLER.sv:296` `/set` 조건에 `i_con_ascii == "w_hm"` 비교 없음 (`/off` 와 같은 구조) | 하 |
 
 ---
 
@@ -245,21 +246,24 @@ tb_merge_final_top
 
 ### 3-3. 시뮬 시간 단축 (defparam)
 
-`merge_final_top` 은 하위 파라미터를 밖으로 안 내므로 TB 에서 `defparam` 으로 바꿉니다. **실제 기준 시나리오 (특히 D1 · E1 · F1 · H4 · J1 · J9 · J11) 는 원래 값으로 한 번은 돌릴 것.**
+xsim 은 이 설계에서 시뮬 1 ms 에 약 1 초가 걸려서, 실제 시간 그대로면 그룹 하나가 몇 시간 걸립니다.
+그래서 각 TB 맨 위 `FAST = 1` 이면 하네스 (`tb_merge_harness.sv`) 가 아래 값으로 `defparam` 합니다. **판정 시간은 전부 이 파라미터에서 계산**하므로 `FAST = 0` (실제 시간) 으로 바꿔도 판정 코드는 그대로입니다.
 
-| 대상 | 경로 (`dut.` 아래) | 원래 | 권장 시뮬 | 효과 |
+| 하네스 파라미터 | 경로 (`dut.` 아래) | 실제 (`FAST = 0`) | `FAST = 1` | 효과 |
 |---|---|---|---|---|
-| 시계 tick | `U_WTS.U_TICK_GEN_100HZ.F_COUNT` | 1,000,000 | 1,000 | 1 s → 1 ms |
-| 스톱워치 tick | `U_WTS.U_TICK_GEN_SW.F_COUNT` | 1,000,000 | 1,000 | 위와 같은 비율로 |
-| 타이머 tick | `U_WTS.U_TICK_GEN_TM.F_COUNT` | 1,000,000 | 1,000 | 위와 같은 비율로 |
-| auto 주기 | `U_UART.AUTO_FRQ` | 1 (Hz) | 20 (50 ms) | **한 줄 13.5 ms 보다 길게** 둘 것 |
-| DHT 부팅 대기 | `U_DHT11.BOOT_CYCLES` | 100,000,000 | 100,000 | 1 s → 1 ms |
-| DHT 측정 간격 | `U_DHT11.INTERVAL_CYCLES` | 200,000,000 | 200,000 | 2 s → 2 ms |
-| DHT 시작 LOW | `U_DHT11.START_US` | 18,000 | 그대로 (or 1,800) | 줄이면 센서 모델 감지 기준도 같이 |
-| SR04 경고 점멸 | `U_SR04.U_LED.BLINK_HALF_CYC` | 25,000,000 | 25,000 | 250 ms → 250 us |
+| `TICK_F` | `U_WTS.U_TICK_GEN_100HZ/SW/TM.F_COUNT` | 1,000,000 | 1,000 (A 는 원래 값, K 는 100,000) | 1 초 → 1 ms |
+| `AUTO_FRQ` | `U_UART.AUTO_FRQ` | 1 Hz | 200 Hz | 한 박자 5 ms (한 줄 1.1 ms 보다 김) |
+| `DHT_BOOT` | `U_DHT11.BOOT_CYCLES` | 100,000,000 | 300,000 | 1 s → 3 ms |
+| `DHT_INTV` | `U_DHT11.INTERVAL_CYCLES` | 200,000,000 | 500,000 | 2 s → 5 ms |
+| `BLINK_HALF` | `U_SR04.U_LED.BLINK_HALF_CYC` | 25,000,000 | 25,000 | 250 ms → 250 us |
+| `BAUD` | `U_UART.U_BAUD_TICK_GEN.BAUD_RATE` | 9600 | 115200 | PC 모델도 같이 바뀜 |
+| `SR_TICK` | `U_SR04.U_SR04.U_TICK_GEN_US.F_COUNT` | 100 | 10 | SR04 시간 전부 10 배 빠르게 (거리 계산 결과 같음) |
+| `DHT_TICK` | `U_DHT11.TICK_F_COUNT` | 100 | 10 | DHT11 시간 전부 10 배 빠르게 |
 
-- 4 kHz (디바운스 · FND 스캔) · baud 는 **그대로** 두는 걸 권장 (2 ms · 1 ms 단위라 감당 가능, 바꾸면 BFM 도 바꿔야 함).
+- 4 kHz (디바운스 · FND 스캔) 는 **그대로** (2 ms 단위라 감당 가능).
+- xsim 에서는 `defparam` 이 인스턴스 `#()` 값보다 우선함을 확인함 (SR04 tick, baud).
 - `force` 쓰는 경로 : 스톱워치 `U_WTS.U_STOPWATCH_DATAPATH.U_{HOUR,MIN,SEC,MSEC}_COUNTER.counter_reg`, 시계 `U_WTS.U_WATCH_DATAPATH.U_*_COUNTER.counter_reg`, 버튼 `w_phy_btn_*`. 레지스터는 **force 1 clk → release** 하면 값이 남음.
+- 실행 방법 · 콘솔 읽는 법 : [`README.md`](README.md)
 
 ---
 
@@ -349,7 +353,7 @@ tb_merge_final_top
 
 #### B4. 길게 누름 — `P2` · 1 개
 
-**스티뮬러스** : 스톱워치 화면에서 R 3 s 누름
+**스티뮬러스** : 스톱워치 화면에서 R 0.5 s 누름 (시뮬 시간 때문에 3 s 대신, 원리 같음)
 
 | # | 확인 | 기대값 |
 |:-:|---|---|
@@ -682,7 +686,7 @@ tb_merge_final_top
 |:-:|---|---|
 | 1 | `/mod abcd` | ERROR 없음, 변화 없음 |
 | 2 | `/auto xyz` | ERROR 없음, auto 상태 그대로 |
-| 3 | `/set abcd` | ERROR 없음, 변화 없음 |
+| 3 | `/set abcd` (w_hm 화면) | ERROR 없음, 변화 없음 / ⚠ 현재 코드 : 설정 켜짐 (issue 9) |
 
 #### G4. `/` 로 복구 — `P1` · 2 개
 

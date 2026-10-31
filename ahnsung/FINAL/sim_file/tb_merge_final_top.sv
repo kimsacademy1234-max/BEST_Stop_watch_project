@@ -8,7 +8,8 @@
 //  - sensor models : SR04 (echo), DHT11 (response + 40 bits),
 //                    value and error case can be changed from the scenario
 //  - PC receiver   : prints each line sent by the FPGA, PC_TEXT (ASCII) in waveform
-//  - FND decoder   : what the FND shows now, AN3 AN2 AN1 AN0 / FND_TEXT (ASCII) in waveform
+//  - FND decoder   : FND_AN / FND_NUM = anode lit now and the character on it (ASCII),
+//                    FND_TEXT = the whole 4-digit display (ASCII)
 //
 //  Write the test in the "SCENARIO" block at the bottom.
 //
@@ -56,9 +57,6 @@ module tb_merge_final_top;
     reg [8*16-1:0] CMD_TEXT = 0;   // command being sent
     reg [8*16-1:0] PC_TEXT  = 0;   // last line received from the FPGA
     reg [8*8-1:0]  FND_TEXT = 0;   // what the FND shows now
-    // FND per digit, left -> right like the board : AN3 AN2 AN1 AN0 (Radix : ASCII)
-    reg [7:0]      AN3 = " ", AN2 = " ", AN1 = " ", AN0 = " ";
-    reg            DP3 = 0, DP2 = 0, DP1 = 0, DP0 = 0;   // 1 = dot after that digit
     // last check (cmd_pc / cmd_fnd / btn_fnd), same as the console log
     integer        CHK_NUM       = 0;   // check number
     reg [8*16-1:0] CHK_CMD       = 0;   // command / button          (ASCII)
@@ -267,6 +265,29 @@ module tb_merge_final_top;
         endcase
     endfunction
 
+    // ---- live output, like verification_v2 fnd_monitor (fnd_an / fnd_num)
+    //   FND_AN  : fnd_com -> "AN0" ~ "AN3" (all off 1111 = "---", more than one on = "ERR")
+    //   FND_NUM : fnd_font (7-seg hex, active-low) -> the character a person sees on that anode
+    //             '0'~'9', 'E', 'r', '-', ' ' (blank), '.' (dot only)
+    function automatic [23:0] an_name(input [3:0] c);
+        case (c)
+            4'b1110: an_name = "AN0";
+            4'b1101: an_name = "AN1";
+            4'b1011: an_name = "AN2";
+            4'b0111: an_name = "AN3";
+            4'b1111: an_name = "---";
+            default: an_name = "ERR";
+        endcase
+    endfunction
+
+    function automatic [7:0] font2ascii(input [7:0] f);
+        if (f == 8'h7F) font2ascii = ".";
+        else            font2ascii = seg2ch({1'b1, f[6:0]});   // digit with or without the dot bit
+    endfunction
+
+    wire [23:0] FND_AN  = an_name(fnd_com);
+    wire [7:0]  FND_NUM = font2ascii(fnd_font);
+
     initial begin
         for (d = 0; d < 4; d = d + 1) begin
             fnd_ch[d]  = " ";
@@ -280,8 +301,6 @@ module tb_merge_final_top;
         if (scan[2] == 1'b0) fnd_ch[scan[1:0]]  = seg2ch(fnd_font);
         else                 fnd_dot[scan[1:0]] = (fnd_font == 8'h7F);
         if (scan == 3'd7) begin
-            AN3 = fnd_ch[3];  AN2 = fnd_ch[2];  AN1 = fnd_ch[1];  AN0 = fnd_ch[0];
-            DP3 = fnd_dot[3]; DP2 = fnd_dot[2]; DP1 = fnd_dot[1]; DP0 = fnd_dot[0];
             FND_TEXT = 0;
             for (d = 3; d >= 0; d = d - 1) begin
                 FND_TEXT = {FND_TEXT[8*7-1:0], fnd_ch[d]};
