@@ -12,244 +12,123 @@
    </db_ref_list>
    <zoom_setting>
       <ZoomStartTime time="0fs"></ZoomStartTime>
-      <ZoomEndTime time="100000000000000fs"></ZoomEndTime>
+      <ZoomEndTime time="8080000001fs"></ZoomEndTime>
       <Cursor1Time time="0fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
       <NameColumnWidth column_width="230"></NameColumnWidth>
-      <ValueColumnWidth column_width="120"></ValueColumnWidth>
+      <ValueColumnWidth column_width="115"></ValueColumnWidth>
    </column_width_setting>
    <WVObjectSize size="7" />
    <wvobject fp_name="group1" type="group">
       <obj_property name="label">TB : scenario / last check / result (ASCII)</obj_property>
       <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="isExpanded"></obj_property>
       <wvobject fp_name="/tb_G_uart_rx/h/W_SC" type="array">
          <obj_property name="ElementShortName">W_SC[63:0]</obj_property>
          <obj_property name="ObjectShortName">W_SC[63:0]</obj_property>
          <obj_property name="Radix">ASCIIRADIX</obj_property>
       </wvobject>
-      <wvobject fp_name="/tb_G_uart_rx/h/W_CHK" type="array">
-         <obj_property name="ElementShortName">W_CHK[63:0]</obj_property>
-         <obj_property name="ObjectShortName">W_CHK[63:0]</obj_property>
-         <obj_property name="Radix">ASCIIRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_G_uart_rx/h/rst" type="logic">
+      <obj_property name="ElementShortName">rst</obj_property>
+      <obj_property name="ObjectShortName">rst</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_G_uart_rx/h/W_CMD" type="array">
+      <obj_property name="ElementShortName">W_CMD[127:0]</obj_property>
+      <obj_property name="ObjectShortName">W_CMD[127:0]</obj_property>
+      <obj_property name="Radix">ASCIIRADIX</obj_property>
+      <obj_property name="CustomSignalColor">#00FFFF</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_G_uart_rx/h/rx" type="logic">
+      <obj_property name="ElementShortName">rx</obj_property>
+      <obj_property name="ObjectShortName">rx</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_G_uart_rx/h/tx" type="logic">
+      <obj_property name="ElementShortName">tx</obj_property>
+      <obj_property name="ObjectShortName">tx</obj_property>
+   </wvobject>
+   <wvobject fp_name="group1270" type="group">
+      <obj_property name="label">Ascii_Decoder</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="isExpanded"></obj_property>
+      <wvobject fp_name="/tb_G_uart_rx/h/dut/U_UART/U_ASCII_DECODER/n_state" type="array">
+         <obj_property name="ElementShortName">n_state[3:0]</obj_property>
+         <obj_property name="ObjectShortName">n_state[3:0]</obj_property>
       </wvobject>
-      <wvobject fp_name="/tb_G_uart_rx/h/W_RES" type="array">
-         <obj_property name="ElementShortName">W_RES[63:0]</obj_property>
-         <obj_property name="ObjectShortName">W_RES[63:0]</obj_property>
-         <obj_property name="Radix">ASCIIRADIX</obj_property>
+      <wvobject fp_name="/tb_G_uart_rx/h/dut/U_UART/U_ASCII_DECODER/handshake" type="logic">
+         <obj_property name="ElementShortName">handshake</obj_property>
+         <obj_property name="ObjectShortName">handshake</obj_property>
       </wvobject>
-      <wvobject fp_name="/tb_G_uart_rx/h/n_chk" type="array">
-         <obj_property name="ElementShortName">n_chk[31:0]</obj_property>
-         <obj_property name="ObjectShortName">n_chk[31:0]</obj_property>
-         <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+      <wvobject fp_name="/tb_G_uart_rx/h/dut/U_UART/U_ASCII_DECODER/o_ascii" type="array">
+         <obj_property name="ElementShortName">o_ascii[39:0]</obj_property>
+         <obj_property name="ObjectShortName">o_ascii[39:0]</obj_property>
       </wvobject>
-      <wvobject fp_name="/tb_G_uart_rx/h/n_fail" type="array">
-         <obj_property name="ElementShortName">n_fail[31:0]</obj_property>
-         <obj_property name="ObjectShortName">n_fail[31:0]</obj_property>
-         <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+      <wvobject fp_name="/tb_G_uart_rx/h/dut/U_UART/U_ASCII_DECODER/get_state" type="logic">
+         <obj_property name="ElementShortName">get_state</obj_property>
+         <obj_property name="ObjectShortName">get_state</obj_property>
       </wvobject>
-      <wvobject fp_name="/tb_G_uart_rx/h/n_issue" type="array">
-         <obj_property name="ElementShortName">n_issue[31:0]</obj_property>
-         <obj_property name="ObjectShortName">n_issue[31:0]</obj_property>
-         <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+      <wvobject fp_name="/tb_G_uart_rx/h/dut/U_UART/U_ASCII_DECODER/btn_state" type="logic">
+         <obj_property name="ElementShortName">btn_state</obj_property>
+         <obj_property name="ObjectShortName">btn_state</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_G_uart_rx/h/dut/U_UART/U_ASCII_DECODER/mode_state" type="logic">
+         <obj_property name="ElementShortName">mode_state</obj_property>
+         <obj_property name="ObjectShortName">mode_state</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_G_uart_rx/h/dut/U_UART/U_ASCII_DECODER/auto_state" type="logic">
+         <obj_property name="ElementShortName">auto_state</obj_property>
+         <obj_property name="ObjectShortName">auto_state</obj_property>
+      </wvobject>
+      <wvobject fp_name="group1286" type="group">
+         <obj_property name="label">CONTROLLER</obj_property>
+         <obj_property name="DisplayName">label</obj_property>
+         <obj_property name="isExpanded"></obj_property>
+         <wvobject fp_name="/tb_G_uart_rx/h/dut/U_UART/U_CONTROL/i_handshake" type="logic">
+            <obj_property name="ElementShortName">i_handshake</obj_property>
+            <obj_property name="ObjectShortName">i_handshake</obj_property>
+         </wvobject>
+         <wvobject fp_name="/tb_G_uart_rx/h/dut/U_UART/U_CONTROL/i_error" type="logic">
+            <obj_property name="ElementShortName">i_error</obj_property>
+            <obj_property name="ObjectShortName">i_error</obj_property>
+         </wvobject>
+         <wvobject fp_name="/tb_G_uart_rx/h/dut/U_UART/U_CONTROL/i_get" type="logic">
+            <obj_property name="ElementShortName">i_get</obj_property>
+            <obj_property name="ObjectShortName">i_get</obj_property>
+         </wvobject>
+         <wvobject fp_name="/tb_G_uart_rx/h/dut/U_UART/U_CONTROL/i_btn" type="logic">
+            <obj_property name="ElementShortName">i_btn</obj_property>
+            <obj_property name="ObjectShortName">i_btn</obj_property>
+         </wvobject>
+         <wvobject fp_name="/tb_G_uart_rx/h/dut/U_UART/U_CONTROL/i_mode" type="logic">
+            <obj_property name="ElementShortName">i_mode</obj_property>
+            <obj_property name="ObjectShortName">i_mode</obj_property>
+         </wvobject>
+         <wvobject fp_name="/tb_G_uart_rx/h/dut/U_UART/U_CONTROL/i_auto" type="logic">
+            <obj_property name="ElementShortName">i_auto</obj_property>
+            <obj_property name="ObjectShortName">i_auto</obj_property>
+         </wvobject>
       </wvobject>
    </wvobject>
-   <wvobject fp_name="group2" type="group">
-      <obj_property name="label">PIN : reset / switch / button</obj_property>
+   <wvobject fp_name="group1281" type="group">
+      <obj_property name="label">Sender_TX</obj_property>
       <obj_property name="DisplayName">label</obj_property>
-      <wvobject fp_name="/tb_G_uart_rx/h/rst" type="logic">
-         <obj_property name="ElementShortName">rst</obj_property>
-         <obj_property name="ObjectShortName">rst</obj_property>
+      <wvobject fp_name="/tb_G_uart_rx/h/dut/U_UART/U_ASCII_SENDER/c_state" type="logic">
+         <obj_property name="ElementShortName">c_state</obj_property>
+         <obj_property name="ObjectShortName">c_state</obj_property>
       </wvobject>
-      <wvobject fp_name="/tb_G_uart_rx/h/dut/w_rst" type="logic">
-         <obj_property name="ElementShortName">w_rst</obj_property>
-         <obj_property name="ObjectShortName">w_rst</obj_property>
+      <wvobject fp_name="/tb_G_uart_rx/h/dut/U_UART/U_ASCII_SENDER/i_send_sel" type="array">
+         <obj_property name="ElementShortName">i_send_sel[2:0]</obj_property>
+         <obj_property name="ObjectShortName">i_send_sel[2:0]</obj_property>
       </wvobject>
-      <wvobject fp_name="/tb_G_uart_rx/h/sw" type="array">
-         <obj_property name="ElementShortName">sw[6:0]</obj_property>
-         <obj_property name="ObjectShortName">sw[6:0]</obj_property>
-         <obj_property name="Radix">BINARYRADIX</obj_property>
+      <wvobject fp_name="/tb_G_uart_rx/h/dut/U_UART/U_ASCII_SENDER/i_send_data" type="array">
+         <obj_property name="ElementShortName">i_send_data[23:0]</obj_property>
+         <obj_property name="ObjectShortName">i_send_data[23:0]</obj_property>
       </wvobject>
-      <wvobject fp_name="/tb_G_uart_rx/h/sw15" type="logic">
-         <obj_property name="ElementShortName">sw15</obj_property>
-         <obj_property name="ObjectShortName">sw15</obj_property>
-      </wvobject>
-      <wvobject fp_name="/tb_G_uart_rx/h/btn_R" type="logic">
-         <obj_property name="ElementShortName">btn_R</obj_property>
-         <obj_property name="ObjectShortName">btn_R</obj_property>
-      </wvobject>
-      <wvobject fp_name="/tb_G_uart_rx/h/btn_L" type="logic">
-         <obj_property name="ElementShortName">btn_L</obj_property>
-         <obj_property name="ObjectShortName">btn_L</obj_property>
-      </wvobject>
-      <wvobject fp_name="/tb_G_uart_rx/h/btn_U" type="logic">
-         <obj_property name="ElementShortName">btn_U</obj_property>
-         <obj_property name="ObjectShortName">btn_U</obj_property>
-      </wvobject>
-      <wvobject fp_name="/tb_G_uart_rx/h/btn_D" type="logic">
-         <obj_property name="ElementShortName">btn_D</obj_property>
-         <obj_property name="ObjectShortName">btn_D</obj_property>
-      </wvobject>
-   </wvobject>
-   <wvobject fp_name="group3" type="group">
-      <obj_property name="label">UART : PC cmd (CR=#) / rx / tx / FPGA line (ASCII)</obj_property>
-      <obj_property name="DisplayName">label</obj_property>
-      <wvobject fp_name="/tb_G_uart_rx/h/W_CMD" type="array">
-         <obj_property name="ElementShortName">W_CMD[127:0]</obj_property>
-         <obj_property name="ObjectShortName">W_CMD[127:0]</obj_property>
-         <obj_property name="Radix">ASCIIRADIX</obj_property>
-      </wvobject>
-      <wvobject fp_name="/tb_G_uart_rx/h/rx" type="logic">
-         <obj_property name="ElementShortName">rx</obj_property>
-         <obj_property name="ObjectShortName">rx</obj_property>
-      </wvobject>
-      <wvobject fp_name="/tb_G_uart_rx/h/tx" type="logic">
-         <obj_property name="ElementShortName">tx</obj_property>
-         <obj_property name="ObjectShortName">tx</obj_property>
-      </wvobject>
-      <wvobject fp_name="/tb_G_uart_rx/h/W_LINE" type="array">
-         <obj_property name="ElementShortName">W_LINE[127:0]</obj_property>
-         <obj_property name="ObjectShortName">W_LINE[127:0]</obj_property>
-         <obj_property name="Radix">ASCIIRADIX</obj_property>
-      </wvobject>
-   </wvobject>
-   <wvobject fp_name="group4" type="group">
-      <obj_property name="label">FND / LED</obj_property>
-      <obj_property name="DisplayName">label</obj_property>
-      <wvobject fp_name="/tb_G_uart_rx/h/W_FND" type="array">
-         <obj_property name="ElementShortName">W_FND[63:0]</obj_property>
-         <obj_property name="ObjectShortName">W_FND[63:0]</obj_property>
-         <obj_property name="Radix">ASCIIRADIX</obj_property>
-      </wvobject>
-      <wvobject fp_name="/tb_G_uart_rx/h/fnd_com" type="array">
-         <obj_property name="ElementShortName">fnd_com[3:0]</obj_property>
-         <obj_property name="ObjectShortName">fnd_com[3:0]</obj_property>
-         <obj_property name="Radix">BINARYRADIX</obj_property>
-      </wvobject>
-      <wvobject fp_name="/tb_G_uart_rx/h/fnd_font" type="array">
-         <obj_property name="ElementShortName">fnd_font[7:0]</obj_property>
-         <obj_property name="ObjectShortName">fnd_font[7:0]</obj_property>
-         <obj_property name="Radix">HEXRADIX</obj_property>
-      </wvobject>
-      <wvobject fp_name="/tb_G_uart_rx/h/led" type="array">
-         <obj_property name="ElementShortName">led[15:0]</obj_property>
-         <obj_property name="ObjectShortName">led[15:0]</obj_property>
-         <obj_property name="Radix">HEXRADIX</obj_property>
-      </wvobject>
-   </wvobject>
-   <wvobject fp_name="group5" type="group">
-      <obj_property name="label">MODE : ctrl bit {sw6..sw0} / screen 0 WTS 1 dist 2 temp</obj_property>
-      <obj_property name="DisplayName">label</obj_property>
-      <wvobject fp_name="/tb_G_uart_rx/h/dut/w_uart_mode" type="logic">
-         <obj_property name="ElementShortName">w_uart_mode</obj_property>
-         <obj_property name="ObjectShortName">w_uart_mode</obj_property>
-      </wvobject>
-      <wvobject fp_name="/tb_G_uart_rx/h/dut/w_ctrl_bit" type="array">
-         <obj_property name="ElementShortName">w_ctrl_bit[6:0]</obj_property>
-         <obj_property name="ObjectShortName">w_ctrl_bit[6:0]</obj_property>
-         <obj_property name="Radix">BINARYRADIX</obj_property>
-      </wvobject>
-      <wvobject fp_name="/tb_G_uart_rx/h/dut/w_disp_sel" type="array">
-         <obj_property name="ElementShortName">w_disp_sel[1:0]</obj_property>
-         <obj_property name="ObjectShortName">w_disp_sel[1:0]</obj_property>
-         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
-      </wvobject>
-   </wvobject>
-   <wvobject fp_name="group6" type="group">
-      <obj_property name="label">UART RX / decoder</obj_property>
-      <obj_property name="DisplayName">label</obj_property>
-      <wvobject fp_name="/tb_G_uart_rx/h/dut/U_UART/w_rx_done" type="logic">
-         <obj_property name="ElementShortName">w_rx_done</obj_property>
-         <obj_property name="ObjectShortName">w_rx_done</obj_property>
-      </wvobject>
-      <wvobject fp_name="/tb_G_uart_rx/h/dut/U_UART/w_rx_data" type="array">
-         <obj_property name="ElementShortName">w_rx_data[7:0]</obj_property>
-         <obj_property name="ObjectShortName">w_rx_data[7:0]</obj_property>
-         <obj_property name="Radix">ASCIIRADIX</obj_property>
-      </wvobject>
-      <wvobject fp_name="/tb_G_uart_rx/h/dut/U_UART/w_rx_full" type="logic">
-         <obj_property name="ElementShortName">w_rx_full</obj_property>
-         <obj_property name="ObjectShortName">w_rx_full</obj_property>
-      </wvobject>
-      <wvobject fp_name="/tb_G_uart_rx/h/dut/U_UART/w_handshake" type="logic">
-         <obj_property name="ElementShortName">w_handshake</obj_property>
-         <obj_property name="ObjectShortName">w_handshake</obj_property>
-      </wvobject>
-      <wvobject fp_name="/tb_G_uart_rx/h/dut/U_UART/w_error" type="logic">
-         <obj_property name="ElementShortName">w_error</obj_property>
-         <obj_property name="ObjectShortName">w_error</obj_property>
-      </wvobject>
-      <wvobject fp_name="/tb_G_uart_rx/h/dut/U_UART/w_ascii" type="array">
-         <obj_property name="ElementShortName">w_ascii[39:0]</obj_property>
-         <obj_property name="ObjectShortName">w_ascii[39:0]</obj_property>
-         <obj_property name="Radix">ASCIIRADIX</obj_property>
-      </wvobject>
-      <wvobject fp_name="/tb_G_uart_rx/h/dut/U_UART/w_get" type="logic">
-         <obj_property name="ElementShortName">w_get</obj_property>
-         <obj_property name="ObjectShortName">w_get</obj_property>
-      </wvobject>
-      <wvobject fp_name="/tb_G_uart_rx/h/dut/U_UART/w_btn" type="logic">
-         <obj_property name="ElementShortName">w_btn</obj_property>
-         <obj_property name="ObjectShortName">w_btn</obj_property>
-      </wvobject>
-      <wvobject fp_name="/tb_G_uart_rx/h/dut/U_UART/w_set" type="logic">
-         <obj_property name="ElementShortName">w_set</obj_property>
-         <obj_property name="ObjectShortName">w_set</obj_property>
-      </wvobject>
-      <wvobject fp_name="/tb_G_uart_rx/h/dut/U_UART/w_off_set" type="logic">
-         <obj_property name="ElementShortName">w_off_set</obj_property>
-         <obj_property name="ObjectShortName">w_off_set</obj_property>
-      </wvobject>
-      <wvobject fp_name="/tb_G_uart_rx/h/dut/U_UART/w_mode" type="logic">
-         <obj_property name="ElementShortName">w_mode</obj_property>
-         <obj_property name="ObjectShortName">w_mode</obj_property>
-      </wvobject>
-      <wvobject fp_name="/tb_G_uart_rx/h/dut/U_UART/w_auto" type="logic">
-         <obj_property name="ElementShortName">w_auto</obj_property>
-         <obj_property name="ObjectShortName">w_auto</obj_property>
-      </wvobject>
-   </wvobject>
-   <wvobject fp_name="group7" type="group">
-      <obj_property name="label">UART TX (ERROR line)</obj_property>
-      <obj_property name="DisplayName">label</obj_property>
-      <wvobject fp_name="/tb_G_uart_rx/h/dut/U_UART/o_send_sel" type="array">
-         <obj_property name="ElementShortName">o_send_sel[2:0]</obj_property>
-         <obj_property name="ObjectShortName">o_send_sel[2:0]</obj_property>
-         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
-      </wvobject>
-      <wvobject fp_name="/tb_G_uart_rx/h/dut/U_UART/w_send_go" type="logic">
-         <obj_property name="ElementShortName">w_send_go</obj_property>
-         <obj_property name="ObjectShortName">w_send_go</obj_property>
-      </wvobject>
-      <wvobject fp_name="/tb_G_uart_rx/h/dut/U_UART/w_send_data" type="array">
-         <obj_property name="ElementShortName">w_send_data[23:0]</obj_property>
-         <obj_property name="ObjectShortName">w_send_data[23:0]</obj_property>
-         <obj_property name="Radix">HEXRADIX</obj_property>
-      </wvobject>
-      <wvobject fp_name="/tb_G_uart_rx/h/dut/U_UART/w_send_busy" type="logic">
-         <obj_property name="ElementShortName">w_send_busy</obj_property>
-         <obj_property name="ObjectShortName">w_send_busy</obj_property>
-      </wvobject>
-      <wvobject fp_name="/tb_G_uart_rx/h/dut/U_UART/w_tx_push" type="logic">
-         <obj_property name="ElementShortName">w_tx_push</obj_property>
-         <obj_property name="ObjectShortName">w_tx_push</obj_property>
-      </wvobject>
-      <wvobject fp_name="/tb_G_uart_rx/h/dut/U_UART/w_tx_push_data" type="array">
-         <obj_property name="ElementShortName">w_tx_push_data[7:0]</obj_property>
-         <obj_property name="ObjectShortName">w_tx_push_data[7:0]</obj_property>
-         <obj_property name="Radix">ASCIIRADIX</obj_property>
-      </wvobject>
-      <wvobject fp_name="/tb_G_uart_rx/h/dut/U_UART/w_tx_full" type="logic">
-         <obj_property name="ElementShortName">w_tx_full</obj_property>
-         <obj_property name="ObjectShortName">w_tx_full</obj_property>
-      </wvobject>
-      <wvobject fp_name="/tb_G_uart_rx/h/dut/U_UART/w_tx_empty" type="logic">
-         <obj_property name="ElementShortName">w_tx_empty</obj_property>
-         <obj_property name="ObjectShortName">w_tx_empty</obj_property>
-      </wvobject>
-      <wvobject fp_name="/tb_G_uart_rx/h/dut/U_UART/w_tx_busy" type="logic">
-         <obj_property name="ElementShortName">w_tx_busy</obj_property>
-         <obj_property name="ObjectShortName">w_tx_busy</obj_property>
+      <wvobject fp_name="/tb_G_uart_rx/h/dut/U_UART/U_ASCII_SENDER/o_send_busy" type="logic">
+         <obj_property name="ElementShortName">o_send_busy</obj_property>
+         <obj_property name="ObjectShortName">o_send_busy</obj_property>
       </wvobject>
    </wvobject>
 </wave_config>
