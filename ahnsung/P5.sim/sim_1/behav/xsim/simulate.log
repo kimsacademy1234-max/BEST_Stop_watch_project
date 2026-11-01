@@ -1,0 +1,47 @@
+Vivado Simulator 2020.2
+Time resolution is 1 ps
+[    0.000000 ms] [NOTE   ] only scenario / group : P5
+
+==========================================================================================
+[    0.000000 ms] [BEGIN  ] P5  SR04 Err1 / Err2 / Err3
+              plan   : /mod dist ; Err1 no echo @12 ms ; Err2 echo 23,250 us @82 ms ; Err3 echo stuck @152 ms ; /get after each
+              expect : FND Err1/Err2/Err3 and PC Err 1/Err 2/Err 3, LD9 on
+------------------------------------------------------------------------------------------
+[    1.000000 ms] [MARK   ] /mod dist  @ 1.0000 ms
+[   12.000000 ms] [MARK   ] Err1 no echo  @ 12.0000 ms
+[   55.000000 ms] [MARK   ] /get Err1  @ 55.0000 ms
+[   68.441000 ms] [OK     ] P5-1   Err1 no echo | exp status 1 at trig fall + 30.000 ms, FND Err1, PC Err 1, LD9 | got status 1 at +30.0000 ms (trig 18.2030, done 48.2140), FND Err1, "Err 1", LD9 1
+[   68.441000 ms] [CAPTURE] P5-B1      11.5000 ~    68.9928 ms  (57.493 ms)  Err1 : /btn R -> trig -> 30 ms no echo -> Err1 -> /get Err 1
+[   68.441000 ms] [CAPTURE] P5-B2      17.2140 ~    49.2140 ms  (32.000 ms)  Err1 timing : trig fall -> done (cursor 30.000 ms)
+[   82.000000 ms] [MARK   ] Err2 long echo  @ 82.0000 ms
+[  118.000000 ms] [MARK   ] /get Err2  @ 118.0000 ms
+[  131.445000 ms] [OK     ] P5-2   Err2 out of range | exp status 2 at echo rise + 23.200 ms, FND Err2, PC Err 2 | got status 2 at +23.2000 ms (echo 88.7096, done 111.9096), FND Err2, "Err 2"
+[  131.445000 ms] [CAPTURE] P5-C1      81.5000 ~   131.9965 ms  (50.497 ms)  Err2 : /btn R -> echo too long -> Err2 -> /get Err 2
+[  131.445000 ms] [CAPTURE] P5-C2      87.7096 ~   112.9096 ms  (25.200 ms)  Err2 timing : echo rise -> done (cursor 23.200 ms)
+[  152.000000 ms] [MARK   ] Err3 echo stuck  @ 152.0000 ms
+[  154.000000 ms] [MARK   ] /btn R (stuck)  @ 154.0000 ms
+[  240.000000 ms] [MARK   ] /get Err3  @ 240.0000 ms
+[  255.000000 ms] [MARK   ] echo released  @ 255.0000 ms
+[  255.000000 ms] [OK     ] P5-3   Err3 echo stuck | exp Err2 at trig fall + 23.2 ms, Err3 at + 73.200 ms, FND Err3, PC Err 3 | got 1st status 2 at +23.2000, 2nd status 3 at +73.2000 ms (done 233.4102), FND Err3, "Err 3"
+[  255.000000 ms] [CAPTURE] P5-D1     151.0000 ~   253.9939 ms  (102.994 ms)  Err3 : echo stuck -> Err2 (23.2) -> Err3 (73.2) -> /get Err 3
+[  255.000000 ms] [CAPTURE] P5-D2     159.2102 ~   234.4102 ms  (75.200 ms)  Err3 timing : trig fall -> Err2 -> Err3 (cursors 23.2 / 73.2 ms)
+[  255.000000 ms] [CAPTURE] P5-A        0.0000 ~   258.0000 ms  (258.000 ms)  overview : Err1 -> Err2 -> Err3 (FND + PC + LD9)
+
+==========================================================================================
+  CAPTURE windows (scene time ms ; run one scene alone => scene time = sim time)
+  P5-B1      11.5000 ~    68.9928 ms  (57.493 ms)  Err1 : /btn R -> trig -> 30 ms no echo -> Err1 -> /get Err 1
+  P5-B2      17.2140 ~    49.2140 ms  (32.000 ms)  Err1 timing : trig fall -> done (cursor 30.000 ms)
+  P5-C1      81.5000 ~   131.9965 ms  (50.497 ms)  Err2 : /btn R -> echo too long -> Err2 -> /get Err 2
+  P5-C2      87.7096 ~   112.9096 ms  (25.200 ms)  Err2 timing : echo rise -> done (cursor 23.200 ms)
+  P5-D1     151.0000 ~   253.9939 ms  (102.994 ms)  Err3 : echo stuck -> Err2 (23.2) -> Err3 (73.2) -> /get Err 3
+  P5-D2     159.2102 ~   234.4102 ms  (75.200 ms)  Err3 timing : trig fall -> Err2 -> Err3 (cursors 23.2 / 73.2 ms)
+  P5-A        0.0000 ~   258.0000 ms  (258.000 ms)  overview : Err1 -> Err2 -> Err3 (FND + PC + LD9)
+
+==========================================================================================
+  P5   checks 3  PASS
+------------------------------------------------------------------------------------------
+  UART lines : 3 received, snapshot mismatch 0, unexpected 0, no CR 0, frame err 0
+  x/z on outputs : none
+[  258.000000 ms] [SUMMARY] P_present checks=3 fail=0 issue=0 => PASS
+==========================================================================================
+$finish called at time : 258 ms : File "D:/26_AI_CAMP_2/BEST_Stop_watch_project/FINAL/sim_file/tb_merge_harness.sv" Line 271

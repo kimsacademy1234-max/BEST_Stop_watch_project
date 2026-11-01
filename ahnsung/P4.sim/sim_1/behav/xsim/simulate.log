@@ -1,0 +1,31 @@
+Vivado Simulator 2020.2
+Time resolution is 1 ps
+[    0.000000 ms] [NOTE   ] only scenario / group : P4
+
+==========================================================================================
+[    0.000000 ms] [BEGIN  ] P4  format error /gxt -> ERROR
+              plan   : /gxt @1 ms, /get @14 ms
+              expect : ERROR exactly 1 line within 0.1 ms of the bad byte, then /get answers normally
+------------------------------------------------------------------------------------------
+[    1.000000 ms] [MARK   ] /gxt  @ 1.0000 ms
+[   13.000000 ms] [OK     ] P4-1   /gxt | exp 1 line ERROR, starts < 0.1 ms after error | got "ERROR", extra 0, error 4.0763 ms, line 4.0764 ~ 11.3675 ms
+[   13.000000 ms] [CAPTURE] P4-A        0.5000 ~    11.8675 ms  (11.368 ms)  /gxt -> error -> ERROR line
+[   13.000000 ms] [CAPTURE] P4-B        2.9763 ~     5.2764 ms  (2.300 ms)  zoom : bad byte 'x' -> w_error -> send_go(sel 7) -> 'E'
+[   14.000000 ms] [MARK   ] /get  @ 14.0000 ms
+[   33.691000 ms] [OK     ] P4-2   /get after ERROR | exp normal time line (switch mode = watch) | got "12:00:00.02" 20.2016 ~ 33.7424 ms
+[   33.691000 ms] [CAPTURE] P4-C       13.5000 ~    34.2424 ms  (20.742 ms)  /get after ERROR -> normal line
+
+==========================================================================================
+  CAPTURE windows (scene time ms ; run one scene alone => scene time = sim time)
+  P4-A        0.5000 ~    11.8675 ms  (11.368 ms)  /gxt -> error -> ERROR line
+  P4-B        2.9763 ~     5.2764 ms  (2.300 ms)  zoom : bad byte 'x' -> w_error -> send_go(sel 7) -> 'E'
+  P4-C       13.5000 ~    34.2424 ms  (20.742 ms)  /get after ERROR -> normal line
+
+==========================================================================================
+  P4   checks 2  PASS
+------------------------------------------------------------------------------------------
+  UART lines : 2 received, snapshot mismatch 0, unexpected 0, no CR 0, frame err 0
+  x/z on outputs : none
+[   36.000000 ms] [SUMMARY] P_present checks=2 fail=0 issue=0 => PASS
+==========================================================================================
+$finish called at time : 36 ms : File "D:/26_AI_CAMP_2/BEST_Stop_watch_project/FINAL/sim_file/tb_merge_harness.sv" Line 271

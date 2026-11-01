@@ -1,0 +1,51 @@
+Vivado Simulator 2020.2
+Time resolution is 1 ps
+[    0.000000 ms] [NOTE   ] only scenario / group : P6
+
+==========================================================================================
+[    0.000000 ms] [BEGIN  ] P6  DHT11 --%--C / Err1 / Err2 / Err3
+              plan   : /mod temp ; /get before first measure ; Err1 no response (1 s) ; Err2 20 bits (3 s) ; Err3 checksum (5 s)
+              expect : PC --%--C then Err 1 / Err 2 / Err 3, FND ---- then Err1 / Err2 / Err3
+------------------------------------------------------------------------------------------
+[    1.000000 ms] [MARK   ] /mod temp  @ 1.0000 ms
+[   12.000000 ms] [MARK   ] /get no data  @ 12.0000 ms
+[   30.251046 ms] [OK     ] P6-0   before first measure | exp PC --%--C, FND ---- | got "--%--C", FND ----
+[   30.251046 ms] [CAPTURE] P6-B       11.5000 ~    27.0358 ms  (15.536 ms)  /get before measure -> --%--C
+[   30.251046 ms] [MARK   ] Err1 no response  @ 30.2510 ms
+[ 1030.000000 ms] [MARK   ] /get Err1  @ 1030.0000 ms
+[ 1043.444000 ms] [OK     ] P6-1   Err1 no response | exp status 1, FND Err1, PC Err 1 | got status 1, start LOW 1000.0010 ~ 1018.0011, done 1018.2311 ms (+230.0 us after release), FND Err1, "Err 1"
+[ 1043.444000 ms] [CAPTURE] P6-C1     999.0010 ~  1019.2311 ms  (20.230 ms)  Err1 : start LOW 18 ms -> no response -> Err1
+[ 1043.444000 ms] [CAPTURE] P6-C2    1029.5000 ~  1043.9955 ms  (14.495 ms)  /get -> Err 1
+[ 1050.000000 ms] [MARK   ] Err2 cut 20 bits  @ 1050.0000 ms
+[ 3030.000000 ms] [MARK   ] /get Err2  @ 3030.0000 ms
+[ 3043.440000 ms] [OK     ] P6-2   Err2 cut | exp status 2, FND Err2, PC Err 2 | got status 2, start LOW 3000.0010 ~ 3018.0011, done 3020.1051 ms, FND Err2, "Err 2"
+[ 3043.440000 ms] [CAPTURE] P6-D1    2999.0010 ~  3021.1051 ms  (22.104 ms)  Err2 : start -> 20 bits -> line stops -> Err2
+[ 3043.440000 ms] [CAPTURE] P6-D2    3017.9011 ~  3020.4051 ms  (2.504 ms)  Err2 zoom : response + 20 bits -> 0.2 ms timeout
+[ 3043.440000 ms] [CAPTURE] P6-D3    3029.5000 ~  3043.9911 ms  (14.491 ms)  /get -> Err 2
+[ 3050.000000 ms] [MARK   ] Err3 checksum+1  @ 3050.0000 ms
+[ 5030.000000 ms] [MARK   ] /get Err3  @ 5030.0000 ms
+[ 5043.442000 ms] [OK     ] P6-3   Err3 checksum | exp status 3, FND Err3, PC Err 3 | got status 3, start LOW 5000.0011 ~ 5018.0011, done 5021.6771 ms, FND Err3, "Err 3"
+[ 5043.442000 ms] [CAPTURE] P6-E1    4999.0011 ~  5022.6771 ms  (23.676 ms)  Err3 : start -> 40 bits -> checksum mismatch -> Err3
+[ 5043.442000 ms] [CAPTURE] P6-E2    5029.5000 ~  5043.9933 ms  (14.493 ms)  /get -> Err 3
+[ 5043.442000 ms] [CAPTURE] P6-A        0.0000 ~  5046.4933 ms  (5046.493 ms)  overview : --%--C -> Err1 (1 s) -> Err2 (3 s) -> Err3 (5 s)
+
+==========================================================================================
+  CAPTURE windows (scene time ms ; run one scene alone => scene time = sim time)
+  P6-B       11.5000 ~    27.0358 ms  (15.536 ms)  /get before measure -> --%--C
+  P6-C1     999.0010 ~  1019.2311 ms  (20.230 ms)  Err1 : start LOW 18 ms -> no response -> Err1
+  P6-C2    1029.5000 ~  1043.9955 ms  (14.495 ms)  /get -> Err 1
+  P6-D1    2999.0010 ~  3021.1051 ms  (22.104 ms)  Err2 : start -> 20 bits -> line stops -> Err2
+  P6-D2    3017.9011 ~  3020.4051 ms  (2.504 ms)  Err2 zoom : response + 20 bits -> 0.2 ms timeout
+  P6-D3    3029.5000 ~  3043.9911 ms  (14.491 ms)  /get -> Err 2
+  P6-E1    4999.0011 ~  5022.6771 ms  (23.676 ms)  Err3 : start -> 40 bits -> checksum mismatch -> Err3
+  P6-E2    5029.5000 ~  5043.9933 ms  (14.493 ms)  /get -> Err 3
+  P6-A        0.0000 ~  5046.4933 ms  (5046.493 ms)  overview : --%--C -> Err1 (1 s) -> Err2 (3 s) -> Err3 (5 s)
+
+==========================================================================================
+  P6   checks 4  PASS
+------------------------------------------------------------------------------------------
+  UART lines : 4 received, snapshot mismatch 0, unexpected 0, no CR 0, frame err 0
+  x/z on outputs : none
+[ 5046.493345 ms] [SUMMARY] P_present checks=4 fail=0 issue=0 => PASS
+==========================================================================================
+$finish called at time : 5046493345 ns : File "D:/26_AI_CAMP_2/BEST_Stop_watch_project/FINAL/sim_file/tb_merge_harness.sv" Line 271

@@ -3,7 +3,7 @@
    <wave_state>
    </wave_state>
    <db_ref_list>
-      <db_ref path="tb_P_present_behav.wdb" id="1">
+      <db_ref path="D:\26_AI_CAMP_2\BEST_Stop_watch_project\ahnsung\P5.sim\sim_1\behav\xsim\tb_P_present_behav.wdb" id="1">
          <top_modules>
             <top_module name="glbl" />
             <top_module name="tb_P_present" />
@@ -12,17 +12,22 @@
    </db_ref_list>
    <zoom_setting>
       <ZoomStartTime time="0fs"></ZoomStartTime>
-      <ZoomEndTime time="258000000000000fs"></ZoomEndTime>
-      <Cursor1Time time="0fs"></Cursor1Time>
+      <ZoomEndTime time="396400000001fs"></ZoomEndTime>
+      <Cursor1Time time="137200000000fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
-      <NameColumnWidth column_width="250"></NameColumnWidth>
-      <ValueColumnWidth column_width="130"></ValueColumnWidth>
+      <NameColumnWidth column_width="354"></NameColumnWidth>
+      <ValueColumnWidth column_width="172"></ValueColumnWidth>
    </column_width_setting>
    <WVObjectSize size="5" />
+   <wave_markers>
+      <marker time="48214035000" label="" />
+      <marker time="18214035000" label="" />
+   </wave_markers>
    <wvobject fp_name="group1" type="group">
       <obj_property name="label">TB : step / PC command (CR = #)</obj_property>
       <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="isExpanded"></obj_property>
       <wvobject fp_name="/tb_P_present/W_STEP" type="array">
          <obj_property name="ElementShortName">W_STEP[127:0]</obj_property>
          <obj_property name="ObjectShortName">W_STEP[127:0]</obj_property>
@@ -47,6 +52,7 @@
    <wvobject fp_name="group2" type="group">
       <obj_property name="label">UART RX / decoder</obj_property>
       <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="isExpanded"></obj_property>
       <wvobject fp_name="/tb_P_present/h/dut/U_UART/w_rx_done" type="logic">
          <obj_property name="ElementShortName">w_rx_done</obj_property>
          <obj_property name="ObjectShortName">w_rx_done</obj_property>
@@ -89,6 +95,7 @@
    <wvobject fp_name="group3" type="group">
       <obj_property name="label">SR04 : trig / echo -&gt; status (1 no echo, 2 range, 3 stuck)</obj_property>
       <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="isExpanded"></obj_property>
       <wvobject fp_name="/tb_P_present/h/trig" type="logic">
          <obj_property name="ElementShortName">trig</obj_property>
          <obj_property name="ObjectShortName">trig</obj_property>
@@ -132,6 +139,7 @@
    <wvobject fp_name="group4" type="group">
       <obj_property name="label">FND : 4 kHz tick / scan -&gt; com (AN) / font (char) / fnd_data</obj_property>
       <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="isExpanded"></obj_property>
       <wvobject fp_name="/tb_P_present/h/dut/w_clk_4khz" type="logic">
          <obj_property name="ElementShortName">w_clk_4khz</obj_property>
          <obj_property name="ObjectShortName">w_clk_4khz</obj_property>
@@ -172,6 +180,7 @@
    <wvobject fp_name="group5" type="group">
       <obj_property name="label">UART TX : send_go / sel / data -&gt; tx -&gt; line</obj_property>
       <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="isExpanded"></obj_property>
       <wvobject fp_name="/tb_P_present/h/dut/U_UART/w_send_go" type="logic">
          <obj_property name="ElementShortName">w_send_go</obj_property>
          <obj_property name="ObjectShortName">w_send_go</obj_property>

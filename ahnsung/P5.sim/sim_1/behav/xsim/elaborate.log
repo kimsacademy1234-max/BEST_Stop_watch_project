@@ -1,0 +1,76 @@
+Vivado Simulator 2020.2
+Copyright 1986-1999, 2001-2020 Xilinx, Inc. All Rights Reserved.
+Running: C:/Xilinx/Vivado/2020.2/bin/unwrapped/win64.o/xelab.exe -wto f7900fe232e9440a9284f177a9176655 --incr --debug typical --relax --mt 2 -L xil_defaultlib -L uvm -L unisims_ver -L unimacro_ver -L unisims_ver -L secureip --snapshot tb_P_present_behav xil_defaultlib.tb_P_present xil_defaultlib.glbl -log elaborate.log 
+Using 2 slave threads.
+Starting static elaboration
+Pass Through NonSizing Optimizer
+Completed static elaboration
+Starting simulation data flow analysis
+Completed simulation data flow analysis
+Time Resolution for simulation is 1ps
+Compiling module xil_defaultlib.reset_sync
+Compiling module xil_defaultlib.clock_tick_generator(CLK_FRQ=400...
+Compiling module xil_defaultlib.btn_debounce
+Compiling module xil_defaultlib.baud_tick_gen_default
+Compiling module xil_defaultlib.uart_rx
+Compiling module xil_defaultlib.fifo_control_unit(ADDR_BIT_WIDTH...
+Compiling module xil_defaultlib.fifo_register_file(DEPTH=8)
+Compiling module xil_defaultlib.fifo(DEPTH=8)
+Compiling module xil_defaultlib.UART_ASCII_DECODER(DATA_WIDTH=40...
+Compiling module xil_defaultlib.sender_tick_generator(CLK_FRQ=1)
+Compiling module xil_defaultlib.counter(COUNT_NUM=5,SEL_BIT=3)
+Compiling module xil_defaultlib.UART_CONTROLLER(DATA_WIDTH=40)
+Compiling module xil_defaultlib.sender_char_mux
+Compiling module xil_defaultlib.uart_sender
+Compiling module xil_defaultlib.fifo_control_unit(ADDR_BIT_WIDTH...
+Compiling module xil_defaultlib.fifo_register_file(DEPTH=64)
+Compiling module xil_defaultlib.fifo(DEPTH=64)
+Compiling module xil_defaultlib.uart_tx
+Compiling module xil_defaultlib.uart_top
+Compiling module xil_defaultlib.tick_gen_100hz(F_COUNT=1000000)
+Compiling module xil_defaultlib.tick_gen_100hz_run(F_COUNT=10000...
+Compiling module xil_defaultlib.stopwatch_control_unit
+Compiling module xil_defaultlib.stopwatch_tick_counter(TIMES=24,...
+Compiling module xil_defaultlib.stopwatch_tick_counter(TIMES=60,...
+Compiling module xil_defaultlib.stopwatch_tick_counter
+Compiling module xil_defaultlib.lap_controller
+Compiling module xil_defaultlib.stopwatch_datapath
+Compiling module xil_defaultlib.watch_control_unit
+Compiling module xil_defaultlib.watch_tick_counter
+Compiling module xil_defaultlib.watch_tick_counter(TIMES=60,BIT_...
+Compiling module xil_defaultlib.watch_tick_counter(TIMES=24,BIT_...
+Compiling module xil_defaultlib.watch_datapath
+Compiling module xil_defaultlib.hour_12_24
+Compiling module xil_defaultlib.timer_control_unit
+Compiling module xil_defaultlib.timer_datapath
+Compiling module xil_defaultlib.wts_top
+Compiling module xil_defaultlib.sr04_mode_ctrl
+Compiling module xil_defaultlib.synchronizer
+Compiling module xil_defaultlib.tick_gen_us
+Compiling module xil_defaultlib.sr04_controller_default
+Compiling module xil_defaultlib.sr04_core
+Compiling module xil_defaultlib.sr04_led_bar
+Compiling module xil_defaultlib.sr04_top
+Compiling module xil_defaultlib.dht11_controller(USE_ILA=0)
+Compiling module xil_defaultlib.dht11_core_default
+Compiling module xil_defaultlib.dht11_manager
+Compiling module xil_defaultlib.dht11_top
+Compiling module xil_defaultlib.digit_splitter
+Compiling module xil_defaultlib.digit_splitter(WIDTH=6)
+Compiling module xil_defaultlib.counter8
+Compiling module xil_defaultlib.dot
+Compiling module xil_defaultlib.SW2_ANODE_CHOICE
+Compiling module xil_defaultlib.mux_8x1
+Compiling module xil_defaultlib.fnd_dist
+Compiling module xil_defaultlib.fnd_dht
+Compiling module xil_defaultlib.decoder_2x4
+Compiling module xil_defaultlib.fnd_decoder
+Compiling module xil_defaultlib.SW2_FND_CONTROLLER_default
+Compiling module xil_defaultlib.led_output
+Compiling module xil_defaultlib.merge_final_top
+Compiling module xil_defaultlib.tb_merge_harness(TB_ID="P_presen...
+WARNING: [XSIM 43-3373] "D:/26_AI_CAMP_2/BEST_Stop_watch_project/FINAL/sim_file/tb_merge_harness.sv" Line 195. System function $value$plusargs is used as system task. This system function should have a LHS e.g. x=$value$plusargs().
+WARNING: [XSIM 43-3373] "D:/26_AI_CAMP_2/BEST_Stop_watch_project/FINAL/sim_file/tb_merge_harness.sv" Line 196. System function $value$plusargs is used as system task. This system function should have a LHS e.g. x=$value$plusargs().
+Compiling module xil_defaultlib.tb_P_present
+Compiling module xil_defaultlib.glbl
+Built simulation snapshot tb_P_present_behav

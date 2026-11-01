@@ -1,22 +1,22 @@
 `timescale 1ns / 1ps
 // =============================================================================
-// tb_P_present — Top 발표용 대표 파형 (UART 명령 경로별 대표 1 개 + 센서 오류)
-//   P1 /mod dist        : 스위치 → UART 로 화면 제어권 넘어감         (경로 ① 화면 제어)
-//   P2 /btn R → /get    : UART 버튼 → SR04 측정 → 123cm 응답          (경로 ③ 버튼 + ② 송신)
-//   P3 /auto all        : 실제 1 Hz 로 SW → TM → WH → DIST → TEMP     (경로 ② 송신, 5 입력)
-//   P4 /gxt             : 형식 오류 → ERROR 1 줄 → 뒤 명령 정상        (경로 ④ 오류)
-//   P5 SR04 Err1~3      : 무응답 / 범위 밖 / echo 고착 → FND · PC 둘 다 오류
-//   P6 DHT11 Err1~3     : 측정 전 --%--C / 응답 없음 / 중간 끊김 / 체크섬
+// tb_P_present ?? Top 발표?�� ???�� ?��?�� (UART 명령 경로�? ???�� 1 �? + ?��?�� ?���?)
+//   P1 /mod dist        : ?��?���? ?�� UART �? ?���? ?��?���? ?��?���?         (경로 ?�� ?���? ?��?��)
+//   P2 /btn R ?�� /get    : UART 버튼 ?�� SR04 측정 ?�� 123cm ?��?��          (경로 ?�� 버튼 + ?�� ?��?��)
+//   P3 /auto all        : ?��?�� 1 Hz �? SW ?�� TM ?�� WH ?�� DIST ?�� TEMP     (경로 ?�� ?��?��, 5 ?��?��)
+//   P4 /gxt             : ?��?�� ?���? ?�� ERROR 1 �? ?�� ?�� 명령 ?��?��        (경로 ?�� ?���?)
+//   P5 SR04 Err1~3      : 무응?�� / 범위 �? / echo 고착 ?�� FND · PC ?�� ?�� ?���?
+//   P6 DHT11 Err1~3     : 측정 ?�� --%--C / ?��?�� ?��?�� / 중간 ?���? / 체크?��
 //
-//   ★ 시간 줄이기 없음 : 100 MHz, 9600 baud, /auto 1 Hz, 센서 1 us tick, DHT11 부팅 1 s · 간격 2 s
-//     → 파형의 시간 간격 = 보드 실제 시간 그대로 (발표 캡처용)
-//   ★ 장면은 하나씩 돌릴 것 : run_present.bat P3 wave  (그러면 장면 시작 = 0 ms, 안내서 시각 그대로)
-//   콘솔 [MARK] = 단계 시작, [CAPTURE] = 캡처 구간 (실제 이벤트 시각으로 계산한 값)
-//   안내서 : ahnsung/FINAL/ppt_make/top_파형_캡처_안내.md
+//   ?�� ?���? 줄이�? ?��?�� : 100 MHz, 9600 baud, /auto 1 Hz, ?��?�� 1 us tick, DHT11 �??�� 1 s · 간격 2 s
+//     ?�� ?��?��?�� ?���? 간격 = 보드 ?��?�� ?���? 그�?�? (발표 캡처?��)
+//   ?�� ?��면�? ?��?��?�� ?���? �? : run_present.bat P3 wave  (그러�? ?���? ?��?�� = 0 ms, ?��?��?�� ?���? 그�?�?)
+//   콘솔 [MARK] = ?���? ?��?��, [CAPTURE] = 캡처 구간 (?��?�� ?��벤트 ?��각으�? 계산?�� �?)
+//   ?��?��?�� : ahnsung/FINAL/ppt_make/top_?��?��_캡처_?��?��.md
 // =============================================================================
 module tb_P_present;
 
-    localparam string ONLY = "P6";
+    localparam string ONLY = "P4";
 
     tb_merge_harness #(
         .TICK_F    (1_000_000),
@@ -36,19 +36,19 @@ module tb_P_present;
     localparam real    MSN = 1.0e6;     // 1 ms (ns)
     localparam real    USN = 1.0e3;     // 1 us (ns)
 
-    // ---------------------------------------------------------------- 파형용 (wcfg)
-    reg [8*16-1:0] W_STEP = 0;          // 지금 단계 (ASCII)
-    wire           LD9 = h.led[9];      // SR04 오류 LED
-    integer        GO_GAP_CLK = 0;      // 직전 send_go 와의 간격 (clk) — 1 Hz 면 100,000,000
-    integer        GO_GAP_US  = 0;      // 같은 값 (us) — 1 Hz 면 1,000,000
-    integer        N_GO = 0;            // send_go 개수 (= 보낸 줄 수)
+    // ---------------------------------------------------------------- ?��?��?�� (wcfg)
+    reg [8*16-1:0] W_STEP = 0;          // �?�? ?���? (ASCII)
+    wire           LD9 = h.led[9];      // SR04 ?���? LED
+    integer        GO_GAP_CLK = 0;      // 직전 send_go ???�� 간격 (clk) ?? 1 Hz �? 100,000,000
+    integer        GO_GAP_US  = 0;      // 같�? �? (us) ?? 1 Hz �? 1,000,000
+    integer        N_GO = 0;            // send_go 개수 (= 보낸 �? ?��)
 
-    // ---------------------------------------------------------------- 받은 글자
-    // uart_rx 의 o_rx_data (= 시프트 레지스터) 는 비트마다 밀려서 중간값이 보이므로 rx_done 순간 값만 잡아 둠
+    // ---------------------------------------------------------------- 받�? �??��
+    // uart_rx ?�� o_rx_data (= ?��?��?�� ?���??��?��) ?�� 비트마다 �??��?�� 중간값이 보이�?�? rx_done ?���? 값만 ?��?�� ?��
     reg [7:0]      W_RX = 8'h20;
     always @(posedge h.clk) if (h.dut.U_UART.w_rx_done) W_RX <= h.dut.U_UART.w_rx_data;
 
-    // ---------------------------------------------------------------- 디코더 상태 (ASCII)
+    // ---------------------------------------------------------------- ?��코더 ?��?�� (ASCII)
     // UART_ASCII_DECODER c_state : IDLE 0, SLASH 1, SPACE 2, g 3, e 4, t 5, m 6, o 7, d 8, b 9, n 10, a 11, u 12, s 13, f 14
     reg [8*8-1:0]  DEC_STATE = 0;
     function automatic string dec_name(input [3:0] v);
@@ -73,9 +73,9 @@ module tb_P_present;
     endfunction
     always @(h.dut.U_UART.U_ASCII_DECODER.c_state) DEC_STATE = h.s2v(dec_name(h.dut.U_UART.U_ASCII_DECODER.c_state));
 
-    // ---------------------------------------------------------------- FND 핀 값을 읽기 쉽게 (핀과 같은 시각에 바뀜)
-    // FND_COM  : fnd_com (active-low) → "AN0" ~ "AN3" (1110 = AN0, 1101 = AN1, 1011 = AN2, 0111 = AN3)
-    // FND_FONT : fnd_font → 실제로 켜지는 글자 {숫자, 점}  (c0 → "0", 7f → " .", ff → "  ")
+    // ---------------------------------------------------------------- FND ?? 값을 ?���? ?���? (??�? 같�? ?��각에 바�??)
+    // FND_COM  : fnd_com (active-low) ?�� "AN0" ~ "AN3" (1110 = AN0, 1101 = AN1, 1011 = AN2, 0111 = AN3)
+    // FND_FONT : fnd_font ?�� ?��?���? 켜�??�� �??�� {?��?��, ?��}  (c0 ?�� "0", 7f ?�� " .", ff ?�� "  ")
     reg [8*3-1:0] FND_COM  = "---";
     reg [8*2-1:0] FND_FONT = "  ";
     always @(h.fnd_com)
@@ -88,10 +88,10 @@ module tb_P_present;
         endcase
     always @(h.fnd_font) FND_FONT = {h.seg2ch(h.fnd_font[6:0]), (h.fnd_font[7] ? 8'h20 : 8'h2E)};
 
-    // ---------------------------------------------------------------- FND 데이터 (Top 의 w_fnd_data 를 보이는 값으로)
-    // w_disp_sel 0 WTS    : {hour 6, min 6, sec 6, msec 7} → w_disp_mode 0 "SS.CC", 1 "HH.MM"
-    //            1 거리   : {10'd0, status 2, err 1, x10 12} → "123.0" / "Err1~3"
-    //            2 온습도 : {7'd0, status 2, err 1, dashes 1, 습도x100+온도 14} → "55.24" / "----" / "Err1~3"
+    // ---------------------------------------------------------------- FND ?��?��?�� (Top ?�� w_fnd_data �? 보이?�� 값으�?)
+    // w_disp_sel 0 WTS    : {hour 6, min 6, sec 6, msec 7} ?�� w_disp_mode 0 "SS.CC", 1 "HH.MM"
+    //            1 거리   : {10'd0, status 2, err 1, x10 12} ?�� "123.0" / "Err1~3"
+    //            2 ?��?��?�� : {7'd0, status 2, err 1, dashes 1, ?��?��x100+?��?�� 14} ?�� "55.24" / "----" / "Err1~3"
     reg [8*8-1:0] FND_DATA = 0;
     function automatic string fnd_data_str(input [1:0] dsel, input bit dmode, input [24:0] d);
         integer v;
@@ -116,9 +116,9 @@ module tb_P_present;
     always @(h.dut.w_fnd_data or h.dut.w_disp_sel or h.dut.w_disp_mode)
         FND_DATA = h.s2v(fnd_data_str(h.dut.w_disp_sel, h.dut.w_disp_mode, h.dut.w_fnd_data));
 
-    // ---------------------------------------------------------------- 모니터
+    // ---------------------------------------------------------------- 모니?��
     integer  clk_cnt = 0, clk_go_last = 0;
-    realtime t0 = 0;                    // 장면 시작 (혼자 돌리면 0)
+    realtime t0 = 0;                    // ?���? ?��?�� (?��?�� ?��리면 0)
     realtime t_go_q[$];
     realtime t_err = 0;
     string   caps[$];
@@ -137,12 +137,12 @@ module tb_P_present;
         if (h.started && h.dut.U_UART.w_error) t_err = $realtime;
     end
 
-    // ---------------------------------------------------------------- 도우미
-    function automatic real rel(input realtime t);      // 장면 시작 기준 ms
+    // ---------------------------------------------------------------- ?��?���?
+    function automatic real rel(input realtime t);      // ?���? ?��?�� 기�? ms
         return (t - t0) / MSN;
     endfunction
 
-    task automatic at(input real ms);                    // 장면 시작 + ms 까지 기다림
+    task automatic at(input real ms);                    // ?���? ?��?�� + ms 까�? 기다�?
         h.wait_until(t0 + ms * MSN);
     endtask
 
@@ -177,7 +177,7 @@ module tb_P_present;
         W_STEP = h.s2v("reset");
     endtask
 
-    // "/get " + CR 보내고 응답 1 줄 (t_a = 첫 start 비트, t_b = 마지막 stop 끝)
+    // "/get " + CR 보내�? ?��?�� 1 �? (t_a = �? start 비트, t_b = 마�?�? stop ?��)
     task automatic get_line(output string s, output realtime t_cmd, output realtime t_a, output realtime t_b);
         h.flush_lines();
         t_cmd = $realtime;
@@ -217,7 +217,7 @@ module tb_P_present;
                     "uart_mode 0, disp_sel 2", $sformatf("uart_mode %b, disp_sel %0d", h.dut.w_uart_mode, h.dut.w_disp_sel));
             at(5.0);  step("/mod dist");       tc = $realtime;
             h.mod("dist");
-            t_last_b = tc + 8 * 10 * h.BIT_NS;  // 9 번째 글자 't' 의 start 비트
+            t_last_b = tc + 8 * 10 * h.BIT_NS;  // 9 번째 �??�� 't' ?�� start 비트
             h.wait_us(50);
             t_hs1 = h.t_hs;
             h.check("P1-2", (h.dut.w_uart_mode == 1) && (h.dut.w_disp_sel == 1) && (h.dut.w_ctrl_bit == 7'b010_0000),
@@ -278,14 +278,14 @@ module tb_P_present;
                         "5 lines SW TM WH DIST TEMP, send_go exactly 1.000 000 s apart, first = handshake + 1 s");
             h.sr_w_us = 7134;
             at(1.0);   step("/mod s_ms");  h.mod("s_ms");
-            at(12.0);  step("/btn R sw");  h.ubtn("R");      // 스톱워치 RUN
+            at(12.0);  step("/btn R sw");  h.ubtn("R");      // ?��?��?���? RUN
             at(20.0);  step("/mod t_ms");  h.mod("t_ms");
-            at(31.0);  step("/btn R tm");  h.ubtn("R");      // 타이머 +1 분
-            at(39.0);  step("/btn L tm");  h.ubtn("L");      // 타이머 시작
+            at(31.0);  step("/btn R tm");  h.ubtn("R");      // ???���? +1 �?
+            at(39.0);  step("/btn L tm");  h.ubtn("L");      // ???���? ?��?��
             at(47.0);  step("/mod dist");  h.mod("dist");
             at(58.0);  step("/btn R dist"); h.ubtn("R");     // SR04 측정 123 cm
             at(74.0);  step("/mod temp");  h.mod("temp");
-            at(85.0);  step("/btn R temp"); h.ubtn("R");     // DHT11 : 부팅 1 s 뒤 측정
+            at(85.0);  step("/btn R temp"); h.ubtn("R");     // DHT11 : �??�� 1 s ?�� 측정
             at(100.0); step("/auto all");  tc = $realtime;
             h.flush_lines();
             h.uart_send("/auto all");
@@ -354,7 +354,7 @@ module tb_P_present;
                         "/mod dist ; Err1 no echo @12 ms ; Err2 echo 23,250 us @82 ms ; Err3 echo stuck @152 ms ; /get after each",
                         "FND Err1/Err2/Err3 and PC Err 1/Err 2/Err 3, LD9 on");
             at(1.0);  step("/mod dist");  h.mod("dist");
-            // ---- Err1 : echo 없음 → trig↓ + 30 ms
+            // ---- Err1 : echo ?��?�� ?�� trig?�� + 30 ms
             at(12.0); step("Err1 no echo");  tc = $realtime;
             h.sr_mode = h.SR_NONE;
             h.ubtn("R");
@@ -370,7 +370,7 @@ module tb_P_present;
                               st, (dn - tf) / MSN, rel(tr), rel(dn), f1, s1, LD9));
             cap("P5-B1", tc - 0.5 * MSN, tb + 0.5 * MSN, "Err1 : /btn R -> trig -> 30 ms no echo -> Err1 -> /get Err 1");
             cap("P5-B2", tf - 1 * MSN, dn + 1 * MSN, "Err1 timing : trig fall -> done (cursor 30.000 ms)");
-            // ---- Err2 : echo 23.25 ms (400 cm 초과) → echo↑ + 23.2 ms
+            // ---- Err2 : echo 23.25 ms (400 cm 초과) ?�� echo?�� + 23.2 ms
             at(82.0); step("Err2 long echo");  tc = $realtime;
             h.sr_mode = h.SR_NORMAL;
             h.sr_w_us = 23250;
@@ -387,7 +387,7 @@ module tb_P_present;
                               st, (dn - er) / MSN, rel(er), rel(dn), f2, s2));
             cap("P5-C1", tc - 0.5 * MSN, tb + 0.5 * MSN, "Err2 : /btn R -> echo too long -> Err2 -> /get Err 2");
             cap("P5-C2", er - 1 * MSN, dn + 1 * MSN, "Err2 timing : echo rise -> done (cursor 23.200 ms)");
-            // ---- Err3 : echo 가 계속 1 → 23.2 ms Err2 → 73.2 ms Err3 → IDLE
+            // ---- Err3 : echo �? 계속 1 ?�� 23.2 ms Err2 ?�� 73.2 ms Err3 ?�� IDLE
             at(152.0); step("Err3 echo stuck");
             h.sr_mode = h.SR_MANUAL;
             h.echo = 1'b1;
@@ -426,7 +426,7 @@ module tb_P_present;
             h.check("P6-0", (s == "--%--C") && (f == "----"), "before first measure", "PC --%--C, FND ----",
                     $sformatf("\"%s\", FND %s", s, f));
             cap("P6-B", t_cmd - 0.5 * MSN, tb + 0.5 * MSN, "/get before measure -> --%--C");
-            // ---- Err1 : 응답 없음 (부팅 1 s 뒤 첫 측정)
+            // ---- Err1 : ?��?�� ?��?�� (�??�� 1 s ?�� �? 측정)
             at(30.0); step("Err1 no response");
             h.dh_mode = h.DH_NONE;
             h.ubtn("R");
@@ -442,7 +442,7 @@ module tb_P_present;
                               st, rel(oe_r), rel(oe_f), rel(dn), (dn - oe_f) / USN, f1, s1));
             cap("P6-C1", oe_r - 1 * MSN, dn + 1 * MSN, "Err1 : start LOW 18 ms -> no response -> Err1");
             cap("P6-C2", t_cmd - 0.5 * MSN, tb + 0.5 * MSN, "/get -> Err 1");
-            // ---- Err2 : 20 비트 뒤 끊김 (이전 시작 + 2 s)
+            // ---- Err2 : 20 비트 ?�� ?���? (?��?�� ?��?�� + 2 s)
             at(1050.0); step("Err2 cut 20 bits");
             h.dh_default();
             h.dh_nbits = 20;
@@ -459,7 +459,7 @@ module tb_P_present;
             cap("P6-D1", oe_r - 1 * MSN, dn + 1 * MSN, "Err2 : start -> 20 bits -> line stops -> Err2");
             cap("P6-D2", oe_f - 0.1 * MSN, dn + 0.3 * MSN, "Err2 zoom : response + 20 bits -> 0.2 ms timeout");
             cap("P6-D3", t_cmd - 0.5 * MSN, tb + 0.5 * MSN, "/get -> Err 2");
-            // ---- Err3 : 체크섬 +1
+            // ---- Err3 : 체크?�� +1
             at(3050.0); step("Err3 checksum+1");
             h.dh_default();
             h.dh_chk_off = 1;

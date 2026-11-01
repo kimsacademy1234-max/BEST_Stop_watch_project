@@ -1,0 +1,57 @@
+# compile verilog/system verilog design source files
+verilog xil_defaultlib  \
+"../../../../BEST_Stop_watch_project/FINAL/source_file/merge_final_v2/FND_LED/SW2_ANODE_CHOICE.v" \
+"../../../../BEST_Stop_watch_project/FINAL/source_file/merge_final_v2/FND_LED/SW2_FND_CONTROLLER.v" \
+"../../../../BEST_Stop_watch_project/FINAL/source_file/merge_final_v2/IP/baud_tick_gen.v" \
+"../../../../BEST_Stop_watch_project/FINAL/source_file/merge_final_v2/IP/btn_debounce.v" \
+"../../../../BEST_Stop_watch_project/FINAL/source_file/merge_final_v2/IP/clock_tick_generator.v" \
+"../../../../BEST_Stop_watch_project/FINAL/source_file/merge_final_v2/IP/counter8.v" \
+"../../../../BEST_Stop_watch_project/FINAL/source_file/merge_final_v2/IP/decoder_2x4.v" \
+"../../../../BEST_Stop_watch_project/FINAL/source_file/merge_final_v2/DHT11/dht11_controller.v" \
+"../../../../BEST_Stop_watch_project/FINAL/source_file/merge_final_v2/DHT11/dht11_core.v" \
+"../../../../BEST_Stop_watch_project/FINAL/source_file/merge_final_v2/DHT11/dht11_manager.v" \
+"../../../../BEST_Stop_watch_project/FINAL/source_file/merge_final_v2/DHT11/dht11_top.v" \
+"../../../../BEST_Stop_watch_project/FINAL/source_file/merge_final_v2/IP/digit_splitter.v" \
+"../../../../BEST_Stop_watch_project/FINAL/source_file/merge_final_v2/FND_LED/dot.v" \
+"../../../../BEST_Stop_watch_project/FINAL/source_file/merge_final_v2/IP/fifo.v" \
+"../../../../BEST_Stop_watch_project/FINAL/source_file/merge_final_v2/IP/fnd_decoder.v" \
+"../../../../BEST_Stop_watch_project/FINAL/source_file/merge_final_v2/FND_LED/fnd_dht.v" \
+"../../../../BEST_Stop_watch_project/FINAL/source_file/merge_final_v2/FND_LED/fnd_dist.v" \
+"../../../../BEST_Stop_watch_project/FINAL/source_file/merge_final_v2/WTS/hour_12_24.v" \
+"../../../../BEST_Stop_watch_project/FINAL/source_file/merge_final_v2/WTS/lap_controller.v" \
+"../../../../BEST_Stop_watch_project/FINAL/source_file/merge_final_v2/FND_LED/led_output.v" \
+"../../../../BEST_Stop_watch_project/FINAL/source_file/merge_final_v2/merge_final_top.v" \
+"../../../../BEST_Stop_watch_project/FINAL/source_file/merge_final_v2/IP/mux_8x1.v" \
+"../../../../BEST_Stop_watch_project/FINAL/source_file/merge_final_v2/IP/reset_sync.v" \
+"../../../../BEST_Stop_watch_project/FINAL/source_file/merge_final_v2/UART/sender_char_mux.v" \
+"../../../../BEST_Stop_watch_project/FINAL/source_file/merge_final_v2/SR04/sr04_core.v" \
+"../../../../BEST_Stop_watch_project/FINAL/source_file/merge_final_v2/SR04/sr04_led_bar.v" \
+"../../../../BEST_Stop_watch_project/FINAL/source_file/merge_final_v2/SR04/sr04_mode_ctrl.v" \
+"../../../../BEST_Stop_watch_project/FINAL/source_file/merge_final_v2/SR04/sr04_top.v" \
+"../../../../BEST_Stop_watch_project/FINAL/source_file/merge_final_v2/WTS/stopwatch_datapath.v" \
+"../../../../BEST_Stop_watch_project/FINAL/source_file/merge_final_v2/IP/synchronizer.v" \
+"../../../../BEST_Stop_watch_project/FINAL/source_file/merge_final_v2/IP/tick_gen_100hz.v" \
+"../../../../BEST_Stop_watch_project/FINAL/source_file/merge_final_v2/IP/tick_gen_100hz_run.v" \
+"../../../../BEST_Stop_watch_project/FINAL/source_file/merge_final_v2/IP/tick_gen_us.v" \
+"../../../../BEST_Stop_watch_project/FINAL/source_file/merge_final_v2/WTS/timer_datapath.v" \
+"../../../../BEST_Stop_watch_project/FINAL/source_file/merge_final_v2/UART/uart_sender.v" \
+"../../../../BEST_Stop_watch_project/FINAL/source_file/merge_final_v2/UART/uart_top.v" \
+"../../../../BEST_Stop_watch_project/FINAL/source_file/merge_final_v2/UART/uart_tx.v" \
+"../../../../BEST_Stop_watch_project/FINAL/source_file/merge_final_v2/WTS/watch_datapath.v" \
+"../../../../BEST_Stop_watch_project/FINAL/source_file/merge_final_v2/WTS/wts_top.v" \
+
+sv xil_defaultlib  \
+"../../../../BEST_Stop_watch_project/FINAL/source_file/merge_final_v2/UART/01_UART_CONTROLLER.sv" \
+"../../../../BEST_Stop_watch_project/FINAL/source_file/merge_final_v2/UART/02_UART_ASCII_DECODER.sv" \
+"../../../../BEST_Stop_watch_project/FINAL/source_file/merge_final_v2/WTS/stopwatch_control_unit.sv" \
+"../../../../BEST_Stop_watch_project/FINAL/sim_file/tb_merge_harness.sv" \
+"../../../../BEST_Stop_watch_project/FINAL/source_file/merge_final_v2/WTS/timer_control_unit.sv" \
+"../../../../BEST_Stop_watch_project/FINAL/source_file/merge_final_v2/UART/uart_rx.sv" \
+"../../../../BEST_Stop_watch_project/FINAL/source_file/merge_final_v2/WTS/watch_control_unit.sv" \
+"../../../../BEST_Stop_watch_project/FINAL/sim_file/tb_P5_present.sv" \
+
+# compile glbl module
+verilog xil_defaultlib "glbl.v"
+
+# Do not sort compile order
+nosort

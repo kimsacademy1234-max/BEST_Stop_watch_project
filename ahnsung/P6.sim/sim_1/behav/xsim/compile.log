@@ -1,0 +1,103 @@
+INFO: [VRFC 10-2263] Analyzing Verilog file "D:/26_AI_CAMP_2/BEST_Stop_watch_project/FINAL/source_file/merge_final_v2/FND_LED/SW2_ANODE_CHOICE.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module SW2_ANODE_CHOICE
+INFO: [VRFC 10-2263] Analyzing Verilog file "D:/26_AI_CAMP_2/BEST_Stop_watch_project/FINAL/source_file/merge_final_v2/FND_LED/SW2_FND_CONTROLLER.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module SW2_FND_CONTROLLER
+INFO: [VRFC 10-2263] Analyzing Verilog file "D:/26_AI_CAMP_2/BEST_Stop_watch_project/FINAL/source_file/merge_final_v2/IP/baud_tick_gen.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module baud_tick_gen
+INFO: [VRFC 10-2263] Analyzing Verilog file "D:/26_AI_CAMP_2/BEST_Stop_watch_project/FINAL/source_file/merge_final_v2/IP/btn_debounce.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module btn_debounce
+INFO: [VRFC 10-2263] Analyzing Verilog file "D:/26_AI_CAMP_2/BEST_Stop_watch_project/FINAL/source_file/merge_final_v2/IP/clock_tick_generator.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module clock_tick_generator
+INFO: [VRFC 10-2263] Analyzing Verilog file "D:/26_AI_CAMP_2/BEST_Stop_watch_project/FINAL/source_file/merge_final_v2/IP/counter8.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module counter8
+INFO: [VRFC 10-2263] Analyzing Verilog file "D:/26_AI_CAMP_2/BEST_Stop_watch_project/FINAL/source_file/merge_final_v2/IP/decoder_2x4.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module decoder_2x4
+INFO: [VRFC 10-2263] Analyzing Verilog file "D:/26_AI_CAMP_2/BEST_Stop_watch_project/FINAL/source_file/merge_final_v2/DHT11/dht11_controller.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module dht11_controller
+INFO: [VRFC 10-2263] Analyzing Verilog file "D:/26_AI_CAMP_2/BEST_Stop_watch_project/FINAL/source_file/merge_final_v2/DHT11/dht11_core.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module dht11_core
+INFO: [VRFC 10-2263] Analyzing Verilog file "D:/26_AI_CAMP_2/BEST_Stop_watch_project/FINAL/source_file/merge_final_v2/DHT11/dht11_manager.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module dht11_manager
+INFO: [VRFC 10-2263] Analyzing Verilog file "D:/26_AI_CAMP_2/BEST_Stop_watch_project/FINAL/source_file/merge_final_v2/DHT11/dht11_top.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module dht11_top
+INFO: [VRFC 10-2263] Analyzing Verilog file "D:/26_AI_CAMP_2/BEST_Stop_watch_project/FINAL/source_file/merge_final_v2/IP/digit_splitter.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module digit_splitter
+INFO: [VRFC 10-2263] Analyzing Verilog file "D:/26_AI_CAMP_2/BEST_Stop_watch_project/FINAL/source_file/merge_final_v2/FND_LED/dot.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module dot
+INFO: [VRFC 10-2263] Analyzing Verilog file "D:/26_AI_CAMP_2/BEST_Stop_watch_project/FINAL/source_file/merge_final_v2/IP/fifo.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module fifo
+INFO: [VRFC 10-311] analyzing module fifo_control_unit
+INFO: [VRFC 10-311] analyzing module fifo_register_file
+INFO: [VRFC 10-2263] Analyzing Verilog file "D:/26_AI_CAMP_2/BEST_Stop_watch_project/FINAL/source_file/merge_final_v2/IP/fnd_decoder.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module fnd_decoder
+INFO: [VRFC 10-2263] Analyzing Verilog file "D:/26_AI_CAMP_2/BEST_Stop_watch_project/FINAL/source_file/merge_final_v2/FND_LED/fnd_dht.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module fnd_dht
+INFO: [VRFC 10-2263] Analyzing Verilog file "D:/26_AI_CAMP_2/BEST_Stop_watch_project/FINAL/source_file/merge_final_v2/FND_LED/fnd_dist.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module fnd_dist
+INFO: [VRFC 10-2263] Analyzing Verilog file "D:/26_AI_CAMP_2/BEST_Stop_watch_project/FINAL/source_file/merge_final_v2/WTS/hour_12_24.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module hour_12_24
+INFO: [VRFC 10-2263] Analyzing Verilog file "D:/26_AI_CAMP_2/BEST_Stop_watch_project/FINAL/source_file/merge_final_v2/WTS/lap_controller.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module lap_controller
+INFO: [VRFC 10-2263] Analyzing Verilog file "D:/26_AI_CAMP_2/BEST_Stop_watch_project/FINAL/source_file/merge_final_v2/FND_LED/led_output.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module led_output
+INFO: [VRFC 10-2263] Analyzing Verilog file "D:/26_AI_CAMP_2/BEST_Stop_watch_project/FINAL/source_file/merge_final_v2/merge_final_top.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module merge_final_top
+INFO: [VRFC 10-2263] Analyzing Verilog file "D:/26_AI_CAMP_2/BEST_Stop_watch_project/FINAL/source_file/merge_final_v2/IP/mux_8x1.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module mux_8x1
+INFO: [VRFC 10-2263] Analyzing Verilog file "D:/26_AI_CAMP_2/BEST_Stop_watch_project/FINAL/source_file/merge_final_v2/IP/reset_sync.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module reset_sync
+INFO: [VRFC 10-2263] Analyzing Verilog file "D:/26_AI_CAMP_2/BEST_Stop_watch_project/FINAL/source_file/merge_final_v2/UART/sender_char_mux.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module sender_char_mux
+INFO: [VRFC 10-2263] Analyzing Verilog file "D:/26_AI_CAMP_2/BEST_Stop_watch_project/FINAL/source_file/merge_final_v2/SR04/sr04_core.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module sr04_core
+INFO: [VRFC 10-311] analyzing module sr04_controller
+INFO: [VRFC 10-2263] Analyzing Verilog file "D:/26_AI_CAMP_2/BEST_Stop_watch_project/FINAL/source_file/merge_final_v2/SR04/sr04_led_bar.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module sr04_led_bar
+INFO: [VRFC 10-2263] Analyzing Verilog file "D:/26_AI_CAMP_2/BEST_Stop_watch_project/FINAL/source_file/merge_final_v2/SR04/sr04_mode_ctrl.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module sr04_mode_ctrl
+INFO: [VRFC 10-2263] Analyzing Verilog file "D:/26_AI_CAMP_2/BEST_Stop_watch_project/FINAL/source_file/merge_final_v2/SR04/sr04_top.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module sr04_top
+INFO: [VRFC 10-2263] Analyzing Verilog file "D:/26_AI_CAMP_2/BEST_Stop_watch_project/FINAL/source_file/merge_final_v2/WTS/stopwatch_datapath.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module stopwatch_datapath
+INFO: [VRFC 10-311] analyzing module stopwatch_tick_counter
+INFO: [VRFC 10-2263] Analyzing Verilog file "D:/26_AI_CAMP_2/BEST_Stop_watch_project/FINAL/source_file/merge_final_v2/IP/synchronizer.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module synchronizer
+INFO: [VRFC 10-2263] Analyzing Verilog file "D:/26_AI_CAMP_2/BEST_Stop_watch_project/FINAL/source_file/merge_final_v2/IP/tick_gen_100hz.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module tick_gen_100hz
+INFO: [VRFC 10-2263] Analyzing Verilog file "D:/26_AI_CAMP_2/BEST_Stop_watch_project/FINAL/source_file/merge_final_v2/IP/tick_gen_100hz_run.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module tick_gen_100hz_run
+INFO: [VRFC 10-2263] Analyzing Verilog file "D:/26_AI_CAMP_2/BEST_Stop_watch_project/FINAL/source_file/merge_final_v2/IP/tick_gen_us.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module tick_gen_us
+INFO: [VRFC 10-2263] Analyzing Verilog file "D:/26_AI_CAMP_2/BEST_Stop_watch_project/FINAL/source_file/merge_final_v2/WTS/timer_datapath.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module timer_datapath
+INFO: [VRFC 10-2263] Analyzing Verilog file "D:/26_AI_CAMP_2/BEST_Stop_watch_project/FINAL/source_file/merge_final_v2/UART/uart_sender.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module uart_sender
+INFO: [VRFC 10-2263] Analyzing Verilog file "D:/26_AI_CAMP_2/BEST_Stop_watch_project/FINAL/source_file/merge_final_v2/UART/uart_top.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module uart_top
+INFO: [VRFC 10-2263] Analyzing Verilog file "D:/26_AI_CAMP_2/BEST_Stop_watch_project/FINAL/source_file/merge_final_v2/UART/uart_tx.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module uart_tx
+INFO: [VRFC 10-2263] Analyzing Verilog file "D:/26_AI_CAMP_2/BEST_Stop_watch_project/FINAL/source_file/merge_final_v2/WTS/watch_datapath.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module watch_datapath
+INFO: [VRFC 10-311] analyzing module watch_tick_counter
+INFO: [VRFC 10-2263] Analyzing Verilog file "D:/26_AI_CAMP_2/BEST_Stop_watch_project/FINAL/source_file/merge_final_v2/WTS/wts_top.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module wts_top
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "D:/26_AI_CAMP_2/BEST_Stop_watch_project/FINAL/source_file/merge_final_v2/UART/01_UART_CONTROLLER.sv" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module UART_CONTROLLER
+INFO: [VRFC 10-311] analyzing module counter
+INFO: [VRFC 10-311] analyzing module sender_tick_generator
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "D:/26_AI_CAMP_2/BEST_Stop_watch_project/FINAL/source_file/merge_final_v2/UART/02_UART_ASCII_DECODER.sv" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module UART_ASCII_DECODER
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "D:/26_AI_CAMP_2/BEST_Stop_watch_project/FINAL/source_file/merge_final_v2/WTS/stopwatch_control_unit.sv" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module stopwatch_control_unit
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "D:/26_AI_CAMP_2/BEST_Stop_watch_project/FINAL/sim_file/tb_merge_harness.sv" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module tb_merge_harness
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "D:/26_AI_CAMP_2/BEST_Stop_watch_project/FINAL/source_file/merge_final_v2/WTS/timer_control_unit.sv" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module timer_control_unit
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "D:/26_AI_CAMP_2/BEST_Stop_watch_project/FINAL/source_file/merge_final_v2/UART/uart_rx.sv" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module uart_rx
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "D:/26_AI_CAMP_2/BEST_Stop_watch_project/FINAL/source_file/merge_final_v2/WTS/watch_control_unit.sv" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module watch_control_unit
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "D:/26_AI_CAMP_2/BEST_Stop_watch_project/FINAL/sim_file/tb_P6_present.sv" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module tb_P_present
+INFO: [VRFC 10-2263] Analyzing Verilog file "D:/26_AI_CAMP_2/project_15.sim/sim_1/behav/xsim/glbl.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module glbl
