@@ -16,7 +16,7 @@
 // =============================================================================
 module tb_P_present;
 
-    localparam string ONLY = "P2";
+    localparam string ONLY = "P3";
 
     tb_merge_harness #(
         .TICK_F    (1_000_000),

@@ -1,0 +1,25 @@
+#-----------------------------------------------------------
+# Vivado v2020.2 (64-bit)
+# SW Build 3064766 on Wed Nov 18 09:12:45 MST 2020
+# IP Build 3064653 on Wed Nov 18 14:17:31 MST 2020
+# Start of session at: Sun Nov  1 13:14:40 2026
+# Process ID: 31708
+# Current directory: D:/26_AI_CAMP_2/BEST_Stop_watch_project/FINAL/sim_file/wdb
+# Command line: vivado.exe -gui_launcher_event rodinguilauncherevent26632 D:\26_AI_CAMP_2\BEST_Stop_watch_project\FINAL\sim_file\wdb\tb_P_present_behav.wdb
+# Log file: D:/26_AI_CAMP_2/BEST_Stop_watch_project/FINAL/sim_file/wdb/vivado.log
+# Journal file: D:/26_AI_CAMP_2/BEST_Stop_watch_project/FINAL/sim_file/wdb\vivado.jou
+#-----------------------------------------------------------
+start_gui
+open_wave_database {D:\26_AI_CAMP_2\BEST_Stop_watch_project\FINAL\sim_file\wdb\tb_P_present_behav.wdb}
+INFO: [IP_Flow 19-234] Refreshing IP repositories
+INFO: [IP_Flow 19-1704] No user IP repositories specified
+INFO: [IP_Flow 19-2313] Loaded Vivado IP repository 'C:/Xilinx/Vivado/2020.2/data/ip'.
+current_fileset: Time (s): cpu = 00:00:17 ; elapsed = 00:00:09 . Memory (MB): peak = 1106.059 ; gain = 0.000
+open_wave_database: Time (s): cpu = 00:00:23 ; elapsed = 00:00:12 . Memory (MB): peak = 1106.059 ; gain = 0.000
+open_wave_config
+ERROR: [Wavedata 42-556]  No wave configuration filename specified
+open_wave_config D:/26_AI_CAMP_2/BEST_Stop_watch_project/FINAL/sim_file/wcfg/present/P5.wcfg
+close_sim
+INFO: [Simtcl 6-16] Simulation closed
+exit
+INFO: [Common 17-206] Exiting Vivado at Sun Nov  1 13:33:38 2026...
