@@ -1,0 +1,157 @@
+{
+    "ltx_root": {
+        "version": 4,
+        "minor": 0,
+        "ltx_data": [
+            {
+                "name": "EDA_PROBESET",
+                "active": true,
+                "debug_cores": [
+                    {
+                        "type": "XSDB_V3",
+                        "name": "dbg_hub",
+                        "spec": "labtools_xsdbm_v3",
+                        "clk_input_freq_hz": "100000000"
+                    },
+                    {
+                        "type": "ILA_V3",
+                        "name": "U_WTS/U_STOPWATCH_DATAPATH/U_ILA_L6",
+                        "spec": "labtools_ila_v6",
+                        "ipName": "ila",
+                        "core_location": {
+                            "user_chain": 1,
+                            "slave_index": 0,
+                            "bscan_switch_index": 0
+                        },
+                        "uuid": "D9501566900C54F6B263FA3DA061B4AD",
+                        "pins": [
+                            {
+                                "name": "probe0",
+                                "id": 0,
+                                "type": "DATA_TRIGGER",
+                                "direction": "IN",
+                                "isVector": false,
+                                "leftIndex": 0,
+                                "rightIndex": 0,
+                                "portIndex": 0,
+                                "nets": [
+                                    {
+                                        "name": "U_WTS/U_STOPWATCH_DATAPATH/w_tick_10ms",
+                                        "isBus": false
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "probe1",
+                                "id": 1,
+                                "type": "DATA_TRIGGER",
+                                "direction": "IN",
+                                "isVector": false,
+                                "leftIndex": 0,
+                                "rightIndex": 0,
+                                "portIndex": 1,
+                                "nets": [
+                                    {
+                                        "name": "U_WTS/U_STOPWATCH_DATAPATH/w_tick_sec",
+                                        "isBus": false
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "probe2",
+                                "id": 2,
+                                "type": "DATA_TRIGGER",
+                                "direction": "IN",
+                                "isVector": true,
+                                "leftIndex": 0,
+                                "rightIndex": 6,
+                                "portIndex": 2,
+                                "nets": [
+                                    {
+                                        "name": "U_WTS/U_STOPWATCH_DATAPATH/w_cnt_msec",
+                                        "isBus": true,
+                                        "subnets": [
+                                            {
+                                                "name": "U_WTS/U_STOPWATCH_DATAPATH/w_cnt_msec[6]"
+                                            },
+                                            {
+                                                "name": "U_WTS/U_STOPWATCH_DATAPATH/w_cnt_msec[5]"
+                                            },
+                                            {
+                                                "name": "U_WTS/U_STOPWATCH_DATAPATH/w_cnt_msec[4]"
+                                            },
+                                            {
+                                                "name": "U_WTS/U_STOPWATCH_DATAPATH/w_cnt_msec[3]"
+                                            },
+                                            {
+                                                "name": "U_WTS/U_STOPWATCH_DATAPATH/w_cnt_msec[2]"
+                                            },
+                                            {
+                                                "name": "U_WTS/U_STOPWATCH_DATAPATH/w_cnt_msec[1]"
+                                            },
+                                            {
+                                                "name": "U_WTS/U_STOPWATCH_DATAPATH/w_cnt_msec[0]"
+                                            }
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "probe3",
+                                "id": 3,
+                                "type": "DATA_TRIGGER",
+                                "direction": "IN",
+                                "isVector": true,
+                                "leftIndex": 0,
+                                "rightIndex": 5,
+                                "portIndex": 3,
+                                "nets": [
+                                    {
+                                        "name": "U_WTS/U_STOPWATCH_DATAPATH/w_cnt_sec",
+                                        "isBus": true,
+                                        "subnets": [
+                                            {
+                                                "name": "U_WTS/U_STOPWATCH_DATAPATH/w_cnt_sec[5]"
+                                            },
+                                            {
+                                                "name": "U_WTS/U_STOPWATCH_DATAPATH/w_cnt_sec[4]"
+                                            },
+                                            {
+                                                "name": "U_WTS/U_STOPWATCH_DATAPATH/w_cnt_sec[3]"
+                                            },
+                                            {
+                                                "name": "U_WTS/U_STOPWATCH_DATAPATH/w_cnt_sec[2]"
+                                            },
+                                            {
+                                                "name": "U_WTS/U_STOPWATCH_DATAPATH/w_cnt_sec[1]"
+                                            },
+                                            {
+                                                "name": "U_WTS/U_STOPWATCH_DATAPATH/w_cnt_sec[0]"
+                                            }
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "probe4",
+                                "id": 4,
+                                "type": "DATA_TRIGGER",
+                                "direction": "IN",
+                                "isVector": false,
+                                "leftIndex": 0,
+                                "rightIndex": 0,
+                                "portIndex": 4,
+                                "nets": [
+                                    {
+                                        "name": "U_WTS/U_STOPWATCH_DATAPATH/i_sw_down",
+                                        "isBus": false
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+}
