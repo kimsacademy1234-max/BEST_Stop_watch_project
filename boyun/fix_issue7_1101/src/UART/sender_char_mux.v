@@ -16,9 +16,14 @@ module sender_char_mux (
     wire [6:0] w_cs   = i_data[6:0];    // 1/100 초 (0 ~ 99)
     wire [8:0] w_cm   = i_data[8:0];
     wire [1:0] w_dst  = i_data[10:9];   // (fix 10/31) 거리 상태 : 00 정상 · 01 Err1 · 10 Err2 · 11 Err3
-    wire [1:0] w_hst  = i_data[17:16];  // (fix 10/31) 온습도 상태 : 01 Err1 · 10 Err2 · 11 Err3
-    wire       w_hdash = i_data[18];    // (fix 10/31) 온습도 아직 정상값 없음 (FND "----")
-    wire       w_herr  = i_data[19];    // (fix 10/31) 온습도 마지막 측정 실패 (FND "ErrN")
+    // (fix 10/31) 온습도 줄의 상태 비트 3 가지 — merge_final_top 이 {4'd0, err, dashes, status, 습도, 온도} 로 실어 보냄
+    //   우선순위 : w_herr 1 → "Err N"  >  w_hdash 1 → "--%--C"  >  둘 다 0 → "45%25C" 같은 숫자
+    wire [1:0] w_hst  = i_data[17:16];  // 마지막 측정 결과 (dht11_controller o_status) : 00 정상 · 01 응답 없음 · 10 중간에 끊김 · 11 체크섬 틀림
+                                        //   → "Err N" 의 N 으로 씀 (01 → Err 1, 10 → Err 2, 11 → Err 3)
+    wire       w_hdash = i_data[18];    // dht11_manager o_dashes — 1 : 보여 줄 정상값이 없음 (리셋 뒤 아직 측정 전, 또는 마지막 측정 실패) = FND "----"
+                                        //   0 : 정상값 있음 → 숫자. w_herr 0 인데 1 이면 = 첫 측정 전 → PC 로 "--%--C"
+    wire       w_herr  = i_data[19];    // dht11_manager LED[1] — 1 : 마지막 측정이 실패 → PC 로 "Err N" (FND 도 ErrN)
+                                        //   0 : 실패 아님 (정상값이 있거나, 아직 첫 측정 전)
     wire [7:0] w_hum  = (i_data[15:8] > 8'd99) ? 8'd99 : i_data[15:8];   // (fix 11/01) 99 보다 크면 99 (FND 와 같은 규칙, dht11_manager.v 22 줄)
     wire [7:0] w_temp = (i_data[7:0]  > 8'd99) ? 8'd99 : i_data[7:0];    // (fix 11/01) 2 자리 글자라 99 까지
 
