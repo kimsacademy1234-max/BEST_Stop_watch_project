@@ -199,11 +199,6 @@
          <obj_property name="ObjectShortName">w_scan_sel[2:0]</obj_property>
          <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
       </wvobject>
-      <wvobject fp_name="/tb_P_present/h/fnd_com" type="array">
-         <obj_property name="ElementShortName">fnd_com[3:0]</obj_property>
-         <obj_property name="ObjectShortName">fnd_com[3:0]</obj_property>
-         <obj_property name="Radix">BINARYRADIX</obj_property>
-      </wvobject>
       <wvobject fp_name="/tb_P_present/FND_COM" type="array">
          <obj_property name="ElementShortName">FND_COM[23:0]</obj_property>
          <obj_property name="ObjectShortName">FND_COM[23:0]</obj_property>
@@ -211,22 +206,12 @@
          <obj_property name="CustomSignalColor">#FFFF00</obj_property>
          <obj_property name="UseCustomSignalColor">true</obj_property>
       </wvobject>
-      <wvobject fp_name="/tb_P_present/h/fnd_font" type="array">
-         <obj_property name="ElementShortName">fnd_font[7:0]</obj_property>
-         <obj_property name="ObjectShortName">fnd_font[7:0]</obj_property>
-         <obj_property name="Radix">HEXRADIX</obj_property>
-      </wvobject>
       <wvobject fp_name="/tb_P_present/FND_FONT" type="array">
          <obj_property name="ElementShortName">FND_FONT[15:0]</obj_property>
          <obj_property name="ObjectShortName">FND_FONT[15:0]</obj_property>
          <obj_property name="Radix">ASCIIRADIX</obj_property>
          <obj_property name="CustomSignalColor">#FFFF00</obj_property>
          <obj_property name="UseCustomSignalColor">true</obj_property>
-      </wvobject>
-      <wvobject fp_name="/tb_P_present/h/dut/w_fnd_data" type="array">
-         <obj_property name="ElementShortName">w_fnd_data[24:0]</obj_property>
-         <obj_property name="ObjectShortName">w_fnd_data[24:0]</obj_property>
-         <obj_property name="Radix">HEXRADIX</obj_property>
       </wvobject>
       <wvobject fp_name="/tb_P_present/FND_DATA" type="array">
          <obj_property name="ElementShortName">FND_DATA[63:0]</obj_property>

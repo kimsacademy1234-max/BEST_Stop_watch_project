@@ -29,9 +29,9 @@ TX = ('UART TX : send_go / sel / data -> tx -> line', [
     ('h/tx', 0, '', 'C'), ('h/W_LINE', 128, 'A', 'K'),
 ])
 # FND : 4 kHz tick → scan_sel → fnd_com (→ FND_COM AN0~AN3) / fnd_font (→ FND_FONT 글자), w_fnd_data → FND_DATA
+#   (핀 원본 fnd_com · fnd_font · w_fnd_data 는 빼고 읽기 쉬운 값만)
 FND_SIG = [('h/dut/w_clk_4khz', 0, '', ''), ('h/dut/U_FND_CONTROLLER/w_scan_sel', 3, 'D', ''),
-           ('h/fnd_com', 4, 'B', ''), ('FND_COM', 24, 'A', 'K'), ('h/fnd_font', 8, 'H', ''), ('FND_FONT', 16, 'A', 'K'),
-           ('h/dut/w_fnd_data', 25, 'H', ''), ('FND_DATA', 64, 'A', 'K')]
+           ('FND_COM', 24, 'A', 'K'), ('FND_FONT', 16, 'A', 'K'), ('FND_DATA', 64, 'A', 'K')]
 
 
 def fnd(extra):
@@ -40,9 +40,13 @@ def fnd(extra):
 
 SCENES = {
     # 장면 : (overview 시작 ms, 끝 ms, 묶음)
-    'P1': (0, 26, [
+    'P1': (0, 30, [
         STEP,
-        ('UART RX / decoder', RX + [('h/dut/U_UART/w_mode', 0, '', '')]),
+        # (사용자 수정 11/01) W_RX · DEC_STATE 빼고 c_state (Vivado 가 enum 이름으로 보여 줌) · w_ascii
+        ('UART RX / decoder', [('h/dut/U_UART/w_rx_done', 0, '', ''),
+                               ('h/dut/U_UART/U_ASCII_DECODER/c_state', 4, 'D', ''),
+                               ('h/dut/U_UART/w_ascii', 40, 'A', ''),
+                               ('h/dut/U_UART/w_handshake', 0, '', 'K'), ('h/dut/U_UART/w_mode', 0, '', '')]),
         ('MODE : switch vs UART -> ctrl_bit -> screen', [
             ('h/sw', 7, 'B', 'C'), ('h/dut/w_sw_ctrl_bit', 7, 'B', ''), ('h/dut/w_uart_ctrl_bit', 7, 'B', ''),
             ('h/dut/w_uart_mode', 0, '', 'K'), ('h/dut/w_ctrl_bit', 7, 'B', 'K'), ('h/dut/w_disp_sel', 2, 'D', 'K'),
