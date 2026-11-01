@@ -1,0 +1,7 @@
+diff -r /c/work/merge_fix2/src/UART/sender_char_mux.v src/UART/sender_char_mux.v
+22,23c22,23
+<     wire [7:0] w_hum  = i_data[15:8];
+<     wire [7:0] w_temp = i_data[7:0];
+---
+>     wire [7:0] w_hum  = (i_data[15:8] > 8'd99) ? 8'd99 : i_data[15:8];   // (fix 11/01) 99 보다 크면 99 (FND 와 같은 규칙, dht11_manager.v 22 줄)
+>     wire [7:0] w_temp = (i_data[7:0]  > 8'd99) ? 8'd99 : i_data[7:0];    // (fix 11/01) 2 자리 글자라 99 까지
