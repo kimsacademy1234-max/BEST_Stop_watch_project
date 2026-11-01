@@ -1,0 +1,29 @@
+#-----------------------------------------------------------
+# xsim v2022.2 (64-bit)
+# SW Build 3671981 on Fri Oct 14 05:00:03 MDT 2022
+# IP Build 3669848 on Fri Oct 14 08:30:02 MDT 2022
+# Start of session at: Sun Nov  1 20:47:17 2026
+# Process ID: 23616
+# Current directory: C:/work/merge_fix4/toptb/w_tb_F6
+# Command line: xsim.exe -log C:/work/merge_fix4/toptb/log/tb_F6.log -mode tcl -source {xsim.dir/snap/xsim_script.tcl}
+# Log file: C:/work/merge_fix4/toptb/log/tb_F6.log
+# Journal file: C:/work/merge_fix4/toptb/w_tb_F6\xsim.jou
+# Running On: DESKTOP-5C3QTIF, OS: Windows, CPU Frequency: 2995 MHz, CPU Physical cores: 14, Host memory: 33885 MB
+#-----------------------------------------------------------
+source xsim.dir/snap/xsim_script.tcl
+# xsim {snap} -autoloadwcfg -runall
+Time resolution is 1 ps
+run -all
+[START] tb_F6 timeout=14000 ms
+[INFO] F6-run @ 10.375485 ms : 타이머 시작 run=1 (t_btn_L=10375465 ns)
+[INFO] F6-dist @ 20.749885 ms : 거리 화면 disp_sel=1
+[INFO] F6-alarm @ 10010.375485 ms : 알람 진입 (t_btn_L 뒤 10000000020 ns), disp_sel=1
+[PASS] F6-01 @ 11210.375485 ms : 거리 화면 알람 LED 기대 16 개 = {시계 1/100 >= 50} (켜짐 · 꺼짐 둘 다) / 실제 1200 샘플 중 불일치 0, 켜짐 500, 꺼짐 700
+[PASS] F6-02 @ 11256.625085 ms : 거리 화면 /btn R 기대 알람 1 유지 · trig +1 / 실제 alarm=1, trig 0 → 1, cnt_btn_R=1
+[PASS] F6-03 @ 11276.376015 ms : 타이머 화면 /btn U 기대 alarm 0 · run 0 · FND "00.00" · LED5 1 / 실제 alarm=0 run=0 FND "00.00" led=0020
+[SUMMARY] tb_F6 pass=3 fail=0 known=0 xpass=0 @ 11276.376015 ms
+$finish called at time : 11276376015 ns : File "C:/work/BEST_Stop_watch_project/FINAL/sim_file/top_tb/common/tb_env.svh" Line 159
+run: Time (s): cpu = 00:00:01 ; elapsed = 01:03:19 . Memory (MB): peak = 239.195 ; gain = 0.000
+exit
+INFO: xsimkernel Simulation Memory Usage: 13812 KB (Peak: 13812 KB), Simulation CPU Usage: 3708953 ms
+INFO: [Common 17-206] Exiting xsim at Sun Nov  1 21:50:39 2026...

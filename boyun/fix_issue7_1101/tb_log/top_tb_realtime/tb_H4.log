@@ -1,0 +1,43 @@
+#-----------------------------------------------------------
+# xsim v2022.2 (64-bit)
+# SW Build 3671981 on Fri Oct 14 05:00:03 MDT 2022
+# IP Build 3669848 on Fri Oct 14 08:30:02 MDT 2022
+# Start of session at: Sun Nov  1 20:47:17 2026
+# Process ID: 13776
+# Current directory: C:/work/merge_fix4/toptb/w_tb_H4
+# Command line: xsim.exe -log C:/work/merge_fix4/toptb/log/tb_H4.log -mode tcl -source {xsim.dir/snap/xsim_script.tcl}
+# Log file: C:/work/merge_fix4/toptb/log/tb_H4.log
+# Journal file: C:/work/merge_fix4/toptb/w_tb_H4\xsim.jou
+# Running On: DESKTOP-5C3QTIF, OS: Windows, CPU Frequency: 2995 MHz, CPU Physical cores: 14, Host memory: 33885 MB
+#-----------------------------------------------------------
+source xsim.dir/snap/xsim_script.tcl
+# xsim {snap} -autoloadwcfg -runall
+Time resolution is 1 ps
+run -all
+[START] tb_H4 timeout=20000 ms
+[UART] @ 1022.806675 ms : "00:00:00.00"
+[UART] @ 2022.807775 ms : "00:00:00.00"
+[UART] @ 3022.808875 ms : "00:00:00.00"
+[UART] @ 4022.809975 ms : "00:00:00.00"
+[UART] @ 5022.811075 ms : "00:00:00.00"
+[UART] @ 6022.805665 ms : "00:00:00.00"
+[UART] @ 7022.806765 ms : "00:00:00.00"
+[UART] @ 8022.807865 ms : "00:00:00.00"
+[UART] @ 9022.808965 ms : "00:00:00.00"
+[UART] @ 10022.810065 ms : "00:00:00.00"
+[UART] @ 11022.811165 ms : "00:00:00.00"
+[UART] @ 12022.805755 ms : "00:00:00.00"
+[UART] @ 13022.806855 ms : "00:00:00.00"
+[UART] @ 14022.807955 ms : "00:00:00.00"
+[UART] @ 15022.809055 ms : "00:00:00.00"
+[UART] @ 16022.810155 ms : "00:00:00.00"
+[UART] @ 17022.811255 ms : "00:00:00.00"
+[UART] @ 18022.805845 ms : "00:00:00.00"
+[UART] @ 19022.806945 ms : "00:00:00.00"
+[FAIL] tb_H4-WATCHDOG @ 20000.000000 ms : 시뮬 시간 초과
+[SUMMARY] tb_H4 pass=0 fail=1 known=0 xpass=0 @ 20000.000000 ms
+$finish called at time : 20 s : File "C:/work/BEST_Stop_watch_project/FINAL/sim_file/top_tb/common/tb_env.svh" Line 159
+run: Time (s): cpu = 00:00:02 ; elapsed = 02:15:56 . Memory (MB): peak = 239.121 ; gain = 0.000
+exit
+INFO: xsimkernel Simulation Memory Usage: 13732 KB (Peak: 13732 KB), Simulation CPU Usage: 7468374 ms
+INFO: [Common 17-206] Exiting xsim at Sun Nov  1 23:03:11 2026...

@@ -1,0 +1,24 @@
+#-----------------------------------------------------------
+# xsim v2022.2 (64-bit)
+# SW Build 3671981 on Fri Oct 14 05:00:03 MDT 2022
+# IP Build 3669848 on Fri Oct 14 08:30:02 MDT 2022
+# Start of session at: Sun Nov  1 20:47:17 2026
+# Process ID: 32848
+# Current directory: C:/work/merge_fix4/toptb/w_tb_B4
+# Command line: xsim.exe -log C:/work/merge_fix4/toptb/log/tb_B4.log -mode tcl -source {xsim.dir/snap/xsim_script.tcl}
+# Log file: C:/work/merge_fix4/toptb/log/tb_B4.log
+# Journal file: C:/work/merge_fix4/toptb/w_tb_B4\xsim.jou
+# Running On: DESKTOP-5C3QTIF, OS: Windows, CPU Frequency: 2995 MHz, CPU Physical cores: 14, Host memory: 33885 MB
+#-----------------------------------------------------------
+source xsim.dir/snap/xsim_script.tcl
+# xsim {snap} -autoloadwcfg -runall
+Time resolution is 1 ps
+run -all
+[START] tb_B4 timeout=5000 ms
+[PASS] B4-01 @ 3020.001045 ms : 3 s 누름 기대 펄스 1 개 · 스톱워치 RUN / 실제 펄스 1 개 (마지막 2001025 ns), run_stop=1, sw_time=000181
+[SUMMARY] tb_B4 pass=1 fail=0 known=0 xpass=0 @ 3020.001045 ms
+$finish called at time : 3020001045 ns : File "C:/work/BEST_Stop_watch_project/FINAL/sim_file/top_tb/common/tb_env.svh" Line 159
+run: Time (s): cpu = 00:00:00 ; elapsed = 00:17:30 . Memory (MB): peak = 239.289 ; gain = 0.000
+exit
+INFO: xsimkernel Simulation Memory Usage: 13348 KB (Peak: 13348 KB), Simulation CPU Usage: 1026343 ms
+INFO: [Common 17-206] Exiting xsim at Sun Nov  1 21:04:50 2026...

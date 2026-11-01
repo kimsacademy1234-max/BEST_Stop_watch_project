@@ -1,0 +1,25 @@
+#-----------------------------------------------------------
+# xsim v2022.2 (64-bit)
+# SW Build 3671981 on Fri Oct 14 05:00:03 MDT 2022
+# IP Build 3669848 on Fri Oct 14 08:30:02 MDT 2022
+# Start of session at: Sun Nov  1 23:03:28 2026
+# Process ID: 25800
+# Current directory: C:/work/merge_fix4/toptb/w_tb_E1
+# Command line: xsim.exe -log C:/work/merge_fix4/toptb/log/tb_E1.log -mode tcl -source {xsim.dir/snap/xsim_script.tcl}
+# Log file: C:/work/merge_fix4/toptb/log/tb_E1.log
+# Journal file: C:/work/merge_fix4/toptb/w_tb_E1\xsim.jou
+# Running On: DESKTOP-5C3QTIF, OS: Windows, CPU Frequency: 2995 MHz, CPU Physical cores: 14, Host memory: 33885 MB
+#-----------------------------------------------------------
+source xsim.dir/snap/xsim_script.tcl
+# xsim {snap} -autoloadwcfg -runall
+Time resolution is 1 ps
+run -all
+[START] tb_E1 timeout=2000 ms
+[PASS] E1-01 @ 0.001025 ms : 리셋 직후 기대 12:00:00.00 · LD15 1 / 실제 12:00:00.00, LD15 1 (led=8009)
+[PASS] E1-02 @ 1000.001035 ms : 1 초 기대 12:00:01.00 @ 해제 + 1.000 s ± 50 ns / 실제 12:00:01.00 @ 해제 + 1000000020 ns (오차 20 ns, 해제 1015 ns)
+[SUMMARY] tb_E1 pass=2 fail=0 known=0 xpass=0 @ 1000.001035 ms
+$finish called at time : 1000001035 ns : File "C:/work/BEST_Stop_watch_project/FINAL/sim_file/top_tb/common/tb_env.svh" Line 159
+run: Time (s): cpu = 00:00:00 ; elapsed = 00:07:45 . Memory (MB): peak = 239.523 ; gain = 0.000
+exit
+INFO: xsimkernel Simulation Memory Usage: 12992 KB (Peak: 12992 KB), Simulation CPU Usage: 452186 ms
+INFO: [Common 17-206] Exiting xsim at Sun Nov  1 23:11:15 2026...
