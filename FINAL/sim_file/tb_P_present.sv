@@ -43,6 +43,79 @@ module tb_P_present;
     integer        GO_GAP_US  = 0;      // 같은 값 (us) — 1 Hz 면 1,000,000
     integer        N_GO = 0;            // send_go 개수 (= 보낸 줄 수)
 
+    // ---------------------------------------------------------------- 받은 글자
+    // uart_rx 의 o_rx_data (= 시프트 레지스터) 는 비트마다 밀려서 중간값이 보이므로 rx_done 순간 값만 잡아 둠
+    reg [7:0]      W_RX = 8'h20;
+    always @(posedge h.clk) if (h.dut.U_UART.w_rx_done) W_RX <= h.dut.U_UART.w_rx_data;
+
+    // ---------------------------------------------------------------- 디코더 상태 (ASCII)
+    // UART_ASCII_DECODER c_state : IDLE 0, SLASH 1, SPACE 2, g 3, e 4, t 5, m 6, o 7, d 8, b 9, n 10, a 11, u 12, s 13, f 14
+    reg [8*8-1:0]  DEC_STATE = 0;
+    function automatic string dec_name(input [3:0] v);
+        case (v)
+            4'd0:  return "IDLE";
+            4'd1:  return "SLASH";
+            4'd2:  return "SPACE";
+            4'd3:  return "g";
+            4'd4:  return "e";
+            4'd5:  return "t";
+            4'd6:  return "m";
+            4'd7:  return "o";
+            4'd8:  return "d";
+            4'd9:  return "b";
+            4'd10: return "n";
+            4'd11: return "a";
+            4'd12: return "u";
+            4'd13: return "s";
+            4'd14: return "f";
+            default: return "?";
+        endcase
+    endfunction
+    always @(h.dut.U_UART.U_ASCII_DECODER.c_state) DEC_STATE = h.s2v(dec_name(h.dut.U_UART.U_ASCII_DECODER.c_state));
+
+    // ---------------------------------------------------------------- FND 핀 값을 읽기 쉽게 (핀과 같은 시각에 바뀜)
+    // FND_COM  : fnd_com (active-low) → "AN0" ~ "AN3" (1110 = AN0, 1101 = AN1, 1011 = AN2, 0111 = AN3)
+    // FND_FONT : fnd_font → 실제로 켜지는 글자 {숫자, 점}  (c0 → "0", 7f → " .", ff → "  ")
+    reg [8*3-1:0] FND_COM  = "---";
+    reg [8*2-1:0] FND_FONT = "  ";
+    always @(h.fnd_com)
+        case (h.fnd_com)
+            4'b1110: FND_COM = "AN0";
+            4'b1101: FND_COM = "AN1";
+            4'b1011: FND_COM = "AN2";
+            4'b0111: FND_COM = "AN3";
+            default: FND_COM = "---";
+        endcase
+    always @(h.fnd_font) FND_FONT = {h.seg2ch(h.fnd_font[6:0]), (h.fnd_font[7] ? 8'h20 : 8'h2E)};
+
+    // ---------------------------------------------------------------- FND 데이터 (Top 의 w_fnd_data 를 보이는 값으로)
+    // w_disp_sel 0 WTS    : {hour 6, min 6, sec 6, msec 7} → w_disp_mode 0 "SS.CC", 1 "HH.MM"
+    //            1 거리   : {10'd0, status 2, err 1, x10 12} → "123.0" / "Err1~3"
+    //            2 온습도 : {7'd0, status 2, err 1, dashes 1, 습도x100+온도 14} → "55.24" / "----" / "Err1~3"
+    reg [8*8-1:0] FND_DATA = 0;
+    function automatic string fnd_data_str(input [1:0] dsel, input bit dmode, input [24:0] d);
+        integer v;
+        case (dsel)
+            2'd1: begin
+                if (d[12]) return $sformatf("Err%0d", d[14:13]);
+                v = d[11:0];
+                return $sformatf("%02d%01d.%01d", v / 100, (v % 100) / 10, v % 10);
+            end
+            2'd2: begin
+                if (d[15]) return $sformatf("Err%0d", d[17:16]);
+                if (d[14]) return "----";
+                v = d[13:0];
+                return $sformatf("%02d.%02d", v / 100, v % 100);
+            end
+            default: begin
+                if (dmode) return $sformatf("%02d.%02d", d[24:19], d[18:13]);
+                return $sformatf("%02d.%02d", d[12:7], d[6:0]);
+            end
+        endcase
+    endfunction
+    always @(h.dut.w_fnd_data or h.dut.w_disp_sel or h.dut.w_disp_mode)
+        FND_DATA = h.s2v(fnd_data_str(h.dut.w_disp_sel, h.dut.w_disp_mode, h.dut.w_fnd_data));
+
     // ---------------------------------------------------------------- 모니터
     integer  clk_cnt = 0, clk_go_last = 0;
     realtime t0 = 0;                    // 장면 시작 (혼자 돌리면 0)
