@@ -1,0 +1,92 @@
+#-----------------------------------------------------------
+# xsim v2022.2 (64-bit)
+# SW Build 3671981 on Fri Oct 14 05:00:03 MDT 2022
+# IP Build 3669848 on Fri Oct 14 08:30:02 MDT 2022
+# Start of session at: Sun Nov  1 16:39:27 2026
+# Process ID: 26448
+# Current directory: C:/work/merge_fix4/tb/w_tb_D_stopwatch
+# Command line: xsim.exe -log C:/work/merge_fix4/tb/log/tb_D_stopwatch.log -mode tcl -source {xsim.dir/snap/xsim_script.tcl}
+# Log file: C:/work/merge_fix4/tb/log/tb_D_stopwatch.log
+# Journal file: C:/work/merge_fix4/tb/w_tb_D_stopwatch\xsim.jou
+# Running On: DESKTOP-5C3QTIF, OS: Windows, CPU Frequency: 2995 MHz, CPU Physical cores: 14, Host memory: 33885 MB
+#-----------------------------------------------------------
+source xsim.dir/snap/xsim_script.tcl
+# xsim {snap} -autoloadwcfg -runall
+Time resolution is 1 ps
+run -all
+
+==========================================================================================
+[    0.000000 ms] [BEGIN  ] D1  start accuracy
+              plan   : R (t0) -> R at t0 + 100.5 x T_CS
+              expect : first 1/100 change exactly T_CS after R (+-5 clk), stop value 00:00:01.00
+------------------------------------------------------------------------------------------
+[    0.018035 ms] [OK     ] D1-1   first 1/100 tick after R | exp 10000 ns | got 10010 ns
+[    1.028035 ms] [OK     ] D1-2   value after stop at 1.005 s | exp 00:00:01.00 STOP | got 00:00:01.00 run 0
+
+==========================================================================================
+[    1.028035 ms] [BEGIN  ] D2  short runs accumulate
+              plan   : 10 x (run 0.37 T_CS, stop) -> run again
+              expect : 0.03 after 3.7 T_CS, 0.04 exactly at 4.00 T_CS of total run
+------------------------------------------------------------------------------------------
+[    1.113205 ms] [OK     ] D2-1   after 10 short runs | exp 00:00:00.03 | got 00:00:00.03
+[    1.123155 ms] [OK     ] D2-2   0.03 -> 0.04 moment | exp 300 clk after restart | got 00:00:00.04 at 301 clk
+
+==========================================================================================
+[    1.123155 ms] [BEGIN  ] D3  max value wrap (up)
+              plan   : preload 23:59:59.98 -> RUN -> 2 ticks
+              expect : 00:00:00.00, all digits settle <= 3 clk after the tick
+------------------------------------------------------------------------------------------
+[    1.126180 ms] [PRELOAD] stopwatch <- 23:59:59.98
+[    1.146236 ms] [OK     ] D3-1   2 ticks after 23:59:59.98 | exp 00:00:00.00 | got 00:00:00.00
+
+==========================================================================================
+[    1.146236 ms] [BEGIN  ] D4  down count wrap
+              plan   : STOP: U (down) -> R
+              expect : 00:00:00.00 -> 23:59:59.99 -> 23:59:59.98
+------------------------------------------------------------------------------------------
+[    1.159385 ms] [OK     ] D4-1   first tick (down) | exp 23:59:59.99 | got 23:59:59.99
+[    1.169385 ms] [OK     ] D4-2   second tick (down) | exp 23:59:59.98 | got 23:59:59.98
+
+==========================================================================================
+[    1.169385 ms] [BEGIN  ] D5  U / L ignored while running
+              plan   : RUN 50 T_CS -> U -> L -> R (stop) -> L
+              expect : direction kept, not cleared; L in STOP clears
+------------------------------------------------------------------------------------------
+[    1.672455 ms] [OK     ] D5-1   U during RUN | exp down 0 | got down 0
+[    1.692505 ms] [OK     ] D5-2   L during RUN | exp not cleared, still counting | got 00:00:00.50 -> 00:00:00.52 run 1
+[    1.692595 ms] [OK     ] D5-3   L in STOP | exp 00:00:00.00 | got 00:00:00.00
+
+==========================================================================================
+[    1.692595 ms] [BEGIN  ] D6  lap
+              plan   : RUN -> 30 T_CS: D -> 100 T_CS -> D
+              expect : display frozen + LED7, counter keeps going, second D shows current
+------------------------------------------------------------------------------------------
+[    2.995665 ms] [OK     ] D6-1   display during lap | exp 00:00:00.29, LED7 1 | got 00:00:00.29, LED7 1
+[    2.995665 ms] [OK     ] D6-2   counter during lap | exp >= 00:00:01.29 | got 00:00:01.30
+[    2.995705 ms] [OK     ] D6-3   second D | exp display = counter, LED7 0 | got 00:00:01.30 / 00:00:01.30, LED7 0
+
+==========================================================================================
+[    2.995705 ms] [BEGIN  ] D7  lap + clear / lap + UART
+              plan   : lap -> stop -> L ; /mod s_ms -> lap -> /get
+              expect : lap off and 0 ; /get sends running value (spec) - code sends lap value (issue 6)
+------------------------------------------------------------------------------------------
+[    3.298875 ms] [OK     ] D7-1   lap -> STOP -> L | exp lap 0, 00:00:00.00 | got lap 0, 00:00:00.00
+[    5.821028 ms] [OK     ] D7-2   /get while lap is shown | exp running value (not lap) | got "00:00:00.61" (lap 00:00:00.09, counter 00:00:01.73)
+
+==========================================================================================
+  D1   checks 2  PASS
+  D2   checks 2  PASS
+  D3   checks 1  PASS
+  D4   checks 2  PASS
+  D5   checks 3  PASS
+  D6   checks 3  PASS
+  D7   checks 2  PASS
+------------------------------------------------------------------------------------------
+  UART lines : 1 received, snapshot mismatch 0, unexpected 0, no CR 0, frame err 0
+  x/z on outputs : none
+[    5.821028 ms] [SUMMARY] D_stopwatch checks=15 fail=0 issue=0 => PASS
+==========================================================================================
+$finish called at time : 5821028360 ps : File "C:/work/BEST_Stop_watch_project/FINAL/sim_file/tb_merge_harness.sv" Line 271
+run: Time (s): cpu = 00:00:01 ; elapsed = 00:00:06 . Memory (MB): peak = 253.641 ; gain = 0.000
+exit
+INFO: [Common 17-206] Exiting xsim at Sun Nov  1 16:39:37 2026...

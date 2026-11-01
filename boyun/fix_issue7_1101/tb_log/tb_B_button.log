@@ -1,0 +1,77 @@
+#-----------------------------------------------------------
+# xsim v2022.2 (64-bit)
+# SW Build 3671981 on Fri Oct 14 05:00:03 MDT 2022
+# IP Build 3669848 on Fri Oct 14 08:30:02 MDT 2022
+# Start of session at: Sun Nov  1 16:40:43 2026
+# Process ID: 12680
+# Current directory: C:/work/merge_fix4/tb/w_tb_B_button
+# Command line: xsim.exe -log C:/work/merge_fix4/tb/log/tb_B_button.log -mode tcl -source {xsim.dir/snap/xsim_script.tcl}
+# Log file: C:/work/merge_fix4/tb/log/tb_B_button.log
+# Journal file: C:/work/merge_fix4/tb/w_tb_B_button\xsim.jou
+# Running On: DESKTOP-5C3QTIF, OS: Windows, CPU Frequency: 2995 MHz, CPU Physical cores: 14, Host memory: 33885 MB
+#-----------------------------------------------------------
+source xsim.dir/snap/xsim_script.tcl
+# xsim {snap} -autoloadwcfg -runall
+Time resolution is 1 ps
+run -all
+
+==========================================================================================
+[    0.000000 ms] [BEGIN  ] B1  normal press (R/L/U/D)
+              plan   : each button 50 ms press, 4 kHz phase varied
+              expect : 1 pulse of 1 clk, 1.75 ~ 2.00 ms after press
+------------------------------------------------------------------------------------------
+[   60.040016 ms] [OK     ] B1-1   btn_R -> w_phy_btn pulse | exp 1 pulse, 1.750 ~ 2.000 ms, 1 clk | got 1 pulse, 1.9620 ms, long 0
+[  120.114016 ms] [OK     ] B1-2   btn_L -> w_phy_btn pulse | exp 1 pulse, 1.750 ~ 2.000 ms, 1 clk | got 1 pulse, 1.8880 ms, long 0
+[  180.225016 ms] [OK     ] B1-3   btn_U -> w_phy_btn pulse | exp 1 pulse, 1.750 ~ 2.000 ms, 1 clk | got 1 pulse, 1.7770 ms, long 0
+[  240.373016 ms] [OK     ] B1-4   btn_D -> w_phy_btn pulse | exp 1 pulse, 1.750 ~ 2.000 ms, 1 clk | got 1 pulse, 1.8790 ms, long 0
+
+==========================================================================================
+[  240.373016 ms] [BEGIN  ] B2  chattering on press and release
+              plan   : 10 toggles @100 us -> hold 50 ms -> 10 toggles -> 0
+              expect : exactly 1 pulse per press, 0 on release
+------------------------------------------------------------------------------------------
+[  291.376036 ms] [OK     ] B2-1   press with bounce | exp 1 pulse, 1.75 ~ 2.00 ms after last bounce | got 1 pulse, 1.9990 ms
+[  302.376036 ms] [OK     ] B2-2   release with bounce | exp 0 pulse | got 0 pulse
+
+==========================================================================================
+[  302.376036 ms] [BEGIN  ] B3  short press boundary
+              plan   : 1.5 ms press, 10 ms gap, 2.25 ms press
+              expect : 0 pulse / 1 pulse (8 samples @ 250 us)
+------------------------------------------------------------------------------------------
+[  313.879056 ms] [OK     ] B3-1   1.5 ms press | exp 0 pulse | got 0 pulse
+[  326.129056 ms] [OK     ] B3-2   2.25 ms press | exp 1 pulse | got 1 pulse
+
+==========================================================================================
+[  326.129056 ms] [BEGIN  ] B4  long press (no auto repeat)
+              plan   : stopwatch screen, R held 500 ms
+              expect : 1 pulse, stopwatch RUN once
+------------------------------------------------------------------------------------------
+[  831.132076 ms] [OK     ] B4-1   long press | exp 1 pulse, RUN | got 1 pulse, run 1
+
+==========================================================================================
+[  831.132076 ms] [BEGIN  ] B5  button goes only to the module on screen
+              plan   : R on each of 5 screens, compare 5 module states
+              expect : only that module reacts
+------------------------------------------------------------------------------------------
+[  834.834135 ms] [OK     ] B5-1   stopwatch screen R | exp sw RUN, others same | got sw_run 1 cursor 3 timer 00:00:00.00 trig 0 dht_start 0
+[  834.935225 ms] [OK     ] B5-2   watch set screen R | exp cursor 0 -> 2, others same | got sw_run 1 cursor 2 timer 00:00:00.00 trig 0 dht_start 0
+[  835.036265 ms] [OK     ] B5-3   timer screen R | exp timer +1 min, others same | got sw_run 1 cursor 3 timer 00:01:00.00 trig 0 dht_start 0
+[  835.137305 ms] [OK     ] B5-4   distance screen R | exp 1 trig, others same | got sw_run 1 cursor 3 timer 00:01:00.00 trig 1 dht_start 0
+[  841.138345 ms] [OK     ] B5-5   temp/humi screen R | exp 1 DHT START, others same | got sw_run 1 cursor 3 timer 00:01:00.00 trig 1 dht_start 1
+
+==========================================================================================
+  B1   checks 4  PASS
+  B2   checks 2  PASS
+  B3   checks 2  PASS
+  B4   checks 1  PASS
+  B5   checks 5  PASS
+------------------------------------------------------------------------------------------
+  UART lines : 0 received, snapshot mismatch 0, unexpected 0, no CR 0, frame err 0
+  x/z on outputs : none
+[  841.138345 ms] [SUMMARY] B_button checks=14 fail=0 issue=0 => PASS
+==========================================================================================
+$finish called at time : 841138345 ns : File "C:/work/BEST_Stop_watch_project/FINAL/sim_file/tb_merge_harness.sv" Line 271
+run: Time (s): cpu = 00:00:01 ; elapsed = 00:12:10 . Memory (MB): peak = 264.918 ; gain = 0.000
+exit
+INFO: xsimkernel Simulation Memory Usage: 13248 KB (Peak: 13248 KB), Simulation CPU Usage: 710671 ms
+INFO: [Common 17-206] Exiting xsim at Sun Nov  1 16:52:56 2026...

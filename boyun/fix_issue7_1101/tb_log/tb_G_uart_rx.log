@@ -1,0 +1,145 @@
+#-----------------------------------------------------------
+# xsim v2022.2 (64-bit)
+# SW Build 3671981 on Fri Oct 14 05:00:03 MDT 2022
+# IP Build 3669848 on Fri Oct 14 08:30:02 MDT 2022
+# Start of session at: Sun Nov  1 16:39:26 2026
+# Process ID: 27372
+# Current directory: C:/work/merge_fix4/tb/w_tb_G_uart_rx
+# Command line: xsim.exe -log C:/work/merge_fix4/tb/log/tb_G_uart_rx.log -mode tcl -source {xsim.dir/snap/xsim_script.tcl}
+# Log file: C:/work/merge_fix4/tb/log/tb_G_uart_rx.log
+# Journal file: C:/work/merge_fix4/tb/w_tb_G_uart_rx\xsim.jou
+# Running On: DESKTOP-5C3QTIF, OS: Windows, CPU Frequency: 2995 MHz, CPU Physical cores: 14, Host memory: 33885 MB
+#-----------------------------------------------------------
+source xsim.dir/snap/xsim_script.tcl
+# xsim {snap} -autoloadwcfg -runall
+Time resolution is 1 ps
+run -all
+
+==========================================================================================
+[    0.000000 ms] [BEGIN  ] G1  every valid command
+              plan   : 24 commands (mod 8, set 3, off 1, btn 4, auto 7, get 1)
+              expect : 1 handshake each, no ERROR
+------------------------------------------------------------------------------------------
+[    0.785266 ms] [OK     ] G1-1   "/mod w_hm" | exp 1 handshake, 0 error | got 1 handshake, 0 error
+[    1.568516 ms] [OK     ] G1-2   "/mod w_ms" | exp 1 handshake, 0 error | got 1 handshake, 0 error
+[    2.351766 ms] [OK     ] G1-3   "/mod s_hm" | exp 1 handshake, 0 error | got 1 handshake, 0 error
+[    3.135016 ms] [OK     ] G1-4   "/mod s_ms" | exp 1 handshake, 0 error | got 1 handshake, 0 error
+[    3.918266 ms] [OK     ] G1-5   "/mod t_hm" | exp 1 handshake, 0 error | got 1 handshake, 0 error
+[    4.701516 ms] [OK     ] G1-6   "/mod t_ms" | exp 1 handshake, 0 error | got 1 handshake, 0 error
+[    5.484766 ms] [OK     ] G1-7   "/mod dist" | exp 1 handshake, 0 error | got 1 handshake, 0 error
+[    6.268016 ms] [OK     ] G1-8   "/mod w_hm" | exp 1 handshake, 0 error | got 1 handshake, 0 error
+[    7.051266 ms] [OK     ] G1-9   "/set w_hm" | exp 1 handshake, 0 error | got 1 handshake, 0 error
+[    7.834516 ms] [OK     ] G1-10  "/set 24h<CR>" | exp 1 handshake, 0 error | got 1 handshake, 0 error
+[    8.617766 ms] [OK     ] G1-11  "/set 12h<CR>" | exp 1 handshake, 0 error | got 1 handshake, 0 error
+[    9.314211 ms] [OK     ] G1-12  "/off w_h" | exp 1 handshake, 0 error | got 1 handshake, 0 error
+[    9.837044 ms] [OK     ] G1-13  "/btn R" | exp 1 handshake, 0 error | got 1 handshake, 0 error
+[   10.359878 ms] [OK     ] G1-14  "/btn L" | exp 1 handshake, 0 error | got 1 handshake, 0 error
+[   10.882711 ms] [OK     ] G1-15  "/btn U" | exp 1 handshake, 0 error | got 1 handshake, 0 error
+[   11.405544 ms] [OK     ] G1-16  "/btn D" | exp 1 handshake, 0 error | got 1 handshake, 0 error
+[   12.188794 ms] [OK     ] G1-17  "/auto all" | exp 1 handshake, 0 error | got 1 handshake, 0 error
+[   12.972044 ms] [OK     ] G1-18  "/auto _sw" | exp 1 handshake, 0 error | got 1 handshake, 0 error
+[   13.755294 ms] [OK     ] G1-19  "/auto _tm" | exp 1 handshake, 0 error | got 1 handshake, 0 error
+[   14.538545 ms] [OK     ] G1-20  "/auto _wh" | exp 1 handshake, 0 error | got 1 handshake, 0 error
+[   15.321795 ms] [OK     ] G1-21  "/auto dis" | exp 1 handshake, 0 error | got 1 handshake, 0 error
+[   16.105045 ms] [OK     ] G1-22  "/auto tem" | exp 1 handshake, 0 error | got 1 handshake, 0 error
+[   16.888295 ms] [OK     ] G1-23  "/auto off" | exp 1 handshake, 0 error | got 1 handshake, 0 error
+[   17.411128 ms] [OK     ] G1-24  "/get <CR>" | exp 1 handshake, 0 error | got 1 handshake, 0 error
+[   18.194378 ms] [NOTE   ] /mod temp : handshake 1, ctrl 1000000
+
+==========================================================================================
+[   18.194378 ms] [BEGIN  ] G2  format errors
+              plan   : 10 bad commands (prefix up to the bad byte, then the rest)
+              expect : exactly 1 ERROR line, starts within ~1 bit after the bad byte rx_done
+------------------------------------------------------------------------------------------
+[   20.789729 ms] [OK     ] G2-1   bad command #1 | exp 1 ERROR, start < 8.7 us | got "ERROR" at 0.1 us, 1 error, 0 extra line
+[   23.556285 ms] [OK     ] G2-2   bad command #2 | exp 1 ERROR, start < 8.7 us | got "ERROR" at 0.1 us, 1 error, 0 extra line
+[   26.410229 ms] [OK     ] G2-3   bad command #3 | exp 1 ERROR, start < 8.7 us | got "ERROR" at 0.1 us, 1 error, 0 extra line
+[   29.264174 ms] [OK     ] G2-4   bad command #4 | exp 1 ERROR, start < 8.7 us | got "ERROR" at 0.1 us, 1 error, 0 extra line
+[   32.118118 ms] [OK     ] G2-5   bad command #5 | exp 1 ERROR, start < 8.7 us | got "ERROR" at 0.1 us, 1 error, 0 extra line
+[   34.972063 ms] [OK     ] G2-6   bad command #6 | exp 1 ERROR, start < 8.7 us | got "ERROR" at 0.1 us, 1 error, 0 extra line
+[   37.478007 ms] [OK     ] G2-7   bad command #7 | exp 1 ERROR, start < 8.7 us | got "ERROR" at 0.1 us, 1 error, 0 extra line
+[   40.418757 ms] [OK     ] G2-8   bad command #8 | exp 1 ERROR, start < 8.7 us | got "ERROR" at 0.1 us, 1 error, 0 extra line
+[   42.925480 ms] [OK     ] G2-9   bad command #9 | exp 1 ERROR, start < 8.7 us | got "ERROR" at 0.1 us, 1 error, 0 extra line
+[   45.692618 ms] [OK     ] G2-10  bad command #10 | exp 1 ERROR, start < 8.7 us | got "ERROR" at 0.1 us, 1 error, 0 extra line
+
+==========================================================================================
+[   45.692618 ms] [BEGIN  ] G3  valid format, unknown option
+              plan   : /mod abcd, /auto xyz, /set abcd
+              expect : no ERROR, nothing changes
+------------------------------------------------------------------------------------------
+[   47.261136 ms] [OK     ] G3-1   /mod abcd | exp ctrl 0000010, 0 error | got ctrl 0000010, 0 error
+[   48.044386 ms] [OK     ] G3-2   /auto xyz | exp auto state 0, 0 error | got auto state 0, 0 error
+[   48.827636 ms] [OK     ] G3-3   /set abcd (on w_hm screen) | exp ctrl 0000010, 0 error | got ctrl 0000010, 0 error
+
+==========================================================================================
+[   48.827636 ms] [BEGIN  ] G4  '/' restarts a command
+              plan   : "/ge/get <CR>" ; "//mod dist"
+              expect : ERROR then the command still runs
+------------------------------------------------------------------------------------------
+[   50.896906 ms] [OK     ] G4-1   /ge/get <CR> | exp ERROR, then time line | got "ERROR", "12:00:00.77"
+[   51.766962 ms] [OK     ] G4-2   //mod dist | exp ERROR, distance screen | got "ERROR", ctrl 0100000
+
+==========================================================================================
+[   51.766962 ms] [BEGIN  ] G5  garbage and trailing characters
+              plan   : abc CR LF /mod dist ; /off w_hm ; /mod w_hm CR LF
+              expect : ignored, no ERROR
+------------------------------------------------------------------------------------------
+[   52.986254 ms] [OK     ] G5-1   garbage before /mod dist | exp 0 error, distance | got 0 error, ctrl 0100000
+[   55.336004 ms] [OK     ] G5-2   /off w_hm (extra m) | exp 0 error, set off | got 0 error, bit2 0
+[   57.076115 ms] [OK     ] G5-3   /mod w_hm CR LF | exp 0 error, w_hm | got 0 error, ctrl 0000010
+
+==========================================================================================
+[   57.076115 ms] [BEGIN  ] G6  short option
+              plan   : /mod w_h CR ; /set 24h without Enter
+              expect : handshake but no change ; waits (no handshake) until Enter
+------------------------------------------------------------------------------------------
+[   58.644636 ms] [OK     ] G6-1   /mod w_h <CR> | exp 1 handshake, ctrl same, 0 error | got 1 handshake, ctrl 0000010, 0 error
+[   63.681358 ms] [OK     ] G6-2   /set 24h (no Enter) | exp 0 handshake, bit3 0 | got 0 handshake, bit3 0
+[   63.770164 ms] [NOTE   ] after Enter : bit3 1
+
+==========================================================================================
+[   63.770164 ms] [BEGIN  ] G7  /off typo then /off
+              plan   : /mod w_hm -> /set w_hm -> /off <CR> -> /off w_h
+              expect : ERROR ; spec: set off - code: ERROR again (issue 2)
+------------------------------------------------------------------------------------------
+[   66.368704 ms] [OK     ] G7-1   /off <CR> | exp ERROR | got "ERROR"
+[   67.065148 ms] [OK     ] G7-2   /off w_h after the typo | exp set off, 0 error | got bit2 0, 0 error
+
+==========================================================================================
+[   67.065148 ms] [BEGIN  ] G8  RX physical layer
+              plan   : baud +-2 %, 0.3 bit glitch, stop bit 0, 20-byte break
+              expect : ok / ok / no byte / byte accepted / 0x00 ignored
+------------------------------------------------------------------------------------------
+[   67.835097 ms] [OK     ] G8-1   PC baud +2 % | exp distance, 0 error | got ctrl 0100000, 0 error
+[   68.634291 ms] [OK     ] G8-2   PC baud -2 % | exp temp, 0 error | got ctrl 1000000, 0 error
+[   68.810507 ms] [OK     ] G8-3   0.3 bit LOW glitch | exp no byte | got 0 byte
+[   68.923354 ms] [OK     ] G8-4   '/' with stop bit 0 | exp accepted (no framing check) | got 1 byte, first after = 0x2f
+[   71.705144 ms] [OK     ] G8-5   break then /mod dist | exp distance, 0 error | got ctrl 0100000, 0 error
+
+==========================================================================================
+[   71.705144 ms] [BEGIN  ] G9  back-to-back bytes
+              plan   : 30 x /btn U|D without idle (watch screen, not set)
+              expect : 30 UART button pulses, RX FIFO never full
+------------------------------------------------------------------------------------------
+[   87.344157 ms] [OK     ] G9-1   30 commands | exp 30 btn, 30 handshake, full 0 | got 30 btn, 30 handshake, full 0
+
+==========================================================================================
+  G1   checks 24  PASS
+  G2   checks 10  PASS
+  G3   checks 3  PASS
+  G4   checks 2  PASS
+  G5   checks 3  PASS
+  G6   checks 2  PASS
+  G7   checks 2  PASS
+  G8   checks 5  PASS
+  G9   checks 1  PASS
+------------------------------------------------------------------------------------------
+  UART lines : 14 received, snapshot mismatch 0, unexpected 0, no CR 0, frame err 0
+  x/z on outputs : none
+[   87.344157 ms] [SUMMARY] G_uart_rx checks=52 fail=0 issue=0 => PASS
+==========================================================================================
+$finish called at time : 87344156800 ps : File "C:/work/BEST_Stop_watch_project/FINAL/sim_file/tb_merge_harness.sv" Line 271
+run: Time (s): cpu = 00:00:01 ; elapsed = 00:01:24 . Memory (MB): peak = 249.102 ; gain = 19.254
+exit
+INFO: xsimkernel Simulation Memory Usage: 13212 KB (Peak: 13212 KB), Simulation CPU Usage: 80796 ms
+INFO: [Common 17-206] Exiting xsim at Sun Nov  1 16:40:53 2026...

@@ -1,0 +1,98 @@
+#-----------------------------------------------------------
+# xsim v2022.2 (64-bit)
+# SW Build 3671981 on Fri Oct 14 05:00:03 MDT 2022
+# IP Build 3669848 on Fri Oct 14 08:30:02 MDT 2022
+# Start of session at: Sun Nov  1 16:50:56 2026
+# Process ID: 5516
+# Current directory: C:/work/merge_fix4/tb/w_tb_L_integration
+# Command line: xsim.exe -log C:/work/merge_fix4/tb/log/tb_L_integration.log -mode tcl -source {xsim.dir/snap/xsim_script.tcl}
+# Log file: C:/work/merge_fix4/tb/log/tb_L_integration.log
+# Journal file: C:/work/merge_fix4/tb/w_tb_L_integration\xsim.jou
+# Running On: DESKTOP-5C3QTIF, OS: Windows, CPU Frequency: 2995 MHz, CPU Physical cores: 14, Host memory: 33885 MB
+#-----------------------------------------------------------
+source xsim.dir/snap/xsim_script.tcl
+# xsim {snap} -autoloadwcfg -runall
+Time resolution is 1 ps
+run -all
+
+==========================================================================================
+[    0.000000 ms] [BEGIN  ] L1  stopwatch keeps running in the background
+              plan   : SW RUN -> /mod dist ~300 T_CS -> /mod s_ms
+              expect : value grew by the elapsed time (+-1 cs)
+------------------------------------------------------------------------------------------
+[    4.668565 ms] [OK     ] L1-1   growth while on distance screen | exp 378.3 cs | got 378 cs
+
+==========================================================================================
+[    4.668565 ms] [BEGIN  ] L2  button right at the screen change
+              plan   : /mod dist with physical R in the handshake clock / one clock later
+              expect : same clock -> old screen (stopwatch) ; next clock -> new screen (SR04)
+------------------------------------------------------------------------------------------
+[    6.287086 ms] [OK     ] L2-1   R in the clock ctrl changes | exp stopwatch RUN, no trig | got sw_run 1, 0 trig, disp_sel 1
+[    7.905606 ms] [OK     ] L2-2   R one clock after | exp 1 trig, stopwatch STOP | got sw_run 0, 1 trig
+
+==========================================================================================
+[    7.905606 ms] [BEGIN  ] L3  screen change while a line is sent
+              plan   : SW 05:00:00.00 -> /get -> /mod dist during the line
+              expect : the line stays the stopwatch value
+------------------------------------------------------------------------------------------
+[    7.907640 ms] [PRELOAD] stopwatch <- 05:00:00.00
+[   10.326973 ms] [OK     ] L3-1   line | exp "05:00:00.00", screen distance | got "05:00:00.00", disp_sel 1
+
+==========================================================================================
+[   10.326973 ms] [BEGIN  ] L4  soak : everything at once
+              plan   : /auto all + SR04 auto + DHT auto + timer + random buttons / commands, 30 auto beats
+              expect : no broken / unexpected line, auto lines not lost, FSMs return to IDLE, no x/z
+------------------------------------------------------------------------------------------
+[  194.192575 ms] [OK     ] L4-1   soak result | exp 0 broken, 30 +-1 auto lines, decoder / sender IDLE, no x/z | got mismatch 0, unexpected 0, no CR 0, data 30, ERROR 10 (gets 30 ignored), x/z 0, dec 0, snd 0
+
+==========================================================================================
+[  194.192575 ms] [BEGIN  ] L5  random reset
+              plan   : 20 x : activity -> reset at a random moment
+              expect : every time : A1 initial state
+------------------------------------------------------------------------------------------
+[  201.930416 ms] [OK     ] L5-1   state right after reset | exp w_rst 2 clk, all initial, LED 8009 | got rel 2 clk, SW 00:00:00.00 run 0, watch 12:00:00.00, tm_run 0, tx 1, trig 0, uart_mode 0, LED 8009
+[  208.250256 ms] [OK     ] L5-2   state right after reset | exp w_rst 2 clk, all initial, LED 8009 | got rel 2 clk, SW 00:00:00.00 run 0, watch 12:00:00.00, tm_run 0, tx 1, trig 0, uart_mode 0, LED 8009
+[  216.370096 ms] [OK     ] L5-3   state right after reset | exp w_rst 2 clk, all initial, LED 8009 | got rel 2 clk, SW 00:00:00.00 run 0, watch 12:00:00.00, tm_run 0, tx 1, trig 0, uart_mode 0, LED 8009
+[  221.967936 ms] [OK     ] L5-4   state right after reset | exp w_rst 2 clk, all initial, LED 8009 | got rel 2 clk, SW 00:00:00.00 run 0, watch 12:00:00.00, tm_run 0, tx 1, trig 0, uart_mode 0, LED 8009
+[  232.466776 ms] [OK     ] L5-5   state right after reset | exp w_rst 2 clk, all initial, LED 8009 | got rel 2 clk, SW 00:00:00.00 run 0, watch 12:00:00.00, tm_run 0, tx 1, trig 0, uart_mode 0, LED 8009
+[  234.995616 ms] [OK     ] L5-6   state right after reset | exp w_rst 2 clk, all initial, LED 8009 | got rel 2 clk, SW 00:00:00.00 run 0, watch 12:00:00.00, tm_run 0, tx 1, trig 0, uart_mode 0, LED 8009
+[  240.525456 ms] [OK     ] L5-7   state right after reset | exp w_rst 2 clk, all initial, LED 8009 | got rel 2 clk, SW 00:00:00.00 run 0, watch 12:00:00.00, tm_run 0, tx 1, trig 0, uart_mode 0, LED 8009
+[  248.703296 ms] [OK     ] L5-8   state right after reset | exp w_rst 2 clk, all initial, LED 8009 | got rel 2 clk, SW 00:00:00.00 run 0, watch 12:00:00.00, tm_run 0, tx 1, trig 0, uart_mode 0, LED 8009
+[  258.881136 ms] [OK     ] L5-9   state right after reset | exp w_rst 2 clk, all initial, LED 8009 | got rel 2 clk, SW 00:00:00.00 run 0, watch 12:00:00.00, tm_run 0, tx 1, trig 0, uart_mode 0, LED 8009
+[  261.499976 ms] [OK     ] L5-10  state right after reset | exp w_rst 2 clk, all initial, LED 8009 | got rel 2 clk, SW 00:00:00.00 run 0, watch 12:00:00.00, tm_run 0, tx 1, trig 0, uart_mode 0, LED 8009
+[  267.578816 ms] [OK     ] L5-11  state right after reset | exp w_rst 2 clk, all initial, LED 8009 | got rel 2 clk, SW 00:00:00.00 run 0, watch 12:00:00.00, tm_run 0, tx 1, trig 0, uart_mode 0, LED 8009
+[  273.126656 ms] [OK     ] L5-12  state right after reset | exp w_rst 2 clk, all initial, LED 8009 | got rel 2 clk, SW 00:00:00.00 run 0, watch 12:00:00.00, tm_run 0, tx 1, trig 0, uart_mode 0, LED 8009
+[  280.514496 ms] [OK     ] L5-13  state right after reset | exp w_rst 2 clk, all initial, LED 8009 | got rel 2 clk, SW 00:00:00.00 run 0, watch 12:00:00.00, tm_run 0, tx 1, trig 0, uart_mode 0, LED 8009
+[  282.072336 ms] [OK     ] L5-14  state right after reset | exp w_rst 2 clk, all initial, LED 8009 | got rel 2 clk, SW 00:00:00.00 run 0, watch 12:00:00.00, tm_run 0, tx 1, trig 0, uart_mode 0, LED 8009
+[  291.121176 ms] [OK     ] L5-15  state right after reset | exp w_rst 2 clk, all initial, LED 8009 | got rel 2 clk, SW 00:00:00.00 run 0, watch 12:00:00.00, tm_run 0, tx 1, trig 0, uart_mode 0, LED 8009
+[  296.050016 ms] [OK     ] L5-16  state right after reset | exp w_rst 2 clk, all initial, LED 8009 | got rel 2 clk, SW 00:00:00.00 run 0, watch 12:00:00.00, tm_run 0, tx 1, trig 0, uart_mode 0, LED 8009
+[  301.547856 ms] [OK     ] L5-17  state right after reset | exp w_rst 2 clk, all initial, LED 8009 | got rel 2 clk, SW 00:00:00.00 run 0, watch 12:00:00.00, tm_run 0, tx 1, trig 0, uart_mode 0, LED 8009
+[  303.655696 ms] [OK     ] L5-18  state right after reset | exp w_rst 2 clk, all initial, LED 8009 | got rel 2 clk, SW 00:00:00.00 run 0, watch 12:00:00.00, tm_run 0, tx 1, trig 0, uart_mode 0, LED 8009
+[  309.983536 ms] [OK     ] L5-19  state right after reset | exp w_rst 2 clk, all initial, LED 8009 | got rel 2 clk, SW 00:00:00.00 run 0, watch 12:00:00.00, tm_run 0, tx 1, trig 0, uart_mode 0, LED 8009
+[  314.471376 ms] [OK     ] L5-20  state right after reset | exp w_rst 2 clk, all initial, LED 8009 | got rel 2 clk, SW 00:00:00.00 run 0, watch 12:00:00.00, tm_run 0, tx 1, trig 0, uart_mode 0, LED 8009
+
+==========================================================================================
+[  314.471376 ms] [BEGIN  ] L6  send snapshot on the carry clock
+              plan   : SW 00:00:00.95 RUN, force send_go in the clock msec wraps 99 -> 00
+              expect : spec : 00:00:01.00 - code may send 00:00:00.00 (issue 8)
+------------------------------------------------------------------------------------------
+[  314.474410 ms] [PRELOAD] stopwatch <- 00:00:00.95
+[  315.643446 ms] [OK     ] L6-1   line sent in the carry clock | exp "00:00:01.00" | got "00:00:01.00"
+
+==========================================================================================
+  L1   checks 1  PASS
+  L2   checks 2  PASS
+  L3   checks 1  PASS
+  L4   checks 1  PASS
+  L5   checks 20  PASS
+  L6   checks 1  PASS
+------------------------------------------------------------------------------------------
+  UART lines : 49 received, snapshot mismatch 0, unexpected 0, no CR 0, frame err 0
+  x/z on outputs : none
+[  315.643446 ms] [SUMMARY] L_integration checks=26 fail=0 issue=0 => PASS
+==========================================================================================
+$finish called at time : 315643446 ns : File "C:/work/BEST_Stop_watch_project/FINAL/sim_file/tb_merge_harness.sv" Line 271
+run: Time (s): cpu = 00:00:01 ; elapsed = 00:02:57 . Memory (MB): peak = 238.992 ; gain = 0.000
+exit
+INFO: xsimkernel Simulation Memory Usage: 13248 KB (Peak: 13248 KB), Simulation CPU Usage: 174780 ms
+INFO: [Common 17-206] Exiting xsim at Sun Nov  1 16:53:56 2026...

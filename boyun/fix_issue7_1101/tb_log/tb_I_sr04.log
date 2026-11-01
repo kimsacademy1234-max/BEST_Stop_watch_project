@@ -1,0 +1,132 @@
+#-----------------------------------------------------------
+# xsim v2022.2 (64-bit)
+# SW Build 3671981 on Fri Oct 14 05:00:03 MDT 2022
+# IP Build 3669848 on Fri Oct 14 08:30:02 MDT 2022
+# Start of session at: Sun Nov  1 16:47:40 2026
+# Process ID: 26908
+# Current directory: C:/work/merge_fix4/tb/w_tb_I_sr04
+# Command line: xsim.exe -log C:/work/merge_fix4/tb/log/tb_I_sr04.log -mode tcl -source {xsim.dir/snap/xsim_script.tcl}
+# Log file: C:/work/merge_fix4/tb/log/tb_I_sr04.log
+# Journal file: C:/work/merge_fix4/tb/w_tb_I_sr04\xsim.jou
+# Running On: DESKTOP-5C3QTIF, OS: Windows, CPU Frequency: 2995 MHz, CPU Physical cores: 14, Host memory: 33885 MB
+#-----------------------------------------------------------
+source xsim.dir/snap/xsim_script.tcl
+# xsim {snap} -autoloadwcfg -runall
+Time resolution is 1 ps
+run -all
+
+==========================================================================================
+[    0.000000 ms] [BEGIN  ] I1  trig pulse
+              plan   : distance screen R
+              expect : trig rises within 1 clk of the button pulse, width 11 us
+------------------------------------------------------------------------------------------
+[    0.938315 ms] [OK     ] I1-1   trig rise after pulse | exp 0 ~ 1 clk | got 0.0 ns
+[    0.938315 ms] [OK     ] I1-2   trig width (11 ticks +- 2 clk) | exp 1100.0 ns (11 us) | got 1110.0 ns
+
+==========================================================================================
+[    0.938315 ms] [BEGIN  ] I2  distance accuracy
+              plan   : echo width 61 / 583 / 5803 / 20460 / 23150 us
+              expect : x10 = floor(W*10/58), cm = floor(W/58), done <= echo fall + 1.1 us, UART NNNcm
+------------------------------------------------------------------------------------------
+[    2.900458 ms] [OK     ] I2-1   echo 61 us | exp x10 10, 001cm, done <= 110 ns | got x10 10, "001cm", status 0, done 110 ns
+[    8.953338 ms] [OK     ] I2-2   echo 583 us | exp x10 100, 010cm, done <= 110 ns | got x10 100, "010cm", status 0, done 110 ns
+[   15.475218 ms] [OK     ] I2-3   echo 5803 us | exp x10 1000, 100cm, done <= 110 ns | got x10 1000, "100cm", status 0, done 110 ns
+[   22.943098 ms] [OK     ] I2-4   echo 20460 us | exp x10 3527, 352cm, done <= 110 ns | got x10 3527, "352cm", status 0, done 110 ns
+[   29.212978 ms] [OK     ] I2-5   echo 23150 us | exp x10 3991, 399cm, done <= 110 ns | got x10 3991, "399cm", status 0, done 110 ns
+
+==========================================================================================
+[   29.212978 ms] [BEGIN  ] I3  out of range
+              plan   : echo 23,250 us
+              expect : Err2, UART Err 2 (v2), LD9, done = echo rise + 23.2 ms
+------------------------------------------------------------------------------------------
+[   33.488128 ms] [OK     ] I3-1   echo 23,250 us | exp status 2, Err 2, LD9, 2.320 ms | got status 2, "Err 2", LD9 1, 2.3200 ms
+
+==========================================================================================
+[   33.488128 ms] [BEGIN  ] I4  no echo
+              plan   : sensor gives no echo
+              expect : Err1 at trig fall + 30.0 ms, UART Err 1 (v2), LD9
+------------------------------------------------------------------------------------------
+[   38.394278 ms] [OK     ] I4-1   no echo | exp status 1, Err 1, LD9, 3.000 ms | got status 1, "Err 1", LD9 1, 3.0000 ms
+
+==========================================================================================
+[   38.394278 ms] [BEGIN  ] I5  echo stuck high
+              plan   : echo 1 before trig -> R -> wait -> echo 0 -> R (normal)
+              expect : Err2 at 23.2 ms, Err3 at 73.2 ms then IDLE, then normal again
+------------------------------------------------------------------------------------------
+[   41.512595 ms] [OK     ] I5-1   first done | exp Err2 at 2.320 ms | got status 2 at 2.3200 ms
+[   47.629468 ms] [OK     ] I5-2   second done | exp Err3 at 7.320 ms, IDLE, UART Err 3 | got status 3 at 7.3200 ms, busy 0, "Err 3"
+[   48.362515 ms] [OK     ] I5-3   echo released, normal echo | exp status 0, 100.0 cm | got status 0, x10 1000
+
+==========================================================================================
+[   48.362515 ms] [BEGIN  ] I6  R while measuring
+              plan   : echo 10 ms, R x3 during DIST
+              expect : only 1 trig
+------------------------------------------------------------------------------------------
+[   56.527945 ms] [OK     ] I6-1   trig count | exp 1 | got 1
+
+==========================================================================================
+[   56.527945 ms] [BEGIN  ] I7  auto period
+              plan   : U, echo 0.6 ms / 38 ms / 55 ms, then U again
+              expect : trig every 60.0 / 60.0 / ~65.5 ms, stops after U
+------------------------------------------------------------------------------------------
+[   93.314255 ms] [OK     ] I7-1   echo 600 us | exp 3 x 6.000 ms (+0 ~ +5 us) | got 6.0000 / 6.0000 / 6.0000 ms, status 0
+[  129.314255 ms] [OK     ] I7-2   echo 38000 us | exp 3 x 6.000 ms (+0 ~ +5 us) | got 6.0000 / 6.0000 / 6.0000 ms, status 2
+[  168.620255 ms] [OK     ] I7-3   echo 55,000 us | exp 3 x 6.551 ms (echo fall + 10 ms), Err2 not Err3 | got 6.5511 / 6.5511 / 6.5511 ms, status 2
+[  183.620295 ms] [OK     ] I7-4   U again | exp no more trig | got 0 trig, auto 0
+
+==========================================================================================
+[  183.620295 ms] [BEGIN  ] I8  LED bar and close-range warning
+              plan   : sw15 1 : 10.0 -> 11.0 -> 12.1 -> 11.0 cm, then sw15 0
+              expect : blink -> blink -> steady 7 LED -> steady ; sw15 0 : LD0~7 off, LD8/LD9 still work
+------------------------------------------------------------------------------------------
+[  185.546605 ms] [OK     ] I8-1   10.0 cm | exp 8 LED blinking (FF / 00) | got FF 1, 00 1, other 0
+[  191.552645 ms] [OK     ] I8-2   11.0 cm | exp 8 LED blinking (FF / 00) | got FF 1, 00 1, other 0
+[  197.558685 ms] [OK     ] I8-3   12.1 cm | exp steady 7F | got FF 0, 00 0, value 7f
+[  203.552725 ms] [OK     ] I8-4   11.0 cm | exp steady 7F | got FF 0, 00 0, value 7f
+[  214.405765 ms] [OK     ] I8-5   sw15 0 + measurement (no echo) | exp LD0~7 0, LD8 seen, LD9 1 | got bar 00, LD8 seen 1, LD9 1
+
+==========================================================================================
+[  214.405765 ms] [BEGIN  ] I9  error then normal
+              plan   : no echo (Err1) -> echo 5803 us
+              expect : 100.0 cm, LD9 off
+------------------------------------------------------------------------------------------
+[  218.194075 ms] [NOTE   ] first : status 1, LD9 1
+[  221.824115 ms] [OK     ] I9-1   normal after Err1 | exp status 0, 100.0 cm, LD9 0 | got status 0, x10 1000, LD9 0
+
+==========================================================================================
+[  221.824115 ms] [BEGIN  ] I10  auto keeps running on another screen
+              plan   : auto on -> /mod w_ms -> 200 ms ; R on WTS screen
+              expect : trig every 60 ms, LED = watch LED ; R not delivered to SR04
+------------------------------------------------------------------------------------------
+[  243.392675 ms] [OK     ] I10-1  after 200 ms on WTS screen | exp 3 ~ 4 trig, LED 8009 | got 3 trig, LED 8009
+[  243.392725 ms] [OK     ] I10-2  R on WTS screen | exp SR04 i_btn_R stays 0 | got 0 pulse
+
+==========================================================================================
+[  243.392725 ms] [BEGIN  ] I11  echo glitch
+              plan   : 0.5 us echo pulse 200 us after trig
+              expect : 000.0 (OK) or Err1, back to IDLE within 60 ms
+------------------------------------------------------------------------------------------
+[  250.188005 ms] [OK     ] I11-1  after glitch | exp IDLE, status 0 (0.0) or 1 | got busy 0, status 1, x10 0
+
+==========================================================================================
+  I1   checks 2  PASS
+  I2   checks 5  PASS
+  I3   checks 1  PASS
+  I4   checks 1  PASS
+  I5   checks 3  PASS
+  I6   checks 1  PASS
+  I7   checks 4  PASS
+  I8   checks 5  PASS
+  I9   checks 1  PASS
+  I10  checks 2  PASS
+  I11  checks 1  PASS
+------------------------------------------------------------------------------------------
+  UART lines : 8 received, snapshot mismatch 0, unexpected 0, no CR 0, frame err 0
+  x/z on outputs : none
+[  250.188005 ms] [SUMMARY] I_sr04 checks=26 fail=0 issue=0 => PASS
+==========================================================================================
+$finish called at time : 250188005 ns : File "C:/work/BEST_Stop_watch_project/FINAL/sim_file/tb_merge_harness.sv" Line 271
+run: Time (s): cpu = 00:00:01 ; elapsed = 00:03:28 . Memory (MB): peak = 248.301 ; gain = 15.590
+exit
+INFO: xsimkernel Simulation Memory Usage: 13420 KB (Peak: 13420 KB), Simulation CPU Usage: 204140 ms
+INFO: [Common 17-206] Exiting xsim at Sun Nov  1 16:51:10 2026...

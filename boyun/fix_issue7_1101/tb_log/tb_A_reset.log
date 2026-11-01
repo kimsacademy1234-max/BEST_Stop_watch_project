@@ -1,0 +1,57 @@
+#-----------------------------------------------------------
+# xsim v2022.2 (64-bit)
+# SW Build 3671981 on Fri Oct 14 05:00:03 MDT 2022
+# IP Build 3669848 on Fri Oct 14 08:30:02 MDT 2022
+# Start of session at: Sun Nov  1 16:39:25 2026
+# Process ID: 20548
+# Current directory: C:/work/merge_fix4/tb/w_tb_A_reset
+# Command line: xsim.exe -log C:/work/merge_fix4/tb/log/tb_A_reset.log -mode tcl -source {xsim.dir/snap/xsim_script.tcl}
+# Log file: C:/work/merge_fix4/tb/log/tb_A_reset.log
+# Journal file: C:/work/merge_fix4/tb/w_tb_A_reset\xsim.jou
+# Running On: DESKTOP-5C3QTIF, OS: Windows, CPU Frequency: 2995 MHz, CPU Physical cores: 14, Host memory: 33885 MB
+#-----------------------------------------------------------
+source xsim.dir/snap/xsim_script.tcl
+# xsim {snap} -autoloadwcfg -runall
+Time resolution is 1 ps
+run -all
+
+==========================================================================================
+[    0.000000 ms] [BEGIN  ] A1  power-on / reset initial values
+              plan   : switches 0 -> rst 1 us -> release; at 0.3 x boot: sw6 + R
+              expect : w_rst 2 clk, FND 00.00, LED 8009, tx 1, trig 0, DHT START exactly at boot, no x/z
+------------------------------------------------------------------------------------------
+[    0.003016 ms] [OK     ] A1-1   w_rst released N clk after rst falls | exp 2 | got 2
+[    2.002046 ms] [OK     ] A1-2   FND right after reset (watch SS.CC, AN2 dot) | exp "00.00" | got "00.00"
+[    2.002046 ms] [OK     ] A1-3   LED (LD0 watch, LD3 SS.CC, LD15 PM) | exp 8009 | got 8009
+[   15.002015 ms] [OK     ] A1-4   tx idle (no byte) | exp 0 byte, tx 1 | got 0 byte, tx 1
+[   15.002015 ms] [OK     ] A1-5   trig stays 0 | exp 0 pulse | got 0 pulse
+[   15.002015 ms] [OK     ] A1-6   DHT line high until boot, START (R at 0.3 boot) begins at boot | exp 1 START at release + 10.000 ms | got 1 START at release + 10.000020 ms
+[   15.002015 ms] [OK     ] A1-7   no x/z on led/fnd/tx/trig after release | exp none | got none
+
+==========================================================================================
+[   15.002015 ms] [BEGIN  ] A2  reset while everything is running
+              plan   : SW RUN + /auto all + SR04 auto + DHT START LOW + ERROR line on tx -> rst
+              expect : at rst: tx 1, trig 0, DHT line released; after: switch mode, all initial, DHT boot again
+------------------------------------------------------------------------------------------
+[   27.289275 ms] [NOTE   ] just before rst : DHT START LOW 1, uart_tx busy 1, SW run 1, SR04 auto 1
+[   27.289276 ms] [OK     ] A2-1   tx goes high immediately on rst | exp 1 | got 1
+[   27.289276 ms] [OK     ] A2-2   trig 0 immediately on rst | exp 0 | got 0
+[   27.289276 ms] [OK     ] A2-3   DHT line released immediately on rst | exp oe 0, line 1 | got oe 0, line 1 (was START LOW 1)
+[   27.290296 ms] [OK     ] A2-4   back to switch mode (switches 0 = watch) | exp uart_mode 0, watch | got uart_mode 0, disp_sel 0, sel_wt 1
+[   27.290296 ms] [OK     ] A2-5   WTS initial | exp SW 0 STOP, watch 12:00:00.00, timer 0 SET | got SW 00:00:00.00 run 0, watch 12:00:00.00, timer 00:00:00.00 run 0
+[   42.290295 ms] [OK     ] A2-6   auto off: no tx line for 3 auto periods, SR04 / DHT auto off | exp 0 byte, 0 trig, auto 0 | got 0 byte, 0 trig, dist_auto 0, dht_auto 0
+[   42.290295 ms] [OK     ] A2-7   DHT waits boot again after reset | exp START at release + 10.000 ms | got 1 START at release + 10.000020 ms
+
+==========================================================================================
+  A1   checks 7  PASS
+  A2   checks 7  PASS
+------------------------------------------------------------------------------------------
+  UART lines : 1 received, snapshot mismatch 0, unexpected 0, no CR 0, frame err 0
+  x/z on outputs : none
+[   42.290295 ms] [SUMMARY] A_reset checks=14 fail=0 issue=0 => PASS
+==========================================================================================
+$finish called at time : 42290295 ns : File "C:/work/BEST_Stop_watch_project/FINAL/sim_file/tb_merge_harness.sv" Line 271
+run: Time (s): cpu = 00:00:01 ; elapsed = 00:00:42 . Memory (MB): peak = 253.273 ; gain = 0.000
+exit
+INFO: xsimkernel Simulation Memory Usage: 13212 KB (Peak: 13212 KB), Simulation CPU Usage: 40218 ms
+INFO: [Common 17-206] Exiting xsim at Sun Nov  1 16:40:10 2026...

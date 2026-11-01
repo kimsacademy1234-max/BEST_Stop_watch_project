@@ -1,0 +1,91 @@
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+-----------------------------------------------------------------------------------------
+| Tool Version : Vivado v.2022.2 (win64) Build 3671981 Fri Oct 14 05:00:03 MDT 2022
+| Date         : Sun Nov  1 16:49:32 2026
+| Host         : DESKTOP-5C3QTIF running 64-bit major release  (build 9200)
+| Command      : report_utilization -hierarchical -file C:/work/merge_fix4/util_hier.rpt
+| Design       : merge_final_top
+| Device       : xc7a35tcpg236-1
+| Speed File   : -1
+| Design State : Routed
+-----------------------------------------------------------------------------------------
+
+Utilization Design Information
+
+Table of Contents
+-----------------
+1. Utilization by Hierarchy
+
+1. Utilization by Hierarchy
+---------------------------
+
++------------------------------+------------------------------------------+------------+------------+---------+------+-----+--------+--------+------------+
+|           Instance           |                  Module                  | Total LUTs | Logic LUTs | LUTRAMs | SRLs | FFs | RAMB36 | RAMB18 | DSP Blocks |
++------------------------------+------------------------------------------+------------+------------+---------+------+-----+--------+--------+------------+
+| merge_final_top              |                                    (top) |       1476 |       1460 |      16 |    0 | 738 |      0 |      0 |          0 |
+|   (merge_final_top)          |                                    (top) |          0 |          0 |       0 |    0 |   0 |      0 |      0 |          0 |
+|   U_BD_D                     |                             btn_debounce |          4 |          4 |       0 |    0 |   9 |      0 |      0 |          0 |
+|   U_BD_L                     |                           btn_debounce_0 |          3 |          3 |       0 |    0 |   9 |      0 |      0 |          0 |
+|   U_BD_R                     |                           btn_debounce_1 |          4 |          4 |       0 |    0 |   9 |      0 |      0 |          0 |
+|   U_BD_U                     |                           btn_debounce_2 |          4 |          4 |       0 |    0 |   9 |      0 |      0 |          0 |
+|   U_CLK_GEN_4KHZ             |                     clock_tick_generator |         12 |         12 |       0 |    0 |  16 |      0 |      0 |          0 |
+|   U_DHT11                    |                                dht11_top |        152 |        152 |       0 |    0 | 144 |      0 |      0 |          0 |
+|     (U_DHT11)                |                                dht11_top |          0 |          0 |       0 |    0 |   1 |      0 |      0 |          0 |
+|     U_DHT11_CORE             |                               dht11_core |        150 |        150 |       0 |    0 | 127 |      0 |      0 |          0 |
+|       (U_DHT11_CORE)         |                               dht11_core |          8 |          8 |       0 |    0 |  30 |      0 |      0 |          0 |
+|       U_DHT11_CTRL           |                         dht11_controller |        134 |        134 |       0 |    0 |  89 |      0 |      0 |          0 |
+|       U_TICK_1US             |                            tick_gen_us_6 |          8 |          8 |       0 |    0 |   8 |      0 |      0 |          0 |
+|     U_DHT11_MGR              |                            dht11_manager |          4 |          4 |       0 |    0 |  16 |      0 |      0 |          0 |
+|   U_FND_CONTROLLER           |                       SW2_FND_CONTROLLER |        127 |        127 |       0 |    0 |   3 |      0 |      0 |          0 |
+|     U_COUNTER8               |                                 counter8 |         22 |         22 |       0 |    0 |   3 |      0 |      0 |          0 |
+|     U_FND_DHT                |                                  fnd_dht |         56 |         56 |       0 |    0 |   0 |      0 |      0 |          0 |
+|     U_FND_DIST               |                                 fnd_dist |         49 |         49 |       0 |    0 |   0 |      0 |      0 |          0 |
+|   U_RESET_SYNC               |                               reset_sync |          0 |          0 |       0 |    0 |   2 |      0 |      0 |          0 |
+|   U_SR04                     |                                 sr04_top |        175 |        175 |       0 |    0 | 151 |      0 |      0 |          0 |
+|     U_LED                    |                             sr04_led_bar |         27 |         27 |       0 |    0 |  32 |      0 |      0 |          0 |
+|     U_MODE                   |                           sr04_mode_ctrl |          0 |          0 |       0 |    0 |   1 |      0 |      0 |          0 |
+|     U_SR04                   |                                sr04_core |        148 |        148 |       0 |    0 | 118 |      0 |      0 |          0 |
+|       U_ECHO_SYNC            |                             synchronizer |          1 |          1 |       0 |    0 |   2 |      0 |      0 |          0 |
+|       U_SR04_CNTL            |                          sr04_controller |        136 |        136 |       0 |    0 | 108 |      0 |      0 |          0 |
+|       U_TICK_GEN_US          |                              tick_gen_us |         11 |         11 |       0 |    0 |   8 |      0 |      0 |          0 |
+|   U_UART                     |                                 uart_top |        760 |        744 |      16 |    0 | 216 |      0 |      0 |          0 |
+|     U_ASCII_DECODER          |                       UART_ASCII_DECODER |        142 |        142 |       0 |    0 |  56 |      0 |      0 |          0 |
+|     U_ASCII_SENDER           |                              uart_sender |        136 |        136 |       0 |    0 |  32 |      0 |      0 |          0 |
+|       (U_ASCII_SENDER)       |                              uart_sender |        109 |        109 |       0 |    0 |  32 |      0 |      0 |          0 |
+|       U_SENDER_CHAR_MUX      |                          sender_char_mux |         27 |         27 |       0 |    0 |   0 |      0 |      0 |          0 |
+|     U_BAUD_TICK_GEN          |                            baud_tick_gen |         14 |         14 |       0 |    0 |  11 |      0 |      0 |          0 |
+|     U_CONTROL                |                          UART_CONTROLLER |        351 |        351 |       0 |    0 |  59 |      0 |      0 |          0 |
+|       (U_CONTROL)            |                          UART_CONTROLLER |        319 |        319 |       0 |    0 |  28 |      0 |      0 |          0 |
+|       U_CLK_GEN_5HZ          |                    sender_tick_generator |         25 |         25 |       0 |    0 |  28 |      0 |      0 |          0 |
+|       U_SEL_CNT              |                                  counter |          8 |          8 |       0 |    0 |   3 |      0 |      0 |          0 |
+|     U_FIFO_RX                |                                     fifo |         55 |         49 |       6 |    0 |   8 |      0 |      0 |          0 |
+|       U_FIFO_CONTROL_UNIT    |                        fifo_control_unit |          9 |          9 |       0 |    0 |   8 |      0 |      0 |          0 |
+|       U_FIFO_REG_FILE        |                       fifo_register_file |         46 |         40 |       6 |    0 |   0 |      0 |      0 |          0 |
+|     U_FIFO_TX                |                     fifo__parameterized0 |         28 |         18 |      10 |    0 |  14 |      0 |      0 |          0 |
+|       U_FIFO_CONTROL_UNIT    |        fifo_control_unit__parameterized0 |         17 |         17 |       0 |    0 |  14 |      0 |      0 |          0 |
+|       U_FIFO_REG_FILE        |       fifo_register_file__parameterized0 |         11 |          1 |      10 |    0 |   0 |      0 |      0 |          0 |
+|     U_UART_RX                |                                  uart_rx |         21 |         21 |       0 |    0 |  18 |      0 |      0 |          0 |
+|     U_UART_TX                |                                  uart_tx |         16 |         16 |       0 |    0 |  18 |      0 |      0 |          0 |
+|   U_WTS                      |                                  wts_top |        259 |        259 |       0 |    0 | 170 |      0 |      0 |          0 |
+|     U_STOPWATCH_CONTROL_UNIT |                   stopwatch_control_unit |          6 |          6 |       0 |    0 |   2 |      0 |      0 |          0 |
+|     U_STOPWATCH_DATAPATH     |                       stopwatch_datapath |         68 |         68 |       0 |    0 |  49 |      0 |      0 |          0 |
+|       U_HOUR_COUNTER         |                   stopwatch_tick_counter |          8 |          8 |       0 |    0 |   5 |      0 |      0 |          0 |
+|       U_LAP_CONTROLLER       |                           lap_controller |         15 |         15 |       0 |    0 |  25 |      0 |      0 |          0 |
+|       U_MIN_COUNTER          |   stopwatch_tick_counter__parameterized0 |         13 |         13 |       0 |    0 |   6 |      0 |      0 |          0 |
+|       U_MSEC_COUNTER         |   stopwatch_tick_counter__parameterized1 |         18 |         18 |       0 |    0 |   7 |      0 |      0 |          0 |
+|       U_SEC_COUNTER          | stopwatch_tick_counter__parameterized0_5 |         14 |         14 |       0 |    0 |   6 |      0 |      0 |          0 |
+|     U_TICK_GEN_100HZ         |                           tick_gen_100hz |         16 |         16 |       0 |    0 |  21 |      0 |      0 |          0 |
+|     U_TICK_GEN_SW            |                       tick_gen_100hz_run |         15 |         15 |       0 |    0 |  21 |      0 |      0 |          0 |
+|     U_TICK_GEN_TM            |                     tick_gen_100hz_run_3 |         15 |         15 |       0 |    0 |  21 |      0 |      0 |          0 |
+|     U_TIMER_CONTROL_UNIT     |                       timer_control_unit |          5 |          5 |       0 |    0 |   3 |      0 |      0 |          0 |
+|     U_TIMER_DATAPATH         |                           timer_datapath |         60 |         60 |       0 |    0 |  24 |      0 |      0 |          0 |
+|     U_WATCH_CONTROL_UNIT     |                       watch_control_unit |          4 |          4 |       0 |    0 |   2 |      0 |      0 |          0 |
+|     U_WATCH_DATAPATH         |                           watch_datapath |         70 |         70 |       0 |    0 |  27 |      0 |      0 |          0 |
+|       U_HOUR_COUNTER         |       watch_tick_counter__parameterized1 |         18 |         18 |       0 |    0 |   5 |      0 |      0 |          0 |
+|       U_MIN_COUNTER          |       watch_tick_counter__parameterized0 |         18 |         18 |       0 |    0 |   7 |      0 |      0 |          0 |
+|       U_MSEC_COUNTER         |                       watch_tick_counter |         21 |         21 |       0 |    0 |   8 |      0 |      0 |          0 |
+|       U_SEC_COUNTER          |     watch_tick_counter__parameterized0_4 |         13 |         13 |       0 |    0 |   7 |      0 |      0 |          0 |
++------------------------------+------------------------------------------+------------+------------+---------+------+-----+--------+--------+------------+
+* Note: The sum of lower-level cells may be larger than their parent cells total, due to cross-hierarchy LUT combining
+
+

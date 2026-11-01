@@ -1,0 +1,107 @@
+--- v2/UART/01_UART_CONTROLLER.sv
++++ fix/UART/01_UART_CONTROLLER.sv
+@@ -71,3 +71,3 @@
+ reg c_err_pend, n_err_pend; // sender busy 중에 들어온 error 저장
+-reg c_send_pend, n_send_pend; // 아직 못 보낸 데이터 (5hz 차례 / get) 저장
++reg [4:0] c_send_pend, n_send_pend; // 아직 못 보낸 데이터 (5hz 차례 / get) 저장 — (fix 11/01 H9) get 은 개수로 셈
+ reg scan_tick;                // AUTO_ALL 데이터 실제로 보냈을 때 1 -> scan 카운터 증가
+@@ -295,3 +295,3 @@
+ 					// 시계 설정 : bit3 (12/24) 은 빼고 비교
+-					else if(i_set&&((c_module_control_bit & 7'b1110_111) == 7'b0000_010)) n_module_control_bit = c_module_control_bit | 7'b0000_100;
++					else if(i_set && (i_con_ascii == "w_hm") && ((c_module_control_bit & 7'b1110_111) == 7'b0000_010)) n_module_control_bit = c_module_control_bit | 7'b0000_100;   // (fix 11/01 G3) 옵션 w_hm 일 때만
+ 					else if(i_off_set&&((c_module_control_bit & 7'b1110_111) == 7'b0000_110)) n_module_control_bit = c_module_control_bit & 7'b1111_011;
+@@ -352,7 +352,7 @@
+                    // get 들어오면 저장 -> sender 비고 error 없을 때 현재 모드 sel + go
+-                   n_send_pend = c_send_pend | (i_handshake && i_get);
+-
+-                   if(n_send_pend && !w_sender_busy && !n_err_pend)begin
++                   n_send_pend = c_send_pend + ((i_handshake && i_get && (c_send_pend != 5'd31)) ? 5'd1 : 5'd0);   // (fix 11/01 H9) 합치지 않고 개수 +1
++
++                   if((n_send_pend != 0) && !w_sender_busy && !n_err_pend)begin
+                         n_sender_go  = 1;
+-                        n_send_pend  = 0;
++                        n_send_pend  = n_send_pend - 5'd1;   // (fix 11/01 H9) 하나 보냈으면 하나만 뺌
+                         n_sender_sel = w_mode_sel;
+@@ -369,3 +369,3 @@
+                     // (error 랑 겹치면 error 먼저, busy 풀리면 이 차례 데이터 바로 이어서)
+-                    n_send_pend = c_send_pend | w_clk_5hz;
++                    n_send_pend = {4'd0, (c_send_pend != 0) | w_clk_5hz};   // (fix 11/01 H9) auto 는 전처럼 1 비트 표시
+ 
+@@ -524,2 +524,3 @@
+ 				o_clk <= 0;
++				r_counter <= 0;   // (fix 11/01 H7) 끌 때 카운터도 0
+ 			end
+--- v2/UART/02_UART_ASCII_DECODER.sv
++++ fix/UART/02_UART_ASCII_DECODER.sv
+@@ -384,2 +384,3 @@
+             n_error = 1;
++            n_off = 0;   // (fix 11/01 G7) 오류 때 /off 글자 세던 값도 지움
+             n_data_reg = 0;
+--- v2/UART/sender_char_mux.v
++++ fix/UART/sender_char_mux.v
+@@ -21,4 +21,4 @@
+     wire       w_herr  = i_data[19];    // (fix 10/31) 온습도 마지막 측정 실패 (FND "ErrN")
+-    wire [7:0] w_hum  = i_data[15:8];
+-    wire [7:0] w_temp = i_data[7:0];
++    wire [7:0] w_hum  = (i_data[15:8] > 8'd99) ? 8'd99 : i_data[15:8];   // (fix 11/01) 99 보다 크면 99 (FND 와 같은 규칙, dht11_manager.v 22 줄)
++    wire [7:0] w_temp = (i_data[7:0]  > 8'd99) ? 8'd99 : i_data[7:0];    // (fix 11/01) 2 자리 글자라 99 까지
+ 
+--- v2/WTS/stopwatch_datapath.v
++++ fix/WTS/stopwatch_datapath.v
+@@ -23,2 +23,3 @@
+     output [HOUR_BIT_WIDTH-1:0] o_sw_hour,
++    output [23:0]               o_sw_run_time,   // (fix 11/01 D7) 랩과 상관없이 지금 흐르는 값 (UART 용)
+     output                      o_sw_lap        // 1 = ?옪 ?몴?떆 以?
+@@ -91,2 +92,3 @@
+     assign w_tick_10ms = i_tick_10ms;
++    assign o_sw_run_time = {w_cnt_hour, w_cnt_min, w_cnt_sec, w_cnt_msec};   // (fix 11/01 D7)
+ 
+@@ -122,3 +124,3 @@
+     output [BIT_WIDTH-1:0] o_count,
+-    output reg             o_tick
++    output                 o_tick   // (fix 11/01 L6) 조합 : 마지막 값에서 tick 오는 그 클럭에 바로
+ );
+@@ -128,2 +130,3 @@
+     assign o_count = counter_reg;
++    assign o_tick  = i_tick & ((i_down) ? (counter_reg == 0) : (counter_reg == TIMES - 1));   // (fix 11/01 L6)
+ 
+@@ -132,3 +135,2 @@
+             counter_reg <= 0;
+-            o_tick <= 1'b0;
+         end else begin
+@@ -139,6 +141,3 @@
+                         counter_reg <= TIMES - 1;
+-                        o_tick <= 1'b1;
+                     end
+-                end else begin
+-                    o_tick <= 1'b0;
+                 end
+@@ -149,6 +148,3 @@
+                         counter_reg <= 0;
+-                        o_tick <= 1'b1;
+                     end
+-                end else begin
+-                    o_tick <= 1'b0;
+                 end
+--- v2/WTS/wts_top.v
++++ fix/WTS/wts_top.v
+@@ -67,2 +67,3 @@
+     wire [HOUR_BIT_WIDTH-1:0] w_sw_hour;
++    wire [23:0] w_sw_run_time;   // (fix 11/01 D7) 랩 전 카운터 값 (UART 용)
+     // 시계
+@@ -154,3 +155,4 @@
+         .o_sw_hour  (w_sw_hour),
+-        .o_sw_lap   (o_sw_lap)
++        .o_sw_lap   (o_sw_lap),
++        .o_sw_run_time(w_sw_run_time)   // (fix 11/01 D7)
+     );
+@@ -165,3 +167,3 @@
+         .i_wt_btn_D (w_wt_btn_D),
+-        .i_set_sw2  (i_set_sw2),
++        .i_set_sw2  (i_set_sw2 & i_display_mode_sw1),   // (fix 11/01 E6) 시.분 화면일 때만 설정
+         .o_wt_cursor(o_wt_cursor),
+@@ -231,3 +233,3 @@
+     // {hour 5, min 6, sec 6, cs 7}. 시계는 24시간 값 그대로, 타이머는 hour 자리 0
+-    assign o_sw_time = {w_sw_hour, w_sw_min, w_sw_sec, w_sw_msec};
++    assign o_sw_time = w_sw_run_time;   // (fix 11/01 D7) 랩 표시 중에도 PC 로는 흐르는 값
+     assign o_tm_time = {5'd0, w_tm_min, w_tm_sec, w_tm_msec};

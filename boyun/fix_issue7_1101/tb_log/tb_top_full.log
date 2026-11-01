@@ -1,0 +1,429 @@
+#-----------------------------------------------------------
+# xsim v2022.2 (64-bit)
+# SW Build 3671981 on Fri Oct 14 05:00:03 MDT 2022
+# IP Build 3669848 on Fri Oct 14 08:30:02 MDT 2022
+# Start of session at: Sun Nov  1 16:39:22 2026
+# Process ID: 8132
+# Current directory: C:/work/merge_fix4/tb/top
+# Command line: xsim.exe -log r.log -mode tcl -source {xsim.dir/full/xsim_script.tcl}
+# Log file: C:/work/merge_fix4/tb/top/r.log
+# Journal file: C:/work/merge_fix4/tb/top\xsim.jou
+# Running On: DESKTOP-5C3QTIF, OS: Windows, CPU Frequency: 2995 MHz, CPU Physical cores: 14, Host memory: 33885 MB
+#-----------------------------------------------------------
+source xsim.dir/full/xsim_script.tcl
+# xsim {full} -autoloadwcfg -runall
+Time resolution is 1 ps
+run -all
+---- S01 switch screens
+     => S01 switch screens PASS (8 checks)
+---- S02 switch mode get
+2801005000 PC -> "/get " +LF
+4434445000   PC <- "12:00:00.00" (sel 2)
+     KNOWN : stopwatch screen by switch, /get sent sel 2 (watch) - U_CONTROL uses UART mode bits only
+     => S02 switch mode get PASS (3 checks)
+---- S03 mod 8 options + get
+4519405000 PC -> "/mod w_hm" +LF
+5583405000 PC -> "/get " +LF
+7216525000   PC <- "12:00:00.00" (sel 2)
+7301805000 PC -> "/mod w_ms" +LF
+8365805000 PC -> "/get " +LF
+9999145000   PC <- "12:00:00.00" (sel 2)
+10084205000 PC -> "/mod s_hm" +LF
+11148205000 PC -> "/get " +LF
+12781225000   PC <- "00:00:00.00" (sel 0)
+12866605000 PC -> "/mod s_ms" +LF
+13930605000 PC -> "/get " +LF
+15563845000   PC <- "00:00:00.00" (sel 0)
+15649005000 PC -> "/mod t_hm" +LF
+16713005000 PC -> "/get " +LF
+18346465000   PC <- "00:00:00.00" (sel 1)
+18431405000 PC -> "/mod t_ms" +LF
+19495405000 PC -> "/get " +LF
+21128545000   PC <- "00:00:00.00" (sel 1)
+21213805000 PC -> "/mod dist" +LF
+22277805000 PC -> "/get " +LF
+23392765000   PC <- "000cm" (sel 3)
+23396205000 PC -> "/mod temp" +LF
+24460205000 PC -> "/get " +LF
+25661305000   PC <- "--%--C" (sel 4)
+     => S03 mod 8 options + get PASS (49 checks)
+---- S04 switches ignored
+25678605000 PC -> "/mod w_ms" +LF
+     => S04 switches ignored PASS (2 checks)
+---- S05 mod bad option
+27142605000 PC -> "/mod abcd" +LF
+31006605000 PC -> "/mod w_h" +LF
+     => S05 mod bad option PASS (4 checks)
+---- S06 set 24h 12h
+34784205000 PC -> "/set 24h" +LF
+35861805000 PC -> "/mod s_ms" +LF
+37025805000 PC -> "/set 12h" +LF
+     => S06 set 24h 12h PASS (3 checks)
+---- S07 watch set
+38103405000 PC -> "/mod s_ms" +LF
+39267405000 PC -> "/set w_hm" +LF
+40431405000 PC -> "/mod w_hm" +LF
+41595405000 PC -> "/set w_hm" +LF
+42759405000 PC -> "/btn U" +LF
+43664205000 PC -> "/btn L" +LF
+44569005000 PC -> "/btn U" +LF
+45473805000 PC -> "/btn L" +LF
+46378605000 PC -> "/btn D" +LF
+47283405000 PC -> "/btn R" +LF
+48188205000 PC -> "/off w_h" +LF
+49265805000 PC -> "/btn U" +LF
+     => S07 watch set PASS (10 checks)
+---- S08 stopwatch
+50170605000 PC -> "/mod s_ms" +LF
+51334605000 PC -> "/btn L" +LF
+52239405000 PC -> "/btn R" +LF
+77844205000 PC -> "/btn R" +LF
+98649005000 PC -> "/get " +LF
+100282285000   PC <- "00:00:00.02" (sel 0)
+100367405000 PC -> "/btn D" +LF
+101172205000 PC -> "/btn D" +LF
+101977005000 PC -> "/btn R" +LF
+117581805000 PC -> "/btn L" +LF
+118386605000 PC -> "/btn U" +LF
+119191405000 PC -> "/btn R" +LF
+119996205000 PC -> "/btn L" +LF
+120801005000 PC -> "/btn U" +LF
+121605805000 PC -> "/btn R" +LF
+152210605000 PC -> "/btn R" +LF
+153015405000 PC -> "/btn U" +LF
+153820205000 PC -> "/btn L" +LF
+     => S08 stopwatch PASS (14 checks)
+---- S09 timer + alarm
+154625005000 PC -> "/mod t_ms" +LF
+155789005000 PC -> "/btn U" +LF
+156593805000 PC -> "/btn U" +LF
+157398605000 PC -> "/btn R" +LF
+158203405000 PC -> "/btn D" +LF
+159008205000 PC -> "/btn L" +LF
+159813005000 PC -> "/get " +LF
+161446465000   PC <- "00:11:19.20" (sel 1)
+161531405000 PC -> "/btn L" +LF
+162336205000 PC -> "/btn L" +LF
+163141005000 PC -> "/btn U" +LF
+163945805000 PC -> "/btn L" +LF
+208550605000 PC -> "/mod dist" +LF
+209714605000 PC -> "/btn U" +LF
+210619405000 PC -> "/btn U" +LF
+211524205000 PC -> "/mod t_ms" +LF
+212688205000 PC -> "/btn R" +LF
+     => S09 timer + alarm PASS (44 checks)
+---- S10 screen gating
+213593005000 PC -> "/mod s_ms" +LF
+214757005000 PC -> "/mod dist" +LF
+255621005000 PC -> "/btn R" +LF
+266225805000 PC -> "/mod s_ms" +LF
+267389805000 PC -> "/btn R" +LF
+272994605000 PC -> "/btn R" +LF
+273899405000 PC -> "/mod temp" +LF
+275063405000 PC -> "/btn R" +LF
+     => S10 screen gating PASS (5 checks)
+---- S11 physical buttons
+287668205000 PC -> "/mod s_ms" +LF
+299132205000 PC -> "/btn U" +LF
+300037005000 PC -> "/btn R" +LF
+     => S11 physical buttons PASS (4 checks)
+---- S12 SR04
+300841805000 PC -> "/mod dist" +LF
+302005805000 PC -> "/btn R" +LF
+312610605000 PC -> "/get " +LF
+313725385000   PC <- "100cm" (sel 3)
+313729005000 PC -> "/btn U" +LF
+414333805000 PC -> "/btn U" +LF
+514938605000 PC -> "/btn R" +LF
+535543405000 PC -> "/get " +LF
+536658445000   PC <- "Err 1" (sel 3)
+576661805000 PC -> "/btn R" +LF
+622266605000 PC -> "/get " +LF
+623381365000   PC <- "Err 2" (sel 3)
+663385005000 PC -> "/btn R" +LF
+673989805000 PC -> "/get " +LF
+675104725000   PC <- "020cm" (sel 3)
+     => S12 SR04 PASS (28 checks)
+---- S13 DHT11
+675108205000 PC -> "/mod temp" +LF
+676272205000 PC -> "/btn R" +LF
+688877005000 PC -> "/get " +LF
+690078385000   PC <- "45%25C" (sel 4)
+690095405000 PC -> "/btn R" +LF
+702700205000 PC -> "/get " +LF
+703814905000   PC <- "Err 3" (sel 4)
+703818605000 PC -> "/btn R" +LF
+716423405000 PC -> "/get " +LF
+717538465000   PC <- "Err 1" (sel 4)
+717541805000 PC -> "/btn U" +LF
+733146605000 PC -> "/btn U" +LF
+     => S13 DHT11 PASS (21 checks)
+---- S14 auto
+757751405000 PC -> "/auto all" +LF
+761643505000   PC <- "00:00:00.01" (sel 0)
+763643665000   PC <- "00:00:00.00" (sel 1)
+765643825000   PC <- "11:11:00.76" (sel 2)
+767125045000   PC <- "020cm" (sel 3)
+769211605000   PC <- "60%30C" (sel 4)
+771643765000   PC <- "00:00:00.01" (sel 0)
+773643925000   PC <- "00:00:00.00" (sel 1)
+775643545000   PC <- "11:11:00.77" (sel 2)
+777125305000   PC <- "020cm" (sel 3)
+779211865000   PC <- "60%30C" (sel 4)
+779215405000 PC -> "/auto _sw" +LF
+781643485000   PC <- "00:00:00.01" (sel 0)
+783643645000   PC <- "00:00:00.01" (sel 0)
+785643805000   PC <- "00:00:00.01" (sel 0)
+785679405000 PC -> "/get " +LF
+787643965000   PC <- "00:00:00.01" (sel 0)
+789643585000   PC <- "00:00:00.01" (sel 0)
+791643745000   PC <- "00:00:00.01" (sel 0)
+793643905000   PC <- "00:00:00.01" (sel 0)
+794197805000 PC -> "/auto _tm" +LF
+795643525000   PC <- "00:00:00.01" (sel 0)
+797643685000   PC <- "00:00:00.00" (sel 1)
+799643845000   PC <- "00:00:00.00" (sel 1)
+799661805000 PC -> "/auto _wh" +LF
+801643465000   PC <- "11:11:00.80" (sel 2)
+803643625000   PC <- "11:11:00.80" (sel 2)
+805643785000   PC <- "11:11:00.80" (sel 2)
+805725805000 PC -> "/auto dis" +LF
+807125545000   PC <- "020cm" (sel 3)
+809125165000   PC <- "020cm" (sel 3)
+811125325000   PC <- "020cm" (sel 3)
+811189805000 PC -> "/auto tem" +LF
+813211885000   PC <- "60%30C" (sel 4)
+815211505000   PC <- "60%30C" (sel 4)
+817211665000   PC <- "60%30C" (sel 4)
+817253805000 PC -> "/auto off" +LF
+     => S14 auto PASS (74 checks)
+---- S15 bad commands
+832117805000 PC -> "/gxt" +LF
+832973185000   PC <- "ERROR" (sel 7)
+833049805000 PC -> "/get" +LF
+834078025000   PC <- "ERROR" (sel 7)
+834081805000 PC -> "/get x" +LF
+835196905000   PC <- "ERROR" (sel 7)
+835286605000 PC -> "/btn X" +LF
+836401645000   PC <- "ERROR" (sel 7)
+836491405000 PC -> "/modw_hm" +LF
+837519985000   PC <- "ERROR" (sel 7)
+837569005000 PC -> "/xyz" +LF
+838338085000   PC <- "ERROR" (sel 7)
+838401005000 PC -> "/mod " +LF
+839515825000   PC <- "ERROR" (sel 7)
+839519405000 PC -> "/auto" +LF
+840634165000   PC <- "ERROR" (sel 7)
+840637805000 PC -> "/ab" +LF
+841493305000   PC <- "ERROR" (sel 7)
+841583405000 PC -> "/mo/get " +LF
+842525245000   PC <- "ERROR" (sel 7)
+843216445000   PC <- "60%30C" (sel 4)
+843261005000 PC -> "abc/get " +LF
+844721425000   PC <- "60%30C" (sel 4)
+     => S15 bad commands PASS (48 checks)
+---- S16 error while busy
+847738605000 PC -> "/mod w_ms" +LF
+848902605000 PC -> "/auto all" +LF
+849766605000 PC -> "/gxt" +LF
+850198605000 PC -> "/gxt" +LF
+850622005000   PC <- "ERROR" (sel 7)
+850630605000 PC -> "/gxt" +LF
+851062605000 PC -> "/gxt" +LF
+851226805000   PC <- "ERROR" (sel 7)
+851831605000   PC <- "ERROR" (sel 7)
+852436405000   PC <- "ERROR" (sel 7)
+853559605000   PC <- "00:00:00.01" (sel 0)
+854794585000   PC <- "00:00:00.00" (sel 1)
+856794745000   PC <- "11:11:00.85" (sel 2)
+858275965000   PC <- "020cm" (sel 3)
+859494605000 PC -> "/auto off" +LF
+860362525000   PC <- "60%30C" (sel 4)
+866358605000 PC -> "/get "
+866877005000 PC -> "/gxt" +LF
+867991645000   PC <- "11:11:00.86" (sel 2)
+868596445000   PC <- "ERROR" (sel 7)
+     => S16 error while busy PASS (25 checks)
+---- S17 back-to-back
+868609005000 PC -> "/mod s_ms
+/get 
+"
+869991405000 PC -> "/mod dist
+/get 
+"
+871106365000   PC <- "00:00:00.01" (sel 0)
+871373805000 PC -> "/mod temp
+/get 
+"
+871970365000   PC <- "020cm" (sel 3)
+873439165000   PC <- "60%30C" (sel 4)
+     => S17 back-to-back PASS (10 checks)
+---- S18 reset mid line
+882756205000 PC -> "/mod w_ms" +LF
+883920205000 PC -> "/get " +LF
+886949825000 PC -> "/mod w_hm" +LF
+888113825000 PC -> "/get " +LF
+889747125000   PC <- "12:00:00.00" (sel 2)
+     => S18 reset mid line PASS (6 checks)
+---- S19 random 120
+889832225000 PC -> "/mod w_hm" +LF
+890996225000 PC -> "/get " +LF
+892629645000   PC <- "12:00:00.00" (sel 2)
+892714625000 PC -> "/mod temp" +LF
+893878625000 PC -> "/mod w_hm" +LF
+895042625000 PC -> "/mod s_hm" +LF
+896206625000 PC -> "/mod t_hm" +LF
+897370625000 PC -> "/mod s_ms" +LF
+898534625000 PC -> "/get " +LF
+900168045000   PC <- "00:00:00.00" (sel 0)
+900253025000 PC -> "/mod t_ms" +LF
+901417025000 PC -> "/mod t_ms" +LF
+902581025000 PC -> "/btn D" +LF
+904185825000 PC -> "/mod s_hm" +LF
+905349825000 PC -> "/mod temp" +LF
+906513825000 PC -> "/get " +LF
+907715085000   PC <- "--%--C" (sel 4)
+907732225000 PC -> "/btn U" +LF
+909337025000 PC -> "/set 24h" +LF
+910414625000 PC -> "/btn D" +LF
+912019425000 PC -> "/get " +LF
+913220925000   PC <- "--%--C" (sel 4)
+913237825000 PC -> "/get x" +LF
+914352765000   PC <- "ERROR" (sel 7)
+914442625000 PC -> "/btn D" +LF
+916047425000 PC -> "/gxt" +LF
+916903185000   PC <- "ERROR" (sel 7)
+916979425000 PC -> "/mod t_ms" +LF
+918143425000 PC -> "/mod t_ms" +LF
+919307425000 PC -> "/mod s_ms" +LF
+920471425000 PC -> "/mod t_ms" +LF
+921635425000 PC -> "/mod t_ms" +LF
+922799425000 PC -> "/mod t_hm" +LF
+923963425000 PC -> "/set 12h" +LF
+925041025000 PC -> "/mod w_ms" +LF
+926205025000 PC -> "/get " +LF
+927838185000   PC <- "12:00:00.04" (sel 2)
+927923425000 PC -> "/set 24h" +LF
+929001025000 PC -> "/mod t_hm" +LF
+930165025000 PC -> "/btn L" +LF
+931769825000 PC -> "/get " +LF
+933402885000   PC <- "00:09:58.40" (sel 1)
+933488225000 PC -> "/mod w_ms" +LF
+934652225000 PC -> "/mod t_ms" +LF
+935816225000 PC -> "/mod t_ms" +LF
+936980225000 PC -> "/mod dist" +LF
+938144225000 PC -> "/mod t_ms" +LF
+939308225000 PC -> "/get " +LF
+940941285000   PC <- "00:09:50.86" (sel 1)
+941026625000 PC -> "/get " +LF
+942660105000   PC <- "00:09:49.14" (sel 1)
+942745025000 PC -> "/set 24h" +LF
+943822625000 PC -> "/mod w_ms" +LF
+944986625000 PC -> "/get " +LF
+946619925000   PC <- "12:00:00.06" (sel 2)
+946705025000 PC -> "/btn L" +LF
+948309825000 PC -> "/btn U" +LF
+949914625000 PC -> "/set 24h" +LF
+950992225000 PC -> "/get " +LF
+952625265000   PC <- "12:00:00.06" (sel 2)
+952710625000 PC -> "/mod dist" +LF
+953874625000 PC -> "/mod t_hm" +LF
+955038625000 PC -> "/set 12h" +LF
+956116225000 PC -> "/get " +LF
+957749325000   PC <- "00:09:34.05" (sel 1)
+957834625000 PC -> "/mod s_ms" +LF
+958998625000 PC -> "/mod s_ms" +LF
+960162625000 PC -> "/mod s_hm" +LF
+961326625000 PC -> "/btn R" +LF
+962931425000 PC -> "/mod s_ms" +LF
+964095425000 PC -> "/mod t_ms" +LF
+965259425000 PC -> "/btn U" +LF
+966864225000 PC -> "/mod dist" +LF
+968028225000 PC -> "/mod s_hm" +LF
+969192225000 PC -> "/btn R" +LF
+970797025000 PC -> "/btn R" +LF
+972401825000 PC -> "/mod w_hm" +LF
+973565825000 PC -> "/btn D" +LF
+975170625000 PC -> "/get " +LF
+976803765000   PC <- "12:00:00.09" (sel 2)
+976889025000 PC -> "/btn U" +LF
+978493825000 PC -> "/set 12h" +LF
+979571425000 PC -> "/mod t_hm" +LF
+980735425000 PC -> "/btn R" +LF
+982340225000 PC -> "/mod s_ms" +LF
+983504225000 PC -> "/mod temp" +LF
+984668225000 PC -> "/set 12h" +LF
+985745825000 PC -> "/mod dist" +LF
+986909825000 PC -> "/get " +LF
+988024425000   PC <- "000cm" (sel 3)
+988028225000 PC -> "/set 12h" +LF
+989105825000 PC -> "/set 12h" +LF
+990183425000 PC -> "/mod t_ms" +LF
+991347425000 PC -> "/mod w_hm" +LF
+992511425000 PC -> "/btn U" +LF
+994116225000 PC -> "/btn U" +LF
+995721025000 PC -> "/set 12h" +LF
+996798625000 PC -> "/set 24h" +LF
+997876225000 PC -> "/mod t_ms" +LF
+999040225000 PC -> "/btn L" +LF
+1000645025000 PC -> "/btn D" +LF
+1002249825000 PC -> "/get " +LF
+1003883145000   PC <- "00:10:00.00" (sel 1)
+1003968225000 PC -> "/btn U" +LF
+1005573025000 PC -> "/get " +LF
+1007206305000   PC <- "00:10:10.00" (sel 1)
+1007291425000 PC -> "/mod dist" +LF
+1008455425000 PC -> "/get " +LF
+1009570425000   PC <- "000cm" (sel 3)
+1009573825000 PC -> "/mod t_hm" +LF
+1010737825000 PC -> "/mod w_ms" +LF
+1011901825000 PC -> "/btn L" +LF
+1013506625000 PC -> "/mod t_ms" +LF
+1014670625000 PC -> "/mod w_ms" +LF
+1015834625000 PC -> "/btn L" +LF
+1017439425000 PC -> "/set 12h" +LF
+1018517025000 PC -> "/get " +LF
+1020150105000   PC <- "12:00:00.13" (sel 2)
+1020235425000 PC -> "/mod s_hm" +LF
+1021399425000 PC -> "/btn D" +LF
+1023004225000 PC -> "/mod dist" +LF
+1024168225000 PC -> "/mod t_hm" +LF
+1025332225000 PC -> "/set 24h" +LF
+1026409825000 PC -> "/mod s_ms" +LF
+1027573825000 PC -> "/get " +LF
+1029206985000   PC <- "00:00:00.06" (sel 0)
+1029292225000 PC -> "/btn L" +LF
+1030897025000 PC -> "/mod s_ms" +LF
+1032061025000 PC -> "/set 12h" +LF
+1033138625000 PC -> "/mod s_ms" +LF
+1034302625000 PC -> "/btn L" +LF
+1035907425000 PC -> "/get " +LF
+1037540805000   PC <- "00:00:00.07" (sel 0)
+1037625825000 PC -> "/mod dist" +LF
+1038789825000 PC -> "/mod w_hm" +LF
+1039953825000 PC -> "/set 24h" +LF
+1041031425000 PC -> "/mod s_ms" +LF
+1042195425000 PC -> "/btn Q" +LF
+1043310165000   PC <- "ERROR" (sel 7)
+1043400225000 PC -> "/get " +LF
+1045033305000   PC <- "00:00:00.08" (sel 0)
+1045118625000 PC -> "/set 24h" +LF
+1046196225000 PC -> "/btn L" +LF
+1047801025000 PC -> "/gxt" +LF
+1048656705000   PC <- "ERROR" (sel 7)
+1048733025000 PC -> "/mod temp" +LF
+1049597025000 PC -> "/btn U" +LF
+     => S19 random 120 PASS (192 checks)
+---- S20 FND scan + data
+1050501825000 PC -> "/mod dist" +LF
+1054665825000 PC -> "/mod temp" +LF
+1055829825000 PC -> "/mod w_hm" +LF
+     => S20 FND scan + data PASS (6 checks)
+==== coverage : /mod w_hm 9 w_ms 9 s_hm 6 s_ms 17 t_hm 8 t_ms 16 dist 12 temp 8 | get 28 | set24 1 set12 1 | set_w 2 off 1 | btn R 4 L 8 U 7 D 6 | auto 7 | bad 15 | mod-bad 2
+==== lines by sel : sw 19 tm 14 wh 18 dist 14 temp 15 err 19
+==== lines 98, send_go 99, checks 558, KNOWN 1, TOTAL MISMATCH = 0
+$finish called at time : 1061993825 ns : File "C:/work/merge_fix4/tb/top/tb_top_full.v" Line 906
+run: Time (s): cpu = 00:00:02 ; elapsed = 00:13:30 . Memory (MB): peak = 264.969 ; gain = 0.000
+exit
+INFO: xsimkernel Simulation Memory Usage: 12004 KB (Peak: 12004 KB), Simulation CPU Usage: 787796 ms
+INFO: [Common 17-206] Exiting xsim at Sun Nov  1 16:52:55 2026...
