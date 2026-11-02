@@ -1,0 +1,97 @@
+
+****** xsim v2020.2 (64-bit)
+  **** SW Build 3064766 on Wed Nov 18 09:12:45 MST 2020
+  **** IP Build 3064653 on Wed Nov 18 14:17:31 MST 2020
+    ** Copyright 1986-2020 Xilinx, Inc. All Rights Reserved.
+
+source xsim.dir/tb_K_display_snap/xsim_script.tcl
+# xsim {tb_K_display_snap} -testplusarg only_K3 -autoloadwcfg -runall
+Vivado Simulator 2020.2
+Time resolution is 1 ps
+run -all
+[    0.000000 ms] [NOTE   ] only scenario / group : K3
+
+==========================================================================================
+[    0.000000 ms] [BEGIN  ] K1  WTS FND
+              plan   : stopwatch 12.34 stopped ; watch HH.MM 12:05 ; AN2 dot over 1.2 s
+              expect : "12.34" ; "12.05" ; dot on while watch 1/100 < 50
+------------------------------------------------------------------------------------------
+[    0.003030 ms] [PRELOAD] stopwatch <- 00:00:12.34
+[    2.002046 ms] [OK     ] K1-1   stopwatch SS.CC | exp "12.34" | got "12.34"
+[    2.003060 ms] [PRELOAD] watch <- 12:05:00.00
+[    6.002046 ms] [OK     ] K1-2   watch HH.MM | exp "12.05" (dot blinks) | got "12.05"
+[  126.002046 ms] [OK     ] K1-3   AN2 dot vs 1/100 < 50 | exp always match, on and off seen | got 0 mismatch, on 1, off 1
+
+==========================================================================================
+[  126.002046 ms] [BEGIN  ] K2  set blink
+              plan   : watch set 12:34, cursor AN0 -> (R) AN2 -> (R) AN1, each ~1.1 s
+              expect : only the cursor digit blank while 1/100 >= 50
+------------------------------------------------------------------------------------------
+[  126.006080 ms] [PRELOAD] watch <- 12:34:00.00
+[  236.254096 ms] [OK     ] K2-1   cursor 0 (AN0) | exp only that digit blinks | got 0 mismatch, blank 25, digit 30
+[  346.504096 ms] [OK     ] K2-2   cursor 2 (AN2) | exp only that digit blinks | got 0 mismatch, blank 25, digit 31
+[  456.754096 ms] [OK     ] K2-3   cursor 1 (AN1) | exp only that digit blinks | got 0 mismatch, blank 25, digit 30
+
+==========================================================================================
+[  456.754096 ms] [BEGIN  ] K3  distance FND
+              plan   : reset, 5.8, 352.7, 399.1 cm, no echo, out of range, stuck
+              expect : 000.0 005.8 352.7 399.1 Err1 Err2 Err3
+------------------------------------------------------------------------------------------
+[  458.756146 ms] [FAIL   ] K3-1   after reset | exp "000.0" | got "0000"
+[  460.756146 ms] [FAIL   ] K3-2   5.8 cm | exp "005.8" | got "0058"
+[  468.756146 ms] [FAIL   ] K3-3   352.7 cm | exp "352.7" | got "3527"
+[  475.006146 ms] [FAIL   ] K3-4   399.1 cm | exp "399.1" | got "3991"
+[  481.756146 ms] [OK     ] K3-5   no echo | exp "Err1" | got "Err1"
+[  487.006146 ms] [OK     ] K3-6   out of range | exp "Err2" | got "Err2"
+[  498.006146 ms] [OK     ] K3-7   echo stuck | exp "Err3" | got "Err3"
+
+==========================================================================================
+[  498.006146 ms] [BEGIN  ] K4  temp / humidity FND
+              plan   : before first, 5/3, 55/24, no response, cut, checksum
+              expect : ---- 05.03 55.24 Err1 Err2 Err3
+------------------------------------------------------------------------------------------
+[  500.008196 ms] [OK     ] K4-1   before first measurement | exp "----" | got "----"
+[  505.258196 ms] [OK     ] K4-2   5 % 3 C | exp "05.03" | got "05.03"
+[  510.258196 ms] [OK     ] K4-3   55 % 24 C | exp "55.24" | got "55.24"
+[  515.008196 ms] [OK     ] K4-4   no response | exp "Err1" | got "Err1"
+[  520.258196 ms] [OK     ] K4-5   cut after 20 bits | exp "Err2" | got "Err2"
+[  525.258196 ms] [OK     ] K4-6   checksum | exp "Err3" | got "Err3"
+
+==========================================================================================
+[  525.258196 ms] [BEGIN  ] K5  LED per screen
+              plan   : 7 screens
+              expect : README 10 jang table
+------------------------------------------------------------------------------------------
+[  525.261216 ms] [OK     ] K5-1   watch SS.CC, 12 h PM | exp 8009 | got 8009
+[  525.262216 ms] [OK     ] K5-2   watch HH.MM, 12 h PM | exp 8005 | got 8005
+[  525.263216 ms] [OK     ] K5-3   stopwatch SS.CC | exp 000a | got 000a
+[  525.264265 ms] [OK     ] K5-4   stopwatch HH.MM + lap | exp 0086 | got 0086
+[  525.265405 ms] [OK     ] K5-5   timer running | exp 0060 | got 0060
+[  528.269495 ms] [OK     ] K5-6   distance : measuring then error | exp LD8 1 -> LD9 1, LD15~10 0 | got during 0100, after 0200
+[  530.742255 ms] [OK     ] K5-7   temp/humi : auto + valid | exp LD3 1, LD2 1, LD15~4 0 | got 000c
+
+==========================================================================================
+[  530.742295 ms] [BEGIN  ] K6  FND scan
+              plan   : watch 16 slots and com changes
+              expect : one-hot active-low, AN0 -> AN3 order, 250 us per slot
+------------------------------------------------------------------------------------------
+[  536.994336 ms] [OK     ] K6-1   fnd_com | exp one-hot active-low, AN0 1 2 3 0 ... | got one-hot 1, order 1
+[  539.244305 ms] [OK     ] K6-2   slot length | exp 250.000 us | got 250.000 us (first)
+
+==========================================================================================
+  K1   checks 3  PASS
+  K2   checks 3  PASS
+  K3   checks 7  FAIL
+  K4   checks 6  PASS
+  K5   checks 7  PASS
+  K6   checks 2  PASS
+------------------------------------------------------------------------------------------
+  UART lines : 0 received, snapshot mismatch 0, unexpected 0, no CR 0, frame err 0
+  x/z on outputs : none
+  FAIL ids  : K3-1 K3-2 K3-3 K3-4
+[  539.244305 ms] [SUMMARY] K_display checks=28 fail=4 issue=0 => FAIL
+==========================================================================================
+$finish called at time : 539244305 ns : File "C:/26_AI_CAMP/BEST_Stop_watch_project/FINAL/sim_file/tb_merge_harness.sv" Line 271
+run: Time (s): cpu = 00:00:01 ; elapsed = 00:05:03 . Memory (MB): peak = 917.445 ; gain = 0.047
+exit
+INFO: [Common 17-206] Exiting xsim at Mon Nov  2 08:15:15 2026...

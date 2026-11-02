@@ -1,0 +1,114 @@
+
+****** xsim v2020.2 (64-bit)
+  **** SW Build 3064766 on Wed Nov 18 09:12:45 MST 2020
+  **** IP Build 3064653 on Wed Nov 18 14:17:31 MST 2020
+    ** Copyright 1986-2020 Xilinx, Inc. All Rights Reserved.
+
+source xsim.dir/tb_C_mode_snap/xsim_script.tcl
+# xsim {tb_C_mode_snap} -testplusarg only_C4 -autoloadwcfg -runall
+Vivado Simulator 2020.2
+Time resolution is 1 ps
+run -all
+[    0.000000 ms] [NOTE   ] only scenario / group : C4
+
+==========================================================================================
+[    0.000000 ms] [BEGIN  ] C1  switch priority
+              plan   : 8 combinations of sw6 sw5 sw4 sw0
+              expect : sw6 > sw5 > WTS, inside WTS sw4 > sw0
+------------------------------------------------------------------------------------------
+[    0.003016 ms] [OK     ] C1-1   sw[6:0] = 000_0000 | exp WT | got WT (disp_sel 0)
+[    0.004016 ms] [OK     ] C1-2   sw[6:0] = 000_0001 | exp SW | got SW (disp_sel 0)
+[    0.005016 ms] [OK     ] C1-3   sw[6:0] = 001_0000 | exp TM | got TM (disp_sel 0)
+[    0.006016 ms] [OK     ] C1-4   sw[6:0] = 001_0001 | exp TM | got TM (disp_sel 0)
+[    0.007016 ms] [OK     ] C1-5   sw[6:0] = 010_0000 | exp DIST | got DIST (disp_sel 1)
+[    0.008016 ms] [OK     ] C1-6   sw[6:0] = 011_0001 | exp DIST | got DIST (disp_sel 1)
+[    0.009016 ms] [OK     ] C1-7   sw[6:0] = 100_0000 | exp DHT | got DHT (disp_sel 2)
+[    0.010016 ms] [OK     ] C1-8   sw[6:0] = 110_0000 | exp DHT | got DHT (disp_sel 2)
+
+==========================================================================================
+[    0.010016 ms] [BEGIN  ] C2  after first valid /mod, switches are ignored
+              plan   : /mod dist -> toggle sw0..sw6 one by one
+              expect : screen / LED / button path stay distance
+------------------------------------------------------------------------------------------
+[    2.210286 ms] [FAIL   ] C2-1   FND source while toggling switches | exp distance (disp_sel 1) | got disp_sel 0, violation 1
+[    2.210286 ms] [FAIL   ] C2-2   LED while toggling switches | exp {6'b0, sr04_led} | got 8009
+[    2.311335 ms] [FAIL   ] C2-3   R goes to SR04 only | exp 1 trig, SW still STOP | got 0 trig, sw_run 1
+
+==========================================================================================
+[    2.312335 ms] [BEGIN  ] C3  unknown /mod option does not take control
+              plan   : /mod abcd -> sw0 1
+              expect : no ERROR, uart_mode 0, switches still work
+------------------------------------------------------------------------------------------
+[    5.098596 ms] [OK     ] C3-1   /mod abcd | exp no ERROR line | got 0 error, 0 line
+[    5.099596 ms] [OK     ] C3-2   switch control kept | exp uart_mode 0, sw0 -> SW | got uart_mode 0, screen SW
+
+==========================================================================================
+[    5.100596 ms] [BEGIN  ] C4  /mod 8 commands -> module_control_bit
+              plan   : w_hm w_ms s_hm s_ms t_hm t_ms dist temp
+              expect : ctrl bits as README table, changed <= 1 us after last byte rx_done
+------------------------------------------------------------------------------------------
+[    5.886866 ms] [FAIL   ] C4-1   /mod w_hm | exp 000_0010, <= 1 us | got 000_0000, -780639 ns after rx_done
+[    6.670116 ms] [OK     ] C4-2   /mod w_ms | exp 000_0000, <= 1 us | got 000_0000, -1564179 ns after rx_done
+[    7.453366 ms] [FAIL   ] C4-3   /mod s_hm | exp 000_0011, <= 1 us | got 000_0000, -2347179 ns after rx_done
+[    8.236616 ms] [FAIL   ] C4-4   /mod s_ms | exp 000_0001, <= 1 us | got 000_0000, -3130719 ns after rx_done
+[    9.019866 ms] [FAIL   ] C4-5   /mod t_hm | exp 001_0010, <= 1 us | got 000_0000, -3913719 ns after rx_done
+[    9.803116 ms] [FAIL   ] C4-6   /mod t_ms | exp 001_0000, <= 1 us | got 000_0000, -4697259 ns after rx_done
+[   10.586366 ms] [FAIL   ] C4-7   /mod dist | exp 010_0000, <= 1 us | got 000_0000, -5480259 ns after rx_done
+[   11.369616 ms] [FAIL   ] C4-8   /mod temp | exp 100_0000, <= 1 us | got 000_0000, -6263799 ns after rx_done
+
+==========================================================================================
+[   11.369616 ms] [BEGIN  ] C5  12/24 h setting survives /mod
+              plan   : /mod w_hm, watch 13:00 -> /set 24h -> /mod s_ms -> /mod w_hm
+              expect : bit3 stays 1, FND hour 13
+------------------------------------------------------------------------------------------
+[   12.154900 ms] [PRELOAD] watch <- 13:00:00.00
+[   12.938150 ms] [FAIL   ] C5-1   /set 24h | exp bit3 1, hour 13, LD15 0 | got bit3 0, hour 1, LD15 1
+[   14.504650 ms] [FAIL   ] C5-2   after /mod s_ms -> /mod w_hm | exp bit3 1, hour 13 | got bit3 0, hour 1
+
+==========================================================================================
+[   14.504650 ms] [BEGIN  ] C6  /set w_hm only on watch HH.MM screen
+              plan   : /set w_hm on w_ms, s_hm, t_hm; /off w_h when not set
+              expect : no change, no ERROR
+------------------------------------------------------------------------------------------
+[   16.073166 ms] [OK     ] C6-1   /set w_hm on w_ms | exp bit2 0, 000_0000 | got 000_0000, 0 error
+[   17.639666 ms] [OK     ] C6-2   /set w_hm on s_hm | exp bit2 0, 000_0000 | got 000_0000, 0 error
+[   19.206166 ms] [OK     ] C6-3   /set w_hm on t_hm | exp bit2 0, 000_0000 | got 000_0000, 0 error
+[   20.685861 ms] [OK     ] C6-4   /off w_h when not in set | exp 000_0000 | got 000_0000, 0 error
+
+==========================================================================================
+[   20.685861 ms] [BEGIN  ] C7  /set 24h before any /mod is ignored
+              plan   : reset -> /set 24h CR -> /mod w_hm -> watch 13:00
+              expect : 12 h display (01)
+------------------------------------------------------------------------------------------
+[   22.254390 ms] [PRELOAD] watch <- 13:00:00.00
+[   22.264390 ms] [OK     ] C7-1   hour display | exp bit3 0, 01 | got bit3 0, 01
+
+==========================================================================================
+[   22.264390 ms] [BEGIN  ] C8  /mod during watch set leaves set mode
+              plan   : /mod w_hm -> /set w_hm -> /mod s_ms -> /mod w_hm -> /btn U
+              expect : bit2 0, cursor 3 (NORMAL), U does not change minute
+------------------------------------------------------------------------------------------
+[   23.832906 ms] [NOTE   ] after /set w_hm : bit2 0, cursor 3
+[   24.616156 ms] [OK     ] C8-1   /mod s_ms | exp bit2 0, cursor 3 | got bit2 0, cursor 3
+[   25.399420 ms] [PRELOAD] watch <- 13:10:00.00
+[   25.922253 ms] [OK     ] C8-2   /mod w_hm + /btn U | exp min 10, cursor 3 | got min 10, cursor 3
+
+==========================================================================================
+  C1   checks 8  PASS
+  C2   checks 3  FAIL
+  C3   checks 2  PASS
+  C4   checks 8  FAIL
+  C5   checks 2  FAIL
+  C6   checks 4  PASS
+  C7   checks 1  PASS
+  C8   checks 2  PASS
+------------------------------------------------------------------------------------------
+  UART lines : 0 received, snapshot mismatch 0, unexpected 0, no CR 0, frame err 0
+  x/z on outputs : none
+  FAIL ids  : C2-1 C2-2 C2-3 C4-1 C4-3 C4-4 C4-5 C4-6 C4-7 C4-8 C5-1 C5-2
+[   25.922253 ms] [SUMMARY] C_mode checks=30 fail=12 issue=0 => FAIL
+==========================================================================================
+$finish called at time : 25922253360 ps : File "C:/26_AI_CAMP/BEST_Stop_watch_project/FINAL/sim_file/tb_merge_harness.sv" Line 271
+run: Time (s): cpu = 00:00:04 ; elapsed = 00:00:25 . Memory (MB): peak = 917.590 ; gain = 367.664
+exit
+INFO: [Common 17-206] Exiting xsim at Mon Nov  2 08:07:49 2026...

@@ -1,0 +1,82 @@
+
+****** xsim v2020.2 (64-bit)
+  **** SW Build 3064766 on Wed Nov 18 09:12:45 MST 2020
+  **** IP Build 3064653 on Wed Nov 18 14:17:31 MST 2020
+    ** Copyright 1986-2020 Xilinx, Inc. All Rights Reserved.
+
+source xsim.dir/tb_F_timer_snap/xsim_script.tcl
+# xsim {tb_F_timer_snap} -autoloadwcfg -runall
+Vivado Simulator 2020.2
+Time resolution is 1 ps
+run -all
+
+==========================================================================================
+[    0.000000 ms] [BEGIN  ] F1  10 second timer
+              plan   : U (+10 s) -> L (t0) -> wait alarm
+              expect : 00.10 ; alarm exactly 1000 T_CS after L (+-5 clk), LED6 while running ; all 16 LED blink 0.5 s
+------------------------------------------------------------------------------------------
+[    0.003065 ms] [OK     ] F1-1   after U | exp 00:10.00, FND MM.SS = 00.10 | got 00:10.00 run 0 alarm 0, disp 00.10
+[    9.994085 ms] [FAIL   ] F1-2   alarm time after L | exp 10000000 ns, LED6 1 while running | got 9990020 ns, LED6 1, 00:00.00 run 0 alarm 1
+[   11.513585 ms] [OK     ] F1-3   alarm LED = {16{watch msec >= 50}} | exp match, both FFFF and 0000 seen | got match 1, on 1, off 1
+
+==========================================================================================
+[   11.513625 ms] [BEGIN  ] F2  start from 00:00
+              plan   : L at 00:00
+              expect : does not start (LED6 0)
+------------------------------------------------------------------------------------------
+[   11.516735 ms] [OK     ] F2-1   L at 00:00 | exp not running | got 00:00.00 run 0 alarm 0
+
+==========================================================================================
+[   11.516735 ms] [BEGIN  ] F3  saturation and carry
+              plan   : D x6 ; 59:50 + U ; 00:50 + U
+              expect : 59:59 ; 59:59 ; 01:00
+------------------------------------------------------------------------------------------
+[   11.520045 ms] [OK     ] F3-1   D x6 (60 min) | exp 59:59.00 | got 59:59.00 run 0 alarm 0
+[   11.523005 ms] [NOTE   ] before U : 59:50.00 run 0 alarm 0
+[   11.523055 ms] [OK     ] F3-2   59:50 + U | exp 59:59.00 | got 59:59.00 run 0 alarm 0
+[   11.525365 ms] [OK     ] F3-3   00:50 + U | exp 01:00.00 | got 01:00.00 run 0 alarm 0
+
+==========================================================================================
+[   11.525365 ms] [BEGIN  ] F4  add ignored while running, L cancels
+              plan   : 00:30 run -> U R D -> L
+              expect : value keeps going down ; 00:00 SET
+------------------------------------------------------------------------------------------
+[   12.028715 ms] [OK     ] F4-1   U R D during RUN | exp <= 00:00:29.50, running | got 00:29.50 run 1 alarm 0
+[   12.028765 ms] [OK     ] F4-2   L during RUN | exp 00:00.00 SET | got 00:00.00 run 0 alarm 0
+
+==========================================================================================
+[   12.028765 ms] [BEGIN  ] F5  any button clears alarm
+              plan   : alarm -> R / L / U / D (each)
+              expect : SET, 00:00, the press is not added
+------------------------------------------------------------------------------------------
+[   22.022015 ms] [OK     ] F5-1   alarm + btn R | exp alarm 0, 00:00.00 | got 00:00.00 run 0 alarm 0
+[   32.015265 ms] [OK     ] F5-2   alarm + btn L | exp alarm 0, 00:00.00 | got 00:00.00 run 0 alarm 0
+[   42.008515 ms] [OK     ] F5-3   alarm + btn U | exp alarm 0, 00:00.00 | got 00:00.00 run 0 alarm 0
+[   52.001765 ms] [OK     ] F5-4   alarm + btn D | exp alarm 0, 00:00.00 | got 00:00.00 run 0 alarm 0
+
+==========================================================================================
+[   52.001765 ms] [BEGIN  ] F6  alarm while another screen is shown
+              plan   : timer 10 s -> distance screen -> alarm -> R -> timer screen -> U
+              expect : 16 LED blink on distance screen ; R there does not clear ; U on timer screen clears
+------------------------------------------------------------------------------------------
+[   63.514375 ms] [OK     ] F6-1   LED on distance screen during alarm | exp 16 LED blink | got match 1, on 1, off 1
+[   63.614415 ms] [OK     ] F6-2   R on distance screen | exp alarm stays, 1 trig | got alarm 1, 1 trig
+[   63.615455 ms] [OK     ] F6-3   U on timer screen | exp alarm 0 | got 00:00.00 run 0 alarm 0
+
+==========================================================================================
+  F1   checks 3  FAIL
+  F2   checks 1  PASS
+  F3   checks 3  PASS
+  F4   checks 2  PASS
+  F5   checks 4  PASS
+  F6   checks 3  PASS
+------------------------------------------------------------------------------------------
+  UART lines : 0 received, snapshot mismatch 0, unexpected 0, no CR 0, frame err 0
+  x/z on outputs : none
+  FAIL ids  : F1-2
+[   63.615455 ms] [SUMMARY] F_timer checks=16 fail=1 issue=0 => FAIL
+==========================================================================================
+$finish called at time : 63615455 ns : File "C:/26_AI_CAMP/BEST_Stop_watch_project/FINAL/sim_file/tb_merge_harness.sv" Line 271
+run: Time (s): cpu = 00:00:01 ; elapsed = 00:00:35 . Memory (MB): peak = 917.609 ; gain = 0.047
+exit
+INFO: [Common 17-206] Exiting xsim at Mon Nov  2 08:09:36 2026...

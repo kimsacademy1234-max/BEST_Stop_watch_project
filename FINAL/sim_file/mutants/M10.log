@@ -1,0 +1,154 @@
+
+****** xsim v2020.2 (64-bit)
+  **** SW Build 3064766 on Wed Nov 18 09:12:45 MST 2020
+  **** IP Build 3064653 on Wed Nov 18 14:17:31 MST 2020
+    ** Copyright 1986-2020 Xilinx, Inc. All Rights Reserved.
+
+source xsim.dir/tb_H_uart_ctrl_snap/xsim_script.tcl
+# xsim {tb_H_uart_ctrl_snap} -testplusarg only_H1 -autoloadwcfg -runall
+Vivado Simulator 2020.2
+Time resolution is 1 ps
+run -all
+[    0.000000 ms] [NOTE   ] only scenario / group : H1
+
+==========================================================================================
+[    0.000000 ms] [BEGIN  ] H1  /get on each screen
+              plan   : /mod X -> /get <CR> (5 screens)
+              expect : right format + go snapshot, first byte < 1 bit after CR, line ends <= 13 chars + 1 bit
+------------------------------------------------------------------------------------------
+[    0.003030 ms] [PRELOAD] stopwatch <- 05:00:00.00
+[    2.424258 ms] [OK     ] H1-1   /mod s_ms + /get | exp SW line | got "05:00:00.00" (SW), start 0.1 us, end 1.123 ms
+[    4.843342 ms] [OK     ] H1-2   /mod t_hm + /get | exp TM line | got "00:30:00.00" (TM), start 0.1 us, end 1.123 ms
+[    7.262425 ms] [OK     ] H1-3   /mod w_hm + /get | exp WH line | got "12:00:06.14" (WH), start 0.1 us, end 1.123 ms
+[    9.163509 ms] [OK     ] H1-4   /mod dist + /get | exp DIST line | got "000cm" (DIST), start 0.1 us, end 0.605 ms
+[   11.150592 ms] [OK     ] H1-5   /mod temp + /get | exp TEMP line | got "--%--C" (TEMP), start 0.1 us, end 0.691 ms
+
+==========================================================================================
+[   11.150592 ms] [BEGIN  ] H2  /get in switch mode
+              plan   : no /mod, sw5 = distance screen -> /get <CR>
+              expect : design intent (B-1, 10/31): terminal is used after /mod only -> watch line, no ERROR / hang
+------------------------------------------------------------------------------------------
+[   12.790439 ms] [OK     ] H2-1   /get on distance screen (switch mode, before /mod) | exp watch line HH:MM:SS.CC | got "12:00:00.51"
+
+==========================================================================================
+[   12.791439 ms] [BEGIN  ] H3  /get during /auto is ignored
+              plan   : /auto _sw -> first line -> 0.3 T_AUTO -> /get <CR>
+              expect : no extra line, no ERROR, next auto line 1 T_AUTO later
+------------------------------------------------------------------------------------------
+[   12.794470 ms] [PRELOAD] stopwatch <- 05:00:00.00
+[   24.692148 ms] [OK     ] H3-1   line after /get | exp SW line 5.000 ms after previous | got "05:00:00.00" 5.000 ms, 0 error
+
+==========================================================================================
+[   25.475398 ms] [BEGIN  ] H4  /auto period
+              plan   : /auto opt -> 3 lines (fresh reset per option)
+              expect : first line T_AUTO after handshake, period T_AUTO +- 10 us, right format
+------------------------------------------------------------------------------------------
+[   25.478430 ms] [PRELOAD] stopwatch <- 05:00:00.00
+[   42.375825 ms] [OK     ] H4-1   /auto _sw | exp SW, 5.000 ms each | got SW, first 5.0001, 5.0000, 5.0000 ms
+[   43.162110 ms] [PRELOAD] stopwatch <- 05:00:00.00
+[   60.059505 ms] [OK     ] H4-2   /auto _tm | exp TM, 5.000 ms each | got TM, first 5.0001, 5.0000, 5.0000 ms
+[   60.845790 ms] [PRELOAD] stopwatch <- 05:00:00.00
+[   77.743185 ms] [OK     ] H4-3   /auto _wh | exp WH, 5.000 ms each | got WH, first 5.0001, 5.0000, 5.0000 ms
+[   78.529470 ms] [PRELOAD] stopwatch <- 05:00:00.00
+[   94.908865 ms] [OK     ] H4-4   /auto dis | exp DIST, 5.000 ms each | got DIST, first 5.0001, 5.0000, 5.0000 ms
+[   95.695150 ms] [PRELOAD] stopwatch <- 05:00:00.00
+[  112.160545 ms] [OK     ] H4-5   /auto tem | exp TEMP, 5.000 ms each | got TEMP, first 5.0001, 5.0000, 5.0000 ms
+
+==========================================================================================
+[  112.943795 ms] [BEGIN  ] H5  /auto all order
+              plan   : /auto all, 10 lines
+              expect : SW TM WH DIST TEMP SW TM WH DIST TEMP
+------------------------------------------------------------------------------------------
+[  112.946830 ms] [PRELOAD] stopwatch <- 05:00:00.00
+[  164.412225 ms] [OK     ] H5-1   order of 10 lines | exp SW TM WH DIST TEMP SW TM WH DIST TEMP  | got SW TM WH DIST TEMP SW TM WH DIST TEMP 
+
+==========================================================================================
+[  165.195475 ms] [BEGIN  ] H6  switch auto target while running
+              plan   : /auto _sw -> 0.4 T_AUTO -> /auto _tm
+              expect : next line still 1 T_AUTO after the first command, content TM
+------------------------------------------------------------------------------------------
+[  165.198510 ms] [PRELOAD] stopwatch <- 05:00:00.00
+[  172.096545 ms] [OK     ] H6-1   first line | exp TM at 5.000 ms | got TM at 5.0001 ms
+
+==========================================================================================
+[  172.879795 ms] [BEGIN  ] H7  /auto off then restart
+              plan   : /auto _sw -> 0.3 T_AUTO -> off -> 1.5 T_AUTO -> /auto _sw
+              expect : no line while off ; spec: first line 1 T_AUTO after restart - code: earlier (issue 3)
+------------------------------------------------------------------------------------------
+[  172.882830 ms] [PRELOAD] stopwatch <- 05:00:00.00
+[  183.444865 ms] [OK     ] H7-1   while off | exp no byte | got 0 byte
+[  188.064115 ms] [ISSUE  ] H7-2   first line after restart | spec 5.000 ms | got 2.7234 ms (0.54 T_AUTO)  (tb_scenario.md 2 jang)
+
+==========================================================================================
+[  188.847365 ms] [BEGIN  ] H8  ERROR priority and line integrity
+              plan   : ERROR during a line ; ERROR on the auto beat ; 3 ERRORs in /auto all
+              expect : lines never mixed, ERROR first then data, scan order kept
+------------------------------------------------------------------------------------------
+[  188.850400 ms] [PRELOAD] stopwatch <- 05:00:00.00
+[  191.877045 ms] [OK     ] H8-1   /gx while /get line is sent | exp SW line intact, then ERROR | got "05:00:00.00", "ERROR"
+[  191.880080 ms] [PRELOAD] stopwatch <- 05:00:00.00
+[  199.382886 ms] [OK     ] H8-2   ERROR and auto beat in the same clock | exp ERROR, then SW | got "ERROR", "05:00:00.00"
+[  200.169170 ms] [PRELOAD] stopwatch <- 05:00:00.00
+[  233.447955 ms] [OK     ] H8-3   /auto all with 3 ERRORs | exp SW TM WH DIST TEMP SW + 3 ERROR | got SW TM WH DIST TEMP SW + 3 ERROR
+
+==========================================================================================
+[  234.231205 ms] [BEGIN  ] H9  /get burst
+              plan   : /mod s_ms -> 20 x /get <CR> back to back
+              expect : spec: 20 lines - code may merge requests once TX FIFO is full (issue 4)
+------------------------------------------------------------------------------------------
+[  234.234240 ms] [PRELOAD] stopwatch <- 05:00:00.00
+[  258.954702 ms] [ISSUE  ] H9-1   responses to 20 /get | spec 20 SW lines | got 15 lines, all SW 1  (tb_scenario.md 2 jang)
+
+==========================================================================================
+[  258.954702 ms] [BEGIN  ] H10  reply format boundary values
+              plan   : watch 13:05 on 12 h ; timer 01:30 running ; Err1 ; Err2 ; temp before first
+              expect : 13:05 (24 h) ; 00:01:xx ; Err 1 ; Err 2 ; --%--C (v2)
+------------------------------------------------------------------------------------------
+[  259.740980 ms] [PRELOAD] watch <- 13:05:00.00
+[  261.376813 ms] [OK     ] H10-1  watch 13:05, 12 h display | exp "13:05:..", FND 01 | got "13:05:00.52", FND 01
+[  266.410064 ms] [OK     ] H10-2  timer 01:30 running | exp "00:01:.." | got "00:01:29.48"
+[  271.837028 ms] [OK     ] H10-3  distance Err1 (no echo) | exp Err 1 | got "Err 1" status 1
+[  277.207908 ms] [OK     ] H10-4  distance Err2 (out of range) | exp Err 2 | got "Err 2" status 2
+[  281.707009 ms] [OK     ] H10-5  temp before first measurement | exp --%--C | got "--%--C"
+
+==========================================================================================
+[  281.707009 ms] [BEGIN  ] H11  /btn R L U D
+              plan   : /mod s_ms -> /btn R, D, (R) L, U
+              expect : 1 UART pulse each, stopwatch reacts
+------------------------------------------------------------------------------------------
+[  283.016109 ms] [OK     ] H11-1  /btn R | exp 1 pulse, RUN | got 1 pulse, run 1
+[  283.538943 ms] [OK     ] H11-2  /btn D | exp 1 pulse, lap | got 1 pulse, lap 1
+[  284.584609 ms] [OK     ] H11-3  /btn L (after stop) | exp 1 pulse, 0, lap off | got 1 pulse, 00:00:00.00, lap 0
+[  285.107443 ms] [OK     ] H11-4  /btn U | exp 1 pulse, down 0 -> 1 | got 1 pulse, down 1
+
+==========================================================================================
+[  285.107443 ms] [BEGIN  ] H12  physical and UART button in the same clock
+              plan   : force physical R right after /btn handshake
+              expect : physical first, UART 1 clk later (2 pulses)
+------------------------------------------------------------------------------------------
+[  286.416585 ms] [OK     ] H12-1  physical R + /btn R | exp 2 R pulses 1 clk apart, SW RUN -> STOP | got 2 pulses 10 ns apart, run 0
+[  286.939465 ms] [OK     ] H12-2  physical R + /btn L | exp R then L 1 clk later | got R 1, L 1, L - R = 10 ns
+
+==========================================================================================
+  H1   checks 5  PASS
+  H2   checks 1  PASS
+  H3   checks 1  PASS
+  H4   checks 5  PASS
+  H5   checks 1  PASS
+  H6   checks 1  PASS
+  H7   checks 2  PASS
+  H8   checks 3  PASS
+  H9   checks 1  PASS
+  H10  checks 5  PASS
+  H11  checks 4  PASS
+  H12  checks 2  PASS
+------------------------------------------------------------------------------------------
+  UART lines : 68 received, snapshot mismatch 0, unexpected 0, no CR 0, frame err 0
+  x/z on outputs : none
+  ISSUE ids : H7-2 H9-1
+[  286.939465 ms] [SUMMARY] H_uart_ctrl checks=31 fail=0 issue=2 => PASS
+==========================================================================================
+$finish called at time : 286939465 ns : File "C:/26_AI_CAMP/BEST_Stop_watch_project/FINAL/sim_file/tb_merge_harness.sv" Line 271
+run: Time (s): cpu = 00:00:01 ; elapsed = 00:02:28 . Memory (MB): peak = 917.637 ; gain = 0.047
+exit
+INFO: [Common 17-206] Exiting xsim at Mon Nov  2 08:17:58 2026...

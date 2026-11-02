@@ -1,0 +1,126 @@
+
+****** xsim v2020.2 (64-bit)
+  **** SW Build 3064766 on Wed Nov 18 09:12:45 MST 2020
+  **** IP Build 3064653 on Wed Nov 18 14:17:31 MST 2020
+    ** Copyright 1986-2020 Xilinx, Inc. All Rights Reserved.
+
+source xsim.dir/tb_J_dht11_snap/xsim_script.tcl
+# xsim {tb_J_dht11_snap} -testplusarg only_J6 -autoloadwcfg -runall
+Vivado Simulator 2020.2
+Time resolution is 1 ps
+run -all
+[    0.000000 ms] [NOTE   ] only scenario / group : J6
+
+==========================================================================================
+[    0.000000 ms] [BEGIN  ] J4  bit HIGH length threshold (40 us)
+              plan   : 0-bit HIGH 26/28/38 us, 1-bit HIGH 43/70 us
+              expect : decoded right (55 / 24, checksum OK)
+------------------------------------------------------------------------------------------
+[    5.483055 ms] [OK     ] J4-1   0-bit 26 us, 1-bit 70 us | exp status 0, 55 / 24 | got status 0, valid 1, hum 55, temp 24, fnd 5524, dashes 0, LED 0100
+[   10.489095 ms] [OK     ] J4-2   0-bit 28 us, 1-bit 70 us | exp status 0, 55 / 24 | got status 0, valid 1, hum 55, temp 24, fnd 5524, dashes 0, LED 0100
+[   15.517135 ms] [OK     ] J4-3   0-bit 38 us, 1-bit 70 us | exp status 0, 55 / 24 | got status 0, valid 1, hum 55, temp 24, fnd 5524, dashes 0, LED 0100
+[   20.451175 ms] [OK     ] J4-4   0-bit 26 us, 1-bit 43 us | exp status 0, 55 / 24 | got status 0, valid 1, hum 55, temp 24, fnd 5524, dashes 0, LED 0100
+[   25.483215 ms] [OK     ] J4-5   0-bit 26 us, 1-bit 70 us | exp status 0, 55 / 24 | got status 0, valid 1, hum 55, temp 24, fnd 5524, dashes 0, LED 0100
+
+==========================================================================================
+[   25.483215 ms] [BEGIN  ] J5  checksum wraps mod 256
+              plan   : 90 . 99 % / 50 . 99 C, checksum 0x52
+              expect : OK, FND 9050
+------------------------------------------------------------------------------------------
+[   30.993265 ms] [OK     ] J5-1   sum 338 -> 0x52 | exp status 0, 9050 | got status 0, valid 1, hum 90, temp 50, fnd 9050, dashes 0, LED 0100
+
+==========================================================================================
+[   30.993265 ms] [BEGIN  ] J6  checksum error keeps last good value
+              plan   : 55/24 OK -> checksum +1 -> 60/25 OK
+              expect : Err3 + LD1, UART Err 3 (v2) ; then 6025, LD1 0, UART 60%25C
+------------------------------------------------------------------------------------------
+[   41.463355 ms] [FAIL   ] J6-1   bad checksum | exp status 3, LD1 1, LD2 0 | got status 0, valid 1, hum 55, temp 24, fnd 5524, dashes 0, LED 0100
+[   42.667188 ms] [FAIL   ] J6-2   UART during error | exp Err 3 (v2) | got "55%24C"
+[   47.676068 ms] [OK     ] J6-3   next good | exp 6025, LD1 0, UART 60%25C | got status 0, valid 1, hum 60, temp 25, fnd 6025, dashes 0, LED 0100, "60%25C"
+
+==========================================================================================
+[   47.676068 ms] [BEGIN  ] J7  no response
+              plan   : sensor silent ; data line stuck LOW
+              expect : Err1 at START end + 230 us (both)
+------------------------------------------------------------------------------------------
+[   53.919958 ms] [OK     ] J7-1   sensor silent | exp status 1 at 23.0 us, UART Err 1 | got status 1 at 23.0 us, "Err 1"
+[   57.802005 ms] [OK     ] J7-2   line stuck LOW | exp status 1 at 23.0 us | got status 1 at 23.0 us
+
+==========================================================================================
+[   57.802005 ms] [BEGIN  ] J8  stops in the middle
+              plan   : sensor stops after 20 bits
+              expect : Err2 at last rising edge + 200 us
+------------------------------------------------------------------------------------------
+[   64.231888 ms] [OK     ] J8-1   20 bits then silence | exp status 2 at 20.0 us, UART Err 2 | got status 2 at 20.0 us, "Err 2"
+
+==========================================================================================
+[   64.231888 ms] [BEGIN  ] J9  R inside the 2 s interval
+              plan   : R (start T) -> after done, R x3 inside the interval
+              expect : next START exactly T + interval, only once
+------------------------------------------------------------------------------------------
+[   78.782935 ms] [OK     ] J9-1   second START | exp T + 5.000 ms | got T + 5.000010 ms
+[   78.782935 ms] [OK     ] J9-2   measurements from 3 R | exp 1 | got 1
+
+==========================================================================================
+[   78.782935 ms] [BEGIN  ] J10  R while measuring is ignored
+              plan   : R (start T) -> R during START LOW
+              expect : no START at T + interval
+------------------------------------------------------------------------------------------
+[   89.583975 ms] [OK     ] J10-1  START count after T | exp 0 more | got 0 more
+
+==========================================================================================
+[   89.583975 ms] [BEGIN  ] J11  auto measurement
+              plan   : U (T) -> 3.5 intervals -> U
+              expect : START every interval (4), LD3 1, stops after U
+------------------------------------------------------------------------------------------
+[  109.884995 ms] [OK     ] J11-2  LED while auto | exp LD3 1 | got LD3 1
+[  110.384995 ms] [OK     ] J11-1  START times | exp 4 starts, 5.000 ms apart | got 4 starts, first at +20 ns
+[  117.884995 ms] [OK     ] J11-3  after U | exp still 4 starts, LD3 0 | got 4 starts, LD3 0
+
+==========================================================================================
+[  117.884995 ms] [BEGIN  ] J12  before the first measurement
+              plan   : reset -> /mod temp
+              expect : FND ----, UART --%--C (v2)
+------------------------------------------------------------------------------------------
+[  120.636036 ms] [OK     ] J12-1  FND | exp "----" | got "----"
+[  121.839869 ms] [OK     ] J12-2  UART /get | exp --%--C (v2) | got "--%--C"
+
+==========================================================================================
+[  121.839869 ms] [BEGIN  ] J13  auto keeps running on another screen
+              plan   : auto on -> /mod w_ms -> 2.5 intervals ; R on WTS screen
+              expect : >= 2 STARTs ; R not delivered to DHT11
+------------------------------------------------------------------------------------------
+[  138.424175 ms] [OK     ] J13-1  STARTs on WTS screen | exp >= 2 | got 2
+[  138.424225 ms] [OK     ] J13-2  R on WTS screen | exp DHT i_btn_R stays 0 | got 0 pulse
+
+==========================================================================================
+[  138.424225 ms] [BEGIN  ] J14  humidity >= 100
+              plan   : 100 % / 24 C
+              expect : FND 99.24 ; spec: 2-digit UART - code sends ':0%24C' (issue 7)
+------------------------------------------------------------------------------------------
+[  143.899275 ms] [OK     ] J14-1  FND data | exp 9924 (99 clamp) | got status 0, valid 1, hum 100, temp 24, fnd 9924, dashes 0, LED 0100
+[  145.103108 ms] [ISSUE  ] J14-2  UART /get | spec digits only (NN%NNC) | got ":0%24C"  (tb_scenario.md 2 jang)
+
+==========================================================================================
+  J4   checks 5  PASS
+  J5   checks 1  PASS
+  J6   checks 3  FAIL
+  J7   checks 2  PASS
+  J8   checks 1  PASS
+  J9   checks 2  PASS
+  J10  checks 1  PASS
+  J11  checks 3  PASS
+  J12  checks 2  PASS
+  J13  checks 2  PASS
+  J14  checks 2  PASS
+------------------------------------------------------------------------------------------
+  UART lines : 6 received, snapshot mismatch 0, unexpected 0, no CR 0, frame err 0
+  x/z on outputs : none
+  FAIL ids  : J6-1 J6-2
+  ISSUE ids : J14-2
+[  145.103108 ms] [SUMMARY] J_dht11 checks=24 fail=2 issue=1 => FAIL
+==========================================================================================
+$finish called at time : 145103108360 ps : File "C:/26_AI_CAMP/BEST_Stop_watch_project/FINAL/sim_file/tb_merge_harness.sv" Line 271
+run: Time (s): cpu = 00:00:01 ; elapsed = 00:01:25 . Memory (MB): peak = 917.598 ; gain = 0.047
+exit
+INFO: [Common 17-206] Exiting xsim at Mon Nov  2 08:09:56 2026...

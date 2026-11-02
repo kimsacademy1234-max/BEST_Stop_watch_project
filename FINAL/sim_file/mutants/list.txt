@@ -1,0 +1,10 @@
+M1 tb_B_button B3
+M2 tb_C_mode C1
+M3 tb_C_mode C4
+M4 tb_D_stopwatch D1
+M5 tb_E_watch E2
+M6 tb_I_sr04 I3
+M7 tb_J_dht11 J6
+M8 tb_K_display K3
+M9 tb_K_display K5
+M10 tb_H_uart_ctrl H1

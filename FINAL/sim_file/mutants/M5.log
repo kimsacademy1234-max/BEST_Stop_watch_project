@@ -1,0 +1,105 @@
+
+****** xsim v2020.2 (64-bit)
+  **** SW Build 3064766 on Wed Nov 18 09:12:45 MST 2020
+  **** IP Build 3064653 on Wed Nov 18 14:17:31 MST 2020
+    ** Copyright 1986-2020 Xilinx, Inc. All Rights Reserved.
+
+source xsim.dir/tb_E_watch_snap/xsim_script.tcl
+# xsim {tb_E_watch_snap} -testplusarg only_E2 -autoloadwcfg -runall
+Vivado Simulator 2020.2
+Time resolution is 1 ps
+run -all
+[    0.000000 ms] [NOTE   ] only scenario / group : E2
+
+==========================================================================================
+[    0.000000 ms] [BEGIN  ] E1  initial value and first second
+              plan   : reset -> wait 1 s
+              expect : 12:00:00.00, sec 0->1 exactly 100 T_CS after release (+-5 clk), LD15 1
+------------------------------------------------------------------------------------------
+[    0.003016 ms] [OK     ] E1-1   right after reset | exp 12:00:00.00, LD15 1 | got 12:00:00.00, LD15 1
+[    1.002215 ms] [OK     ] E1-2   sec 0 -> 1 | exp 12:00:01.00 at 1000000 ns | got 12:00:01.00 at 1000020 ns
+
+==========================================================================================
+[    1.002215 ms] [BEGIN  ] E2  12 / 24 h boundaries
+              plan   : preload hour / 11:59:59.99 / 23:59:59.99, real tick crosses
+              expect : 00 -> 12 AM, 12 PM, 13 -> 01, 24 h mode shows 13
+------------------------------------------------------------------------------------------
+[    1.005240 ms] [PRELOAD] watch <- 00:30:00.00
+[    1.005255 ms] [FAIL   ] E2-1   00:30 in 12 h | exp disp 12, LD15 0 | got 00:30 (disp 00, LD15 0)
+[    1.005270 ms] [PRELOAD] watch <- 11:59:59.99
+[    1.015385 ms] [OK     ] E2-2   11:59:59.99 -> 12:00 | exp disp 12, LD15 0 -> 1 | got LD15 before 0, 12:00 (disp 12, LD15 1)
+[    1.015400 ms] [PRELOAD] watch <- 12:30:00.00
+[    1.015415 ms] [OK     ] E2-3   12:30 in 12 h | exp disp 12, LD15 1 | got 12:30 (disp 12, LD15 1)
+[    1.015430 ms] [PRELOAD] watch <- 13:30:00.00
+[    1.015445 ms] [OK     ] E2-4   13:30 in 12 h | exp disp 01, LD15 1 | got 13:30 (disp 01, LD15 1)
+[    1.015460 ms] [PRELOAD] watch <- 23:59:59.99
+[    1.025575 ms] [FAIL   ] E2-5   23:59:59.99 -> 00:00 | exp disp 12, LD15 1 -> 0 | got LD15 before 1, 00:00 (disp 00, LD15 0)
+[    1.026590 ms] [PRELOAD] watch <- 13:30:00.00
+[    1.026605 ms] [OK     ] E2-6   13:30 in 24 h | exp disp 13, LD15 0 | got 13:30 (disp 13, LD15 0)
+
+==========================================================================================
+[    1.026605 ms] [BEGIN  ] E3  set cursor rotation
+              plan   : set on -> R x3 -> L x3
+              expect : R: 0 -> 2 -> 1 -> 0, L: 0 -> 1 -> 2 -> 0 (0 min1, 1 min10, 2 hour)
+------------------------------------------------------------------------------------------
+[    1.030645 ms] [NOTE   ] set entered : cursor 0 (expect 0)
+[    1.030695 ms] [OK     ] E3-1   R | exp cursor 2 | got cursor 2
+[    1.030745 ms] [OK     ] E3-2   R | exp cursor 1 | got cursor 1
+[    1.030795 ms] [OK     ] E3-3   R | exp cursor 0 | got cursor 0
+[    1.030845 ms] [OK     ] E3-4   L | exp cursor 1 | got cursor 1
+[    1.030895 ms] [OK     ] E3-5   L | exp cursor 2 | got cursor 2
+[    1.030945 ms] [OK     ] E3-6   L | exp cursor 0 | got cursor 0
+
+==========================================================================================
+[    1.030945 ms] [BEGIN  ] E4  set value wraps per digit, no carry
+              plan   : preload, U / D on each cursor
+              expect : 59+1=00, 00-1=59, 55+10=05, 05-10=55, 23+1=0, 0-1=23, other digits unchanged
+------------------------------------------------------------------------------------------
+[    1.035000 ms] [PRELOAD] watch <- 12:59:00.00
+[    1.035045 ms] [OK     ] E4-1   min1 : 12:59 U | exp 12:00 | got 12:00 (disp 12, LD15 1)
+[    1.035060 ms] [PRELOAD] watch <- 12:00:00.00
+[    1.035105 ms] [OK     ] E4-2   min1 : 12:00 D | exp 12:59 | got 12:59 (disp 12, LD15 1)
+[    1.035170 ms] [PRELOAD] watch <- 12:55:00.00
+[    1.035215 ms] [OK     ] E4-3   min10 : 12:55 U | exp 12:05 | got 12:05 (disp 12, LD15 1)
+[    1.035230 ms] [PRELOAD] watch <- 12:05:00.00
+[    1.035275 ms] [OK     ] E4-4   min10 : 12:05 D | exp 12:55 | got 12:55 (disp 12, LD15 1)
+[    1.035340 ms] [PRELOAD] watch <- 23:10:00.00
+[    1.035385 ms] [OK     ] E4-5   hour : 23:10 U | exp 00:10 | got 00:10 (disp 00, LD15 0)
+[    1.035400 ms] [PRELOAD] watch <- 00:10:00.00
+[    1.035445 ms] [OK     ] E4-6   hour : 00:10 D | exp 23:10 | got 23:10 (disp 11, LD15 1)
+
+==========================================================================================
+[    1.035445 ms] [BEGIN  ] E5  simultaneous inputs
+              plan   : U+D same clk ; minute tick and U same clk (force aligned)
+              expect : no change ; tick only (U dropped)
+------------------------------------------------------------------------------------------
+[    1.039500 ms] [PRELOAD] watch <- 12:10:00.00
+[    1.039545 ms] [OK     ] E5-1   U + D same clock | exp min 10 | got 12:10 (disp 12, LD15 1)
+[    1.039560 ms] [PRELOAD] watch <- 12:10:59.99
+[    1.047515 ms] [OK     ] E5-2   minute tick + U same clock | exp min 11 (tick only) | got 12:11 (disp 12, LD15 1)
+
+==========================================================================================
+[    1.047515 ms] [BEGIN  ] E6  set switch on SS.CC screen
+              plan   : switch mode : sw1 0 + sw2 1 (watch SS.CC) -> U
+              expect : spec : minute not changed (not visible) - code changes it (issue 5)
+------------------------------------------------------------------------------------------
+[    1.051570 ms] [PRELOAD] watch <- 12:10:00.00
+[    1.051615 ms] [ISSUE  ] E6-1   U on watch SS.CC with set_sw2 1 | spec min 10 (unchanged) | got min 11 (cursor 0)  (tb_scenario.md 2 jang)
+
+==========================================================================================
+  E1   checks 2  PASS
+  E2   checks 6  FAIL
+  E3   checks 6  PASS
+  E4   checks 6  PASS
+  E5   checks 2  PASS
+  E6   checks 1  PASS
+------------------------------------------------------------------------------------------
+  UART lines : 0 received, snapshot mismatch 0, unexpected 0, no CR 0, frame err 0
+  x/z on outputs : none
+  FAIL ids  : E2-1 E2-5
+  ISSUE ids : E6-1
+[    1.051615 ms] [SUMMARY] E_watch checks=23 fail=2 issue=1 => FAIL
+==========================================================================================
+$finish called at time : 1051615 ns : File "C:/26_AI_CAMP/BEST_Stop_watch_project/FINAL/sim_file/tb_merge_harness.sv" Line 271
+exit
+INFO: [Common 17-206] Exiting xsim at Mon Nov  2 08:08:12 2026...
