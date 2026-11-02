@@ -1,0 +1,14 @@
+#-----------------------------------------------------------
+# Vivado v2020.2 (64-bit)
+# SW Build 3064766 on Wed Nov 18 09:12:45 MST 2020
+# IP Build 3064653 on Wed Nov 18 14:17:31 MST 2020
+# Start of session at: Mon Nov  2 13:43:42 2026
+# Process ID: 22700
+# Current directory: D:/26_AI_CAMP_2/BEST_Stop_watch_project/ahnsung/P6.sim/sim_1/behav/xsim
+# Command line: vivado.exe -gui_launcher_event rodinguilauncherevent26788 D:\26_AI_CAMP_2\BEST_Stop_watch_project\ahnsung\P6.sim\sim_1\behav\xsim\tb_P_present_behav.wdb
+# Log file: D:/26_AI_CAMP_2/BEST_Stop_watch_project/ahnsung/P6.sim/sim_1/behav/xsim/vivado.log
+# Journal file: D:/26_AI_CAMP_2/BEST_Stop_watch_project/ahnsung/P6.sim/sim_1/behav/xsim\vivado.jou
+#-----------------------------------------------------------
+start_guioopen_wave_database {D:\26_AI_CAMP_2\BEST_Stop_watch_project\ahnsung\P6.sim\sim_1\behav\xsim\tb_P_present_behav.wdb}cclose_sim
+config D:/26_AI_CAMP_2/BEST_Stop_watch_project/FINAL/sim_file/wcfg/present/P6.wcfg
+close_sim
