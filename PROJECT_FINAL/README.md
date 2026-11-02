@@ -3,12 +3,18 @@
 Basys3 (Artix-7, 100 MHz) 한 보드에서 **스톱워치 · 시계 · 타이머 (WTS)**, **초음파 거리 (SR04)**, **온습도 (DHT11)** 를 돌리고,
 PC 터미널에서 **UART 명령으로 모드 변경 · 버튼 입력 · 데이터 요청 / 자동 전송**을 하는 통합 설계입니다.
 
-- 최종 Top : `source_file/merge_final/merge_final_top.v`
-- 제약 파일 : `source_file/merge_final/merge_final_top.xdc`
-- 통합 규칙 : `source_file/merge.md`
-- 블록 다이어그램 : `docs/*.png` (원본 `docs/*.svg`, 생성 스크립트 `docs/draw_diagrams.py`)
+| 항목 | 위치 |
+|---|---|
+| **최종 설계 (v3, 보드 비트와 같은 소스)** | `source_file/merge_final_v3/merge_final_top.v` · `.xdc` |
+| 보드 비트스트림 | `bitstream_file/FINAL.bit` (= v3, `Member/boyun/fix_issue7_1101/bit/` 과 같은 파일) |
+| 블록 다이어그램 | [`block_diagram/merge_final_block_diagram.pdf`](block_diagram/merge_final_block_diagram.pdf) (6 쪽, 쪽별 PNG `block_diagram/img/`) |
+| 버전별 바뀐 곳 | [`source_file/v2_modified.md`](source_file/v2_modified.md) (v1 → v2) · [`source_file/v3_modified.md`](source_file/v3_modified.md) (v2 → v3) |
+| TB · 결과 | [`sim_file/README.md`](sim_file/README.md) · [`sim_file/TB_RESULT_SUMMARY_1031.md`](sim_file/TB_RESULT_SUMMARY_1031.md) |
+| 발표 자료 | [`Team4_Final.pdf`](Team4_Final.pdf) |
 
-> **검증 상태** : Verilator `--lint-only` 통과 (에러 0, 경고는 팀원 원본 코드의 비트 폭 경고). **통합 시뮬레이션 · 보드 테스트는 아직 안 함.**
+> **검증 상태 (v3)** : 그룹 TB 12 개 · 시나리오 92 · 검사 **305 / 305 PASS** (스펙과 다른 동작 0), 통합 TB 불일치 0, 버그 주입 9 / 9 검출.
+> Vivado 2022.2 배치 · 배선 후 **LUT 1,476 (7.1 %) · FF 738 · WNS +1.442 ns** @ 100 MHz. 보드에서 시연 A ~ I · v2 / v3 수정 Before / After 확인.
+> 진행 과정 · TB 시나리오 · 트러블슈팅 전체 이야기는 [저장소 맨 위 README](../README.md) 에 있습니다.
 
 ---
 
@@ -26,47 +32,57 @@ PC 터미널에서 **UART 명령으로 모드 변경 · 버튼 입력 · 데이�
 10. [동작 — LED](#10-동작--led)
 11. [하위 Top 포트](#11-하위-top-포트)
 12. [통합하면서 바뀐 점](#12-통합하면서-바뀐-점)
-13. [주의 · 남은 일](#13-주의--남은-일)
+13. [버전 이력 — v1 → v2 → v3](#13-버전-이력--v1--v2--v3)
+14. [검증 요약](#14-검증-요약)
+15. [주의 · 남은 일](#15-주의--남은-일)
 
 ---
 
 ## 1. 폴더 구조
 
 ```
-FINAL/source_file/
-├── merge.md                     통합 규칙
-├── WTS_MODULE/ SR04/ DHT11_TOP/ UART_PROTOCOL/   ← 팀원 원본 (그대로 둠)
-└── merge_final/
-    ├── merge_final_top.v        최종 Top
-    ├── merge_final_top.xdc
-    ├── IP/                      공용 기본 모듈 (중복 제거)
-    │   ├── reset_sync.v         리셋 동기화
-    │   ├── btn_debounce.v       버튼 디바운서 (4 kHz 샘플)
-    │   ├── synchronizer.v       2-FF 동기화
-    │   ├── clock_tick_generator.v   4 kHz tick
-    │   ├── tick_gen_100hz.v     10 ms tick (항상)
-    │   ├── tick_gen_100hz_run.v 10 ms tick (run / clear)
-    │   ├── tick_gen_us.v        1 us tick (enable / clear)  ← DHT11 · SR04 공용
-    │   ├── baud_tick_gen.v      9600 x 16 tick              ← RX · TX 공용
-    │   ├── fifo.v               FIFO                        ← RX · TX 공용
-    │   ├── counter8.v  mux_8x1.v  decoder_2x4.v  digit_splitter.v  fnd_decoder.v
-    ├── WTS/                     스톱워치 · 시계 · 타이머
-    │   ├── wts_top.v            ★ 하위 Top
-    │   └── *_control_unit.sv  *_datapath.v  lap_controller.v  hour_12_24.v
-    ├── SR04/
-    │   ├── sr04_top.v           ★ 하위 Top
-    │   └── sr04_core.v (core + controller)  sr04_mode_ctrl.v  sr04_led_bar.v
-    ├── DHT11/
-    │   ├── dht11_top.v          ★ 하위 Top
-    │   └── dht11_core.v  dht11_controller.v  dht11_manager.v
-    ├── UART/
-    │   ├── uart_top.v           ★ 하위 Top
-    │   └── uart_rx.sv  uart_tx.v  02_UART_ASCII_DECODER.sv  01_UART_CONTROLLER.sv
-    │       uart_sender.v  sender_char_mux.v
-    └── FND_LED/
-        ├── SW2_FND_CONTROLLER.v ★ 통합 FND 컨트롤러 (WTS 기본 + 거리 · 온습도)
-        ├── fnd_dist.v  fnd_dht.v  SW2_ANODE_CHOICE.v  dot.v
-        └── led_output.v         ★ 통합 LED 출력
+PROJECT_FINAL/
+├── README.md                    (이 문서)
+├── Team4_Final.pdf              최종 발표 자료
+├── bitstream_file/FINAL.bit     보드 비트스트림 (v3)
+├── block_diagram/               블록도 PDF · PPTX · img/ 쪽별 PNG · 생성 스크립트 (gen_block_diagram.py, bd_core.py, bd_pages.py)
+├── docs/                        모듈별 블록도 SVG · PNG (draw_diagrams.py), basys3_pinmap.png
+├── sim_file/                    공통 하네스 · 그룹 TB A ~ L · top_tb/ (실제 시간) · tb_P*_present (발표용) · mutants/ (버그 주입) · wcfg/ · bat
+└── source_file/
+    ├── v2_modified.md · v3_modified.md   버전별 바뀐 곳 · 원인 · diff · 보드 확인 순서
+    ├── merge_final/             v2 와 같은 소스 (그룹 TB 기대값 기준)
+    ├── merge_final_v2/          v1 + 센서 오류 · 측정 전 상태를 PC 로도 전송
+    └── merge_final_v3/          ★ 최종 : v2 + TB 가 찾은 결함 8 건 수정 (아래 구조는 세 폴더 공통)
+        ├── merge_final_top.v        최종 Top
+        ├── merge_final_top.xdc
+        ├── IP/                      공용 기본 모듈 (중복 제거)
+        │   ├── reset_sync.v         리셋 동기화
+        │   ├── btn_debounce.v       버튼 디바운서 (4 kHz 샘플)
+        │   ├── synchronizer.v       2-FF 동기화
+        │   ├── clock_tick_generator.v   4 kHz tick
+        │   ├── tick_gen_100hz.v     10 ms tick (항상)
+        │   ├── tick_gen_100hz_run.v 10 ms tick (run / clear)
+        │   ├── tick_gen_us.v        1 us tick (enable / clear)  ← DHT11 · SR04 공용
+        │   ├── baud_tick_gen.v      9600 x 16 tick              ← RX · TX 공용
+        │   ├── fifo.v               FIFO                        ← RX · TX 공용
+        │   ├── counter8.v  mux_8x1.v  decoder_2x4.v  digit_splitter.v  fnd_decoder.v
+        ├── WTS/                     스톱워치 · 시계 · 타이머
+        │   ├── wts_top.v            ★ 하위 Top
+        │   └── *_control_unit.sv  *_datapath.v  lap_controller.v  hour_12_24.v
+        ├── SR04/
+        │   ├── sr04_top.v           ★ 하위 Top
+        │   └── sr04_core.v (core + controller)  sr04_mode_ctrl.v  sr04_led_bar.v
+        ├── DHT11/
+        │   ├── dht11_top.v          ★ 하위 Top
+        │   └── dht11_core.v  dht11_controller.v  dht11_manager.v
+        ├── UART/
+        │   ├── uart_top.v           ★ 하위 Top
+        │   └── uart_rx.sv  uart_tx.v  02_UART_ASCII_DECODER.sv  01_UART_CONTROLLER.sv
+        │       uart_sender.v  sender_char_mux.v
+        └── FND_LED/
+            ├── SW2_FND_CONTROLLER.v ★ 통합 FND 컨트롤러 (WTS 기본 + 거리 · 온습도)
+            ├── fnd_dist.v  fnd_dht.v  SW2_ANODE_CHOICE.v  dot.v
+            └── led_output.v         ★ 통합 LED 출력
 ```
 
 ### 계층 (인스턴스 이름)
@@ -124,19 +140,32 @@ merge_final_top
 | SR04 거리 | 0 ~ 400 cm, 0.1 cm 단위 표시, 측정 주기 60 ms (자동), echo 대기 30 ms 넘으면 NO_ECHO |
 | DHT11 온습도 | 습도 %RH · 온도 ℃ 정수, 전원 / 리셋 뒤 1 s 대기, 측정 간격 2 s (자동 측정 주기) |
 | 센서 핀 | SR04 trig = JA1, echo = JA2 / DHT11 data = JXADC3 (M2, PULLUP, 외부 5 kΩ 권장) |
+| 자원 · 타이밍 (v3) | LUT 1,476 / 20,800 (7.1 %) · FF 738 (1.8 %) · WNS +1.442 ns (Vivado 2022.2, 배치 · 배선 후) |
 
 ---
 
 ## 3. Top 블록 다이어그램
 
-![merge_final_top 전체 블록 다이어그램](docs/01_top.png)
+그림은 [`block_diagram/merge_final_block_diagram.pdf`](block_diagram/merge_final_block_diagram.pdf) 의 쪽을 그대로 옮긴 것입니다. **선 이름 = 포트 이름, 블록의 선 개수 = 포트 개수**라서 그림의 이름으로 Vivado 파형 Scope 를 바로 찾을 수 있습니다.
+범례 : 회색 깃발 `clk` · `rst` = 같은 이름 선 직결 / 주황 깃발 = 보드 핀 · 스위치 / 청록 깃발 `bitN` = `w_ctrl_bit[N]` / 보라 선 = 4 kHz / 분홍 선 = tick / 점선 블록 · MUX · OR · NOT = `assign` / 초록 굵은 테두리 = 하위 Top.
+
+![merge_final_top 전체 블록 다이어그램](block_diagram/img/1_top.png)
 
 **신호 흐름 한 줄 요약**
 
-1. 버튼 4 개 → 공용 디바운서 → (물리 | UART `/btn`) → **지금 화면의 모듈에만** 전달
+1. 버튼 4 개 → 공용 디바운서 → (물리 | UART `/btn`) → **지금 화면의 모듈에만** 전달 (`w_btn_X & w_mode_*`)
 2. 화면 / 스위치 기능 = `w_ctrl_bit` : `/mod` 받기 전엔 보드 스위치, 받은 뒤엔 UART 값
-3. 화면 데이터 → FND 데이터 MUX → 통합 FND 컨트롤러 / LED 출력
-4. UART `/get` · `/auto` → 컨트롤러가 `o_send_sel` 로 데이터를 고름 → sender 가 ASCII 로 바꿔 전송
+3. 화면 데이터 → FND 데이터 MUX (`w_disp_sel`) → 통합 FND 컨트롤러 / LED 출력
+4. UART `/get` · `/auto` → 컨트롤러가 `o_send_sel` 로 전송 MUX 를 고름 → sender 가 ASCII 로 바꿔 전송
+
+**전송 데이터 MUX `w_send_data[23:0]`** (`w_send_sel`, U_UART 가 고름)
+
+| sel | 데이터 | 배치 |
+|---|---|---|
+| 0 · 1 · 2 | 스톱워치 · 타이머 · 시계 | `{hour 5, min 6, sec 6, cs 7}` (스톱워치는 v3 부터 랩과 상관없이 **흐르는 값**) |
+| 3 | 거리 | `{13'd0, status 2, cm 9}` (status 는 v2 에서 추가) |
+| 4 | 온습도 | `{4'd0, err, dashes, status 2, hum 8, temp 8}` (err · dashes · status 는 v2 에서 추가) |
+| 7 (그 밖) | ERROR | `24'd0` |
 
 ---
 
@@ -144,7 +173,9 @@ merge_final_top
 
 ### 4-1. UART (`uart_top`)
 
-![U_UART 블록 다이어그램](docs/02_uart.png)
+![U_UART 블록 다이어그램](block_diagram/img/2_uart.png)
+
+흐름 : `rx → U_UART_RX (비트 → 글자) → U_FIFO_RX (8) → U_ASCII_DECODER ("/mod w_hm" → 펄스 + 글자 40 비트) → U_CONTROL → (go · sel · 데이터) → U_ASCII_SENDER (숫자 → ASCII) → U_FIFO_TX (64) → U_UART_TX → tx`. `/get ⏎` 마지막 글자 수신에서 TX 시작까지 7 clk.
 
 **U_CONTROL 안에서 하는 일**
 
@@ -152,30 +183,39 @@ merge_final_top
 |---|---|
 | mode FSM | `/mod xxxx` → `module_control_bit` 갱신, `/set` · `/off` (시계 설정, 12/24 시간) |
 | `o_uart_mode` | 정상 `/mod` 를 한 번이라도 받으면 1 (리셋 전까지) → Top 이 스위치 대신 UART 값 사용 |
-| auto FSM | `/auto` → 1 Hz 마다 sel 갱신 + go, `/get` → 지금 모드 sel + go |
+| auto FSM | `/auto` → 1 Hz 마다 sel 갱신 + go, `/get` → 지금 모드 sel + go. 끄면 1 초 카운터도 0 (v3) |
 | error | 디코더 error → sel 7 (ERROR) 을 최우선으로 전송, sender 가 바쁘면 저장했다가 전송 |
-| 전송 대기 | sender 바쁠 때 온 get / auto 차례를 저장 → 끝나면 바로 전송 (데이터 안 빠짐) |
+| 전송 대기 | sender 바쁠 때 온 요청을 저장 → 끝나면 바로 전송. `/get` 은 **개수로** 셈 (v3, 최대 31) |
 | `/btn` | 물리 버튼이 들어온 클럭에는 UART 버튼을 저장, 물리 버튼 끝난 클럭에 출력 |
+
+**U_ASCII_SENDER 규칙** : ① 보내는 중 온 `send_go` 는 무시 (줄 안 섞임) ② TX FIFO 가 차면 그 글자에서 멈췄다 이어서 (손실 0) ③ `send_go` 순간 값을 저장해 끝까지 그 값으로 보냄.
 
 ### 4-2. WTS (`wts_top`)
 
-![U_WTS 블록 다이어그램](docs/03_wts.png)
+![U_WTS 블록 다이어그램](block_diagram/img/3_wts.png)
 
-### 4-3. SR04 (`sr04_top`)
+- 화면 선택 : 타이머 (sw4) > 스톱워치 (sw0) > 시계, 버튼은 보이는 화면의 FSM 에만 (`i_btn_X & w_sel_*`)
+- tick : 시계 = `tick_gen_100hz` (항상), 스톱워치 · 타이머 = `tick_gen_100hz_run` (시작 순간부터 10 ms → 첫 tick 정확히 10.000 ms, 타이머 tick clear = 취소 OR 알람)
+- 시계 설정은 **시.분 화면일 때만** (`i_set_sw2 & i_display_mode_sw1`, v3)
+- 화면 MUX 4 개 (0 타이머 · 1 스톱워치 · 2 시계) 와 별개로 UART 용 `o_sw/tm/wt_time[23:0]` 을 늘 냄
 
-![U_SR04 블록 다이어그램](docs/04_sr04.png)
+### 4-3. SR04 · DHT11 (`sr04_top` · `dht11_top`)
 
-FSM : `IDLE → START (trig 11 us) → WAIT (echo 상승) → DIST (echo 길이 측정) → STOP (10 ms + 주기 60 ms) → IDLE`
+![U_SR04 · U_DHT11 블록 다이어그램](block_diagram/img/4_sr04_dht11.png)
 
-### 4-4. DHT11 (`dht11_top`)
+SR04 FSM : `IDLE → START (trig 11 us) → WAIT (echo 상승) → DIST (echo 길이 측정) → STOP (10 ms + 주기 60 ms) → IDLE`
 
-![U_DHT11 블록 다이어그램](docs/05_dht11.png)
+DHT11 FSM : `IDLE → START (LOW 18 ms) → WAIT (30 us) → SYNC_L → SYNC_H → {DATA_SYNC → DATA_BIT → BIT_DEC} x 40 → STOP → IDLE`
 
-FSM : `IDLE → START (LOW 18 ms) → WAIT (30 us) → SYNC_L → SYNC_H → {DATA_SYNC → DATA_BIT → BIT_DEC} x 40 → STOP → IDLE`
+- SR04 : `U_MODE` 가 R → `o_start` 1 클럭, U → 자동 토글. `U_LED` 가 거리 막대 · 측정 중 · 오류 LED
+- DHT11 : `io_dht11 = oe ? 1'b0 : 1'bz` (LOW 만 구동). 요청 관리가 부팅 1 s · 간격 2 s 를 지키고 간격 안의 요청은 기억. `U_DHT11_MGR` 가 `55.24` 형식 · `----` · LED
+- 모듈별 개별 그림은 `docs/04_sr04.png` · `docs/05_dht11.png` 에도 있습니다.
 
 ### 4-5. FND (`SW2_FND_CONTROLLER`)
 
-![U_FND_CONTROLLER 블록 다이어그램](docs/06_fnd.png)
+![U_FND_CONTROLLER 블록 다이어그램](block_diagram/img/5_fnd.png)
+
+① `i_disp_sel` 로 데이터 나누기 → ② WTS 경로 (`digit_splitter` × 4 → `SW2_ANODE_CHOICE` 설정 커서 점멸 → 8:1 MUX × 2 → 2:1 초.1/100초 / 시.분) · 거리 경로 (`fnd_dist`) · 온습도 경로 (`fnd_dht`) → ③ 3:1 MUX → `fnd_decoder` (0 ~ 9, `a` E · `b` r · `c` - · `d,f` 빈칸 · `e` 점). 스캔은 `counter8` (4 kHz, 칸당 250 us, 한 바퀴 2 ms) + `decoder_2x4`.
 
 `w_fnd_data[24:0]` 배치 (Top 의 FND 데이터 MUX)
 
@@ -187,7 +227,7 @@ FSM : `IDLE → START (LOW 18 ms) → WAIT (30 us) → SYNC_L → SYNC_H → {DA
 
 ### 4-6. LED (`led_output`)
 
-![U_LED 블록 다이어그램](docs/07_led.png)
+![U_LED 블록 다이어그램](block_diagram/img/6_led.png)
 
 `i_disp_sel` 로 WTS · SR04 · DHT11 LED 중 하나를 고르고, 타이머 알람이면 모드와 상관없이 16 개 전부 점멸.
 
@@ -293,7 +333,7 @@ JXADC 는 아날로그 (XADC) 겸용 핀이지만 xdc 에서 LVCMOS33 으로 잡
 | 거리 (SR04) | 1 회 측정 | — | 자동 측정 켜기 / 끄기 | — |
 | 온습도 (DHT11) | 1 회 측정 | — | 자동 측정 켜기 / 끄기 | — |
 
-시계 시간 설정 : `set_sw2 = 1` (또는 `/set w_hm`) + 시.분 화면에서 커서 자리가 0.5 초 점멸, U / D 로 값 변경.
+시계 시간 설정 : `set_sw2 = 1` (또는 `/set w_hm`) + 시.분 화면에서 커서 자리가 0.5 초 점멸, U / D 로 값 변경. 초.1/100초 화면에서는 설정 스위치를 켜도 U / D 가 값을 바꾸지 않습니다 (v3, E6 수정).
 
 ---
 
@@ -357,6 +397,8 @@ JXADC 는 아날로그 (XADC) 겸용 핀이지만 xdc 에서 LVCMOS33 으로 잡
 
 - 공백 뒤에 바로 Enter. `/get` 뒤에 다른 글자가 오면 ERROR.
 - 자동 전송 (`/auto`) 중에는 무시됩니다. `/auto off` 뒤에 쓰세요.
+- 쉬지 않고 여러 번 보내도 보낸 수만큼 줄이 옵니다 (v3, H9 수정 — v2 는 20 번에 15 줄).
+- 스톱워치 랩을 띄운 중이어도 PC 로는 **뒤에서 흐르는 값**이 갑니다 (FND 는 랩 값 그대로, v3 D7 수정).
 
 #### 버튼 누르기 — `/btn`
 
@@ -391,7 +433,7 @@ JXADC 는 아날로그 (XADC) 겸용 핀이지만 xdc 에서 LVCMOS33 으로 잡
 
 | 입력 | 동작 | 조건 |
 |---|---|---|
-| `/set w_hm` | 시계 시간 설정 켜기 (= `set_sw2` 1) | 시계 시.분 화면 (`/mod w_hm`) 일 때 |
+| `/set w_hm` | 시계 시간 설정 켜기 (= `set_sw2` 1) | 시계 시.분 화면 (`/mod w_hm`) 일 때. 옵션이 정확히 `w_hm` 이어야 함 (v3, G3 — v2 는 `/set abcd` 도 켜짐) |
 | `/off w_h` | 시계 시간 설정 끄기 | 시계 설정 중일 때 |
 | `/set 24h` + Enter | 24 시간 표시 (= `hour24_sw3` 1) | 언제나 |
 | `/set 12h` + Enter | 12 시간 표시 (기본) | 언제나 |
@@ -399,6 +441,7 @@ JXADC 는 아날로그 (XADC) 겸용 핀이지만 xdc 에서 LVCMOS33 으로 잡
 - 12 / 24 시간 설정은 `/mod` 로 화면을 바꿔도 유지됩니다.
 - 시계 설정 중 커서 이동 · 값 변경은 `/btn R` `/btn L` (커서) · `/btn U` `/btn D` (+ / −).
 - `/off` 는 3 글자에서 끝나므로 `/off w_hm` 이라고 쳐도 `/off w_h` 와 같습니다.
+- `/off` 를 잘못 보내 ERROR 가 난 뒤에도 다음 `/off w_h` 는 정상으로 설정을 끕니다 (v3, G7 — v2 는 리셋 전까지 계속 ERROR).
 
 ### 예시 세션
 
@@ -416,6 +459,7 @@ JXADC 는 아날로그 (XADC) 겸용 핀이지만 xdc 에서 LVCMOS33 으로 잡
 /auto all          ← 00:00:00.00 / 00:00:00.00 / 14:05:10.30 / 045cm / 55%24C / ...
 /auto off          → 자동 전송 끄기
 /mod temp          → FND : 온습도
+/get ⏎             ← --%--C  (리셋 뒤 첫 측정 전, FND 는 ----)
 /btn R             → DHT11 1 회 측정
 /get ⏎             ← 55%24C
 /gxt               ← ERROR  (모르는 명령)
@@ -431,7 +475,9 @@ JXADC 는 아날로그 (XADC) 겸용 핀이지만 xdc 에서 LVCMOS33 으로 잡
 | 1 | 타이머 | `00:MM:SS.CC` CR LF | `00:02:30.00` |
 | 2 | 시계 (24시간 값) | `HH:MM:SS.CC` CR LF | `14:05:09.12` |
 | 3 | 거리 | `123cm` CR LF | `045cm` |
-| 4 | 온습도 | `45%25C` CR LF | `55%24C` |
+| 3 | 거리 측정 실패 (v2 ~) | `Err N` CR LF (N = status) | `Err 2` |
+| 4 | 온습도 | `45%25C` CR LF (99 상한, v3) | `55%24C` |
+| 4 | 온습도 측정 실패 · 측정 전 (v2 ~) | `Err N` / `--%--C` CR LF | `Err 1` · `--%--C` |
 | 7 | 오류 | `ERROR` CR LF | |
 
 전송 우선순위 : **ERROR > get / auto**. sender 가 바쁠 때 들어온 요청은 버리지 않고 저장했다가 바로 이어서 보냅니다.
@@ -529,7 +575,7 @@ DHT11 은 리셋 후 1 s, 측정 사이 2 s 를 기다려야 하므로 그 안�
 | out | `o_wt_cursor` | 2 | 시계 설정 커서 |
 | out | `o_sel_sw` / `o_sel_wt` / `o_sel_tm` | 1 | 화면 선택 |
 | out | `o_sw_lap`, `o_wt_msec[6:0]`, `o_wt_pm`, `o_tm_run`, `o_tm_alarm` | | LED 용 |
-| out | `o_sw_time` / `o_tm_time` / `o_wt_time` | 24 | UART 전송 `{hour5, min6, sec6, cs7}` |
+| out | `o_sw_time` / `o_tm_time` / `o_wt_time` | 24 | UART 전송 `{hour5, min6, sec6, cs7}`. `o_sw_time` 은 랩과 상관없이 흐르는 값 (v3) |
 
 ### `uart_top`
 
@@ -618,11 +664,62 @@ DHT11 은 리셋 후 1 s, 측정 사이 2 s 를 기다려야 하므로 그 안�
 
 ---
 
-## 13. 주의 · 남은 일
+## 13. 버전 이력 — v1 → v2 → v3
 
-- **통합 시뮬레이션 / 보드 테스트 안 함.** Verilator lint 만 통과한 상태입니다.
+| 판 | 날짜 | 폴더 | 바뀐 것 | 결과 |
+|---|---|---|---|---|
+| v1 | 10/31 | (`merge_final` 첫 커밋) | WTS · SR04 · DHT11 · UART 통합 ([12 장](#12-통합하면서-바뀐-점)) | 보드 동작, 단 센서 오류 때 PC 는 숫자 |
+| v2 | 10/31 | `merge_final/` = `merge_final_v2/` | **트러블슈팅 1** : 전송 MUX 3 · 4 번 입력의 빈 윗비트에 센서 상태를 싣고 `sender_char_mux` 가 그 비트로 글자를 고름 → PC 도 `Err N` · `--%--C` | 그룹 TB 305 중 PASS 297 · 스펙과 다름 8 |
+| **v3** | 11/01 | `merge_final_v3/` | **트러블슈팅 2** : 그룹 TB 가 찾은 결함 8 건 수정 (아래 표) | **305 / 305 PASS** · LUT 1,489 → 1,476 · WNS +0.320 → **+1.442 ns** · `FINAL.bit` |
+
+### v1 → v2 (트러블슈팅 1)
+
+| 보드 상황 | FND | PC (v1) | PC (v2) |
+|---|---|---|---|
+| SR04 범위 밖 / ECHO 선 뽑음 | `Err2` / `Err3` | `400cm` | `Err 2` / `Err 3` |
+| DHT11 리셋 뒤 첫 측정 전 | `----` | `00%00C` | `--%--C` |
+| DHT11 DATA 선 뽑음 | `Err1` | `32%24C` (마지막 값) | `Err 1` |
+
+원인 : 센서 상태선이 FND MUX 로만 가고 전송 MUX 에는 값만 있었음. 블록 · 포트 · 24 비트 폭은 그대로 두고 Top 전송 MUX 2 줄 + `sender_char_mux` 만 바꿈. 상세 : [`v2_modified.md`](source_file/v2_modified.md)
+
+### v2 → v3 (트러블슈팅 2)
+
+| ID | v2 동작 (스펙과 다름) | 원인 | v3 수정 | 파일 |
+|---|---|---|---|---|
+| G3 | `/set abcd` 에도 시계 설정 켜짐 | 옵션 비교 없음 | 옵션 == `w_hm` 일 때만 | `01_UART_CONTROLLER.sv` |
+| G7 | `/off` 오타 뒤 `/off w_h` 도 계속 ERROR | 오류 처리에서 `/off` 카운터만 안 지움 | 오류 때 `n_off = 0` | `02_UART_ASCII_DECODER.sv` |
+| H7 | `/auto` 껐다 바로 켜면 첫 줄 0.54 초 | 끌 때 1 초 카운터 안 지움 | 끌 때 카운터 0 | `01_UART_CONTROLLER.sv` |
+| H9 | `/get` 20 연속 → 15 줄 | 대기 요청이 1 비트 | 5 비트 개수로 셈 | `01_UART_CONTROLLER.sv` |
+| D7 | 랩 중 `/get` → 랩 값 | PC 값 = 화면값 | `o_sw_run_time` (흐르는 값) 을 전송 | `stopwatch_datapath.v` · `wts_top.v` |
+| E6 | 초 화면 설정 + U → 안 보이는 분 +1 | 설정에 화면 조건 없음 | `i_set_sw2 & i_display_mode_sw1` | `wts_top.v` |
+| L6 | 초 올림 클럭의 `/get` → 1 초 늦은 값 | 올림 `o_tick` 이 레지스터 (1 clk 늦음) | `o_tick` 을 조합으로 | `stopwatch_datapath.v` |
+| J14 | 습도 100 → PC `:0%24C` | 두 자리만 가정 | 습도 · 온도 99 상한 (FND 와 같게) | `sender_char_mux.v` |
+
+보드 확인 (Before → After) : G3 · G7 · E6 · D7 터미널 직접, H7 730 → 1,048 ms · H9 15 → 20 줄 (PC UART 시각 로거), L6 ILA 로 초 올림이 같은 샘플. 상세 : [`v3_modified.md`](source_file/v3_modified.md) · `Member/boyun/fix_issue7_1101/`
+
+---
+
+## 14. 검증 요약
+
+| TB | 내용 | 결과 |
+|---|---|---|
+| 그룹 TB 12 개 (`sim_file/tb_A_reset.sv` ~ `tb_L_integration.sv`) | 공통 하네스 (`tb_merge_harness.sv`) 에 버튼 · 스위치 · PC UART · SR04 · DHT11 핀 모델 + 스코어보드. A 리셋 · B 버튼 · C 모드 · D 스톱워치 · E 시계 · F 타이머 · G UART 수신 · H UART 전송 · I SR04 · J DHT11 · K FND · LED · L 통합, 시나리오 92 · 검사 305. 기대값은 이 README 의 스펙 표 · 데이터시트에서 | v2 : 297 PASS + 8 건 스펙과 다름 → **v3 : 305 / 305** |
+| 통합 TB (정보윤) | 랜덤 명령 120 · 전송 MUX 100 번, 매 줄 기대값 비교 | 불일치 0 (v2 · v3) |
+| 실제 시간 TB (`sim_file/top_tb/`) | 시간 단축 없이 3 s 누름 · 첫 tick · 1 초 시계 · 10 초 타이머 · 다른 화면 알람 등 | B4 · D1 · E1 · F1 · F6 PASS (D6 · H4 는 TB 대기 코드 문제) |
+| 버그 주입 (`sim_file/mutants/`) | 디바운서 · 모드 MUX · tick · 12 시간 · SR04 한계 · 체크섬 · 소수점 · LED · 거리 자릿값 버그를 하나씩 넣고 같은 TB 실행 | **9 / 9 검출** |
+| 발표용 TB (`tb_P_present.sv`) | 실제 1 Hz 로 P1 `/mod` · P2 `/btn` · P3 `/auto all` · P4 ERROR · P5 SR04 Err1 ~ 3 · P6 DHT11 Err1 ~ 3 | 파형 캡처용 |
+
+실행 · 파형 보는 법 : [`sim_file/README.md`](sim_file/README.md) · 시나리오별 명령어 · 스펙 목표 · 결과 : [`sim_file/TB_RESULT_SUMMARY_1031.md`](sim_file/TB_RESULT_SUMMARY_1031.md)
+
+---
+
+## 15. 주의 · 남은 일
+
 - 스위치 입력은 원래 WTS 처럼 싱크로나이저 없이 바로 씁니다.
 - `dht11_controller` 안의 데이터선 싱크로나이저 (리셋 값 1) 는 FSM 과 묶여 있어 IP `synchronizer` 로 바꾸지 않았습니다.
-- `/off w_h` 는 명령 문자열을 보지 않아서, 시계 설정 중에 `/off` 뒤 아무 3 글자나 와도 설정이 꺼집니다 (원래 동작).
+- `/off w_h` 는 옵션 문자열을 보지 않아서, 시계 설정 중에 `/off` 뒤 아무 3 글자나 와도 설정이 꺼집니다 (v3 에서도 그대로).
 - 거리 · 온습도 화면에서는 시계 / 타이머가 계속 돌지만 버튼은 들어가지 않습니다 (알람 LED 만 보임).
 - DHT11 데이터선은 내부 PULLUP 만으로 약할 수 있으니 외부 5 kΩ 풀업을 권장합니다.
+- `sim_file` 의 그룹 TB 기대값 · 설계 경로는 v2 (`source_file/merge_final/`) 기준입니다. v3 로 돌릴 때는 Design Sources 를 `merge_final_v3/` 로 바꿉니다.
+- 실제 시간 TB 의 D6 · H4 (대기 코드) 와 L4 · L5 (xsim 이 `$urandom(seed)` 미지원) 는 TB 쪽을 고쳐야 합니다.
+- H7 · L6 · J14 는 보드에서 눈으로 보기 어려워 로거 · ILA · 시뮬로 확인했습니다 (실제 DHT11 은 습도 100 이 안 나옴).
