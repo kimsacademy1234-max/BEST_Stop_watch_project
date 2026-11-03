@@ -45,7 +45,7 @@ BEST_Stop_watch_project/
 │   │   ├── merge_final_v2/        v1 → v2 : 센서 오류를 PC 로도 (트러블슈팅 1)      ← merge_final 과 같음
 │   │   ├── merge_final_v3/        v2 → v3 : TB 가 찾은 결함 8 건 수정 (트러블슈팅 2)
 │   │   └── v2_modified.md · v3_modified.md   바뀐 곳 · 원인 · 코드 diff · 보드 확인 순서
-│   ├── sim_file/                  공통 하네스 + 그룹 TB 12 개 · 실제 시간 TB · 발표용 TB · 버그 주입 · wcfg · bat
+│   ├── sim_file/                  top_tb/ (하네스 · 그룹 TB 12 개 · 실제 시간 · 발표용) · wcfg/ · docs/ · tools/ · mutants/ (버그 주입) · bat
 │   ├── block_diagram/             블록 다이어그램 PDF · PPTX · 쪽별 PNG (img/) · 생성 스크립트
 │   ├── docs/                      모듈별 블록도 SVG · PNG, 보드 핀 그림
 │   ├── bitstream_file/FINAL.bit   보드용 비트스트림
@@ -293,7 +293,7 @@ tb_A_reset.sv ~ tb_L_integration.sv  : 하네스를 두고 시나리오만 적�
 | K | FND · LED | K1 WTS FND · K2 설정 점멸 · K3 거리 FND · K4 온습도 FND · K5 화면별 LED · K6 스캔 | LED 표, com one-hot 칸당 250 us |
 | L | 통합 · 교차 | L1 배경 스톱워치 · L2 화면 전환 직후 버튼 · L3 전송 중 화면 변경 · L4 동시 부하 (soak) · L5 랜덤 리셋 20 회 · L6 캐리 경계 스냅샷 | 화면 밖도 계속, 누락 · hang 0, 매번 초기값 |
 
-시나리오마다 명령어 조합 · 스펙 목표 · 결과 전체 : [`TB_RESULT_SUMMARY_1031.md`](PROJECT_FINAL/sim_file/TB_RESULT_SUMMARY_1031.md) · 시나리오 원본 : [`tb_scenario.md`](PROJECT_FINAL/sim_file/tb_scenario.md)
+시나리오마다 명령어 조합 · 스펙 목표 · 결과 전체 : [`TB_RESULT_SUMMARY_1031.md`](PROJECT_FINAL/sim_file/docs/TB_RESULT_SUMMARY_1031.md) · 시나리오 원본 : [`tb_scenario.md`](PROJECT_FINAL/sim_file/docs/tb_scenario.md)
 
 ### 5-3. 그 밖의 TB
 

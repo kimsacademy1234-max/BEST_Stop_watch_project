@@ -1,41 +1,74 @@
 # sim_file — merge_final_top TB
 
-시나리오 표 : [`tb_scenario.md`](tb_scenario.md) (ID = TB 의 검사 ID)
+시나리오 표 : [`docs/tb_scenario.md`](docs/tb_scenario.md) (ID = TB 의 검사 ID) · 결과 : [`docs/TB_RESULT_SUMMARY_1031.md`](docs/TB_RESULT_SUMMARY_1031.md)
+
+## 폴더 구조
+
+```
+sim_file/
+├── README.md                 (이 문서)
+├── run_xsim.bat              그룹 TB 배치 실행        run_xsim.bat tb_D_stopwatch D3 [wave]
+├── run_present.bat           발표용 TB 장면 하나 실행  run_present.bat P3 [wave]
+├── top_tb/
+│   ├── tb_merge_harness.sv   공통 하네스 (그룹 TB · 발표용 TB 가 같이 씀)
+│   ├── group/                그룹 TB 12 개 tb_A_reset ~ tb_L_integration (FAST = 1, 자동 판정)
+│   ├── realtime/             실제 시간 TB 9 개 (시간 단축 없음, tb_env.svh 사용 — 하네스와 별개)
+│   │   ├── common/tb_env.svh
+│   │   └── B/ D/ E/ F/ H/ L/ tb_B4 · tb_D1 · tb_D6 · tb_E1 · tb_F1 · tb_F6 · tb_H4 · tb_L4 · tb_L5
+│   └── present/              발표용 대표 파형 tb_P_present (P1 ~ P6) + 장면 고정 사본 tb_P4 · P5 · P6
+├── wcfg/
+│   ├── group/                그룹 TB 별 파형 설정 12 개 (tb_<이름>.wcfg)
+│   └── present/              발표용 장면별 P1 ~ P6.wcfg
+├── docs/                     tb_scenario.md (시나리오) · TB_RESULT_1031.md (결과) · TB_RESULT_SUMMARY_1031.md (정리)
+├── tools/                    make_wcfg.py · make_wcfg_present.py (wcfg 생성기)
+├── mutants/                  버그 주입 검증
+│   ├── run_mutant.bat        mutants\run_mutant.bat M4 tb_D_stopwatch D1
+│   ├── run_all.sh            list.txt 전부 실행 → logs/<ID>.log
+│   ├── list.txt              버그 ID · TB · 시나리오
+│   ├── logs/                 M1 ~ M10I 실행 결과 로그
+│   └── M1/ … M10I/           버그 하나씩 넣은 설계 소스 사본
+├── wdb/                      Vivado GUI 에서 저장한 파형 DB · 로그 (발표 캡처용)
+└── xsim_work/                bat 실행 작업 폴더 (자동 생성, git 제외)
+```
 
 ## 파일
 
 | 파일 | 내용 |
 |---|---|
-| `tb_merge_harness.sv` | 공통 하네스 : DUT + 클럭 + 핀 모델 (버튼 · 스위치 · PC UART · SR04 · DHT11) + 모니터 + 스코어보드. 그룹 TB 가 `h` 로 둠 |
-| `tb_A_reset.sv` | A1 ~ A2 리셋 · 공통 |
-| `tb_B_button.sv` | B1 ~ B5 버튼 · 디바운스 |
-| `tb_C_mode.sv` | C1 ~ C8 모드 선택 (스위치 ↔ UART) |
-| `tb_D_stopwatch.sv` | D1 ~ D7 스톱워치 |
-| `tb_E_watch.sv` | E1 ~ E6 시계 |
-| `tb_F_timer.sv` | F1 ~ F6 타이머 |
-| `tb_G_uart_rx.sv` | G1 ~ G9 UART 수신 · 디코더 |
-| `tb_H_uart_ctrl.sv` | H1 ~ H12 UART 컨트롤러 · 전송 |
-| `tb_I_sr04.sv` | I1 ~ I11 SR04 |
-| `tb_J_dht11.sv` | J1 ~ J14 DHT11 |
-| `tb_K_display.sv` | K1 ~ K6 FND · LED |
-| `tb_L_integration.sv` | L1 ~ L6 통합 · 교차 |
-| `run_xsim.bat` | xsim 배치 실행 (`wave` 를 붙이면 GUI + 파형) |
-| `wcfg/tb_*.wcfg` | 그룹 TB 별 파형 설정 12 개 (시나리오 · 판정 · UART 줄 · FND 문자열 ASCII + 그룹 내부 신호) |
-| `make_wcfg.py` | wcfg 생성기 — 신호를 더하려면 표를 고치고 `python3 make_wcfg.py` |
-| `tb_P_present.sv` | **발표용** 대표 파형 P1 ~ P6 (`/mod` · `/btn`+`/get` · `/auto all` · ERROR · SR04 Err1~3 · DHT11 Err1~3), **시간 줄이기 없음 (실제 1 Hz)** |
+| `top_tb/tb_merge_harness.sv` | 공통 하네스 : DUT + 클럭 + 핀 모델 (버튼 · 스위치 · PC UART · SR04 · DHT11) + 모니터 + 스코어보드. 그룹 TB 가 `h` 로 둠 |
+| `top_tb/group/tb_A_reset.sv` | A1 ~ A2 리셋 · 공통 |
+| `top_tb/group/tb_B_button.sv` | B1 ~ B5 버튼 · 디바운스 |
+| `top_tb/group/tb_C_mode.sv` | C1 ~ C8 모드 선택 (스위치 ↔ UART) |
+| `top_tb/group/tb_D_stopwatch.sv` | D1 ~ D7 스톱워치 |
+| `top_tb/group/tb_E_watch.sv` | E1 ~ E6 시계 |
+| `top_tb/group/tb_F_timer.sv` | F1 ~ F6 타이머 |
+| `top_tb/group/tb_G_uart_rx.sv` | G1 ~ G9 UART 수신 · 디코더 |
+| `top_tb/group/tb_H_uart_ctrl.sv` | H1 ~ H12 UART 컨트롤러 · 전송 |
+| `top_tb/group/tb_I_sr04.sv` | I1 ~ I11 SR04 |
+| `top_tb/group/tb_J_dht11.sv` | J1 ~ J14 DHT11 |
+| `top_tb/group/tb_K_display.sv` | K1 ~ K6 FND · LED |
+| `top_tb/group/tb_L_integration.sv` | L1 ~ L6 통합 · 교차 |
+| `top_tb/realtime/` | 실제 시간 TB : 3 s 누름 · 첫 tick · 1 초 시계 · 10 초 타이머 · 다른 화면 알람. Simulation Sources 에 `common/tb_env.svh` + TB 하나 (include 경로가 안 잡히면 `top_tb/realtime/common` 추가) |
+| `run_xsim.bat` | 그룹 TB xsim 배치 실행 (`wave` 를 붙이면 GUI + 파형) |
+| `wcfg/group/tb_*.wcfg` | 그룹 TB 별 파형 설정 12 개 (시나리오 · 판정 · UART 줄 · FND 문자열 ASCII + 그룹 내부 신호) |
+| `tools/make_wcfg.py` | wcfg 생성기 — 신호를 더하려면 표를 고치고 `python3 tools/make_wcfg.py` |
+| `top_tb/present/tb_P_present.sv` | **발표용** 대표 파형 P1 ~ P6 (`/mod` · `/btn`+`/get` · `/auto all` · ERROR · SR04 Err1~3 · DHT11 Err1~3), **시간 줄이기 없음 (실제 1 Hz)**. `tb_P4/P5/P6_present.sv` 는 맨 위 `ONLY` 만 장면으로 고정한 사본 (모듈 이름 같음 → 하나만 넣을 것) |
 | `run_present.bat` | `run_present.bat P3 wave` — 발표용 장면 하나 + `wcfg/present/P3.wcfg` |
-| `make_wcfg_present.py` | 발표용 장면별 wcfg 생성기 (`wcfg/present/P1~P6.wcfg`) |
-| 발표 안내서 | `../../ahnsung/FINAL/ppt_make/top_파형_캡처_안내.md` — 캡처 구간 · 슬라이드 메시지 |
+| `tools/make_wcfg_present.py` | 발표용 장면별 wcfg 생성기 (`wcfg/present/P1~P6.wcfg`) |
+| `mutants/` | 버그 주입 : `M<ID>/` 소스 사본에 버그 하나씩 → 같은 그룹 TB 로 검출되는지. `run_mutant (2).bat` 은 `run_mutant.bat` 과 같은 내용의 옛 사본 (옛 경로 기준, 안 씀) |
+| 발표 안내서 | `../../Member/ahnsung/FINAL/ppt_make/top_파형_캡처_안내.md` — 캡처 구간 · 슬라이드 메시지 |
 
-설계 : `../source_file/merge_final/` = **v2 (B-2 · B-3, 10/31)** — 센서 오류 · 측정 전에 PC 도 `Err N` · `--%--C` (`../v2/README.md`). TB 기대값도 v2 기준.
+> ⚠ `wcfg/group/tb_G_uart_rx.wcfg` · `wcfg/present/P4~P6.wcfg` 는 생성기 출력에서 손으로 고친 버전입니다. `tools/make_wcfg*.py` 를 다시 돌리면 덮어써지니 주의.
+
+설계 : `../source_file/merge_final/` = **v2 (B-2 · B-3, 10/31)** — 센서 오류 · 측정 전에 PC 도 `Err N` · `--%--C` (`../source_file/v2_modified.md`). TB 기대값도 v2 기준.
 
 ## 실행
 
 ### Vivado GUI
 
 1. Design Sources : `../source_file/merge_final/` 아래 `*.v`, `*.sv` 전부
-2. Simulation Sources : `tb_merge_harness.sv` + 돌릴 그룹 TB 하나 → 그 TB 를 *Set as Top*
-3. 파형 : Simulation Sources 에 `wcfg/<tb>.wcfg` 도 추가 → *Settings > Simulation > Simulation* 탭 `xsim.view` 에 그 wcfg 지정 (그러면 Run Simulation 때 자동으로 열림).
+2. Simulation Sources : `top_tb/tb_merge_harness.sv` + 돌릴 그룹 TB 하나 (`top_tb/group/`) → 그 TB 를 *Set as Top*
+3. 파형 : Simulation Sources 에 `wcfg/group/<tb>.wcfg` 도 추가 → *Settings > Simulation > Simulation* 탭 `xsim.view` 에 그 wcfg 지정 (그러면 Run Simulation 때 자동으로 열림).
    이미 열린 시뮬이면 *File > Simulation Waveform > Open Configuration* 으로 열고 **Restart → Run All** (열기 전 구간은 기록이 안 됨)
 4. Run Simulation → Run All. 콘솔 마지막 `[SUMMARY] ... => PASS` 확인
 
@@ -88,7 +121,7 @@ run_xsim.bat tb_D_stopwatch all wave
 [  12.345678 ms] [BEGIN  ] D3  max value wrap (up)       ← 시나리오 시작 (plan / expect 같이 찍힘)
 [  12.400000 ms] [OK     ] D3-1   ... | exp ... | got ...  ← 검사 1 건
 [  12.400000 ms] [FAIL   ] ...                             ← 기대와 다름
-[  12.400000 ms] [ISSUE  ] ...                             ← tb_scenario.md 2 장 ⚠ 항목 : 스펙과 다르게 동작 (FAIL 과 따로 셈)
+[  12.400000 ms] [ISSUE  ] ...                             ← docs/tb_scenario.md 2 장 ⚠ 항목 : 스펙과 다르게 동작 (FAIL 과 따로 셈)
 [  12.400000 ms] [PRELOAD] stopwatch <- 23:59:59.98        ← TB 가 카운터에 값을 직접 넣음 (경계 바로 앞으로)
 [  12.400000 ms] [WARN   ] tx line "..." != go snapshot     ← UART 줄이 보낸 순간 값과 다름
 ```

@@ -1,0 +1,128 @@
+diff -ruN -x PORT_MAP.md ../../source_file/fault_chatter.v src/fault_chatter.v
+--- ../../source_file/fault_chatter.v	1970-01-01 09:00:00.000000000 +0900
++++ src/fault_chatter.v	2026-10-16 20:00:09.855563900 +0900
+@@ -0,0 +1,54 @@
++`timescale 1ns / 1ps
++// [FAULT-INJ F2] 스위치 채터링 / 노이즈 주입기 (버튼 4 개 앞) — 현업 상황: EMI 스파이크 · 낡은 스위치 접촉 불량
++//   i_fault_sw15 = 1 일 때
++//     안 누름 : 7 ms 마다 1 개씩 결정적 스파이크 (폭 1 us · 50 us · 500 us · 1.5 ms 순환) 를 OR
++//     누르는 중: 20 ms 마다 300 us 동안 0 으로 끊음 (AND)
++//   i_fault_sw15 = 0 이면 i_btn 그대로 (원본과 비트 단위로 같음)
++//   i_btn / o_btn 비트 순서 = {D, U, L, R}
++module fault_chatter (
++    input        i_clk,
++    input        i_rst,
++    input        i_fault_sw15,
++    input  [3:0] i_btn,
++    output [3:0] o_btn
++);
++    localparam integer SPIKE_PERIOD = 700_000;    // 7 ms
++    localparam integer DROP_PERIOD  = 2_000_000;  // 20 ms
++    localparam integer DROP_WIDTH   = 30_000;     // 300 us
++
++    reg [19:0] cnt_spike;
++    reg [1:0]  spike_idx;
++    reg [20:0] cnt_drop;
++    reg [17:0] spike_w;
++
++    always @(*) begin
++        case (spike_idx)
++            2'd0: spike_w = 18'd100;        // 1 us
++            2'd1: spike_w = 18'd5_000;      // 50 us
++            2'd2: spike_w = 18'd50_000;     // 500 us
++            default: spike_w = 18'd150_000; // 1.5 ms (< 1.75 ms → 디바운서가 걸러야 함)
++        endcase
++    end
++
++    always @(posedge i_clk, posedge i_rst) begin
++        if (i_rst) begin
++            cnt_spike <= 0;
++            spike_idx <= 0;
++            cnt_drop  <= 0;
++        end else begin
++            if (cnt_spike == SPIKE_PERIOD - 1) begin
++                cnt_spike <= 0;
++                spike_idx <= spike_idx + 2'd1;
++            end else begin
++                cnt_spike <= cnt_spike + 1;
++            end
++            if (cnt_drop == DROP_PERIOD - 1) cnt_drop <= 0;
++            else cnt_drop <= cnt_drop + 1;
++        end
++    end
++
++    wire spike = (cnt_spike < spike_w);
++    wire drop  = (cnt_drop < DROP_WIDTH);
++
++    assign o_btn = i_fault_sw15 ? ((i_btn & {4{~drop}}) | (~i_btn & {4{spike}})) : i_btn;
++endmodule
+diff -ruN -x PORT_MAP.md ../../source_file/stopwatch_watch.v src/stopwatch_watch.v
+--- ../../source_file/stopwatch_watch.v	2026-10-16 19:02:51.572258500 +0900
++++ src/stopwatch_watch.v	2026-10-16 20:00:09.860563800 +0900
+@@ -26,6 +26,7 @@
+     input         set_sw2,
+     input         hour24_sw3,
+     input         timer_sw4,
++    input         fault_sw15,      // [FAULT-INJ F2] sw15 (R2): 1 = 결함 상황 on
+     output [ 3:0] fnd_com,
+     output [ 7:0] fnd_font,
+     output [15:0] led
+@@ -97,32 +98,41 @@
+     );
+ 
+     // ---------------------------------------------------------------- 디바운서
++    // [FAULT-INJ F2] 채터링/노이즈 주입기: 버튼 핀 → 주입기 → 디바운서
++    wire w_btn_R_inj, w_btn_L_inj, w_btn_U_inj, w_btn_D_inj;  // [FAULT-INJ F2]
++    fault_chatter U_FAULT_CHATTER (                           // [FAULT-INJ F2]
++        .i_clk       (clk),                                   // [FAULT-INJ F2]
++        .i_rst       (rst),                                   // [FAULT-INJ F2]
++        .i_fault_sw15(fault_sw15),                            // [FAULT-INJ F2]
++        .i_btn       ({btn_D, btn_U, btn_L, btn_R}),          // [FAULT-INJ F2]
++        .o_btn       ({w_btn_D_inj, w_btn_U_inj, w_btn_L_inj, w_btn_R_inj})  // [FAULT-INJ F2]
++    );                                                        // [FAULT-INJ F2]
+     btn_debounce U_BD_R (
+         .i_clk     (clk),
+         .i_rst     (rst),
+         .i_clk_4khz(w_clk_4khz),
+-        .i_btn     (btn_R),
++        .i_btn     (w_btn_R_inj),   // [FAULT-INJ F2] 원래 btn_R
+         .o_btn     (w_btn_R)
+     );
+     btn_debounce U_BD_L (
+         .i_clk     (clk),
+         .i_rst     (rst),
+         .i_clk_4khz(w_clk_4khz),
+-        .i_btn     (btn_L),
++        .i_btn     (w_btn_L_inj),   // [FAULT-INJ F2] 원래 btn_L
+         .o_btn     (w_btn_L)
+     );
+     btn_debounce U_BD_U (
+         .i_clk     (clk),
+         .i_rst     (rst),
+         .i_clk_4khz(w_clk_4khz),
+-        .i_btn     (btn_U),
++        .i_btn     (w_btn_U_inj),   // [FAULT-INJ F2] 원래 btn_U
+         .o_btn     (w_btn_U)
+     );
+     btn_debounce U_BD_D (
+         .i_clk     (clk),
+         .i_rst     (rst),
+         .i_clk_4khz(w_clk_4khz),
+-        .i_btn     (btn_D),
++        .i_btn     (w_btn_D_inj),   // [FAULT-INJ F2] 원래 btn_D
+         .o_btn     (w_btn_D)
+     );
+ 
+diff -ruN -x PORT_MAP.md ../../source_file/stopwatch_watch.xdc src/stopwatch_watch.xdc
+--- ../../source_file/stopwatch_watch.xdc	2026-10-16 19:02:53.531936300 +0900
++++ src/stopwatch_watch.xdc	2026-10-16 20:00:09.872670000 +0900
+@@ -11,6 +11,9 @@
+ set_property -dict { PACKAGE_PIN W17   IOSTANDARD LVCMOS33 } [get_ports hour24_sw3]
+ set_property -dict { PACKAGE_PIN W15   IOSTANDARD LVCMOS33 } [get_ports timer_sw4]
+ 
++## [FAULT-INJ F2] sw15 = 결함 주입 on/off
++set_property -dict { PACKAGE_PIN R2    IOSTANDARD LVCMOS33 } [get_ports fault_sw15]   ;# [FAULT-INJ F2]
++
+ ## LEDs
+ set_property -dict { PACKAGE_PIN U16   IOSTANDARD LVCMOS33 } [get_ports {led[0]}]
+ set_property -dict { PACKAGE_PIN E19   IOSTANDARD LVCMOS33 } [get_ports {led[1]}]

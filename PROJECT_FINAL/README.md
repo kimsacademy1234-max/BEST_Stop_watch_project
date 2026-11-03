@@ -9,7 +9,7 @@ PC 터미널에서 **UART 명령으로 모드 변경 · 버튼 입력 · 데이�
 | 보드 비트스트림 | `bitstream_file/FINAL.bit` (= v3, `Member/boyun/fix_issue7_1101/bit/` 과 같은 파일) |
 | 블록 다이어그램 | [`block_diagram/merge_final_block_diagram.pdf`](block_diagram/merge_final_block_diagram.pdf) (6 쪽, 쪽별 PNG `block_diagram/img/`) |
 | 버전별 바뀐 곳 | [`source_file/v2_modified.md`](source_file/v2_modified.md) (v1 → v2) · [`source_file/v3_modified.md`](source_file/v3_modified.md) (v2 → v3) |
-| TB · 결과 | [`sim_file/README.md`](sim_file/README.md) · [`sim_file/TB_RESULT_SUMMARY_1031.md`](sim_file/TB_RESULT_SUMMARY_1031.md) |
+| TB · 결과 | [`sim_file/README.md`](sim_file/README.md) · [`sim_file/docs/TB_RESULT_SUMMARY_1031.md`](sim_file/docs/TB_RESULT_SUMMARY_1031.md) |
 | 발표 자료 | [`Team4_Final.pdf`](Team4_Final.pdf) |
 
 > **검증 상태 (v3)** : 그룹 TB 12 개 · 시나리오 92 · 검사 **305 / 305 PASS** (스펙과 다른 동작 0), 통합 TB 불일치 0, 버그 주입 9 / 9 검출.
@@ -47,7 +47,7 @@ PROJECT_FINAL/
 ├── bitstream_file/FINAL.bit     보드 비트스트림 (v3)
 ├── block_diagram/               블록도 PDF · PPTX · img/ 쪽별 PNG · 생성 스크립트 (gen_block_diagram.py, bd_core.py, bd_pages.py)
 ├── docs/                        모듈별 블록도 SVG · PNG (draw_diagrams.py), basys3_pinmap.png
-├── sim_file/                    공통 하네스 · 그룹 TB A ~ L · top_tb/ (실제 시간) · tb_P*_present (발표용) · mutants/ (버그 주입) · wcfg/ · bat
+├── sim_file/                    top_tb/ (하네스 · group/ 그룹 TB A ~ L · realtime/ 실제 시간 · present/ 발표용) · wcfg/ · docs/ (시나리오 · 결과) · tools/ · mutants/ (버그 주입) · bat
 └── source_file/
     ├── v2_modified.md · v3_modified.md   버전별 바뀐 곳 · 원인 · diff · 보드 확인 순서
     ├── merge_final/             v2 와 같은 소스 (그룹 TB 기대값 기준)
@@ -703,13 +703,13 @@ DHT11 은 리셋 후 1 s, 측정 사이 2 s 를 기다려야 하므로 그 안�
 
 | TB | 내용 | 결과 |
 |---|---|---|
-| 그룹 TB 12 개 (`sim_file/tb_A_reset.sv` ~ `tb_L_integration.sv`) | 공통 하네스 (`tb_merge_harness.sv`) 에 버튼 · 스위치 · PC UART · SR04 · DHT11 핀 모델 + 스코어보드. A 리셋 · B 버튼 · C 모드 · D 스톱워치 · E 시계 · F 타이머 · G UART 수신 · H UART 전송 · I SR04 · J DHT11 · K FND · LED · L 통합, 시나리오 92 · 검사 305. 기대값은 이 README 의 스펙 표 · 데이터시트에서 | v2 : 297 PASS + 8 건 스펙과 다름 → **v3 : 305 / 305** |
+| 그룹 TB 12 개 (`sim_file/top_tb/group/tb_A_reset.sv` ~ `tb_L_integration.sv`) | 공통 하네스 (`top_tb/tb_merge_harness.sv`) 에 버튼 · 스위치 · PC UART · SR04 · DHT11 핀 모델 + 스코어보드. A 리셋 · B 버튼 · C 모드 · D 스톱워치 · E 시계 · F 타이머 · G UART 수신 · H UART 전송 · I SR04 · J DHT11 · K FND · LED · L 통합, 시나리오 92 · 검사 305. 기대값은 이 README 의 스펙 표 · 데이터시트에서 | v2 : 297 PASS + 8 건 스펙과 다름 → **v3 : 305 / 305** |
 | 통합 TB (정보윤) | 랜덤 명령 120 · 전송 MUX 100 번, 매 줄 기대값 비교 | 불일치 0 (v2 · v3) |
-| 실제 시간 TB (`sim_file/top_tb/`) | 시간 단축 없이 3 s 누름 · 첫 tick · 1 초 시계 · 10 초 타이머 · 다른 화면 알람 등 | B4 · D1 · E1 · F1 · F6 PASS (D6 · H4 는 TB 대기 코드 문제) |
+| 실제 시간 TB (`sim_file/top_tb/realtime/`) | 시간 단축 없이 3 s 누름 · 첫 tick · 1 초 시계 · 10 초 타이머 · 다른 화면 알람 등 | B4 · D1 · E1 · F1 · F6 PASS (D6 · H4 는 TB 대기 코드 문제) |
 | 버그 주입 (`sim_file/mutants/`) | 디바운서 · 모드 MUX · tick · 12 시간 · SR04 한계 · 체크섬 · 소수점 · LED · 거리 자릿값 버그를 하나씩 넣고 같은 TB 실행 | **9 / 9 검출** |
 | 발표용 TB (`tb_P_present.sv`) | 실제 1 Hz 로 P1 `/mod` · P2 `/btn` · P3 `/auto all` · P4 ERROR · P5 SR04 Err1 ~ 3 · P6 DHT11 Err1 ~ 3 | 파형 캡처용 |
 
-실행 · 파형 보는 법 : [`sim_file/README.md`](sim_file/README.md) · 시나리오별 명령어 · 스펙 목표 · 결과 : [`sim_file/TB_RESULT_SUMMARY_1031.md`](sim_file/TB_RESULT_SUMMARY_1031.md)
+실행 · 파형 보는 법 : [`sim_file/README.md`](sim_file/README.md) · 시나리오별 명령어 · 스펙 목표 · 결과 : [`sim_file/docs/TB_RESULT_SUMMARY_1031.md`](sim_file/docs/TB_RESULT_SUMMARY_1031.md)
 
 ---
 
