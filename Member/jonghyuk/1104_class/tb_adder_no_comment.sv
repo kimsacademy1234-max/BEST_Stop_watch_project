@@ -1,3 +1,4 @@
+
 `timescale 1ns / 1ps
 
 
@@ -143,6 +144,9 @@ class scoreboard;
 	
 		bit [7:0] expected_s;
 		bit expected_c;
+		int pass_cnt,fail_cnt;
+
+
 	task run();
 
 		// get transaction 
@@ -160,10 +164,15 @@ class scoreboard;
 		if({expected_c, expected_s} == {tr.c,tr.s})begin 
 			$display("%t : pass ",$time);
 			
+			pass_cnt ++;
+	
+
 		end else begin
 
 			$display("fail");
 			tr.debug_print("SCB");
+
+			fail_cnt ++;
 
 		end
 	endtask
@@ -195,12 +204,16 @@ class environment;
 	endfunction
 
 	task run();
-		repeat(10)begin
+		repeat(256)begin
 			gen.run();
 			drv.run();
 			mon.run();
 			scb.run(); 
 		end
+
+	
+		$display("pass count = %d",scb.pass_cnt);
+		$display("fail count = %d",scb.fail_cnt);
 
 	endtask
 
