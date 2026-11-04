@@ -41,10 +41,12 @@ class generator;
 	endfunction
 
 	task run();
+		begin
 			tr = new;
 			tr.randomize();
 			tr.debug_print("GEN");
 			gen2drv_mbox.put(tr);
+		end
 	endtask
 
 endclass
@@ -55,16 +57,14 @@ class driver;
 
 	transaction tr;
 	mailbox #(transaction) gen2drv_mbox;
-	event drv2mon_evt;
 
 
 
 	virtual adder_interface adder_if_v;
 
-	function new(mailbox #(transaction) gen2drv_mbox,  virtual adder_interface adder_if_v, event drv2mon_evt);
+	function new(mailbox #(transaction) gen2drv_mbox,  virtual adder_interface adder_if_v);
 		this.adder_if_v = adder_if_v;
 		this.gen2drv_mbox = gen2drv_mbox;
-		this.drv2mon_evt = drv2mon_evt;
 	
 	endfunction
 
@@ -77,7 +77,6 @@ class driver;
 			adder_if_v.b = tr.b;
 			adder_if_v.mode = tr.mode;
 			#10;
-			->drv2mon_evt; // 이벤트를 발생 시켜라 
 		end
 	
 	endtask
@@ -85,6 +84,7 @@ class driver;
 endclass
 
 
+/////////////////////////////////////////////////////////////////////////////
 
 class monitor;
 
@@ -92,19 +92,14 @@ class monitor;
 	virtual adder_interface adder_if_v;
 	
 	mailbox #(transaction) mon2scb_mbox;
-	event drv2mon_evt; // 
 	
 
 
-	function new( mailbox#(transaction) mon2scb_mbox ,virtual adder_interface adder_if_v,event drv2mon_evt);
+	function new( mailbox#(transaction) mon2scb_mbox ,virtual adder_interface adder_if_v);
 
 	
 		this.mon2scb_mbox = mon2scb_mbox; // argument 선언 x this로 할 수 있다. 현재 객체 내부의 핸들 - this -> 변수 이름을 같게 할 수 있어서 편하다 
 		this.adder_if_v = adder_if_v;// this + . -> '.' 연결자 
-		this.drv2mon_evt = drv2mon_evt;
-
-
-
 
 	endfunction
 	
@@ -112,8 +107,6 @@ class monitor;
 	task run();
 
 			begin
-			//event 
-			@(drv2mon_evt);  // -> 'wait(drv2mon_evt)' 이렇게 쓸 수도 있다 
 
 			//tr 생성
 
@@ -134,8 +127,48 @@ class monitor;
 
 endclass
 
+///////////////////////////////////////////////////////////////////////////////
 
 
+class scoreboard;
+	
+	transaction tr;
+	mailbox #(transaction) mon2scb_mbox;
+	
+	function new(mailbox #(transaction) mon2scb_mbox);
+
+		this.mon2scb_mbox = mon2scb_mbox;
+
+	endfunction 
+	
+		bit [7:0] expected_s;
+		bit expected_c;
+	task run();
+
+		// get transaction 
+
+		mon2scb_mbox.get(tr);
+
+		if(tr.mode)
+		{expected_c, expected_s} =  tr.a - tr.b;
+		
+		else 
+		{expected_c, expected_s} =  tr.a + tr.b;
+		//pass/ fail
+
+
+		if({expected_c, expected_s} == {tr.c,tr.s})begin 
+			$display("%t : pass ",$time);
+			
+		end else begin
+
+			$display("fail");
+			tr.debug_print("SCB");
+
+		end
+	endtask
+
+endclass
 
 ///////////////////////////////////////////////////////////////////////////////
 class environment;
@@ -143,17 +176,22 @@ class environment;
 	generator gen;
 	driver drv;
 	monitor mon;
+	scoreboard scb;
 
-	event drv2mon_evt;
+
 	mailbox #(transaction) gen2drv_mbox;
 	mailbox #(transaction) mon2scb_mbox; 
 
 
 	function new(virtual adder_interface adder_if_v);
 		gen2drv_mbox = new;
+		mon2scb_mbox = new;
 		gen = new(gen2drv_mbox);
-		drv = new(gen2drv_mbox, adder_if_v,drv2mon_evt);
-		mon = new(mon2scb_mbox,adder_if_v,drv2mon_evt);
+		drv = new(gen2drv_mbox, adder_if_v);
+		mon = new(mon2scb_mbox,adder_if_v);
+		scb = new(mon2scb_mbox);
+
+
 	endfunction
 
 	task run();
@@ -161,6 +199,7 @@ class environment;
 			gen.run();
 			drv.run();
 			mon.run();
+			scb.run(); 
 		end
 
 	endtask
