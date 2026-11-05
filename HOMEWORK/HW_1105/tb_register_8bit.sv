@@ -107,9 +107,11 @@ class driver;
 	endtask
 
 	task preset();
+			$display("%t : reset = 1 ",$time);
 			reg_if_v.reset = 1;
 			@(posedge reg_if_v.clk);
 			@(posedge reg_if_v.clk);
+			$display("%t : reset_finish ",$time);
 	endtask 
 	
 endclass
