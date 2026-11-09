@@ -126,7 +126,7 @@ class driver;
 			ram_vif.we = tr.we;
 			ram_vif.addr = tr.addr;
 			ram_vif.wdata = tr.wdata;
-			->mon_next_evt; // nba tiggered  혼합해서 못사용함
+			->>mon_next_evt; // nba tiggered  혼합해서 못사용함
 
 		end
 	endtask
@@ -162,7 +162,7 @@ class monitor;
 	task run();
 
 			forever begin
-				@(mon_next_evt);    // blockng assignment 
+				wait(mon_next_evt.triggered);    // blockng assignment 
 				@(posedge ram_vif.clk);
 				#1;
 				tr = new();
@@ -218,6 +218,12 @@ class scoreboard;
 	int w_pass_count;
 	int w_fail_count;
 
+	// 주소 커버리지 : 쓴 뒤에 read로 비교까지 끝난 주소 수
+	bit written [0:63];
+	bit checked [0:63];
+	int checked_count;
+	bit done;
+
 
 	task run();
 
@@ -242,14 +248,25 @@ class scoreboard;
 					w_fail_count ++;
 					t_fail_count ++;
 
+					$display("=========================================================================");
+					$display("%t  FAIL : tr.rdata  = %d  / expected_rdata = %d",$time,tr_mon.rdata,tr_gen.wdata);
+					$display("=========================================================================");
+
 			end	
 			expected_rdata[tr_gen.addr] = tr_gen.wdata;
+			written[tr_gen.addr] = 1;
 			write_count ++;
 		end
 		
 		else begin
 
 			read_count ++; 
+
+			if(written[tr_gen.addr] && !checked[tr_gen.addr])begin
+					checked[tr_gen.addr] = 1;
+					checked_count ++;
+					if(checked_count == 64) done = 1;
+			end
 
 			if(expected_rdata[tr_gen.addr] === tr_mon.rdata)begin
 						r_pass_count ++;
@@ -282,7 +299,7 @@ class scoreboard;
 
 		$display("");
 		$display("+--------------------------------------------------+");
-		$display("|                   TEST  REPORT                   |");
+		$display("|                V3 TEST  REPORT                   |");
 		$display("+--------------------------------------------------+");
 		$display("|  total test = %5d                              |", total_count);
 		$display("|  pass count = %5d                              |", t_pass_count);
@@ -295,6 +312,9 @@ class scoreboard;
 		$display("| write  count = %5d                             |", write_count);
 		$display("| write  pass  = %5d                             |", w_pass_count);
 		$display("| write  fail  = %5d                             |", w_fail_count);
+		$display("+--------------------------------------------------+");
+		$display("| addr check  = %5d / 64                         |", checked_count);
+		$display("| all checked = %s                                |", done ? "YES" : "NO ");
 		$display("+--------------------------------------------------+");
 	endtask
 
@@ -341,6 +361,7 @@ class environment;
 			drv.run();
 			mon.run();
 			scb.run();
+			wait(scb.done);		// 64개 주소 확인이 끝나면 join_any 통과 (run_count는 상한선)
 		join_any
 
 			scb.report();
@@ -380,7 +401,7 @@ initial begin
 	
 	$timeformat(-9,0,"ns",0);
 	env = new(ram_if);
-	env.run(300);
+	env.run(5000);
 	$finish;
 
 end

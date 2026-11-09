@@ -202,6 +202,12 @@ class scoreboard;
 	int pass_count;
 	int fail_count;
 
+	// 주소 커버리지 : 쓴 뒤에 read로 비교까지 끝난 주소 수
+	bit written [0:63];
+	bit checked [0:63];
+	int checked_count;
+	bit done;
+
 
 
 	task run();
@@ -214,11 +220,18 @@ class scoreboard;
 
 		if(tr.we)begin
 			expected_rdata[tr.addr] = tr.wdata;
+			written[tr.addr] = 1;
 			write_count ++;
 		end
 		
 		else begin
 			read_count ++; 
+
+			if(written[tr.addr] && !checked[tr.addr])begin
+					checked[tr.addr] = 1;
+					checked_count ++;
+					if(checked_count == 64) done = 1;
+			end
 
 			if(expected_rdata[tr.addr] === tr.rdata)begin
 						pass_count ++;
@@ -249,7 +262,7 @@ class scoreboard;
 
 		$display("");
 		$display("+--------------------------------------------------+");
-		$display("|                   TEST  REPORT                   |");
+		$display("|                V2 TEST  REPORT                   |");
 		$display("+--------------------------------------------------+");
 		$display("|  total test = %5d                              |", total_count);
 		$display("|  pass count = %5d                              |", pass_count);
@@ -257,6 +270,9 @@ class scoreboard;
 		$display("+--------------------------------------------------+");
 		$display("| read  count = %5d                              |", read_count);
 		$display("| write count = %5d                              |", write_count);
+		$display("+--------------------------------------------------+");
+		$display("| addr check  = %5d / 64                         |", checked_count);
+		$display("| all checked = %s                                |", done ? "YES" : "NO ");
 		$display("+--------------------------------------------------+");
 
 	endtask
@@ -300,6 +316,7 @@ class environment;
 			drv.run();
 			mon.run();
 			scb.run();
+			wait(scb.done);		// 64개 주소 확인이 끝나면 join_any 통과 (run_count는 상한선)
 		join_any
 
 			scb.report();
@@ -339,7 +356,7 @@ initial begin
 	
 	$timeformat(-9,0,"ns",0);
 	env = new(ram_if);
-	env.run(300);
+	env.run(5000);
 	$finish;
 
 end
