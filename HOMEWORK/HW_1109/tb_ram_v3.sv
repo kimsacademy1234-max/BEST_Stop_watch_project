@@ -233,7 +233,7 @@ class scoreboard;
 
 		if(tr_gen.we)begin
 			
-			if(tr_gen.wdata == tr_mon.wdata)begin
+			if(tr_gen.wdata == tr_mon.rdata)begin
 					w_pass_count ++;
 					t_pass_count ++;
 			end
