@@ -15,6 +15,33 @@ interface fifo_interface(input clk);
 
 
 
+  property p_rst_full;
+			@(posedge clk) rst |-> (full === 1'b0); // full 이 x일때 일반 등가를 사용할경우, 통과 시킨다. 따라서 === 케이스 등가를 써서 4상태에 대한
+													// 판별 할 수 있도록 함 
+  endproperty
+
+
+
+  property p_rst_empty;
+			@(posedge clk) rst |-> (empty === 1'b1); // full 이 x일때 일반 등가를 사용할경우, 통과 시킨다. 따라서 === 케이스 등가를 써서 4상태에 대한
+													// 판별 할 수 있도록 함 
+  endproperty
+
+
+  a_rst_full : assert property(p_rst_full)
+  else $display("%t : [assert] error full = %d", $time, full);
+
+
+  a_rst_empty : assert property(p_rst_empty)
+  else $display("%t : [assert] error empty = %d", $time, empty);
+
+
+
+
+
+
+
+
 endinterface
 
 
@@ -33,8 +60,11 @@ class transaction;
  logic  empty;
   
 
-constraint push_data_gen{push_data inside{[0:256]};}
+constraint push_data_gen{push_data inside{[0:255]};}
+
 constraint rst_gen{ rst dist{ 0:/ 9 , 1:/ 1  }; }
+constraint push_gen{ push dist{ 0:/ 5 , 1:/ 5 }; }
+constraint pop_gen{ pop   dist{ 0:/ 5 , 1:/ 5 }; }
 
 
 
@@ -59,6 +89,7 @@ class generator;
     transaction tr;
 	mailbox #(transaction) gen2drv_mbox;
 	event gen_next_evt;
+	int       step     = 0;
 	
 	function new(mailbox #(transaction) gen2drv_mbox, event gen_next_evt);
 		
@@ -68,8 +99,8 @@ class generator;
 
 
 
-	task run(int run_count,int option);
-		repeat(run_count)begin
+	task run(int option);
+		forever begin
 			tr = new();
 			tr.randomize();
             gen_tr(option);
@@ -83,21 +114,26 @@ class generator;
 
 function void gen_tr(int option);
      
-
 			case(option)
 	
 				0:begin
 					tr.randomize();
-					tr.rst = 0;
-					tr.push = 1;
+					tr.rst  = 0;
 					tr.pop  = 0;
+					case(step % 6)
+						0,1,2,3 : begin tr.push = 1;  end
+						4       : begin tr.push = 1;             end
+						5       : begin tr.push = 0; tr.rst = 1; end
+					endcase
+					step++;
 				  end
 
 				1:begin
 					tr.randomize();
-					tr.rst = 0;
-					tr.push = 0;
-					tr.pop  = 1;
+					tr.rst  = 0;
+					if(step % 9 < 4) begin tr.push = 1; tr.pop = 0;  end
+					else             begin tr.push = 0; tr.pop = 1;  end
+					step++;
 				  end
 
 				2:begin
@@ -109,19 +145,14 @@ function void gen_tr(int option);
 				
 				3:begin
 					tr.randomize();
+					tr.rst = 0;
 				  end
 
+				4:begin
+					tr.randomize();
+				  end
 			endcase	
-
 endfunction
-
-
-
-
-        
-
-
-
 
 
 endclass
@@ -156,11 +187,6 @@ class driver;
 	fifo_vif.rst = 0;
 
 	endtask
-
-
-
-
-
 
 
 	task run();
@@ -208,7 +234,7 @@ class monitor;
 			forever begin
 				@(negedge fifo_vif.clk);
 				tr 				= new();
-				tr.rst			= fifo_vif.rst;			// scoreboard 가 reset 을 알아야 큐를 비울 수 있음
+				tr.rst			= fifo_vif.rst;
 				tr.pop_data 	= fifo_vif.pop_data ;
 				tr.push_data	= fifo_vif.push_data ;   
 				tr.push			= fifo_vif.push  ;
@@ -240,16 +266,39 @@ class scoreboard;
 	event gen_next_evt;
 	virtual fifo_interface fifo_vif;
 
+
+
+	covergroup cg_fifo;
+			//fifo push data 
+			cp_push_data : coverpoint tr.push_data {
+		
+				bins full[] = {[0:255]};  // 값의 범위를 지정할 수 있다
+										// 퍼센트로 나온다
+			}
+
+
+			cp_pop_data : coverpoint tr.pop_data {
+		
+				bins full[] = {[0:255]};  // 값의 범위를 지정할 수 있다
+										// 퍼센트로 나온다
+			}
+
+
+
+
+	endgroup
+
+
 	function new(mailbox #(transaction) mon2scb_mbox, virtual fifo_interface fifo_vif, event gen_next_evt);
 		this.fifo_vif	  =  fifo_vif;
 		this.mon2scb_mbox = mon2scb_mbox;
 		this.gen_next_evt = gen_next_evt;
+		this.cg_fifo =		new;
 	endfunction 
 
 
 	localparam int DEPTH = 4;
 
-	// 기대 FIFO: 크기 제한 없는 큐 + DEPTH 비교 (DUT 버그로 더 들어와도 큐가 조용히 버리지 않도록)
 	logic [7:0] expected_fifo[$];
 	logic [7:0] exp_data;
 	bit         exp_full, exp_empty, do_push, do_pop;
@@ -258,8 +307,8 @@ class scoreboard;
 	int reset_count;
 	int push_count;
 	int pop_count;
-	int push_ignored_count;		// full 일 때 들어온 push (DUT 가 무시해야 함)
-	int pop_ignored_count;		// empty 일 때 들어온 pop  (DUT 가 무시해야 함)
+	int push_ignored_count;
+	int pop_ignored_count;
 
 
 	int pass_count;
@@ -271,6 +320,15 @@ class scoreboard;
 
 	int empty_fail_count;
 	int empty_pass_count;
+
+	int   option;
+	int   max_count;
+	bit   push_seen[256];
+	bit   pop_seen [256];
+	int   push_cover;
+	int   pop_cover;
+	bit   timeout;
+	event end_evt;
 
 
 	task run();
@@ -300,9 +358,10 @@ class scoreboard;
 
 				if(do_pop)begin
 					pop_count ++;
-					exp_data = expected_fifo.pop_front();		// 한 번만 꺼내서 변수에 저장
+					exp_data = expected_fifo.pop_front();
 					if(exp_data === tr.pop_data)begin
 						pass_count ++;
+						if(!pop_seen[exp_data]) begin pop_seen[exp_data] = 1; pop_cover ++; end
 					end
 					else begin
 						fail_count ++;
@@ -315,13 +374,35 @@ class scoreboard;
 				if(do_push)begin
 					push_count ++;
 					expected_fifo.push_back(tr.push_data);
+					if(!push_seen[tr.push_data]) begin push_seen[tr.push_data] = 1; push_cover ++; end
 				end
+				cg_fifo.sample();
+
+
 			end
+
+			if(((option == 0) ? push_cover : pop_cover) == 256) ->end_evt;
+			else if(total_count == max_count) begin timeout = 1; ->end_evt; end
 
 			->gen_next_evt;
 
 		end
 	endtask
+
+	function string missing_list(ref bit seen[256]);
+		int i, j;
+		missing_list = "";
+		i = 0;
+		while(i < 256) begin
+			if(seen[i]) begin i ++; continue; end
+			j = i;
+			while(j < 255 && !seen[j+1]) j ++;
+			if(missing_list != "") missing_list = {missing_list, ", "};
+			if(j == i) missing_list = {missing_list, $sformatf("%0d", i)};
+			else       missing_list = {missing_list, $sformatf("%0d~%0d", i, j)};
+			i = j + 1;
+		end
+	endfunction
 
 
 	function void check_flags(bit expec_full, bit expec_empty);
@@ -338,12 +419,20 @@ class scoreboard;
 		end
 	endfunction
 
-	task report();
+	task report(int option);
+		string case_s; 
+		
+		if(option ==0) case_s = "PUSH ONLY";
+		if(option ==1) case_s = "POP ONLY";
+		if(option ==2) case_s = "PUSH & POP ONLY";
+		if(option ==3) case_s = "RANDOM without Reset";
+		if(option ==4) case_s = "RANDOM with Reset";
+	
+
 
 
 		$display("");
-		$display("+--------------------------------------------------+");
-		$display("|                V2 TEST  REPORT                   |");
+		$display("  %s TEST                                       ", case_s);
 		$display("+--------------------------------------------------+");
 		$display("|  total test = %5d                              |", total_count);
 		$display("|  reset count= %5d                              |", reset_count);
@@ -352,11 +441,13 @@ class scoreboard;
 		$display("|  push ignored (full)  = %5d                    |", push_ignored_count);
 		$display("|  pop  ignored (empty) = %5d                    |", pop_ignored_count);
 		$display("+--------------------------------------------------+");
-		$display("  pop vs expect                      ");
+		$display("");
+		$display("  pop_data vs expect_data                     ");
 		$display("+--------------------------------------------------+");
 		$display("|  pop_pass count = %5d                          |", pass_count);
 		$display("|  pop_fail count = %5d                          |", fail_count);
 		$display("+--------------------------------------------------+");
+		$display("");
 		$display("  full / empty pass/fail             ");
 		$display("+--------------------------------------------------+");
 		$display("|  full_pass count = %5d                         |", full_pass_count);
@@ -364,6 +455,19 @@ class scoreboard;
 		$display("+--------------------------------------------------+");
 		$display("|  empty_pass count = %5d                        |", empty_pass_count);
 		$display("|  empty_fail count = %5d                        |", empty_fail_count);
+		$display("+--------------------------------------------------+");
+		$display("");
+		$display("  push_data coverage (0~255)                     ");
+		$display("+--------------------------------------------------+");
+		$display("|  end : %-8s  (%0d transactions, max %0d)", timeout ? "TIMEOUT" : "COVERED", total_count, max_count);
+		$display("|  push accepted (stored)  = %3d / 256           |", push_cover);
+		$display("|  pop  checked  (PASS)    = %3d / 256           |", pop_cover);
+		$display("+--------------------------------------------------+");
+		$display("");
+		$display("  cover group coverage                     ");
+		$display("+--------------------------------------------------+");
+		$display("|  coverage push_data = %2.1f  %%                |", cg_fifo.cp_push_data.get_coverage());
+		$display("|  coverage pop_data  = %2.1f  %%                |", cg_fifo.cp_pop_data.get_coverage());
 		$display("+--------------------------------------------------+");
 	endtask
 
@@ -398,19 +502,23 @@ class environment;
 
 	endfunction
 
-	task run(int run_count,int option);  // argument 선언
+	task run(int max_count,int option);
 	
 		drv.preset();
+		scb.option    = option;
+		scb.max_count = max_count;
 
 		fork
-			gen.run(run_count,option);
+			gen.run(option);
 			drv.run();
 			mon.run();
 			scb.run();
-		join_any
+		join_none
+
+			@(scb.end_evt);
 
 			#1;
-			scb.report();
+			scb.report(option);
 
 			disable fork;
 
@@ -451,7 +559,7 @@ initial begin
 	
 	$timeformat(-9,0,"ns",0);
 	env = new(fifo_if);
-	env.run(5000,0);
+	env.run(20000,4);
 	$finish;
 
 end
