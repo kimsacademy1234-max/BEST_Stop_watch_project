@@ -267,39 +267,9 @@ class scoreboard;
 	virtual fifo_interface fifo_vif;
 
 
-
-	covergroup cg_fifo;
-			//fifo push data 
-			cp_push_data : coverpoint tr.push_data {
-		
-				bins full[] = {[0:255]};  // 값의 범위를 지정할 수 있다
-										// 퍼센트로 나온다
-			}
-
-
-			cp_pop_data : coverpoint tr.pop_data {
-		
-				bins full[] = {[0:255]};  // 값의 범위를 지정할 수 있다
-										// 퍼센트로 나온다
-			}
-
-
-
-
-	endgroup
-
-
-	function new(mailbox #(transaction) mon2scb_mbox, virtual fifo_interface fifo_vif, event gen_next_evt);
-		this.fifo_vif	  =  fifo_vif;
-		this.mon2scb_mbox = mon2scb_mbox;
-		this.gen_next_evt = gen_next_evt;
-		this.cg_fifo =		new;
-	endfunction 
-
-
 	localparam int DEPTH = 4;
 
-	logic [7:0] expected_fifo[$];
+	logic [7:0] expected_fifo[$:3];
 	logic [7:0] exp_data;
 	bit         exp_full, exp_empty, do_push, do_pop;
 
@@ -330,6 +300,67 @@ class scoreboard;
 	bit   timeout;
 	event end_evt;
 
+	function new(mailbox #(transaction) mon2scb_mbox, virtual fifo_interface fifo_vif, event gen_next_evt);
+		this.fifo_vif	  =  fifo_vif;
+		this.mon2scb_mbox = mon2scb_mbox;
+		this.gen_next_evt = gen_next_evt;
+		this.cg_fifo =		new;
+	endfunction 
+
+	covergroup cg_fifo;
+			// iff(조건) -> push 일때만 집계하겠다. pop 일때도 tr.push data는 매번 posedge + 1ns 바뀌고 있기 때문 
+			cp_push_data : coverpoint tr.push_data iff(tr.push){
+		
+				bins full[] = {[0:255]};  // 값의 범위를 지정할 수 있다
+										// 퍼센트로 나온다
+			}
+
+
+			cp_pop_data : coverpoint tr.pop_data iff(tr.pop){
+		
+				bins full[] = {[0:255]};  // 값의 범위를 지정할 수 있다
+										// 퍼센트로 나온다
+			}
+
+			// 동작 4가지 다 일어나는가? push + pop 
+
+			cp_push_pop : coverpoint {tr.push,tr.pop} {
+		
+				bins idle = {2'b00};  
+				bins push_only = {2'b10};  
+				bins pop_only = {2'b01};  
+				bins push_pop = {2'b11};  
+										
+			}
+
+			cp_empty_full : coverpoint {tr.empty,tr.full} {
+		
+				bins nomal    = {2'b00};  
+				bins empty    = {2'b10};  
+				bins full     = {2'b01};  
+				//bins error    = {2'b11};  
+										
+			}
+
+			// check 안한거 -> 메모리 depth ->  depth 가 1일 때, 2일때 확인을 안해봄 
+	
+			cp_queue_st  : coverpoint expected_fifo.size()  {
+				
+				bins fifo_0 = {0};
+				bins fifo_1 = {1};
+				bins fifo_2 = {2};
+				bins fifo_3 = {3};
+
+
+
+			}
+
+
+
+			// cross option -> x 조합을 만들어 내겠다. 
+			cx_op_st: cross cp_push_pop,cp_empty_full;
+
+	endgroup
 
 	task run();
 
@@ -389,20 +420,6 @@ class scoreboard;
 		end
 	endtask
 
-	function string missing_list(ref bit seen[256]);
-		int i, j;
-		missing_list = "";
-		i = 0;
-		while(i < 256) begin
-			if(seen[i]) begin i ++; continue; end
-			j = i;
-			while(j < 255 && !seen[j+1]) j ++;
-			if(missing_list != "") missing_list = {missing_list, ", "};
-			if(j == i) missing_list = {missing_list, $sformatf("%0d", i)};
-			else       missing_list = {missing_list, $sformatf("%0d~%0d", i, j)};
-			i = j + 1;
-		end
-	endfunction
 
 
 	function void check_flags(bit expec_full, bit expec_empty);
@@ -432,8 +449,9 @@ class scoreboard;
 
 
 		$display("");
-		$display("  %s TEST                                       ", case_s);
-		$display("+--------------------------------------------------+");
+		$display("===================================================");
+		$display("%s TEST", case_s);
+		$display("===================================================");
 		$display("|  total test = %5d                              |", total_count);
 		$display("|  reset count= %5d                              |", reset_count);
 		$display("|  pop  count = %5d                              |", pop_count);
@@ -442,14 +460,16 @@ class scoreboard;
 		$display("|  pop  ignored (empty) = %5d                    |", pop_ignored_count);
 		$display("+--------------------------------------------------+");
 		$display("");
-		$display("  pop_data vs expect_data                     ");
-		$display("+--------------------------------------------------+");
+		$display("===================================================");
+		$display("pop_data vs expect_data                    ");
+		$display("===================================================");
 		$display("|  pop_pass count = %5d                          |", pass_count);
 		$display("|  pop_fail count = %5d                          |", fail_count);
 		$display("+--------------------------------------------------+");
 		$display("");
+		$display("===================================================");
 		$display("  full / empty pass/fail             ");
-		$display("+--------------------------------------------------+");
+		$display("===================================================");
 		$display("|  full_pass count = %5d                         |", full_pass_count);
 		$display("|  full_fail count = %5d                         |", full_fail_count);
 		$display("+--------------------------------------------------+");
@@ -457,17 +477,26 @@ class scoreboard;
 		$display("|  empty_fail count = %5d                        |", empty_fail_count);
 		$display("+--------------------------------------------------+");
 		$display("");
-		$display("  push_data coverage (0~255)                     ");
-		$display("+--------------------------------------------------+");
+		$display("===================================================");
+		$display("  DATA ACCEPT                     ");
+		$display("===================================================");
 		$display("|  end : %-8s  (%0d transactions, max %0d)", timeout ? "TIMEOUT" : "COVERED", total_count, max_count);
 		$display("|  push accepted (stored)  = %3d / 256           |", push_cover);
 		$display("|  pop  checked  (PASS)    = %3d / 256           |", pop_cover);
 		$display("+--------------------------------------------------+");
 		$display("");
-		$display("  cover group coverage                     ");
-		$display("+--------------------------------------------------+");
+		$display("===================================================");
+		$display("   coverage                     ");
+		$display("===================================================");
 		$display("|  coverage push_data = %2.1f  %%                |", cg_fifo.cp_push_data.get_coverage());
 		$display("|  coverage pop_data  = %2.1f  %%                |", cg_fifo.cp_pop_data.get_coverage());
+		$display("|  coverage push /pop = %2.1f  %%                |", cg_fifo.cp_push_pop.get_coverage());
+		$display("|  coverage empty / full  = %2.1f  %%            |", cg_fifo.cp_empty_full.get_coverage());
+		$display("|  coverage DEPTH  = %2.1f  %%                   |", cg_fifo.cp_queue_st.get_coverage());
+		$display("===================================================");
+		$display("   CROSS                    ");
+		$display("===================================================");
+		$display("|  coverage push/pop x empty/full  = %2.1f  %%   |", cg_fifo.cx_op_st.get_coverage());
 		$display("+--------------------------------------------------+");
 	endtask
 
