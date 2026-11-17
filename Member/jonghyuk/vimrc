@@ -1,0 +1,462 @@
+
+set number        " 줄 번호
+set tabstop=4     " 탭 크기 4칸
+set shiftwidth=4  " 자동 들여쓰기 4칸
+set autoindent    " 윗줄 들여쓰기 유지
+
+" .v 파일은 항상 Verilog로 인식 (안 그러면 새 파일/짧은 파일을 V 언어로 오인식)
+let g:filetype_v = 'verilog'
+
+" ==========================================
+"  테마
+" ==========================================
+syntax on        " 문법 색상 (Verilog 키워드에 색이 들어감)
+set background=dark
+set termguicolors          " 트루컬러 사용 (Windows Terminal 지원)
+" 테마 : 터미널·vim·tmux 색을 theme 명령으로 한 번에 바꿈 (~/.theme/theme.py)
+" 실제 colorscheme 설정은 자동 생성 파일 ~/.vim/theme.vim 에 있음
+" 줄번호 색: 어떤 테마든 colorscheme 적용 뒤에 다시 칠함 (연보라 #a6acdf, 커서 줄 번호만 주황 #fab387)
+set cursorline cursorlineopt=number   " 줄 전체가 아니라 커서 줄 번호만 강조
+augroup linenr_color
+    autocmd!
+    autocmd ColorScheme * highlight LineNr       guifg=#a6acdf ctermfg=146 guibg=NONE ctermbg=NONE
+                      \ | highlight CursorLineNr guifg=#fab387 ctermfg=216 guibg=NONE ctermbg=NONE gui=bold cterm=bold
+augroup END
+if filereadable(expand('~/.vim/theme.vim'))
+    source ~/.vim/theme.vim
+else
+    colorscheme gruvbox
+endif
+
+" ==========================================
+"  기타 편의 기능
+" ==========================================
+set directory=~/.vim/swap// " swap 파일(.swp)을 작업 폴더 대신 ~/.vim/swap 에 저장
+
+" ==========================================
+"  vim 창끼리 yy / p 공유 (다른 vim에서 복사한 것도 붙여넣기)
+" ==========================================
+" 이 vim은 -clipboard 라 vim마다 레지스터가 따로임 → 공용 파일을 클립보드로 사용
+" (clipboard_provider 기능: yank/delete 는 파일에 저장, p 는 파일에서 읽음)
+if has('clipboard_provider')
+    let s:clipfile = expand('~/.vim/.clipboard')
+    function! s:ClipCopy(reg, type, lines)
+        call writefile([a:type] + a:lines, s:clipfile)
+    endfunction
+    function! s:ClipPaste(reg)
+        if !filereadable(s:clipfile)
+            return ['', []]
+        endif
+        let l:data = readfile(s:clipfile)
+        return [get(l:data, 0, ''), l:data[1:]]
+    endfunction
+    let v:clipproviders['shared'] = {
+        \ 'copy':  {'+': function('s:ClipCopy'),  '*': function('s:ClipCopy')},
+        \ 'paste': {'+': function('s:ClipPaste'), '*': function('s:ClipPaste')}
+        \ }
+    set clipmethod^=shared
+    set clipboard=unnamedplus
+endif
+
+" ==========================================
+"  Ctrl+w w 로 tmux 창까지 이동
+" ==========================================
+" vim 창을 한 바퀴 다 돌면 다음 tmux 창(터미널 등)으로 넘어감
+if exists('$TMUX')
+    function! s:CycleWindow()
+        if winnr() < winnr('$')
+            wincmd w
+        elseif str2nr(system("tmux display -p '#{window_panes}'")) > 1
+            " 나가기 전에 첫 번째 vim 창으로 돌려놓음 → 돌아왔을 때 처음 창부터 다시 순환
+            wincmd t
+            call system('tmux select-pane -t :.+')
+        elseif str2nr(system("tmux display -p '#{session_windows}'")) > 1
+            " pane 이 하나뿐이면 다음 tmux window(claude 등)로 이동
+            wincmd t
+            call system('tmux next-window')
+        else
+            wincmd w
+        endif
+    endfunction
+
+    " Ctrl+w 다음 키를 시간 제한 없이 기다림 (vim 기본 동작과 동일)
+    function! s:CtrlW()
+        let l:key = getcharstr()
+        if l:key ==# 'w' || l:key ==# "\<C-w>"
+            call s:CycleWindow()
+        elseif l:key !=# "\<Esc>"
+            execute 'wincmd ' . l:key
+        endif
+    endfunction
+    nnoremap <silent> <C-w> :<C-u>call <SID>CtrlW()<CR>
+endif
+
+" ==========================================
+"  새 .v / .sv 파일 기본 틀 (timescale + module 파일이름(); endmodule)
+" ==========================================
+function! s:VerilogTemplate()
+    let l:name = expand('<afile>:t:r')
+    call setline(1, ['`timescale 1ns / 1ps', '', '', 'module ' . l:name . '(', '', '', ');', '', '', 'endmodule'])
+    call cursor(5, 1)   " 포트 목록 안에서 시작
+endfunction
+augroup verilog_template
+    autocmd!
+    autocmd BufNewFile *.v,*.sv call s:VerilogTemplate()
+augroup END
+
+" ==========================================
+"  Verilog 편집 보조: 자동완성 목록 + 문법 오류 표시
+" ==========================================
+" 2글자 이상 입력하면 아래에 후보 목록 표시 (파일 안 단어 + Verilog 키워드 사전)
+set completeopt=menuone,noinsert,noselect
+function! s:VerilogAutoComplete()
+    let l:word = matchstr(getline('.')[: col('.') - 2], '\k\+$')
+    " Tab 으로 방금 완성한 단어면 목록 다시 띄우지 않음 (글자를 더 치거나 지우면 다시 동작)
+    if exists('b:vac_done')
+        if l:word ==# b:vac_done | return | endif
+        unlet b:vac_done
+    endif
+    if !pumvisible() && strchars(l:word) >= 2
+        call feedkeys("\<C-n>", 'n')
+    endif
+endfunction
+" 목록에서 단어를 골라 완성했을 때 그 단어를 기억
+function! s:VerilogAccepted()
+    if !empty(v:completed_item)
+        let b:vac_done = v:completed_item.word
+    endif
+endfunction
+" 단어를 다 쳐서 더 길게 이어지는 후보가 없으면 목록 닫기 (예: module 까지 치면 닫힘, end 는 endmodule 이 남아 유지)
+function! s:VerilogCloseDone()
+    if !pumvisible() | return | endif
+    let l:word = matchstr(getline('.')[: col('.') - 2], '\k\+$')
+    if empty(l:word) | return | endif
+    for l:it in get(complete_info(['items']), 'items', [])
+        if l:it.word !=# l:word && stridx(l:it.word, l:word) == 0 | return | endif
+    endfor
+    call feedkeys("\<C-e>", 'n')
+endfunction
+augroup verilog_edit
+    autocmd!
+    autocmd FileType verilog,systemverilog setlocal dictionary=~/.vim/dict/verilog.dict complete=.,w,b,k iskeyword+=$
+    autocmd FileType verilog,systemverilog autocmd! verilog_edit TextChangedI <buffer> call s:VerilogAutoComplete()
+    " 목록이 떠 있는 동안의 입력은 TextChangedP 로 들어옴
+    autocmd FileType verilog,systemverilog autocmd! verilog_edit TextChangedP <buffer> call s:VerilogCloseDone()
+    autocmd FileType verilog,systemverilog autocmd! verilog_edit CompleteDone <buffer> call s:VerilogAccepted()
+augroup END
+" ↑ / ↓ : 목록에서 단어 고르기 (vim 기본 동작)
+" Tab     : 고른 단어로 완성 + 목록 닫기 (아무것도 안 골랐으면 첫 번째 후보로 완성), 목록이 없으면 원래 Tab
+inoremap <expr> <Tab> pumvisible() ? (complete_info(['selected']).selected == -1 ? "\<C-n>\<C-y>" : "\<C-y>") : "\<Tab>"
+
+" 문법 오류 표시 (ALE + Verilator): :w 저장 시 검사, 왼쪽에 >> 오류 / -- 경고 + 줄 끝에 메시지
+let g:ale_linters = {'verilog': ['verilator'], 'systemverilog': ['verilator']}
+let g:ale_linters_explicit = 1          " Verilog 외 다른 파일은 검사 안 함
+let g:ale_sign_error = '>>'
+let g:ale_sign_warning = '--'
+let g:ale_echo_msg_format = '[%linter%] %severity%: %s'
+" 입력 중에는 검사 안 함 → :w 저장할 때만 한 번 검사, 결과는 줄 끝에 주석처럼 표시
+let g:ale_lint_on_text_changed = 'never'
+let g:ale_lint_on_insert_leave = 0
+let g:ale_lint_on_enter = 0
+let g:ale_lint_on_filetype_changed = 0
+let g:ale_lint_on_save = 1
+let g:ale_virtualtext_cursor = 'all'
+" --timing : #5 / @(posedge clk) / wait 같은 지연 문법을 시뮬레이터처럼 이해 (Verilator 5 는 안 주면 NEEDTIMINGOPT 오류)
+let g:ale_verilog_verilator_options = '--timing'
+" TB 파일(tb_*.v, sim_file/ 안)은 always #5 clk = ~clk 같은 블로킹(=) 이 정상이라 BLKSEQ 경고 끔
+" + new() 인자를 멤버와 같은 이름으로 짓고 this. 로 구분하는 것도 정상이라 VARHIDDEN 경고 끔 (RTL 은 그대로 검사)
+augroup ale_tb
+    autocmd!
+    autocmd BufRead,BufNewFile tb_*.v,tb_*.sv,*/sim_file/*.v,*/sim_file/*.sv
+        \ let b:ale_verilog_verilator_options = '--timing -Wno-BLKSEQ -Wno-VARHIDDEN'
+augroup END
+" covergroup : verilator 가 지원하지 않아 "Unsupported: covergroup" 오류가 뜸 (-Wno 옵션으로도 못 끔)
+"  → 검사할 때만 covergroup 블록과 사용처(new / sample / get_coverage)를 지운 임시 복사본으로 verilator 실행
+"    (~/.local/bin/verilator-cgstrip, 원본 파일·버퍼는 그대로, covergroup 없는 파일은 verilator 그대로 실행)
+augroup ale_covergroup
+    autocmd!
+    autocmd FileType verilog,systemverilog
+        \ let b:ale_command_wrapper = expand('~/.local/bin/verilator-cgstrip') . ' %*'
+augroup END
+
+" ==========================================
+"  명령줄 Tab : :s / :g 패턴, / ? 검색 안에서 파일 속 단어로 자동완성
+" ==========================================
+" 예) :%s/w<Tab> → w_sum, <Tab> → w_cout ... (계속 누르면 다음 후보, 한 바퀴 돌면 원래 글자)
+" 그 밖의 명령줄(:e 파일 등)은 원래 Tab 자동완성 그대로
+set wildcharm=<C-z>
+function! s:CmdTab()
+    let l:type = getcmdtype()
+    let l:before = getcmdline()[: getcmdpos() - 2]
+    let l:in_pat = l:type =~# '[/?]' ||
+        \ (l:type ==# ':' && l:before =~# '\v^\s*[%.,$0-9'']*(s%[ubstitute]|g%[lobal]|v%[global])/[^/]*(/[^/]*)?$')
+    if !l:in_pat
+        return "\<C-z>"
+    endif
+    let l:word = matchstr(l:before, '\k*$')
+    " 방금 Tab 으로 넣은 단어 뒤라면 다음 후보로 교체
+    if exists('s:ct') && l:word ==# s:ct.list[s:ct.idx]
+        let s:ct.idx = (s:ct.idx + 1) % len(s:ct.list)
+        return repeat("\<BS>", strchars(l:word)) . s:ct.list[s:ct.idx]
+    endif
+    if empty(l:word) | return '' | endif
+    let l:words = split(join(getline(1, '$'), ' '), '\k\@!.')
+    let l:cands = uniq(sort(filter(l:words, 'v:val =~# "^" . l:word && v:val !=# l:word')))
+    if empty(l:cands) | return '' | endif
+    let s:ct = {'list': [l:word] + l:cands, 'idx': 1}
+    return repeat("\<BS>", strchars(l:word)) . s:ct.list[1]
+endfunction
+cnoremap <expr> <Tab> <SID>CmdTab()
+
+" ==========================================
+"  :Md : 편집 중인 md 를 브라우저에서 실시간 미리보기 (VS Code 처럼)
+" ==========================================
+" 입력할 때마다 버퍼 내용을 ~/.mdview/live/ 에 쓰면 mdview.py 서버가 브라우저로 바로 보냄 (:w 안 해도 됨)
+" 브라우저는 vim 커서 위치를 따라 스크롤. :MdStop 또는 버퍼/vim 을 닫으면 서버 종료
+function! s:MdPush(force)
+    if empty(get(b:, 'mdlive', {})) | return | endif
+    if a:force || b:mdlive.tick != b:changedtick
+        call writefile(getline(1, '$'), b:mdlive.file)
+        let b:mdlive.tick = b:changedtick
+    endif
+    let l:line = line('.') - 1
+    if a:force || l:line != b:mdlive.line
+        call writefile([l:line], b:mdlive.file . '.pos')
+        let b:mdlive.line = l:line
+    endif
+endfunction
+function! s:MdUrl(d, ch, msg)
+    let a:d.url = a:msg
+    echo 'Md: ' . a:msg . ' (브라우저에서 열림, 끄기 :MdStop)'
+endfunction
+function! s:MdStop(buf)
+    let l:d = getbufvar(a:buf, 'mdlive', {})
+    if empty(l:d) | return | endif
+    call job_stop(l:d.job)
+    call delete(l:d.file) | call delete(l:d.file . '.pos')
+    call setbufvar(a:buf, 'mdlive', {})
+    execute 'autocmd! mdlive * <buffer=' . a:buf . '>'
+endfunction
+function! s:MdStart()
+    if !empty(get(b:, 'mdlive', {})) && job_status(b:mdlive.job) ==# 'run'
+        echo 'Md: 이미 실행 중 ' . b:mdlive.url | return
+    endif
+    call mkdir(expand('~/.mdview/live'), 'p')
+    let b:mdlive = {'file': expand('~/.mdview/live/') . getpid() . '_' . bufnr() . '.md', 'tick': -1, 'line': -1, 'url': ''}
+    call s:MdPush(1)
+    let b:mdlive.job = job_start(['python3', expand('~/.mdview/mdview.py'), 'serve',
+        \ b:mdlive.file, expand('%:p:h'), expand('%:t')],
+        \ {'out_cb': function('s:MdUrl', [b:mdlive]), 'err_io': 'null'})
+    augroup mdlive
+        autocmd! * <buffer>
+        autocmd TextChanged,TextChangedI,CursorMoved,CursorMovedI <buffer> call s:MdPush(0)
+        autocmd BufUnload <buffer> call s:MdStop(str2nr(expand('<abuf>')))
+    augroup END
+endfunction
+command! Md call s:MdStart()
+command! MdStop call s:MdStop(bufnr())
+" 소문자 :md / :mdstop 도 동작 → 아래 s:CmdLower() 가 Enter 때 :Md / :MdStop 으로 바꿔줌
+" (vim 사용자 명령은 대문자로 시작해야 하고, <CR> 매핑이 abbreviation 을 막아서 여기서 처리)
+
+" ==========================================
+"  대문자 명령 → 소문자 명령 (:W :WQ :Q! :X :SET NU ...)
+" ==========================================
+" Caps Lock 이 켜진 채로 : 명령을 쳐도 소문자 명령처럼 실행 (E492 방지)
+"  - 명령 이름만 소문자로 바꿈 (:%S/CLEAR/STOP/ 처럼 뒤의 인자 대소문자는 그대로)
+"  - :set 계열은 옵션 이름도 소문자로 (:SET NU → :set nu)
+"  - :Md 처럼 실제로 있는 대문자 사용자 명령은 그대로
+"  - normal 모드 키(J, K, A, O ...)는 건드리지 않음
+function! s:CmdLower()
+    if getcmdtype() !=# ':' | return | endif
+    let l:m = matchlist(getcmdline(), '^\([[:space:]:]*[0-9.,$%;''<>+-]*\)\(\a\+\)\(.*\)$')
+    if empty(l:m) | return | endif
+    " :md / :mdstop / :glow (대소문자 무관, 인자 없을 때) → :Md / :MdStop / :Glow
+    let l:alias = {'md': 'Md', 'mdstop': 'MdStop', 'glow': 'Glow'}
+    if has_key(l:alias, tolower(l:m[2])) && l:m[3] =~# '^[[:space:]]*$'
+        call setcmdline(l:m[1] . l:alias[tolower(l:m[2])]) | return
+    endif
+    if l:m[2] !~# '\u' | return | endif
+    let l:name = tolower(l:m[2])
+    " 대문자 이름이 정확히 있는 명령(2)이면 그대로, 소문자 이름이 명령이 아니면 그대로
+    if exists(':' . l:m[2]) == 2 || !exists(':' . l:name) | return | endif
+    let l:rest = l:m[3]
+    if l:name =~# '^\(se\|set\|setl\|setlocal\|setg\|setglobal\)$'
+        let l:rest = tolower(l:rest)
+    endif
+    call setcmdline(l:m[1] . l:name . l:rest)
+endfunction
+cnoremap <CR> <Cmd>call <SID>CmdLower()<CR><CR>
+
+" ==========================================
+"  Caps Lock 대비: U P W Y → u p w y (normal / visual / operator-pending)
+" ==========================================
+" 대문자 U(줄 undo), P(앞에 붙여넣기), W(WORD 이동), Y(줄 복사)는 소문자 동작으로 덮어씀
+" (diW → diw 처럼 텍스트 오브젝트도 소문자로 동작)
+for s:k in ['u', 'p', 'w', 'y']
+    execute 'nnoremap ' . toupper(s:k) . ' ' . s:k
+    execute 'xnoremap ' . toupper(s:k) . ' ' . s:k
+    execute 'onoremap ' . toupper(s:k) . ' ' . s:k
+endfor
+unlet s:k
+
+" ==========================================
+"  md 파일을 vim 안에서 보기 좋게 (플러그인 없이 vim 내장 markdown 문법 사용)
+" ==========================================
+" ```verilog 같은 코드 블록 안도 해당 언어 색으로 칠함
+let g:markdown_fenced_languages = ['verilog', 'systemverilog', 'python', 'bash=sh', 'sh', 'c', 'cpp', 'tcl', 'vim']
+" conceallevel=2 : **굵게** `코드` [링크](url) 의 기호를 숨김 (커서가 있는 줄은 원래대로 보임)
+" wrap + linebreak : 긴 문장을 단어 단위로 줄바꿈, breakindent : 목록 들여쓰기 유지
+augroup md_view
+    autocmd!
+    autocmd FileType markdown setlocal conceallevel=2 concealcursor= wrap linebreak breakindent
+augroup END
+" 제목 단계별 색 (catppuccin 팔레트) + 굵게/기울임/코드/표 색 : 어떤 테마든 colorscheme 뒤에 다시 칠함
+function! s:MdColors()
+    highlight markdownH1 guifg=#f38ba8 gui=bold ctermfg=211 cterm=bold
+    highlight markdownH2 guifg=#fab387 gui=bold ctermfg=216 cterm=bold
+    highlight markdownH3 guifg=#f9e2af gui=bold ctermfg=223 cterm=bold
+    highlight markdownH4 guifg=#a6e3a1 gui=bold ctermfg=150 cterm=bold
+    highlight markdownH5 guifg=#89b4fa gui=bold ctermfg=111 cterm=bold
+    highlight markdownH6 guifg=#cba6f7 gui=bold ctermfg=183 cterm=bold
+    highlight markdownHeadingDelimiter guifg=#6c7086 ctermfg=242
+    highlight markdownBold       guifg=#f5c2e7 gui=bold ctermfg=218 cterm=bold
+    highlight markdownItalic     guifg=#94e2d5 gui=italic ctermfg=116 cterm=italic
+    highlight markdownCode       guifg=#a6e3a1 guibg=#313244 ctermfg=150 ctermbg=236
+    highlight markdownCodeBlock  guifg=#a6e3a1 ctermfg=150
+    highlight markdownListMarker guifg=#fab387 gui=bold ctermfg=216 cterm=bold
+    highlight markdownOrderedListMarker guifg=#fab387 gui=bold ctermfg=216 cterm=bold
+    highlight markdownBlockquote guifg=#7f849c gui=italic ctermfg=103 cterm=italic
+    highlight markdownLinkText   guifg=#89b4fa gui=underline ctermfg=111 cterm=underline
+    highlight markdownRule       guifg=#6c7086 ctermfg=242
+    highlight mdTablePipe        guifg=#6c7086 ctermfg=242
+    highlight mdTableSep         guifg=#6c7086 ctermfg=242
+    highlight mdTableHead        guifg=#89dceb gui=bold ctermfg=117 cterm=bold
+endfunction
+augroup md_colors
+    autocmd!
+    autocmd ColorScheme * call s:MdColors()
+augroup END
+call s:MdColors()
+
+" ==========================================
+"  Verilog / SV 색 : 역할별로 다른 색 → module / class / task 경계가 잘 보이게
+" ==========================================
+" 그룹 정의는 ~/.vim/after/syntax/verilog.vim (catppuccin mocha 팔레트)
+function! s:VlogColors()
+    highlight vlogBlock     guifg=#f38ba8 gui=bold ctermfg=211 cterm=bold
+    highlight vlogMethod    guifg=#89b4fa gui=bold ctermfg=111 cterm=bold
+    highlight vlogProc      guifg=#fab387 gui=bold ctermfg=216 cterm=bold
+    highlight vlogType      guifg=#f9e2af ctermfg=223
+    highlight vlogDir       guifg=#94e2d5 ctermfg=116
+    highlight vlogSeparator guifg=#b4befe gui=bold ctermfg=147 cterm=bold
+    highlight vlogClassName guifg=#a6e3a1 gui=bold ctermfg=150 cterm=bold
+endfunction
+" class / interface 이름(핸들 선언 타입) : 파일 안의 class X, interface X 를 찾아서 초록으로 + mailbox, semaphore
+" 예) transaction tr;  virtual adder_interface vif;  mailbox #(transaction) mbox;
+" 열 때 + 저장할 때 + 입력 모드 나갈 때 다시 찾음 (다른 파일에 정의된 class 는 못 찾음)
+function! s:VlogClassNames()
+    if &filetype !~# '^\(verilog\|systemverilog\)$' | return | endif
+    silent! syntax clear vlogClassName
+    let l:names = ['mailbox', 'semaphore']
+    for l:line in getline(1, '$')
+        let l:m = matchlist(l:line, '^\s*\%(virtual\s\+\)\?\%(class\|interface\)\s\+\(\h\w*\)')
+        if !empty(l:m) | call add(l:names, l:m[1]) | endif
+    endfor
+    execute 'syntax keyword vlogClassName ' . join(uniq(sort(l:names)))
+endfunction
+augroup vlog_classnames
+    autocmd!
+    autocmd Syntax verilog,systemverilog call s:VlogClassNames()
+    autocmd BufWritePost,InsertLeave * call s:VlogClassNames()
+augroup END
+augroup vlog_colors
+    autocmd!
+    autocmd ColorScheme * call s:VlogColors()
+augroup END
+call s:VlogColors()
+
+" ==========================================
+"  :Glow : 편집 중인 md 를 vim 화면 전체에 렌더링해서 보기 (터미널용 md 뷰어 glow)
+" ==========================================
+" 저장 안 한 내용도 보임. j/k·Space/b 로 스크롤, q 로 닫으면 원래 편집 화면으로 돌아옴
+" 렌더링 화면은 새 탭에 띄우고 탭 줄은 숨김 → 화면에는 렌더링만 보임
+function! s:GlowClose(tmp, win, stal)
+    call delete(a:tmp)
+    let &showtabline = a:stal
+    call win_gotoid(a:win)
+endfunction
+" 색 테마: 기본 dracula, :Glow <이름> 으로 바꿔보기 (Tab 자동완성, vim 켜져 있는 동안 유지)
+"   catppuccin = vim 테마(catppuccin mocha)와 같은 색 (~/.config/glow/catppuccin.json)
+let s:glow_styles = {'catppuccin': expand('~/.config/glow/catppuccin.json'),
+    \ 'dracula': 'dracula', 'tokyo-night': 'tokyo-night', 'pink': 'pink', 'dark': 'dark', 'light': 'light'}
+let g:glow_style = get(g:, 'glow_style', 'dracula')
+function! s:GlowComplete(lead, line, pos)
+    return filter(sort(keys(s:glow_styles)), 'v:val =~# "^" . a:lead')
+endfunction
+function! s:Glow(...)
+    if a:0 && !empty(a:1)
+        if !has_key(s:glow_styles, a:1)
+            echo 'Glow: 없는 테마 ' . a:1 . ' (' . join(sort(keys(s:glow_styles)), ', ') . ')' | return
+        endif
+        let g:glow_style = a:1
+    endif
+    if !executable('glow')
+        echo 'Glow: glow 가 없음 (~/.local/bin/glow)' | return
+    endif
+    let l:tmp = tempname() . '.md'
+    call writefile(getline(1, '$'), l:tmp)
+    let l:win = win_getid()
+    let l:stal = &showtabline
+    tabnew
+    setlocal bufhidden=wipe
+    set showtabline=0
+    " 창이 닫힌 뒤에 원래 창으로 가야 해서 timer 로 한 박자 늦춤
+    call term_start(['glow', '-p', '-s', s:glow_styles[g:glow_style], '-w', string(winwidth(0) - 4), l:tmp],
+        \ {'curwin': 1, 'term_name': 'Glow', 'term_finish': 'close',
+        \  'env': {'PAGER': 'less -R'},
+        \  'exit_cb': {j, s -> timer_start(10, {-> s:GlowClose(l:tmp, l:win, l:stal)})}})
+endfunction
+command! -nargs=? -complete=customlist,s:GlowComplete Glow call s:Glow(<q-args>)
+
+" ==========================================
+"  Caps Lock / 한글 표시 : 켜져 있으면 vim 오른쪽 위에 CAPS / 한 띄움
+" ==========================================
+" 터미널 vim 은 키 상태를 알 수 없어서 Windows powershell(~/.vim/keystate.ps1)이 0.2초마다 확인 → 바뀔 때만 숫자 출력
+" (1: Caps Lock, 2: 한글, 3: 둘 다). 한/영은 앞 창이 터미널일 때만 갱신. vim 이 켜질 때 시작, vim 을 닫으면 같이 꺼짐
+let s:key_popups = []
+let s:key_state = 0
+function! s:KeyShow()
+    call map(s:key_popups, 'popup_close(v:val)')
+    let s:key_popups = []
+    let l:col = &columns
+    " 오른쪽 끝부터: CAPS, 그 왼쪽에 한
+    for [l:bit, l:text, l:hl] in [[1, ' CAPS ', 'CapsLockInd'], [2, ' 한 ', 'HangulInd']]
+        if and(s:key_state, l:bit)
+            call add(s:key_popups, popup_create(l:text, {'line': 1, 'col': l:col, 'pos': 'topright',
+                \ 'highlight': l:hl, 'zindex': 300}))
+            let l:col -= strdisplaywidth(l:text) + 1
+        endif
+    endfor
+endfunction
+function! s:KeyState(msg)
+    let s:key_state = str2nr(trim(a:msg))
+    call s:KeyShow()
+endfunction
+function! s:KeyStart()
+    let l:ps1 = '\\wsl.localhost\' . $WSL_DISTRO_NAME . substitute(expand('~/.vim/keystate.ps1'), '/', '\\', 'g')
+    let s:key_job = job_start(['powershell.exe', '-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', l:ps1],
+        \ {'cwd': '/mnt/c', 'out_cb': {ch, msg -> s:KeyState(msg)}, 'err_io': 'null'})
+endfunction
+if has('popupwin') && executable('powershell.exe') && !empty($WSL_DISTRO_NAME) && filereadable(expand('~/.vim/keystate.ps1'))
+    augroup key_ind
+        autocmd!
+        " 색: 어떤 테마든 CAPS 는 주황 바탕(#fab387, 커서 줄 번호와 같음), 한 은 파랑 바탕(#89b4fa)
+        autocmd ColorScheme * highlight CapsLockInd guifg=#1e1e2e guibg=#fab387 ctermfg=234 ctermbg=216 gui=bold cterm=bold
+                          \ | highlight HangulInd   guifg=#1e1e2e guibg=#89b4fa ctermfg=234 ctermbg=111 gui=bold cterm=bold
+        autocmd VimEnter * call s:KeyStart()
+        autocmd VimResized * if s:key_state | call s:KeyShow() | endif
+        autocmd VimLeavePre * if exists('s:key_job') | call job_stop(s:key_job, 'kill') | endif
+    augroup END
+    highlight CapsLockInd guifg=#1e1e2e guibg=#fab387 ctermfg=234 ctermbg=216 gui=bold cterm=bold
+    highlight HangulInd   guifg=#1e1e2e guibg=#89b4fa ctermfg=234 ctermbg=111 gui=bold cterm=bold
+endif
