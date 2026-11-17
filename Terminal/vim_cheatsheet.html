@@ -1,0 +1,330 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>Vim 치트시트</title>
+<style>
+  @page { size: A4; margin: 11mm 10mm 11mm 10mm; }
+  :root {
+    --ink: #1d232b;
+    --muted: #5d6773;
+    --line: #d9dee4;
+    --accent: #1f6f5c;
+    --accent-soft: #e6f2ee;
+    --key-bg: #f3f5f7;
+    --key-border: #b9c1ca;
+    --warn: #9a5b00;
+    --warn-soft: #fff4e0;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: #fff; color: var(--ink); }
+  body {
+    font-family: "Malgun Gothic", "맑은 고딕", sans-serif;
+    font-size: 8.6pt;
+    line-height: 1.38;
+    -webkit-print-color-adjust: exact; print-color-adjust: exact;
+  }
+  header {
+    display: flex; align-items: flex-end; justify-content: space-between;
+    border-bottom: 2.5px solid var(--ink); padding-bottom: 5px; margin-bottom: 8px;
+  }
+  header h1 { font-size: 19pt; margin: 0; letter-spacing: -0.5px; }
+  header h1 span { color: var(--accent); }
+  header .sub { color: var(--muted); font-size: 8.4pt; text-align: right; }
+  .legend {
+    display: flex; gap: 14px; flex-wrap: wrap; font-size: 7.8pt; color: var(--muted);
+    margin-bottom: 8px;
+  }
+  .grid { column-count: 2; column-gap: 9px; }
+  section {
+    break-inside: avoid; border: 1px solid var(--line); border-radius: 5px;
+    margin: 0 0 9px 0; overflow: hidden; display: block; -webkit-column-break-inside: avoid; page-break-inside: avoid;
+  }
+  section h2 {
+    font-size: 9.6pt; margin: 0; padding: 4px 8px; background: var(--ink); color: #fff;
+    display: flex; justify-content: space-between; align-items: baseline;
+  }
+  section h2 small { font-weight: normal; font-size: 7.6pt; opacity: .8; }
+  section.hot h2 { background: var(--accent); }
+  table { width: 100%; border-collapse: collapse; }
+  td { padding: 2.6px 8px; vertical-align: top; border-top: 1px solid #eef0f3; }
+  tr:first-child td { border-top: none; }
+  td.k { width: 42%; white-space: nowrap; }
+  tr.star td { background: var(--accent-soft); }
+  tr.sub td {
+    background: #f7f8fa; color: var(--muted); font-size: 7.6pt; font-weight: bold;
+    padding-top: 2px; padding-bottom: 2px; letter-spacing: .3px;
+  }
+  kbd, code {
+    font-family: Consolas, "Courier New", monospace; font-size: 8.3pt;
+  }
+  kbd {
+    background: var(--key-bg); border: 1px solid var(--key-border); border-bottom-width: 2px;
+    border-radius: 3px; padding: 0 3px; color: #111;
+  }
+  code { color: #0b4f8a; }
+  .note {
+    font-size: 7.8pt; color: var(--muted); padding: 4px 8px 5px; border-top: 1px dashed var(--line);
+  }
+  .tip {
+    font-size: 7.8pt; background: var(--warn-soft); color: #5a3a00; padding: 4px 8px 5px;
+    border-top: 1px solid #f1dcb4;
+  }
+  .tip b { color: var(--warn); }
+  pre {
+    margin: 0; padding: 6px 8px; font-family: Consolas, monospace; font-size: 7.9pt;
+    background: #fafbfc; line-height: 1.35; white-space: pre-wrap;
+  }
+  pre .c { color: #7b8592; }
+  .diagram {
+    font-family: Consolas, monospace; font-size: 7.6pt; line-height: 1.2; color: var(--muted);
+    padding: 4px 8px 6px; white-space: pre; background: #fafbfc; border-top: 1px dashed var(--line);
+  }
+  footer { margin-top: 2px; font-size: 7.4pt; color: var(--muted); text-align: center; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Vim <span>자주 쓰는 명령어</span></h1>
+  <div class="sub">팀 공유용 치트시트 · 2026.11<br>Verilog / 터미널 작업 기준</div>
+</header>
+
+<div class="legend">
+  <div><kbd>Ctrl</kbd>+<kbd>w</kbd> <kbd>w</kbd> = Ctrl+w 누르고 떼고 w</div>
+  <div><code>:명령</code> = Normal 모드에서 <kbd>:</kbd> 입력 후 Enter</div>
+  <div><span style="background:var(--accent-soft);padding:0 4px;border-radius:2px">초록 줄</span> = 특히 자주 씀</div>
+  <div>헷갈리면 일단 <kbd>Esc</kbd> 두 번</div>
+</div>
+
+<div class="grid">
+
+<!-- 창 분할 -->
+<section class="hot">
+  <h2>창 분할 (Split) <small>파일 두 개 나란히 보기</small></h2>
+  <table>
+    <tr class="star"><td class="k"><code>:vs</code> / <code>:vsplit</code></td><td>현재 파일을 세로로 분할 (좌우)</td></tr>
+    <tr class="star"><td class="k"><code>:vs 파일명</code></td><td>다른 파일을 오른쪽 창에 열기</td></tr>
+    <tr><td class="k"><code>:sp</code> / <code>:split</code></td><td>가로로 분할 (위아래)</td></tr>
+    <tr><td class="k"><code>:new</code> / <code>:vnew</code></td><td>빈 버퍼로 가로 / 세로 분할</td></tr>
+    <tr class="sub"><td colspan="2">창 이동</td></tr>
+    <tr class="star"><td class="k"><kbd>Ctrl</kbd>+<kbd>w</kbd> <kbd>w</kbd></td><td>다음 창으로 순환 이동</td></tr>
+    <tr><td class="k"><kbd>Ctrl</kbd>+<kbd>w</kbd> <kbd>W</kbd></td><td>이전 창으로 이동</td></tr>
+    <tr class="star"><td class="k"><kbd>Ctrl</kbd>+<kbd>w</kbd> <kbd>h</kbd><kbd>j</kbd><kbd>k</kbd><kbd>l</kbd></td><td>왼 / 아래 / 위 / 오른쪽 창으로</td></tr>
+    <tr><td class="k"><kbd>Ctrl</kbd>+<kbd>w</kbd> <kbd>p</kbd></td><td>직전에 있던 창으로</td></tr>
+    <tr class="sub"><td colspan="2">닫기 · 배치</td></tr>
+    <tr><td class="k"><kbd>Ctrl</kbd>+<kbd>w</kbd> <kbd>q</kbd> / <code>:q</code></td><td>현재 창 닫기</td></tr>
+    <tr><td class="k"><kbd>Ctrl</kbd>+<kbd>w</kbd> <kbd>o</kbd> / <code>:only</code></td><td>현재 창만 남기고 모두 닫기</td></tr>
+    <tr><td class="k"><kbd>Ctrl</kbd>+<kbd>w</kbd> <kbd>x</kbd></td><td>옆 창과 위치 교환</td></tr>
+    <tr><td class="k"><kbd>Ctrl</kbd>+<kbd>w</kbd> <kbd>H</kbd><kbd>J</kbd><kbd>K</kbd><kbd>L</kbd></td><td>현재 창을 맨 왼/아래/위/오른쪽으로</td></tr>
+    <tr><td class="k"><kbd>Ctrl</kbd>+<kbd>w</kbd> <kbd>T</kbd></td><td>현재 창을 새 탭으로 떼어내기</td></tr>
+    <tr class="sub"><td colspan="2">크기 조절</td></tr>
+    <tr><td class="k"><kbd>Ctrl</kbd>+<kbd>w</kbd> <kbd>=</kbd></td><td>모든 창 크기 균등하게</td></tr>
+    <tr><td class="k"><kbd>Ctrl</kbd>+<kbd>w</kbd> <kbd>&gt;</kbd> / <kbd>&lt;</kbd></td><td>너비 +1 / −1 (<code>10</code> 먼저 치면 10칸)</td></tr>
+    <tr><td class="k"><kbd>Ctrl</kbd>+<kbd>w</kbd> <kbd>+</kbd> / <kbd>-</kbd></td><td>높이 +1 / −1</td></tr>
+    <tr><td class="k"><kbd>Ctrl</kbd>+<kbd>w</kbd> <kbd>|</kbd> / <kbd>_</kbd></td><td>너비 / 높이 최대화</td></tr>
+    <tr><td class="k"><code>:vertical resize 80</code></td><td>너비를 80칸으로 지정</td></tr>
+  </table>
+  <div class="tip"><b>TIP</b> 터미널에서 바로 분할로 열기: <code>vim -O a.v b.v</code> (좌우), <code>vim -o</code> (위아래), <code>vim -p</code> (탭)</div>
+</section>
+
+<!-- 파일 탐색 -->
+<section class="hot">
+  <h2>파일 탐색기 (netrw) <small>플러그인 없이 기본 내장</small></h2>
+  <table>
+    <tr class="star"><td class="k"><code>:Explore</code> / <code>:E</code></td><td>현재 창에 파일 탐색기 열기</td></tr>
+    <tr class="star"><td class="k"><code>:Vexplore</code> / <code>:Vex</code></td><td>세로 분할로 탐색기 열기</td></tr>
+    <tr><td class="k"><code>:Sexplore</code> / <code>:Sex</code></td><td>가로 분할로 탐색기 열기</td></tr>
+    <tr><td class="k"><code>:Texplore</code> / <code>:Tex</code></td><td>새 탭에 탐색기 열기</td></tr>
+    <tr><td class="k"><code>:Lexplore</code> / <code>:Lex</code></td><td>왼쪽 사이드바로 열기 / 닫기 (토글)</td></tr>
+    <tr><td class="k"><code>:e .</code></td><td>현재 디렉터리를 탐색기로 열기</td></tr>
+    <tr class="sub"><td colspan="2">탐색기 안에서</td></tr>
+    <tr class="star"><td class="k"><kbd>Enter</kbd></td><td>파일 열기 / 폴더 들어가기</td></tr>
+    <tr class="star"><td class="k"><kbd>-</kbd></td><td>상위 폴더로</td></tr>
+    <tr><td class="k"><kbd>v</kbd> / <kbd>o</kbd> / <kbd>t</kbd></td><td>세로 분할 / 가로 분할 / 새 탭으로 열기</td></tr>
+    <tr><td class="k"><kbd>p</kbd></td><td>미리보기 창으로 열기</td></tr>
+    <tr><td class="k"><kbd>%</kbd> / <kbd>d</kbd></td><td>새 파일 만들기 / 새 폴더 만들기</td></tr>
+    <tr><td class="k"><kbd>R</kbd> / <kbd>D</kbd></td><td>이름 변경 / 삭제</td></tr>
+    <tr><td class="k"><kbd>i</kbd></td><td>보기 방식 변경 (목록 ↔ 트리 등)</td></tr>
+    <tr><td class="k"><kbd>gh</kbd></td><td>숨김 파일(.파일) 보이기 / 숨기기</td></tr>
+    <tr><td class="k"><kbd>s</kbd></td><td>정렬 기준 변경 (이름/시간/크기)</td></tr>
+  </table>
+  <div class="note">탐색기에서 원래 파일로 돌아가기: <kbd>Ctrl</kbd>+<kbd>^</kbd> (직전 버퍼)</div>
+</section>
+
+<!-- 모드 -->
+<section>
+  <h2>모드 전환 <small>Vim은 “모드”가 핵심</small></h2>
+  <table>
+    <tr class="star"><td class="k"><kbd>Esc</kbd></td><td>Normal 모드로 복귀 (기본 상태)</td></tr>
+    <tr class="star"><td class="k"><kbd>i</kbd> / <kbd>a</kbd></td><td>커서 앞 / 뒤에서 입력 시작</td></tr>
+    <tr><td class="k"><kbd>I</kbd> / <kbd>A</kbd></td><td>줄 맨 앞 / 맨 끝에서 입력</td></tr>
+    <tr class="star"><td class="k"><kbd>o</kbd> / <kbd>O</kbd></td><td>아래 / 위에 새 줄 만들고 입력</td></tr>
+    <tr><td class="k"><kbd>v</kbd></td><td>Visual (글자 단위 선택)</td></tr>
+    <tr><td class="k"><kbd>V</kbd></td><td>Visual Line (줄 단위 선택)</td></tr>
+    <tr><td class="k"><kbd>Ctrl</kbd>+<kbd>v</kbd></td><td>Visual Block (세로 블록 선택)</td></tr>
+    <tr><td class="k"><kbd>R</kbd></td><td>덮어쓰기 모드</td></tr>
+  </table>
+</section>
+
+<!-- 저장 종료 -->
+<section>
+  <h2>저장 · 종료</h2>
+  <table>
+    <tr class="star"><td class="k"><code>:w</code></td><td>저장</td></tr>
+    <tr class="star"><td class="k"><code>:wq</code> / <code>:x</code> / <kbd>ZZ</kbd></td><td>저장하고 종료</td></tr>
+    <tr class="star"><td class="k"><code>:q!</code></td><td>저장하지 않고 강제 종료</td></tr>
+    <tr><td class="k"><code>:wa</code> / <code>:qa</code> / <code>:wqa</code></td><td>모든 창 저장 / 종료 / 저장 후 종료</td></tr>
+    <tr><td class="k"><code>:w 새이름.v</code></td><td>다른 이름으로 저장</td></tr>
+    <tr><td class="k"><code>:e!</code></td><td>변경 취소하고 디스크 내용 다시 읽기</td></tr>
+  </table>
+</section>
+
+<!-- 이동 -->
+<section>
+  <h2>커서 이동</h2>
+  <table>
+    <tr><td class="k"><kbd>h</kbd><kbd>j</kbd><kbd>k</kbd><kbd>l</kbd></td><td>← ↓ ↑ →</td></tr>
+    <tr class="star"><td class="k"><kbd>w</kbd> / <kbd>b</kbd> / <kbd>e</kbd></td><td>다음 단어 / 이전 단어 / 단어 끝</td></tr>
+    <tr class="star"><td class="k"><kbd>0</kbd> / <kbd>^</kbd> / <kbd>$</kbd></td><td>줄 맨 앞 / 첫 글자 / 줄 끝</td></tr>
+    <tr class="star"><td class="k"><kbd>gg</kbd> / <kbd>G</kbd></td><td>파일 처음 / 끝</td></tr>
+    <tr class="star"><td class="k"><code>:42</code> / <kbd>42G</kbd></td><td>42번째 줄로 (에러 로그 줄번호 확인용)</td></tr>
+    <tr><td class="k"><kbd>Ctrl</kbd>+<kbd>d</kbd> / <kbd>Ctrl</kbd>+<kbd>u</kbd></td><td>반 페이지 아래 / 위</td></tr>
+    <tr><td class="k"><kbd>Ctrl</kbd>+<kbd>f</kbd> / <kbd>Ctrl</kbd>+<kbd>b</kbd></td><td>한 페이지 아래 / 위</td></tr>
+    <tr><td class="k"><kbd>H</kbd> / <kbd>M</kbd> / <kbd>L</kbd></td><td>화면 위 / 가운데 / 아래</td></tr>
+    <tr><td class="k"><kbd>zz</kbd></td><td>현재 줄을 화면 가운데로</td></tr>
+    <tr><td class="k"><kbd>%</kbd></td><td>짝 괄호 <code>( ) [ ] { }</code>로 점프</td></tr>
+    <tr><td class="k"><kbd>f</kbd><kbd>x</kbd> / <kbd>;</kbd></td><td>줄 안에서 글자 x로 점프 / 다음 x</td></tr>
+    <tr><td class="k"><kbd>Ctrl</kbd>+<kbd>o</kbd> / <kbd>Ctrl</kbd>+<kbd>i</kbd></td><td>이전 위치로 돌아가기 / 다시 앞으로</td></tr>
+    <tr><td class="k"><kbd>m</kbd><kbd>a</kbd> / <kbd>'</kbd><kbd>a</kbd></td><td>위치를 a에 표시 / a로 점프</td></tr>
+  </table>
+</section>
+
+<!-- 편집 -->
+<section>
+  <h2>편집 · 복사 · 붙여넣기</h2>
+  <table>
+    <tr class="star"><td class="k"><kbd>u</kbd> / <kbd>Ctrl</kbd>+<kbd>r</kbd></td><td>실행 취소 / 다시 실행</td></tr>
+    <tr class="star"><td class="k"><kbd>dd</kbd> / <kbd>3dd</kbd></td><td>줄 잘라내기 / 3줄 잘라내기</td></tr>
+    <tr class="star"><td class="k"><kbd>yy</kbd> / <kbd>3yy</kbd></td><td>줄 복사 / 3줄 복사</td></tr>
+    <tr class="star"><td class="k"><kbd>p</kbd> / <kbd>P</kbd></td><td>커서 뒤(아래) / 앞(위)에 붙여넣기</td></tr>
+    <tr class="star"><td class="k"><kbd>.</kbd></td><td>직전 편집 명령 반복</td></tr>
+    <tr><td class="k"><kbd>x</kbd> / <kbd>r</kbd><kbd>a</kbd></td><td>글자 하나 삭제 / 글자를 a로 교체</td></tr>
+    <tr><td class="k"><kbd>dw</kbd> / <kbd>D</kbd></td><td>단어 삭제 / 커서부터 줄 끝까지 삭제</td></tr>
+    <tr><td class="k"><kbd>cw</kbd> / <kbd>ciw</kbd></td><td>단어 바꾸기 (삭제 후 입력 모드)</td></tr>
+    <tr><td class="k"><kbd>ci(</kbd> / <kbd>ci"</kbd></td><td>괄호 / 따옴표 안쪽만 바꾸기</td></tr>
+    <tr><td class="k"><kbd>J</kbd></td><td>아래 줄을 현재 줄에 합치기</td></tr>
+    <tr><td class="k"><kbd>&gt;&gt;</kbd> / <kbd>&lt;&lt;</kbd></td><td>들여쓰기 / 내어쓰기 (Visual에선 <kbd>&gt;</kbd> <kbd>&lt;</kbd>)</td></tr>
+    <tr><td class="k"><kbd>gg=G</kbd></td><td>파일 전체 자동 들여쓰기</td></tr>
+    <tr><td class="k"><kbd>~</kbd></td><td>대소문자 전환</td></tr>
+    <tr><td class="k"><kbd>Ctrl</kbd>+<kbd>n</kbd> <small>(입력 모드)</small></td><td>단어 자동완성 (신호 이름 길 때 유용)</td></tr>
+  </table>
+  <div class="note">Visual 모드로 선택 후 <kbd>y</kbd> 복사, <kbd>d</kbd> 잘라내기, <kbd>c</kbd> 바꾸기</div>
+</section>
+
+<!-- 검색 치환 -->
+<section class="hot">
+  <h2>검색 · 치환</h2>
+  <table>
+    <tr class="star"><td class="k"><kbd>/</kbd><code>단어</code></td><td>아래 방향 검색 (<kbd>?</kbd>는 위 방향)</td></tr>
+    <tr class="star"><td class="k"><kbd>n</kbd> / <kbd>N</kbd></td><td>다음 / 이전 결과</td></tr>
+    <tr class="star"><td class="k"><kbd>*</kbd> / <kbd>#</kbd></td><td>커서 위 단어를 아래 / 위로 검색</td></tr>
+    <tr><td class="k"><code>:noh</code></td><td>검색 하이라이트 끄기</td></tr>
+    <tr class="sub"><td colspan="2">치환</td></tr>
+    <tr class="star"><td class="k"><code>:%s/old/new/g</code></td><td>파일 전체 old → new</td></tr>
+    <tr><td class="k"><code>:%s/old/new/gc</code></td><td>하나씩 확인하며 치환 (y/n)</td></tr>
+    <tr><td class="k"><code>:%s/\&lt;cnt\&gt;/count/g</code></td><td>단어 단위로만 치환 (<code>cnt_r</code>은 그대로)</td></tr>
+    <tr><td class="k"><code>:10,20s/a/b/g</code></td><td>10~20번째 줄에서만 치환</td></tr>
+    <tr><td class="k">Visual 선택 → <code>:s/a/b/g</code></td><td>선택한 영역만 치환 (<code>:'&lt;,'&gt;</code> 자동 입력됨)</td></tr>
+  </table>
+  <div class="tip"><b>TIP</b> 신호 이름 일괄 변경: 이름 위에서 <kbd>*</kbd> → <code>:%s//새이름/g</code> (검색어 비우면 직전 검색어 사용)</div>
+</section>
+
+<!-- 블록 주석 -->
+<section class="hot">
+  <h2>여러 줄 한 번에 주석 달기 <small>Visual Block</small></h2>
+  <table>
+    <tr class="sub"><td colspan="2">주석 달기</td></tr>
+    <tr><td class="k">① <kbd>Ctrl</kbd>+<kbd>v</kbd></td><td>줄 맨 앞에서 Visual Block 시작</td></tr>
+    <tr><td class="k">② <kbd>j</kbd> 반복 (또는 <kbd>5j</kbd>)</td><td>주석 달 줄까지 아래로 선택</td></tr>
+    <tr><td class="k">③ <kbd>I</kbd> → <code>// </code> 입력</td><td>대문자 I 후 주석 문자 입력</td></tr>
+    <tr><td class="k">④ <kbd>Esc</kbd></td><td>선택한 모든 줄에 적용됨</td></tr>
+    <tr class="sub"><td colspan="2">주석 지우기</td></tr>
+    <tr><td class="k"><kbd>Ctrl</kbd>+<kbd>v</kbd> → <kbd>j</kbd>… → <kbd>l</kbd> → <kbd>d</kbd></td><td><code>//</code> 두 글자 폭만큼 선택 후 삭제</td></tr>
+  </table>
+  <div class="note">같은 방식으로 <kbd>A</kbd>를 쓰면 선택한 줄들의 끝에 한꺼번에 덧붙이기 (<kbd>$</kbd>로 끝까지 선택 후)</div>
+</section>
+
+<!-- 버퍼 탭 -->
+<section>
+  <h2>버퍼 · 탭 <small>여러 파일 다루기</small></h2>
+  <table>
+    <tr class="star"><td class="k"><code>:e 파일명</code></td><td>파일 열기 (<kbd>Tab</kbd>으로 경로 자동완성)</td></tr>
+    <tr><td class="k"><code>:ls</code></td><td>열려 있는 버퍼 목록</td></tr>
+    <tr><td class="k"><code>:b 2</code> / <code>:b fifo</code></td><td>2번 버퍼 / 이름에 fifo 포함된 버퍼로</td></tr>
+    <tr><td class="k"><code>:bn</code> / <code>:bp</code></td><td>다음 / 이전 버퍼</td></tr>
+    <tr><td class="k"><kbd>Ctrl</kbd>+<kbd>^</kbd></td><td>직전 파일과 왔다갔다</td></tr>
+    <tr><td class="k"><code>:tabnew 파일명</code></td><td>새 탭에서 열기</td></tr>
+    <tr><td class="k"><kbd>gt</kbd> / <kbd>gT</kbd></td><td>다음 / 이전 탭</td></tr>
+    <tr><td class="k"><code>:tabclose</code></td><td>현재 탭 닫기</td></tr>
+    <tr><td class="k"><kbd>gf</kbd></td><td>커서 위 파일 경로를 바로 열기 (<code>`include</code> 등)</td></tr>
+  </table>
+</section>
+
+<!-- 비교 -->
+<section>
+  <h2>파일 비교 (vimdiff)</h2>
+  <table>
+    <tr class="star"><td class="k"><code>vimdiff a.v b.v</code></td><td>터미널에서 두 파일 비교 실행</td></tr>
+    <tr><td class="k"><code>:vert diffsplit b.v</code></td><td>Vim 안에서 비교 창 열기</td></tr>
+    <tr><td class="k"><kbd>]c</kbd> / <kbd>[c</kbd></td><td>다음 / 이전 차이점으로</td></tr>
+    <tr><td class="k"><kbd>do</kbd> / <kbd>dp</kbd></td><td>상대 내용 가져오기 / 내 내용 보내기</td></tr>
+    <tr><td class="k"><code>:diffupdate</code></td><td>차이 다시 계산</td></tr>
+  </table>
+</section>
+
+<!-- 매크로 -->
+<section>
+  <h2>매크로 · 기타</h2>
+  <table>
+    <tr><td class="k"><kbd>q</kbd><kbd>a</kbd> … <kbd>q</kbd></td><td>a에 동작 녹화 시작 … 종료</td></tr>
+    <tr><td class="k"><kbd>@</kbd><kbd>a</kbd> / <kbd>10@a</kbd></td><td>매크로 실행 / 10번 반복</td></tr>
+    <tr><td class="k"><code>:!ls</code></td><td>Vim 안에서 셸 명령 실행</td></tr>
+    <tr><td class="k"><code>:r 파일명</code></td><td>다른 파일 내용을 커서 아래 삽입</td></tr>
+    <tr><td class="k"><kbd>Ctrl</kbd>+<kbd>z</kbd> → <code>fg</code></td><td>잠시 터미널로 나갔다가 복귀</td></tr>
+    <tr><td class="k"><code>:set paste</code></td><td>붙여넣기 시 들여쓰기 꼬임 방지 (끝나면 <code>:set nopaste</code>)</td></tr>
+    <tr><td class="k"><code>:set nu</code> / <code>:set nonu</code></td><td>줄 번호 켜기 / 끄기</td></tr>
+    <tr><td class="k"><code>:help 명령</code></td><td>내장 도움말 (예: <code>:help CTRL-W</code>)</td></tr>
+  </table>
+</section>
+
+<!-- vimrc -->
+<section>
+  <h2>추천 ~/.vimrc <small>복사해서 바로 사용</small></h2>
+  <pre><span class="c">" 기본 표시</span>
+syntax on
+filetype plugin indent on
+set number            <span class="c">" 줄 번호</span>
+set cursorline        <span class="c">" 현재 줄 강조</span>
+set ruler showcmd
+<span class="c">" 검색</span>
+set hlsearch incsearch ignorecase smartcase
+<span class="c">" 들여쓰기 (스페이스 4칸)</span>
+set tabstop=4 shiftwidth=4 expandtab autoindent
+<span class="c">" 분할 방향: 새 창은 오른쪽/아래로</span>
+set splitright splitbelow
+<span class="c">" 마우스 사용 (창 크기 드래그 가능)</span>
+set mouse=a
+<span class="c">" Verilog begin/end 도 % 로 점프</span>
+packadd! matchit
+<span class="c">" 탐색기 배너 숨기고 트리 보기</span>
+let g:netrw_banner = 0
+let g:netrw_liststyle = 3</pre>
+</section>
+
+</div>
+
+<footer>모르는 명령은 <code>:help 명령어</code> · 연습은 터미널에서 <code>vimtutor</code> (약 30분)</footer>
+
+</body>
+</html>
